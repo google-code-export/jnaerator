@@ -22,6 +22,7 @@ Please read the following sections for licensing details related to the aforemen
 = GNU Trove = 
 
 [http://trove4j.sourceforge.net/ GNU Trove] is a high performance Java primitives collections library.
+
 [http://sourceforge.net/project/showfiles.php?group_id=39235 Its sources are available here].
 
 As stated on the [http://trove4j.sourceforge.net/html/license.html Licensing page of the GNU Trove project] : 
@@ -53,4 +54,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 = JNA =
 
 The [http://jna.dev.java.net/ Java Native Access (JNA)] library is distributed under the terms of the [http://www.gnu.org/copyleft/lesser.html LGPL license].
-[https://jna.dev.java.net/servlets/ProjectDocumentList Its source code is available here].
+
+[https://jna.dev.java.net/servlets/ProjectDocumentList Its sources are available here].
