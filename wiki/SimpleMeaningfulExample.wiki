@@ -59,16 +59,27 @@ public interface TestLibrary extends com.sun.jna.Library
 		
 		public final int[] intArray = new int[new TestLibrary.Pair().size() * PAIRS_COUNT];
 	}
+
+	
 	/**
-		<i>native declaration : F:\Experiments\jna\Test.h:12</i> */
+		Wonderful comments on Test function
+	<br/>
+		<br/>
+		<i>native declaration : F:\Experiments\jna\Test.h:13</i> */
 	void Test(TestLibrary.BiggerStruct.ByReference s);
+	
 	/**
-		<i>native declaration : F:\Experiments\jna\Test.h:14</i><br/>
+		Be careful with that one : intArray and source are const, dest is not
+		<br/>
+		<i>native declaration : F:\Experiments\jna\Test.h:16</i><br/>
 		@deprecated use the safer and easier to use {@link #CopyBytes(CopyBytes(byte[], java.lang.String, com.sun.jna.NativeLong, int[]))} instead */
 	@Deprecated
 	void CopyBytes(com.sun.jna.ptr.ByteByReference dest, com.sun.jna.ptr.ByteByReference source, com.sun.jna.NativeLong n, com.sun.jna.ptr.IntByReference intArray);
+	
 	/**
-		<i>native declaration : F:\Experiments\jna\Test.h:14</i> */
+		Be careful with that one : intArray and source are const, dest is not
+		<br/>
+		<i>native declaration : F:\Experiments\jna\Test.h:16</i> */
 	void CopyBytes(byte[] dest, java.lang.String source, com.sun.jna.NativeLong n, int[] intArray);
 }
 }}}
