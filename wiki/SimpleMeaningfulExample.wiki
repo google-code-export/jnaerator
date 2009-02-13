@@ -42,11 +42,11 @@ public interface TestLibrary extends com.sun.jna.Library
 	public TestLibrary INSTANCE = (TestLibrary)com.sun.jna.Native.loadLibrary("Test", TestLibrary.class);
 
 	/**
-		<i>native declaration : F:\Experiments\jna\Test.h</i> */
+		<i>native declaration : Test.h</i> */
 	public static final int PAIRS_COUNT = 10;
 
 	/**
-		<i>native declaration : F:\Experiments\jna\Test.h:2</i> */
+		<i>native declaration : Test.h:2</i> */
 	public static class Pair extends com.sun.jna.Structure
 	{
 		public static class ByReference extends Pair implements com.sun.jna.Structure.ByReference {}
@@ -61,7 +61,7 @@ public interface TestLibrary extends com.sun.jna.Library
 	}
 
 	/**
-		<i>native declaration : F:\Experiments\jna\Test.h:7</i> */
+		<i>native declaration : Test.h:7</i> */
 	public static class BiggerStruct extends com.sun.jna.Structure
 	{
 		public static class ByReference extends BiggerStruct implements com.sun.jna.Structure.ByReference {}
@@ -75,13 +75,13 @@ public interface TestLibrary extends com.sun.jna.Library
 	/**
 		Wonderful comments on Test function
 		<br/>
-		<i>native declaration : F:\Experiments\jna\Test.h:13</i> */
+		<i>native declaration : Test.h:13</i> */
 	void Test(TestLibrary.BiggerStruct.ByReference s);
 	
 	/**
 		Be careful with that one : intArray and source are const, dest is not
 		<br/>
-		<i>native declaration : F:\Experiments\jna\Test.h:16</i><br/>
+		<i>native declaration : Test.h:16</i><br/>
 		@deprecated use the safer and easier to use {@link #CopyBytes(CopyBytes(byte[], java.lang.String, com.sun.jna.NativeLong, int[]))} instead */
 	@Deprecated
 	void CopyBytes(com.sun.jna.ptr.ByteByReference dest, com.sun.jna.ptr.ByteByReference source, com.sun.jna.NativeLong n, com.sun.jna.ptr.IntByReference intArray);
@@ -89,7 +89,7 @@ public interface TestLibrary extends com.sun.jna.Library
 	/**
 		Be careful with that one : intArray and source are const, dest is not
 		<br/>
-		<i>native declaration : F:\Experiments\jna\Test.h:16</i> */
+		<i>native declaration : Test.h:16</i> */
 	void CopyBytes(byte[] dest, java.lang.String source, com.sun.jna.NativeLong n, int[] intArray);
 }
 }}}
