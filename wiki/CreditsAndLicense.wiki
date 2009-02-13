@@ -7,7 +7,7 @@ JNAerator's parser and transformation code is Copyright Olivier Chafik (c) 2008-
 
 JNAerator ships with the following libraries :
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license)
- * [http://trove4j.sourceforge.net/ GNU Trove] (LGPL license)
+ * [http://trove4j.sourceforge.net/ GNU Trove] (_mostly_ LGPL license, details below)
  * [http://www.antlr.org/ ANTLR's runtime] (BSD license)
 
 JNAerator requires and "links to" the following libraries
