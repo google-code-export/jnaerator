@@ -9,6 +9,8 @@ struct Pair {
 	int first, second;
 };
 
+#define PAIRS_COUNT 10
+
 struct BiggerStruct {
 	long longValue;
 	int intArray[sizeof(Pair) * PAIRS_COUNT];
@@ -38,6 +40,10 @@ package test;
 public interface TestLibrary extends com.sun.jna.Library
 {
 	public TestLibrary INSTANCE = (TestLibrary)com.sun.jna.Native.loadLibrary("Test", TestLibrary.class);
+
+	/**
+		<i>native declaration : F:\Experiments\jna\Test.h</i> */
+	public static final int PAIRS_COUNT = 10;
 
 	/**
 		<i>native declaration : F:\Experiments\jna\Test.h:2</i> */
