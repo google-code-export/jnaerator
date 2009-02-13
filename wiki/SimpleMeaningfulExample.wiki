@@ -22,7 +22,9 @@ void CopyBytes(char* dest, const char* source, size_t n, const int* intArray);
 
 = Command-line =
 
-{{{ java -cp jna.jar -jar jnaerator.jar -defaultLibrary Test Test.h -o . -v }}}
+{{{ 
+java -cp jna.jar -jar jnaerator.jar -defaultLibrary Test Test.h -o . -v 
+}}}
 
 = JNAerator output =
 
