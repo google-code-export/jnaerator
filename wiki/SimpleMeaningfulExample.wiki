@@ -63,7 +63,6 @@ public interface TestLibrary extends com.sun.jna.Library
 	
 	/**
 		Wonderful comments on Test function
-	<br/>
 		<br/>
 		<i>native declaration : F:\Experiments\jna\Test.h:13</i> */
 	void Test(TestLibrary.BiggerStruct.ByReference s);
