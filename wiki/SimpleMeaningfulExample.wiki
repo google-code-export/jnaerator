@@ -1,0 +1,74 @@
+#summary Simple Meaningful Example : C header with its JNAerated interface.
+#labels Featured
+
+= Input Header =
+
+{{{
+
+struct Pair {
+	/// Comment on both first and second
+	int first, second;
+};
+
+struct BiggerStruct {
+	long longValue;
+	int intArray[sizeof(Pair) * PAIRS_COUNT];
+};
+
+__declspec(dllexport) void Test(BiggerStruct& s);
+
+void CopyBytes(char* dest, const char* source, size_t n, const int* intArray);
+}}}
+
+= Command-line =
+
+{{{ java -cp jna.jar -jar jnaerator.jar -defaultLibrary Test Test.h -o . -v }}}
+
+= JNAerator output =
+
+{{{
+package test;
+/**
+	JNA Wrapper for library <b>Test</b> */
+public interface TestLibrary extends com.sun.jna.Library
+{
+	public TestLibrary INSTANCE = (TestLibrary)com.sun.jna.Native.loadLibrary("Test", TestLibrary.class);
+
+	/**
+		<i>native declaration : F:\Experiments\jna\Test.h:2</i> */
+	public static class Pair extends com.sun.jna.Structure
+	{
+		public static class ByReference extends Pair implements com.sun.jna.Structure.ByReference {}
+
+		/**
+			Comment on both first and second */
+		public int first;
+
+		/**
+			Comment on both first and second */
+		public int second;
+	}
+
+	/**
+		<i>native declaration : F:\Experiments\jna\Test.h:7</i> */
+	public static class BiggerStruct extends com.sun.jna.Structure
+	{
+		public static class ByReference extends BiggerStruct implements com.sun.jna.Structure.ByReference {}
+
+		public int longValue;
+		
+		public final int[] intArray = new int[new TestLibrary.Pair().size() * PAIRS_COUNT];
+	}
+	/**
+		<i>native declaration : F:\Experiments\jna\Test.h:12</i> */
+	void Test(TestLibrary.BiggerStruct.ByReference s);
+	/**
+		<i>native declaration : F:\Experiments\jna\Test.h:14</i><br/>
+		@deprecated use the safer and easier to use {@link #CopyBytes(CopyBytes(byte[], java.lang.String, com.sun.jna.NativeLong, int[]))} instead */
+	@Deprecated
+	void CopyBytes(com.sun.jna.ptr.ByteByReference dest, com.sun.jna.ptr.ByteByReference source, com.sun.jna.NativeLong n, com.sun.jna.ptr.IntByReference intArray);
+	/**
+		<i>native declaration : F:\Experiments\jna\Test.h:14</i> */
+	void CopyBytes(byte[] dest, java.lang.String source, com.sun.jna.NativeLong n, int[] intArray);
+}
+}}}
