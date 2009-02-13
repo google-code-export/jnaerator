@@ -15,6 +15,8 @@ JNAerator requires and "links to" the following libraries
 
 Please read the following sections for licensing details related to the aforementioned libraries.
 
+Note that in accordance with the LGPL library, you should be able to use another version of Trove (resp. JNA) instead of that shipping with JNAerator by simply making sure its JAR appears first in the classpath, or by removing/replacing the gnu.trove.* (respectively com.sun.jna.*) packages inside JNAerator.jar.
+
 = Anarres JCPP =
 
 [http://www.anarres.org/projects/jcpp/ Anarres JCPP] is a Java C PreProcessor licensed under the [https://svn.anarres.org/svn/repos/code/java/cpp/trunk/LICENSE Apache 2.0 license]
