@@ -28,7 +28,7 @@ java -cp jna.jar -jar jnaerator.jar -defaultLibrary Test Test.h -o . -v
 
 = JNAerator output =
 
-File {{{ test/TestLibrary.java }}
+File {{{ test/TestLibrary.java }}}
 
 {{{
 package test;
