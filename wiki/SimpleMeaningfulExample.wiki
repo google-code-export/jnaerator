@@ -4,7 +4,6 @@
 = Input Header =
 
 {{{
-
 struct Pair {
 	/// Comment on both first and second
 	int first, second;
@@ -15,8 +14,10 @@ struct BiggerStruct {
 	int intArray[sizeof(Pair) * PAIRS_COUNT];
 };
 
+// Wonderful comments on Test function
 __declspec(dllexport) void Test(BiggerStruct& s);
 
+// Be careful with that one : intArray and source are const, dest is not
 void CopyBytes(char* dest, const char* source, size_t n, const int* intArray);
 }}}
 
