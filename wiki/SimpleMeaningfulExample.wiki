@@ -43,8 +43,7 @@ File {{{ test/TestLibrary.java }}}
 
 {{{
 package test;
-/**
-	JNA Wrapper for library <b>Test</b> */
+/// JNA Wrapper for library <b>Test</b>
 public interface TestLibrary extends com.sun.jna.Library
 {
 	public TestLibrary INSTANCE = (TestLibrary)com.sun.jna.Native.loadLibrary("Test", TestLibrary.class);
@@ -55,40 +54,32 @@ public interface TestLibrary extends com.sun.jna.Library
 		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:8</i> */
 	public static interface Values {
 
-		/**
-			first comments */
+		/// first comments
 		public static final int First = 0;
 
-		/**
-			comments on second */
+		/// comments on second
 		public static final int Second = 1;
 
-		/**
-			not a real value */
+		/// not a real value
 		public static final int Last = 2;
 	}
 
-	/**
-		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i> */
+	/// <i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i>
 	public static final int PAIRS_COUNT = 10;
 
-	/**
-		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:1</i> */
+	/// <i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:1</i>
 	public static class Pair extends com.sun.jna.Structure
 	{
 		public static class ByReference extends Pair implements com.sun.jna.Structure.ByReference {}
 
-		/**
-			Comment on both first and second */
+		/// Comment on both first and second
 		public int first;
-		/**
-			Comment on both first and second */
+		/// Comment on both first and second
 		public int second;
 
 	}
 
-	/**
-		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:14</i> */
+	/// <i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:14</i>
 	public static class BiggerStruct extends com.sun.jna.Structure
 	{
 		public static class ByReference extends BiggerStruct implements com.sun.jna.Structure.ByReference {}
@@ -103,11 +94,9 @@ public interface TestLibrary extends com.sun.jna.Library
 
 	}
 
-	/**
-		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i> */
+	/// <i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i>
 	interface HookCallback {
-		/**
-			<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i> */
+		/// <i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i>
 		boolean callback(int val);
 	};
 
