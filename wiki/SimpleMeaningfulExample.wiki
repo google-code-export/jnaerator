@@ -49,12 +49,31 @@ public interface TestLibrary extends com.sun.jna.Library
 {
 	public TestLibrary INSTANCE = (TestLibrary)com.sun.jna.Native.loadLibrary("Test", TestLibrary.class);
 
+
 	/**
-		<i>native declaration : Test.h</i> */
+		enum Values<br/>
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:8</i> */
+	public static interface Values {
+
+		/**
+			first comments */
+		public static final int First = 0;
+
+		/**
+			comments on second */
+		public static final int Second = 1;
+
+		/**
+			not a real value */
+		public static final int Last = 2;
+	}
+
+	/**
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i> */
 	public static final int PAIRS_COUNT = 10;
 
 	/**
-		<i>native declaration : Test.h:2</i> */
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:1</i> */
 	public static class Pair extends com.sun.jna.Structure
 	{
 		public static class ByReference extends Pair implements com.sun.jna.Structure.ByReference {}
@@ -62,42 +81,51 @@ public interface TestLibrary extends com.sun.jna.Library
 		/**
 			Comment on both first and second */
 		public int first;
-
 		/**
 			Comment on both first and second */
 		public int second;
+
 	}
 
 	/**
-		<i>native declaration : Test.h:7</i> */
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:14</i> */
 	public static class BiggerStruct extends com.sun.jna.Structure
 	{
 		public static class ByReference extends BiggerStruct implements com.sun.jna.Structure.ByReference {}
 
+		public TestLibrary.Values enumValue;
+
+		public TestLibrary.HookCallback hook;
+
 		public int longValue;
-		
-		public final int[] intArray = new int[new TestLibrary.Pair().size() * PAIRS_COUNT];
+
+		public final int[] intArray = new int[new TestLibrary.Pair().size() * 10];
+
 	}
 
-	
 	/**
-		Wonderful comments on Test function
-		<br/>
-		<i>native declaration : Test.h:13</i> */
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i> */
+	interface HookCallback {
+		/**
+			<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h</i> */
+		boolean callback(int val);
+	};
+
+	/**
+		Wonderful comments on Test function<br/>
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:22</i> */
 	void Test(TestLibrary.BiggerStruct.ByReference s);
-	
+
 	/**
-		Be careful with that one : intArray and source are const, dest is not
-		<br/>
-		<i>native declaration : Test.h:16</i><br/>
+		Be careful with that one : intArray and source are const, dest is not<br/>
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:25</i><br/>
 		@deprecated use the safer and easier to use {@link #CopyBytes(CopyBytes(byte[], java.lang.String, com.sun.jna.NativeLong, int[]))} instead */
 	@Deprecated
 	void CopyBytes(com.sun.jna.ptr.ByteByReference dest, com.sun.jna.ptr.ByteByReference source, com.sun.jna.NativeLong n, com.sun.jna.ptr.IntByReference intArray);
-	
+
 	/**
-		Be careful with that one : intArray and source are const, dest is not
-		<br/>
-		<i>native declaration : Test.h:16</i> */
+		Be careful with that one : intArray and source are const, dest is not<br/>
+		<i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:25</i> */
 	void CopyBytes(byte[] dest, java.lang.String source, com.sun.jna.NativeLong n, int[] intArray);
 }
 }}}
