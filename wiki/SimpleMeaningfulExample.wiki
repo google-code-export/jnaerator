@@ -122,3 +122,7 @@ public interface TestLibrary extends com.sun.jna.Library
 	void CopyBytes(com.sun.jna.ptr.ByteByReference dest, java.lang.String source, com.sun.jna.NativeLong n, int[] intArray);
 }
 }}}
+
+= Try it for yourself ! =
+
+Simply download [http://jna.dev.java.net jna.jar] and [http://ochafik.free.fr/Java/jnaerator.jar jnaerator.jar] and you'll be generating your JNA interfaces in a minute !
