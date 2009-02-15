@@ -18,6 +18,8 @@ There are tests that ensure that all subclasses of the Element class behave as J
 
 = Parsing Tests = 
 
+Parsing tests are executed by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/parser/ObjCppParsingTests.java ObjCppParsingTests.java] and their data is stored in [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/parser/ObjCppTest.mm ObjCppTest.mm]
+
 I ensure that a few dozen expressions are parsed without error and that they are serialized back exactly as they were read.
 
 I also ensure some expressions are not parsed properly (e.g. {{{ int[4] var; }}}.
