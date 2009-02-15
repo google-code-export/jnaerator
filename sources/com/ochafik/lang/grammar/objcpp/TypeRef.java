@@ -103,9 +103,10 @@ public abstract class TypeRef extends Element {
 		return MODIFIERS.contains(modifier);
 	}
 	
-	public void addModifier(String modifier) {
+	public TypeRef addModifier(String modifier) {
 		if (modifier != null)
 			modifiers.add(modifier);
+		return this;
 	}
 	public void addModifier(String modifier, int i) {
 		if (modifier != null)

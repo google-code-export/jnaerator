@@ -38,7 +38,16 @@ public abstract class Declaration extends Element {
 	final List<Annotation> annotations = new ArrayList<Annotation>();
 	
 	public enum Modifier {
-		CDecl { @Override public String toString() { return "__cdecl"; } }, 
+		__cdecl,
+		__stdcall,
+		__pre,
+		__valid,
+		__deref,
+		__readonly,
+		__null,
+		__refparam,
+		__exceptthat,
+		
 		Public, 
 		Private, 
 		Protected, 
@@ -47,7 +56,7 @@ public abstract class Declaration extends Element {
 		Static, 
 		Volatile, 
 		Inline,
-		Inline_ { @Override public String toString() { return "__inline__"; } },
+		__inline__,
 	
 		// declspec
 		//Align { @Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
@@ -86,7 +95,7 @@ public abstract class Declaration extends Element {
 	static {
 		//extMods.put("align", Modifier.Align);
 //		extMods.put("allocate", Modifier.Allocate);
-		mods.put("__cdecl", Modifier.CDecl); 
+		mods.put("__cdecl", Modifier.__cdecl); 
 		mods.put("public", Modifier.Public);
 		mods.put("private", Modifier.Private);
 		mods.put("protected", Modifier.Protected);
