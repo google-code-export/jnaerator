@@ -28,6 +28,7 @@ string name = "ok";
 --
 typedef struct _NSSize {
 	CGFloat width; /* width should never be negative */
+
 	CGFloat height; /* height should never be negative */
 } NSSize;
 --
@@ -38,8 +39,7 @@ struct ParamBlockRec {
 	int ok; // comment after ok
 };
 --
-/**
-	these are comments... */
+/// these are comments...
 void* CreateHandle(int size);
 --
 void** ResizeHandle(void** h, int size);
@@ -97,21 +97,28 @@ typedef char str40[41];
 --
 union short_or_long_NOVAR {
 	short i;
+
 	long l2;
 };
 --
 union short_or_long {
 	short i;
+
 	long l;
 } a_number, *p_anumber = NULL;
 --
 /* Test of comments before */
 union ParamBlockRec {
 	IOParam ioParam;
+
 	FileParam fileParam;
+
 	VolumeParam volumeParam;
+
 	CntrlParam cntrlParam;
+
 	SlotDevParam slotDevParam;
+
 	MultiDevParam multiDevParam;
 };
 --
@@ -119,6 +126,7 @@ typedef SInt32 (__cdecl *AVLCompareItemsProcPtr)(AVLTreePtr tree, const void* i1
 --
 typedef struct {
 	float *re;
+
 	float im[4];
 } complex;
 --
@@ -137,8 +145,10 @@ struct Test {
 static __inline__  int __inline_signbit( long double __x ){ 
 	union {
 		long double __ld;
+
 		struct { 
 			unsigned long long __m;
+
 			short __sexp;
 		} __p;
 	} __u = {__x}; 
