@@ -237,6 +237,9 @@ public class TypeConversion {
 		manualTypeDefs.put("uintptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int", "unsigned"), StorageModifier.Pointer));
 		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), StorageModifier.Pointer));
 		
+		
+		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifier(Modifier.Const.toString()), StorageModifier.Pointer));
+		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), StorageModifier.Pointer));
 		manualTypeDefs.put("PBYTE", new TypeRef.Pointer(new TypeRef.Primitive("char"), StorageModifier.Pointer));
 		//manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long"), StorageModifier.Pointer));
 		//manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long", "unsigned"), StorageModifier.Pointer));
