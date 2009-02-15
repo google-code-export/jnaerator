@@ -26,13 +26,13 @@ import gnu.trove.TIntObjectHashMap;
 import gnu.trove.TIntObjectProcedure;
 import gnu.trove.TIntProcedure;
 
-import com.ochafik.lang.grammar.objcpp.Define;
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.Enum;
-import com.ochafik.lang.grammar.objcpp.Function;
-import com.ochafik.lang.grammar.objcpp.Scanner;
-import com.ochafik.lang.grammar.objcpp.SourceFile;
-import com.ochafik.lang.grammar.objcpp.Struct;
+import com.ochafik.lang.jnaerator.parser.Define;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Enum;
+import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.SourceFile;
+import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.util.listenable.Filter;
 
 public class UnusedScanner extends Scanner {

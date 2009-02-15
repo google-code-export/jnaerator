@@ -18,13 +18,13 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.Enum;
-import com.ochafik.lang.grammar.objcpp.Scanner;
-import com.ochafik.lang.grammar.objcpp.Struct;
-import com.ochafik.lang.grammar.objcpp.TypeRef;
-import com.ochafik.lang.grammar.objcpp.VariableStorage;
-import com.ochafik.lang.grammar.objcpp.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Enum;
+import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 
 /**
  * <ul>

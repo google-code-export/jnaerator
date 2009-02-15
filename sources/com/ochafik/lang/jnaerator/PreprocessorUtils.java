@@ -39,8 +39,8 @@ import org.anarres.cpp.Token;
 
 import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
-import com.ochafik.lang.grammar.objcpp.Define;
-import com.ochafik.lang.grammar.objcpp.Expression;
+import com.ochafik.lang.jnaerator.parser.Define;
+import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;

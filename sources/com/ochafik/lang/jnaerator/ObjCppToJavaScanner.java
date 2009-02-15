@@ -18,18 +18,18 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import com.ochafik.lang.grammar.objcpp.Define;
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.Expression;
-import com.ochafik.lang.grammar.objcpp.Scanner;
-import com.ochafik.lang.grammar.objcpp.SourceFile;
-import com.ochafik.lang.grammar.objcpp.Struct;
-import com.ochafik.lang.grammar.objcpp.TypeRef;
-import com.ochafik.lang.grammar.objcpp.VariableStorage;
-import com.ochafik.lang.grammar.objcpp.Expression.Constant;
-import com.ochafik.lang.grammar.objcpp.Expression.FieldRef;
-import com.ochafik.lang.grammar.objcpp.StoredDeclarations.TypeDef;
-import com.ochafik.lang.grammar.objcpp.TypeRef.SimpleTypeRef;
+import com.ochafik.lang.jnaerator.parser.Define;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Expression;
+import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.SourceFile;
+import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Expression.Constant;
+import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.util.string.StringUtils;
 
