@@ -21,7 +21,10 @@ package com.ochafik.lang.jnaerator;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -35,6 +38,7 @@ import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
 import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
+import com.ochafik.util.string.StringUtils;
 
 public class JNAeratorConfigUtils {
 
@@ -47,17 +51,27 @@ public class JNAeratorConfigUtils {
 			VC71 = 1310;
 	}
 
-	static String DEFAULT_FRAMEWORKS_PATH = 
-		"/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks:" +
-		"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks:" + 
-		"/System/Library/Frameworks:" +
-		"/Library/Frameworks:" +
+	static List<String> DEFAULT_FRAMEWORKS_PATH = Arrays.asList( 
+		"/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks",
+		"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks", 
+		"/System/Library/Frameworks",
+		"/Library/Frameworks",
 		System.getProperty("user.home") + "/Library/Frameworks"
-	;
-	static String DEFAULT_INCLUDE_PATH = 
-		"/Developer/SDKs/MacOSX10.4u.sdk/usr/include:" +
-		"."
-	;
+	);
+	static List<String> DEFAULT_INCLUDE_PATH;
+	static {
+		if (SystemUtils.isMacOSX()) {
+			DEFAULT_INCLUDE_PATH = Arrays.asList(
+				"/Developer/SDKs/MacOSX10.4u.sdk/usr/include", 
+				"."
+			);
+		} else if (SystemUtils.isWindows()) {
+			
+			ArrayList<String> list = new ArrayList<String>(VisualStudioUtils.getMicrosoftIncludes());
+			list.add(".");
+			DEFAULT_INCLUDE_PATH = Collections.unmodifiableList(list);
+		}
+	}
 
 	static final Set<String> objCppExtensions = new TreeSet<String>();
 	static final Set<String> headerExtensions = new TreeSet<String>();
@@ -194,8 +208,8 @@ public class JNAeratorConfigUtils {
 	}
 
 	public static void autoConfigure(final JNAeratorConfig config) {
-		config.preprocessorConfig.includes.addAll(Arrays.asList(JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH.split(":")));
-		config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH.split(":")));
+		config.preprocessorConfig.includes.addAll(JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
+		config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
 			//http://support.microsoft.com/kb/65472
 			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);;

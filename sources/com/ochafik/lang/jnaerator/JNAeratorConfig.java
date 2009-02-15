@@ -109,6 +109,15 @@ public class JNAeratorConfig {
 			return libraryFile == null ? defaultLibrary : libraryFile;
 		}
 	};
+	public void addRootDir(File dir) throws IOException {
+		if (!dir.exists())
+			return;
+		String str = dir.getCanonicalPath();
+		if (!str.endsWith(File.separator))
+			str += File.separator;
+		if (!rootDirectoriesPrefixesForSourceComments.contains(str))
+			rootDirectoriesPrefixesForSourceComments.add(str);
+	}
 	public Filter<Element> symbolsAccepter = new Filter<Element>() {
 		public boolean accept(Element value) {
 			String s = Element.getFileOfAscendency(value);
@@ -145,6 +154,12 @@ public class JNAeratorConfig {
 	}
 
 	public String relativizeFileForSourceComments(String path) {
+		/*File file = new File(path);
+		try {
+			path = file.getCanonicalPath();
+		} catch (Exception ex) {
+			return path;
+		}*/
 		for (String pref : rootDirectoriesPrefixesForSourceComments) {
 			if (path.startsWith(pref)) {
 				path = path.substring(pref.length());
