@@ -3,9 +3,7 @@
 = Overview =
 
 There are many things to test in JNAerator, and the current test coverage is rather low.
-
-Add your content here.
-
+However, things are improving.
 
 = DOM Elements tests =
 
@@ -14,6 +12,7 @@ There are tests that ensure that all subclasses of the Element class behave as J
  * any element can be instantiated with a default constructor
  * get(set) of any property should return an object that is equal to the one provided (equal with the Object.equals method)
  * getters of lists should be unmodifiable (there are addXXX methods to add items to list or set properties)
+ * any element of any type added to any other element of any type as some compatible property must be visited by a Scanner.
 
 = Parsing Tests = 
 
