@@ -3,7 +3,9 @@
 = Overview =
 
 There are many things to test in JNAerator, and the current test coverage is rather low.
-However, things are improving.
+
+TODO
+ * test that some example code that would link to jnaerated interfaces compiles
 
 = DOM Elements tests =
 
