@@ -4,6 +4,8 @@
 
 There are many things to test in JNAerator, and the current test coverage is rather low.
 
+All the tests can be launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/parser/ObjCppTests.java ObjCppTests.java] (uses a custom JUnit test aggregator that needs JUnit 4.4).
+
 TODO
  * test that some example code that would link to jnaerated interfaces compiles
 
