@@ -9,6 +9,7 @@ JNAerator ships with the following libraries :
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license) : slightly patched
  * [http://trove4j.sourceforge.net/ GNU Trove] (_mostly_ LGPL license, details below) : unmodified
  * [http://www.antlr.org/ ANTLR's runtime] (BSD license) : unmodified
+ * [http://jalico.google.com/ JaLiCo], also written by Olivier Chafik.
 
 JNAerator requires and "links to" the following libraries, but doesn't ship with them for now :
  * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license) : unmodified
