@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.ochafik.lang.grammar.objcpp.Element;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 
@@ -42,8 +41,8 @@ public class GettersAndSettersHelper {
 		public boolean isFull() {
 			return getter != null && setter != null;
 		}
-		public Class<Element> elementType;
-		public GetterAndSetterInfo(String fieldName, Class<Element> elementType, Method getter, Method setter, Field field) {
+		public Class<?> elementType;
+		public GetterAndSetterInfo(String fieldName, Class<?> elementType, Method getter, Method setter, Field field) {
 			this.elementType = elementType;
 			this.fieldName = fieldName;
 			this.getter = getter;
