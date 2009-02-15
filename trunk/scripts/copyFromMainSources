@@ -5,4 +5,4 @@ if [ ! `svn status | wc -l` -eq 0 ] ; then
 fi
 
 find sources/com -exec cp '/Users/ochafik/Prog/Java/{}' '{}' ';'
-
+svn status
