@@ -55,34 +55,34 @@ import com.ochafik.io.WriteText;
 import static com.ochafik.lang.SyntaxUtils.*;
 import static com.ochafik.util.string.StringUtils.*;
 
-import com.ochafik.lang.grammar.objcpp.Annotation;
-import com.ochafik.lang.grammar.objcpp.Arg;
-import com.ochafik.lang.grammar.objcpp.Declaration;
-import com.ochafik.lang.grammar.objcpp.Define;
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.EmptyDeclaration;
-import com.ochafik.lang.grammar.objcpp.Enum;
-import com.ochafik.lang.grammar.objcpp.Expression;
-import com.ochafik.lang.grammar.objcpp.Function;
-import com.ochafik.lang.grammar.objcpp.ObjCppElementsTests;
-import com.ochafik.lang.grammar.objcpp.ObjCppLexer;
-import com.ochafik.lang.grammar.objcpp.ObjCppParser;
-import com.ochafik.lang.grammar.objcpp.ObjCppParsingTests;
-import com.ochafik.lang.grammar.objcpp.PrintScanner;
-import com.ochafik.lang.grammar.objcpp.Scanner;
-import com.ochafik.lang.grammar.objcpp.SourceFile;
-import com.ochafik.lang.grammar.objcpp.StoredDeclarations;
-import com.ochafik.lang.grammar.objcpp.Struct;
-import com.ochafik.lang.grammar.objcpp.TypeRef;
-import com.ochafik.lang.grammar.objcpp.VariableStorage;
-import com.ochafik.lang.grammar.objcpp.VariablesDeclaration;
-import com.ochafik.lang.grammar.objcpp.Declaration.Modifier;
-import com.ochafik.lang.grammar.objcpp.Expression.Constant;
-import com.ochafik.lang.grammar.objcpp.Function.Type;
-import com.ochafik.lang.grammar.objcpp.StoredDeclarations.TypeDef;
-import com.ochafik.lang.grammar.objcpp.TypeRef.FunctionSignature;
-import com.ochafik.lang.grammar.objcpp.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.grammar.objcpp.TypeRef.StructTypeRef;
+import com.ochafik.lang.jnaerator.parser.Annotation;
+import com.ochafik.lang.jnaerator.parser.Arg;
+import com.ochafik.lang.jnaerator.parser.Declaration;
+import com.ochafik.lang.jnaerator.parser.Define;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.EmptyDeclaration;
+import com.ochafik.lang.jnaerator.parser.Enum;
+import com.ochafik.lang.jnaerator.parser.Expression;
+import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
+import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
+import com.ochafik.lang.jnaerator.parser.ObjCppParser;
+import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
+import com.ochafik.lang.jnaerator.parser.PrintScanner;
+import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.SourceFile;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
+import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
+import com.ochafik.lang.jnaerator.parser.Expression.Constant;
+import com.ochafik.lang.jnaerator.parser.Function.Type;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
 import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
@@ -580,7 +580,7 @@ public class JNAerator {
 		if (enums != null) {
 			//out.println("public static class ENUMS {");
 			String indent = "\t";
-			for (com.ochafik.lang.grammar.objcpp.Enum e : enums) {
+			for (com.ochafik.lang.jnaerator.parser.Enum e : enums) {
 				String indent2;
 				Set<String> localSignatures = signatures;
 				
@@ -596,7 +596,7 @@ public class JNAerator {
 				Integer lastAdditiveValue = null;
 				Expression lastRefValue = null;
 				boolean failedOnceForThisEnum = false;
-				for (com.ochafik.lang.grammar.objcpp.Enum.EnumItem item : e.getItems()) {
+				for (com.ochafik.lang.jnaerator.parser.Enum.EnumItem item : e.getItems()) {
 //					String resultingValue;
 					Expression resultingExpression;
 					try {

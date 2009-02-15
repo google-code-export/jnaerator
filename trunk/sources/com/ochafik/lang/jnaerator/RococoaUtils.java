@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ochafik.lang.grammar.objcpp.Arg;
-import com.ochafik.lang.grammar.objcpp.Function;
-import com.ochafik.lang.grammar.objcpp.Struct;
-import com.ochafik.lang.grammar.objcpp.TypeRef;
-import com.ochafik.lang.grammar.objcpp.VariableStorage.StorageModifier;
+import com.ochafik.lang.jnaerator.parser.Arg;
+import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariableStorage.StorageModifier;
 import com.ochafik.util.string.StringUtils;
 
 public class RococoaUtils {

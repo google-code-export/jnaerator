@@ -21,10 +21,10 @@ package com.ochafik.lang.jnaerator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ochafik.lang.grammar.objcpp.Define;
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.SourceFile;
-import com.ochafik.lang.grammar.objcpp.Visitor;
+import com.ochafik.lang.jnaerator.parser.Define;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.SourceFile;
+import com.ochafik.lang.jnaerator.parser.Visitor;
 import com.ochafik.util.string.StringUtils;
 
 @SuppressWarnings("serial")

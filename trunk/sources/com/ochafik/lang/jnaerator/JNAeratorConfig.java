@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.Function;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.util.listenable.AdaptedCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;

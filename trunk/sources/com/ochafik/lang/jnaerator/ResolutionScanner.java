@@ -23,10 +23,10 @@ import java.io.PrintStream;
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 
-import com.ochafik.lang.grammar.objcpp.Element;
-import com.ochafik.lang.grammar.objcpp.Scanner;
-import com.ochafik.lang.grammar.objcpp.Expression.FieldRef;
-import com.ochafik.lang.grammar.objcpp.TypeRef.SimpleTypeRef;
+import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.DefinitionsVisitor.Environment;
 
 public class ResolutionScanner extends Scanner {
