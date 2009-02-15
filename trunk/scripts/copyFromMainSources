@@ -1,3 +1,8 @@
+if [ ! `svn status | wc -l` -eq 0 ] ; then
+	echo There are SVN modifications here : 
+	svn status
+	exit 1 ;
+fi
 
 find sources/com -exec cp '/Users/ochafik/Prog/Java/{}' '{}' ';'
 
