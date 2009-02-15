@@ -50,7 +50,6 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
-import com.ochafik.io.FileUtils;
 import com.ochafik.io.WriteText;
 import static com.ochafik.lang.SyntaxUtils.*;
 import static com.ochafik.util.string.StringUtils.*;
@@ -194,13 +193,9 @@ public class JNAerator {
 		}
 		try {
 			JNAeratorConfig config = new JNAeratorConfig();
-			String startDir = new File(".").getCanonicalPath();
-			if (!startDir.endsWith(File.separator))
-				startDir = startDir + File.separator;
-			config.rootDirectoriesPrefixesForSourceComments.add(startDir);
 			
 			List<String> frameworks = new ArrayList<String>();
-			config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH.split(":")));
+			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 			boolean autoconf = false;
 			for (int iArg = 0, len = args.length; iArg < len; iArg++) {
 				String arg = args[iArg];
@@ -267,6 +262,13 @@ public class JNAerator {
 			
 			for (String framework : frameworks)
 				JNAeratorConfigUtils.addFramework(config, framework);
+			
+			config.addRootDir(new File("."));
+			for (String i : config.preprocessorConfig.includes) {
+				try {
+					config.addRootDir(new File(i));
+				} catch (Exception ex) {}
+			}
 			
 			JNAerator test = new JNAerator(config);
 			test.run();
@@ -385,7 +387,7 @@ public class JNAerator {
 	
 	String getFileCommentContent(File file, Element e) {
 		if (file != null) {
-			String path = config.relativizeFileForSourceComments(file.toString());
+			String path = config.relativizeFileForSourceComments(file.getAbsolutePath());
 			String inCategoryStr = "";
 			if (e instanceof Function) {
 				Function fc = (Function)e;
@@ -884,7 +886,7 @@ public class JNAerator {
 			String nativeSignature = convertedNat.computeSignature();
 			if (signatures.add(nativeSignature)) {
 				if (!isCallback && nativeSignatureDifferentFromPrimitiveSignature) {
-					convertedNat.addToCommentBefore(Arrays.asList("@deprecated use the safer and easier to use {@link #" + modifiedMethodName + "(" + convertedPrim.computeSignature() + ")} instead"));
+					convertedNat.addToCommentBefore(Arrays.asList("@deprecated use the safer and easier to use {@link #" + convertedPrim.computeSignature() + ")} instead"));
 					convertedNat.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
 				}
 				out.add(convertedNat);

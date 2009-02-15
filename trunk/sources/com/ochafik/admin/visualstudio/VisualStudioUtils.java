@@ -38,7 +38,7 @@ public class VisualStudioUtils {
 		).split(";"));
 	}
 	public static String getMicrosoftWindowsSDKHome() {
-		return getProp("WINDOWS_SDK_HOME", "C:\\Program Files\\Microsoft SDKs\\\\Windows\\\\v6.0A", true);
+		return getProp("WINDOWS_SDK_HOME", "C:\\Program Files\\Microsoft SDKs\\Windows\\v6.0A", true);
 	}
 	private static String getMicrosoftVisualStudioHome() {
 		return getProp("VISUAL_STUDIO_HOME", "C:\\Program Files\\Microsoft Visual Studio 9.0", true);

@@ -64,6 +64,10 @@ const void x[];
 --
 const void const *&*x[];
 --
+// Only comments here !
+--
+char *(*(**foo[][8])())[];
+--
 int x[4];
 --
 unsigned short x, *px, **ppx, **&rppx = a, *pa[4];
@@ -216,7 +220,7 @@ typedef struct {
 + (IMP)instanceMethodForSelector:(SEL)aSelector;
 - (void)doesNotRecognizeSelector:(SEL)aSelector;
 
-// - (id)forwardingTargetForSelector:(SEL)aSelector;
+- (id)forwardingTargetForSelector:(SEL)aSelector;
 - (void)forwardInvocation:(NSInvocation *)anInvocation;
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;
 
