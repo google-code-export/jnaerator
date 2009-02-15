@@ -339,6 +339,7 @@ public class JNAerator {
 			if (!result.objCClasses.isEmpty())
 				out.println("import org.rococoa.ID;");
 			
+			out.println();
 			out.println(Element.formatComments("", null, null, false, "JNA Wrapper for library <b>" + library + "</b>", 
 					getFileCommentContent(config.libraryProjectSources.get(library), null)));
 			out.println("public interface " + libraryClassName + " extends " + Library.class.getName() + "\n{");
@@ -369,7 +370,12 @@ public class JNAerator {
 		//if (config.verbose)
 			System.err.println("Generating: " + file.getAbsolutePath());
 
-		return new PrintWriter(file);
+		return new PrintWriter(file) {
+			@Override
+			public void print(String s) {
+				super.print(s.replace("\r", "").replace("\n", StringUtils.LINE_SEPARATOR));
+			}
+		};
 	}
 
 	String getFileCommentContent(Element e) {
@@ -1301,18 +1307,18 @@ public class JNAerator {
 		String[] lines = sourceContent.split("\n");
 		int iLine = 0, nLines = lines.length, lastStart = 0;
 		String lastFile = null;
-		int lastPercent = 0;
+		//int lastPercent = 0;
 		
 
 		Pattern fileInLinePattern = Pattern.compile("\"([^\"]+)\"");
 		List<Slice> slices = new ArrayList<Slice>(nLines / 10);
 		for (String line : lines) {
-			int percent = (iLine + 1) * 100 / nLines;
+			/*int percent = (iLine + 1) * 100 / nLines;
 			if (lastPercent != percent) {
 				//originalOut.print("\b\b\b\b\b");
 				originalOut.println(percent + "%");
 				lastPercent = percent;
-			}
+			}*/
 			if (line.startsWith("#line")) {
 				lastStart = iLine;
 				lastFile = RegexUtils.findFirst(line, fileInLinePattern, 1);

@@ -229,7 +229,7 @@ public class JNAeratorConfigUtils {
 	
 				public Boolean adapt(Function value) {
 					Set<Modifier> mods = value.getModifiers();
-					return !mods.contains(Modifier.Inline) && !mods.contains(Modifier.Inline_);
+					return !mods.contains(Modifier.Inline) && !mods.contains(Modifier.__inline__);
 				}
 			};
 		}

@@ -134,7 +134,12 @@ public class PreprocessorUtils {
 		preprocessor.addFeature(Feature.DEBUG);
 		
 		preprocessor.setListener(new PreprocessorListener() {
-			
+			@Override
+			public void handleWarning(Source source, int line, int column,
+					String msg) throws LexerException {
+				// TODO Auto-generated method stub
+				super.handleWarning(source, line, column, msg);
+			}
 		});
 		
 		preprocessor.getSystemIncludePath().addAll(config.includes);
