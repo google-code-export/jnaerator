@@ -11,6 +11,8 @@ TODO
 
 = DOM Elements tests =
 
+These tests are run by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/parser/ObjCppElementsTests.java ObjCppElementsTests.java] and make heavy use of reflection.
+
 There are tests that ensure that all subclasses of the Element class behave as Java beans and respect the hierarchy : 
  * any child element added to a parent element must appear in one of the properties of its parent (or must be one of the items in a list or set property), and the child's parentElement property must point to the parent.
  * any element can be instantiated with a default constructor
