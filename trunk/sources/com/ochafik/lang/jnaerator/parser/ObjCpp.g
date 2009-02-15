@@ -51,13 +51,13 @@ options {
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	package com.ochafik.lang.grammar.objcpp;
+package com.ochafik.lang.jnaerator.parser;
 import java.util.Arrays;
-import static com.ochafik.lang.grammar.objcpp.TypeRef.*;
-import static com.ochafik.lang.grammar.objcpp.Expression.*;
-import static com.ochafik.lang.grammar.objcpp.Declaration.*;
-import static com.ochafik.lang.grammar.objcpp.VariableStorage.*;
-import static com.ochafik.lang.grammar.objcpp.StoredDeclarations.*;
+import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
+import static com.ochafik.lang.jnaerator.parser.Expression.*;
+import static com.ochafik.lang.jnaerator.parser.Declaration.*;
+import static com.ochafik.lang.jnaerator.parser.VariableStorage.*;
+import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 }
 
 @members {
@@ -149,8 +149,8 @@ import static com.ochafik.lang.grammar.objcpp.StoredDeclarations.*;
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package com.ochafik.lang.grammar.objcpp;
-import static com.ochafik.lang.grammar.objcpp.Expression.*;
+package com.ochafik.lang.jnaerator.parser;
+import static com.ochafik.lang.jnaerator.parser.Expression.*;
 }
 
 lineDirective
