@@ -45,6 +45,8 @@ import com.ochafik.lang.grammar.DummyDebugEventListener;
 @RunWith(ParameterizedWithDescription.class)
 //@RunWith(Parameterized.class)
 public class ObjCppParsingTests {
+	static final String TEST_FILE = "com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
+	
 	Class<?> elementsTests = ObjCppElementsTests.class;
 	
 	enum TestOption {
@@ -128,7 +130,7 @@ public class ObjCppParsingTests {
 	
 	@Parameters
 	public static List<Object[]> readDataFromFile() throws IOException {
-		List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource("com/ochafik/lang/grammar/objcpp/ObjCppTest.mm"));
+		List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource(TEST_FILE));
 		TestOption testOption = TestOption.ParseAndPrettyPrint;
 		List<Object[]> data = new ArrayList<Object[]>();
 		
