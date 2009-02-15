@@ -1,0 +1,24 @@
+#summary Description of the automatic tests performed on JNAerator
+
+= Overview =
+
+There are many things to test in JNAerator, and the current test coverage is rather low.
+
+Add your content here.
+
+
+= DOM Elements tests =
+
+There are tests that ensure that all subclasses of the Element class behave as Java beans and respect the hierarchy : 
+ * any child element added to a parent element must appear in one of the properties of its parent (or must be one of the items in a list or set property), and the child's parentElement property must point to the parent.
+ * any element can be instantiated with a default constructor
+ * get(set) of any property should return an object that is equal to the one provided (equal with the Object.equals method)
+ * getters of lists should be unmodifiable (there are addXXX methods to add items to list or set properties)
+
+= Parsing Tests = 
+
+I ensure that a few dozen expressions are parsed without error and that they are serialized back exactly as they were read.
+
+I also ensure some expressions are not parsed properly (e.g. {{{ int[4] var; }}}.
+
+Some expressions are not yet serialized back properly and I only test that their parsing yields no error.
