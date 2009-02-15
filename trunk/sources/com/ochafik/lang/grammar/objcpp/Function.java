@@ -121,7 +121,7 @@ public class Function extends Declaration {
 		if (pre.length() > 0)
 			pre += "\n" + indent;
 		String //pre = commentBefore == null ? "" : commentBefore + "\n" + indent, 
-				post = commentAfter == null ? "" : " /*" + commentAfter + " */";
+				post = commentAfter == null ? "" : commentAfter;//" /*" + commentAfter + " */";
 		
 		if (!getAnnotations().isEmpty())
 			pre += StringUtils.implode(getAnnotations(), "\n" + indent) + "\n" + indent;
