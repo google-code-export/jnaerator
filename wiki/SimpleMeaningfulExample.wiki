@@ -110,7 +110,7 @@ public interface TestLibrary extends com.sun.jna.Library
 	/**
 	 * Be careful with that one : intArray and source are const, dest is not<br/>
 	 * <i>native declaration : /Users/ochafik/Prog/Java/test/Test.h:25</i><br/>
-	 * @deprecated use the safer and easier to use {@link #CopyBytes(CopyBytes(com.sun.jna.ptr.ByteByReference, java.lang.String, com.sun.jna.NativeLong, int[]))} instead
+	 * @deprecated use the safer and easier to use {@link #CopyBytes(com.sun.jna.ptr.ByteByReference, java.lang.String, com.sun.jna.NativeLong, int[])} instead
 	 */
 	@Deprecated
 	void CopyBytes(com.sun.jna.ptr.ByteByReference dest, com.sun.jna.ptr.ByteByReference source, com.sun.jna.NativeLong n, com.sun.jna.ptr.IntByReference intArray);
