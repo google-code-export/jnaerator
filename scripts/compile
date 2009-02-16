@@ -1,0 +1,1 @@
+javac -cp `ls libraries/*.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
