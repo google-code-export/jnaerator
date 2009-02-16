@@ -890,7 +890,7 @@ public class JNAerator {
 			String nativeSignature = convertedNat.computeSignature();
 			if (signatures.add(nativeSignature)) {
 				if (!isCallback && nativeSignatureDifferentFromPrimitiveSignature) {
-					convertedNat.addToCommentBefore(Arrays.asList("@deprecated use the safer and easier to use {@link #" + convertedPrim.computeSignature() + ")} instead"));
+					convertedNat.addToCommentBefore(Arrays.asList("@deprecated use the safer and easier to use {@link #" + convertedPrim.computeSignature() + "} instead"));
 					convertedNat.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
 				}
 				out.add(convertedNat);
