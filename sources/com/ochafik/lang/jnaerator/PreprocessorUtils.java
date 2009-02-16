@@ -35,6 +35,7 @@ import org.anarres.cpp.Macro;
 import org.anarres.cpp.Preprocessor;
 import org.anarres.cpp.PreprocessorListener;
 import org.anarres.cpp.Source;
+import org.anarres.cpp.StringLexerSource;
 import org.anarres.cpp.Token;
 
 import com.ochafik.io.ReadText;
@@ -52,6 +53,9 @@ public class PreprocessorUtils {
 		Preprocessor preProcessor = PreprocessorUtils.createPreProcessor(config.preprocessorConfig);
 		for (File file : config.getFiles())
 			preProcessor.addInput(file);
+		
+		for (String content : config.preprocessorConfig.includeStrings)
+			preProcessor.addInput(new StringLexerSource(content));
 		
 		String sourceContent = ReadText.readText(new CppReader(preProcessor));
 		

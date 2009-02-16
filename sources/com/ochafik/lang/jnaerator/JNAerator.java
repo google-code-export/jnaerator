@@ -118,6 +118,10 @@ public class JNAerator {
 		this.config = config;
 	}
 
+	public SourceFiles getSourceFiles() {
+		return sourceFiles;
+	}
+	
 	private static void displayHelp() {
 		System.out.println("Copyright: Olivier Chafik 2008-2009");
 		System.out.println("           Includes the library Anarres JCPP (Apache 2.0 license)");
@@ -1023,7 +1027,7 @@ public class JNAerator {
 		}
 	};
 	
-	private void run() throws IOException, LexerException, RecognitionException {
+	public void run() throws IOException, LexerException, RecognitionException {
 	
 		JNAeratorConfigUtils.autoConfigure(config);
 		

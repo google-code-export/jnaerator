@@ -40,6 +40,12 @@ public class SourceFiles extends Element {
 			define.accept(visitor);
 	}
 	
+	public List<SourceFile> getSourceFiles() {
+		return sourceFiles;
+	}
+	public List<Define> getDefines() {
+		return defines;
+	}
 	public void add(SourceFile sourceFile) {
 		sourceFiles.add(sourceFile);
 	}

@@ -54,6 +54,8 @@ public class JNAeratorConfig {
 		public final List<String> includes = new ArrayList<String>();
 		public final Map<String, String> macros = new HashMap<String, String>();
 		public final List<String> frameworksPath = new ArrayList<String>();
+
+		public List<String> includeStrings = new ArrayList<String>();
 	}
 	
 	public final JNAeratorConfig.PreprocessorConfig preprocessorConfig = new JNAeratorConfig.PreprocessorConfig();
