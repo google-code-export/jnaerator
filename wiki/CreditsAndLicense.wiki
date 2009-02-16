@@ -6,9 +6,9 @@
 JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2009 (everything that lies in the com.ochafik.`*` packages).
 
 JNAerator ships with the following libraries :
- * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license) : slightly patched
- * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license) : unmodified
- * [http://www.antlr.org/ ANTLR's runtime] (BSD license) : unmodified
+ * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : slightly patched
+ * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license, Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others) : unmodified
+ * [http://www.antlr.org/ ANTLR's runtime] (BSD license, Copyright (c) 2003-2008, Terence Parr) : unmodified
  * [http://jalico.google.com/ JaLiCo], also written by Olivier Chafik.
 
 Please read the following sections for licensing details related to the aforementioned libraries.
