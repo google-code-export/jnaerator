@@ -7,12 +7,9 @@ JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/
 
 JNAerator ships with the following libraries :
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license) : slightly patched
- * [http://trove4j.sourceforge.net/ GNU Trove] (_mostly_ LGPL license, details below) : unmodified
+ * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license) : unmodified
  * [http://www.antlr.org/ ANTLR's runtime] (BSD license) : unmodified
  * [http://jalico.google.com/ JaLiCo], also written by Olivier Chafik.
-
-JNAerator requires and "links to" the following libraries, but doesn't ship with them for now :
- * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license) : unmodified
 
 Please read the following sections for licensing details related to the aforementioned libraries.
 
@@ -27,22 +24,6 @@ Note that in accordance with the LGPL library, you should be able to use another
 The [http://jna.dev.java.net/ Java Native Access (JNA)] library is distributed under the terms of the [http://www.gnu.org/copyleft/lesser.html LGPL license].
 
 [https://jna.dev.java.net/servlets/ProjectDocumentList Its sources are available here].
-
-= GNU Trove = 
-
-[http://trove4j.sourceforge.net/ GNU Trove] is a high performance Java primitives collections library.
-
-[http://sourceforge.net/project/showfiles.php?group_id=39235 Its sources are available here].
-
-As stated on the [http://trove4j.sourceforge.net/html/license.html Licensing page of the GNU Trove project] : 
-
-The source code for GNU Trove is licensed under the [http://www.gnu.org/copyleft/lesser.html Lesser GNU Public License (LGPL)]. 
-
-Copyright (c) 2001, Eric D. Friedman All Rights Reserved. This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version. This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU Lesser General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
-Two classes (HashFunctions and PrimeFinder) included in Trove are licensed under the following terms: 
-
-Copyright (c) 1999 CERN - European Organization for Nuclear Research. Permission to use, copy, modify, distribute and sell this software and its documentation for any purpose is hereby granted without fee, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation. CERN makes no representations about the suitability of this software for any purpose. It is provided "as is" without expressed or implied warranty.
 
 = ANTLR Runtime =
 
