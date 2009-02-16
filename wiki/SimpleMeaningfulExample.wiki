@@ -102,7 +102,6 @@ public interface TestLibrary extends com.sun.jna.Library
 
 	/// <i>native declaration : test/Test.h</i>
 	interface HookCallback {
-		/// <i>native declaration : test/Test.h</i>
 		boolean callback(int val);
 	};
 
