@@ -853,7 +853,8 @@ public class JNAerator {
 			convertedNat.setValueType(new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(returnType, TypeConversionMode.ReturnType)));
 			convertedNat.setCommentBefore(function.getCommentBefore());
 			convertedNat.setCommentAfter(function.getCommentAfter());
-			convertedNat.addToCommentBefore(getFileCommentContent(function));
+			if (!isCallback)
+				convertedNat.addToCommentBefore(getFileCommentContent(function));
 			//convertedNat.addToCommentBefore("SIGNATURE: " + function.computeSignature());
 			Function convertedPrim = convertedNat.clone();
 			
