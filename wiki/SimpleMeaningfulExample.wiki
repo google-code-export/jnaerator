@@ -34,7 +34,7 @@ void CopyBytes(char* dest, const char* source, size_t n, const int* intArray);
 = Command-line =
 
 {{{ 
-java -cp jna.jar -jar jnaerator.jar -library Test Test.h -o . -v 
+java -jar jnaerator.jar -library Test Test.h -o . -v 
 }}}
 
 = JNAerator output =
