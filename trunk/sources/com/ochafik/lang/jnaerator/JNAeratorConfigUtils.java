@@ -208,6 +208,9 @@ public class JNAeratorConfigUtils {
 		config.macros.put("__GNUC_GNU_INLINE__", "1");
 	}
 
+	/**
+	 * TODO move this to a .h resource file
+	 */
 	public static void autoConfigure(final JNAeratorConfig config) {
 		config.preprocessorConfig.includes.addAll(JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
 		config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
@@ -253,13 +256,13 @@ public class JNAeratorConfigUtils {
 	}
 
 	/**
+	 * TODO move this to a .h resource file
 	 * <ul>
 	 * <li> endianness
 	 * <li> TARGET_CPU_* : see /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/CarbonCore.framework/Headers/fp.h
 	 * </ul>
 	 * @param config
 	 */
-	
 	static void autoConfigureArchitecture(JNAeratorConfig config) {
 		
 		String arch = System.getProperty("os.arch").toLowerCase();
