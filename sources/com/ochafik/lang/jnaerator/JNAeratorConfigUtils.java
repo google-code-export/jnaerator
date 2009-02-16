@@ -66,10 +66,11 @@ public class JNAeratorConfigUtils {
 				"."
 			);
 		} else if (SystemUtils.isWindows()) {
-			
 			ArrayList<String> list = new ArrayList<String>(VisualStudioUtils.getMicrosoftIncludes());
 			list.add(".");
 			DEFAULT_INCLUDE_PATH = Collections.unmodifiableList(list);
+		} else {
+			DEFAULT_INCLUDE_PATH = Arrays.asList(".");
 		}
 	}
 
