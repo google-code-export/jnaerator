@@ -123,10 +123,11 @@ public class JNAerator {
 	}
 	
 	private static void displayHelp() {
-		System.out.println("Copyright: Olivier Chafik 2008-2009");
-		System.out.println("           Includes the library Anarres JCPP (Apache 2.0 license)");
-		System.out.println("           Includes the library GNU Trove (LGPL 2.1 license)");
-		System.out.println("           Includes ANTLR's runtime library (BSD license)");
+		System.out.println("Credits:   JNAerator is Copyright (c) 2008-2009 Olivier Chafik");
+		System.out.println("           Includes Anarres JCPP (Apache 2.0 license), Copyright (c) 2007-2008, Shevek");
+		System.out.println("           Includes Native Access (JNA) (LGPL license), Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others");
+		//System.out.println("           Includes the library GNU Trove (LGPL 2.1 license)");
+		System.out.println("           Includes ANTLR's runtime (BSD license), Copyright (c) 2003-2008, Terence Parr");
 		System.out.println("           Licensing & Copyright details : http://code.google.com/p/jnaerator/wiki/CreditsAndLicense");
 		System.out.println("   Syntax: " + JNAerator.class.getSimpleName() + " options (-framework framework)* files-or-directories*");
 		System.out.println("  Options:");
