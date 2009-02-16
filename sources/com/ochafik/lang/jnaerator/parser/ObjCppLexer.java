@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g 2009-02-15 18:20:48
+// $ANTLR 3.1.1 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-02-16 22:17:27
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -139,15 +139,15 @@ public class ObjCppLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g"; }
+    public String getGrammarFileName() { return "/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g"; }
 
     // $ANTLR start "T__23"
     public final void mT__23() throws RecognitionException {
         try {
             int _type = T__23;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:27:7: ( '#line' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:27:9: '#line'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:27:7: ( '#line' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:27:9: '#line'
             {
             match("#line"); 
 
@@ -167,8 +167,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__24;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:28:7: ( '{' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:28:9: '{'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:28:7: ( '{' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:28:9: '{'
             {
             match('{'); 
 
@@ -187,8 +187,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__25;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:29:7: ( '}' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:29:9: '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:29:7: ( '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:29:9: '}'
             {
             match('}'); 
 
@@ -207,8 +207,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__26;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:30:7: ( 'namespace' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:30:9: 'namespace'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:30:7: ( 'namespace' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:30:9: 'namespace'
             {
             match("namespace"); 
 
@@ -228,8 +228,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__27;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:31:7: ( '@class' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:31:9: '@class'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:31:7: ( '@class' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:31:9: '@class'
             {
             match("@class"); 
 
@@ -249,8 +249,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__28;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:32:7: ( ',' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:32:9: ','
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:32:7: ( ',' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:32:9: ','
             {
             match(','); 
 
@@ -269,8 +269,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__29;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:33:7: ( ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:33:9: ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:33:7: ( ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:33:9: ';'
             {
             match(';'); 
 
@@ -289,8 +289,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__30;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:34:7: ( '=' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:34:9: '='
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:34:7: ( '=' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:34:9: '='
             {
             match('='); 
 
@@ -309,8 +309,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__31;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:35:7: ( 'enum' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:35:9: 'enum'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:35:7: ( 'enum' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:35:9: 'enum'
             {
             match("enum"); 
 
@@ -330,8 +330,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:36:7: ( '@protocol' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:36:9: '@protocol'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:36:7: ( '@protocol' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:36:9: '@protocol'
             {
             match("@protocol"); 
 
@@ -351,8 +351,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__33;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:37:7: ( '@interface' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:37:9: '@interface'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:37:7: ( '@interface' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:37:9: '@interface'
             {
             match("@interface"); 
 
@@ -372,8 +372,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__34;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:38:7: ( ':' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:38:9: ':'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:38:7: ( ':' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:38:9: ':'
             {
             match(':'); 
 
@@ -392,8 +392,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__35;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:39:7: ( '(' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:39:9: '('
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:39:7: ( '(' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:39:9: '('
             {
             match('('); 
 
@@ -412,8 +412,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__36;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:40:7: ( ')' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:40:9: ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:40:7: ( ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:40:9: ')'
             {
             match(')'); 
 
@@ -432,8 +432,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__37;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:41:7: ( '<' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:41:9: '<'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:41:7: ( '<' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:41:9: '<'
             {
             match('<'); 
 
@@ -452,8 +452,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:42:7: ( '>' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:42:9: '>'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:42:7: ( '>' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:42:9: '>'
             {
             match('>'); 
 
@@ -472,8 +472,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:43:7: ( '@public' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:43:9: '@public'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:43:7: ( '@public' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:43:9: '@public'
             {
             match("@public"); 
 
@@ -493,8 +493,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:44:7: ( '@private' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:44:9: '@private'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:44:7: ( '@private' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:44:9: '@private'
             {
             match("@private"); 
 
@@ -514,8 +514,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:45:7: ( '@protected' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:45:9: '@protected'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:45:7: ( '@protected' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:45:9: '@protected'
             {
             match("@protected"); 
 
@@ -535,8 +535,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:46:7: ( '@end' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:46:9: '@end'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:46:7: ( '@end' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:46:9: '@end'
             {
             match("@end"); 
 
@@ -556,8 +556,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:47:7: ( '+' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:47:9: '+'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:47:7: ( '+' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:47:9: '+'
             {
             match('+'); 
 
@@ -576,8 +576,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:48:7: ( '-' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:48:9: '-'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:48:7: ( '-' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:48:9: '-'
             {
             match('-'); 
 
@@ -596,8 +596,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:49:7: ( '...' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:49:9: '...'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:49:7: ( '...' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:49:9: '...'
             {
             match("..."); 
 
@@ -617,8 +617,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:50:7: ( 'struct' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:50:9: 'struct'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:50:7: ( 'struct' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:50:9: 'struct'
             {
             match("struct"); 
 
@@ -638,8 +638,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:51:7: ( 'class' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:51:9: 'class'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:51:7: ( 'class' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:51:9: 'class'
             {
             match("class"); 
 
@@ -659,8 +659,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:52:7: ( 'union' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:52:9: 'union'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:52:7: ( 'union' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:52:9: 'union'
             {
             match("union"); 
 
@@ -680,8 +680,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:53:7: ( 'public' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:53:9: 'public'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:53:7: ( 'public' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:53:9: 'public'
             {
             match("public"); 
 
@@ -701,8 +701,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:54:7: ( 'private' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:54:9: 'private'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:54:7: ( 'private' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:54:9: 'private'
             {
             match("private"); 
 
@@ -722,8 +722,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:55:7: ( 'protected' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:55:9: 'protected'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:55:7: ( 'protected' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:55:9: 'protected'
             {
             match("protected"); 
 
@@ -743,8 +743,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:56:7: ( 'const' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:56:9: 'const'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:56:7: ( 'const' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:56:9: 'const'
             {
             match("const"); 
 
@@ -764,8 +764,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:57:7: ( '__const' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:57:9: '__const'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:57:7: ( '__const' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:57:9: '__const'
             {
             match("__const"); 
 
@@ -785,8 +785,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:58:7: ( '*' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:58:9: '*'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:58:7: ( '*' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:58:9: '*'
             {
             match('*'); 
 
@@ -805,8 +805,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:59:7: ( '&' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:59:9: '&'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:59:7: ( '&' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:59:9: '&'
             {
             match('&'); 
 
@@ -825,8 +825,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:60:7: ( '^' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:60:9: '^'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:60:7: ( '^' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:60:9: '^'
             {
             match('^'); 
 
@@ -845,8 +845,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:61:7: ( '[' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:61:9: '['
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:61:7: ( '[' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:61:9: '['
             {
             match('['); 
 
@@ -865,8 +865,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:62:7: ( ']' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:62:9: ']'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:62:7: ( ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:62:9: ']'
             {
             match(']'); 
 
@@ -885,8 +885,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:63:7: ( 'typedef' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:63:9: 'typedef'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:63:7: ( 'typedef' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:63:9: 'typedef'
             {
             match("typedef"); 
 
@@ -906,8 +906,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:64:7: ( 'typename' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:64:9: 'typename'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:64:7: ( 'typename' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:64:9: 'typename'
             {
             match("typename"); 
 
@@ -927,8 +927,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:65:7: ( 'template' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:65:9: 'template'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:65:7: ( 'template' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:65:9: 'template'
             {
             match("template"); 
 
@@ -948,8 +948,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:66:7: ( 'signed' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:66:9: 'signed'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:66:7: ( 'signed' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:66:9: 'signed'
             {
             match("signed"); 
 
@@ -969,8 +969,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:67:7: ( 'unsigned' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:67:9: 'unsigned'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:67:7: ( 'unsigned' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:67:9: 'unsigned'
             {
             match("unsigned"); 
 
@@ -990,8 +990,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:68:7: ( '__signed' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:68:9: '__signed'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:68:7: ( '__signed' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:68:9: '__signed'
             {
             match("__signed"); 
 
@@ -1011,8 +1011,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:69:7: ( '__unsigned' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:69:9: '__unsigned'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:69:7: ( '__unsigned' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:69:9: '__unsigned'
             {
             match("__unsigned"); 
 
@@ -1032,8 +1032,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:70:7: ( 'short' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:70:9: 'short'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:70:7: ( 'short' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:70:9: 'short'
             {
             match("short"); 
 
@@ -1053,8 +1053,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:71:7: ( 'int' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:71:9: 'int'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:71:7: ( 'int' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:71:9: 'int'
             {
             match("int"); 
 
@@ -1074,8 +1074,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:72:7: ( 'double' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:72:9: 'double'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:72:7: ( 'double' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:72:9: 'double'
             {
             match("double"); 
 
@@ -1095,8 +1095,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__69;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:73:7: ( 'float' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:73:9: 'float'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:73:7: ( 'float' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:73:9: 'float'
             {
             match("float"); 
 
@@ -1116,8 +1116,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__70;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:74:7: ( 'char' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:74:9: 'char'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:74:7: ( 'char' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:74:9: 'char'
             {
             match("char"); 
 
@@ -1137,8 +1137,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__71;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:75:7: ( 'void' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:75:9: 'void'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:75:7: ( 'void' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:75:9: 'void'
             {
             match("void"); 
 
@@ -1158,8 +1158,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__72;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:76:7: ( '__int8' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:76:9: '__int8'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:76:7: ( '__int8' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:76:9: '__int8'
             {
             match("__int8"); 
 
@@ -1179,8 +1179,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__73;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:77:7: ( '__int16' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:77:9: '__int16'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:77:7: ( '__int16' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:77:9: '__int16'
             {
             match("__int16"); 
 
@@ -1200,8 +1200,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__74;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:78:7: ( '__int32' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:78:9: '__int32'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:78:7: ( '__int32' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:78:9: '__int32'
             {
             match("__int32"); 
 
@@ -1221,8 +1221,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__75;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:79:7: ( '__int64' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:79:9: '__int64'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:79:7: ( '__int64' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:79:9: '__int64'
             {
             match("__int64"); 
 
@@ -1242,8 +1242,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__76;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:80:7: ( 'sizeof' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:80:9: 'sizeof'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:80:7: ( 'sizeof' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:80:9: 'sizeof'
             {
             match("sizeof"); 
 
@@ -1263,8 +1263,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__77;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:81:7: ( '!' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:81:9: '!'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:81:7: ( '!' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:81:9: '!'
             {
             match('!'); 
 
@@ -1283,8 +1283,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__78;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:82:7: ( '~' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:82:9: '~'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:82:7: ( '~' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:82:9: '~'
             {
             match('~'); 
 
@@ -1303,8 +1303,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__79;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:83:7: ( '/' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:83:9: '/'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:83:7: ( '/' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:83:9: '/'
             {
             match('/'); 
 
@@ -1323,8 +1323,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__80;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:84:7: ( '%' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:84:9: '%'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:84:7: ( '%' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:84:9: '%'
             {
             match('%'); 
 
@@ -1343,8 +1343,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__81;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:85:7: ( '<<' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:85:9: '<<'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:85:7: ( '<<' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:85:9: '<<'
             {
             match("<<"); 
 
@@ -1364,8 +1364,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__82;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:86:7: ( '>>>' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:86:9: '>>>'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:86:7: ( '>>>' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:86:9: '>>>'
             {
             match(">>>"); 
 
@@ -1385,8 +1385,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__83;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:87:7: ( '>>' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:87:9: '>>'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:87:7: ( '>>' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:87:9: '>>'
             {
             match(">>"); 
 
@@ -1406,8 +1406,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__84;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:88:7: ( '||' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:88:9: '||'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:88:7: ( '||' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:88:9: '||'
             {
             match("||"); 
 
@@ -1427,8 +1427,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__85;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:89:7: ( '|' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:89:9: '|'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:89:7: ( '|' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:89:9: '|'
             {
             match('|'); 
 
@@ -1447,8 +1447,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__86;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:90:7: ( '&&' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:90:9: '&&'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:90:7: ( '&&' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:90:9: '&&'
             {
             match("&&"); 
 
@@ -1468,8 +1468,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__87;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:91:7: ( '<=' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:91:9: '<='
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:91:7: ( '<=' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:91:9: '<='
             {
             match("<="); 
 
@@ -1489,8 +1489,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__88;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:92:7: ( '>=' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:92:9: '>='
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:92:7: ( '>=' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:92:9: '>='
             {
             match(">="); 
 
@@ -1510,8 +1510,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__89;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:93:7: ( '==' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:93:9: '=='
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:93:7: ( '==' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:93:9: '=='
             {
             match("=="); 
 
@@ -1531,8 +1531,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__90;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:94:7: ( '!=' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:94:9: '!='
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:94:7: ( '!=' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:94:9: '!='
             {
             match("!="); 
 
@@ -1552,8 +1552,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__91;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:95:7: ( '.' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:95:9: '.'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:95:7: ( '.' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:95:9: '.'
             {
             match('.'); 
 
@@ -1572,8 +1572,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__92;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:96:7: ( '?' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:96:9: '?'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:96:7: ( '?' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:96:9: '?'
             {
             match('?'); 
 
@@ -1592,8 +1592,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__93;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:97:7: ( 'return' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:97:9: 'return'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:97:7: ( 'return' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:97:9: 'return'
             {
             match("return"); 
 
@@ -1613,8 +1613,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__94;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:98:7: ( 'if' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:98:9: 'if'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:98:7: ( 'if' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:98:9: 'if'
             {
             match("if"); 
 
@@ -1634,8 +1634,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__95;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:99:7: ( 'else' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:99:9: 'else'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:99:7: ( 'else' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:99:9: 'else'
             {
             match("else"); 
 
@@ -1655,8 +1655,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__96;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:100:7: ( 'while' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:100:9: 'while'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:100:7: ( 'while' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:100:9: 'while'
             {
             match("while"); 
 
@@ -1676,8 +1676,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__97;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:101:7: ( 'do' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:101:9: 'do'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:101:7: ( 'do' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:101:9: 'do'
             {
             match("do"); 
 
@@ -1697,8 +1697,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__98;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:102:7: ( 'for' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:102:9: 'for'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:102:7: ( 'for' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:102:9: 'for'
             {
             match("for"); 
 
@@ -1718,8 +1718,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__99;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:103:7: ( 'switch' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:103:9: 'switch'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:103:7: ( 'switch' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:103:9: 'switch'
             {
             match("switch"); 
 
@@ -1739,8 +1739,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__100;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:104:8: ( 'case' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:104:10: 'case'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:104:8: ( 'case' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:104:10: 'case'
             {
             match("case"); 
 
@@ -1760,8 +1760,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = LONG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:809:6: ( 'long' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:809:8: 'long'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:816:6: ( 'long' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:816:8: 'long'
             {
             match("long"); 
 
@@ -1779,8 +1779,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "Letter"
     public final void mLetter() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:963:2: ( '$' | '_' | 'A' .. 'Z' | 'a' .. 'z' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:970:2: ( '$' | '_' | 'A' .. 'Z' | 'a' .. 'z' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -1805,11 +1805,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:970:2: ( Letter ( Letter | '0' .. '9' )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:970:4: Letter ( Letter | '0' .. '9' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:977:2: ( Letter ( Letter | '0' .. '9' )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:977:4: Letter ( Letter | '0' .. '9' )*
             {
             mLetter(); 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:971:3: ( Letter | '0' .. '9' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:978:3: ( Letter | '0' .. '9' )*
             loop1:
             do {
                 int alt1=2;
@@ -1822,7 +1822,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             	    {
             	    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
             	        input.consume();
@@ -1856,8 +1856,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "FloatingPointExponentSuffix"
     public final void mFloatingPointExponentSuffix() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:979:2: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:979:4: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:986:2: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:986:4: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -1868,7 +1868,7 @@ public class ObjCppLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:980:3: ( '+' | '-' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:987:3: ( '+' | '-' )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1877,7 +1877,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -1894,7 +1894,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:981:3: ( '0' .. '9' )+
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:988:3: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -1908,7 +1908,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:981:4: '0' .. '9'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:988:4: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1936,8 +1936,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "FloatingPointConstantSuffix"
     public final void mFloatingPointConstantSuffix() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:986:2: ( 'f' | 'F' | 'd' | 'D' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:993:2: ( 'f' | 'F' | 'd' | 'D' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
                 input.consume();
@@ -1960,7 +1960,7 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "CharEscape"
     public final void mCharEscape() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:994:2: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | OctalEscape )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1001:2: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | OctalEscape )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -1988,7 +1988,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:994:4: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1001:4: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -2004,7 +2004,7 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1005:3: OctalEscape
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1012:3: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -2021,11 +2021,11 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1010:2: ( '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1010:4: '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1017:2: ( '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1017:4: '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             {
             match('\\'); 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1010:9: ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1017:9: ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             int alt5=3;
             int LA5_0 = input.LA(1);
 
@@ -2061,24 +2061,24 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:4: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:4: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:4: ( '0' .. '3' )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:5: '0' .. '3'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:4: ( '0' .. '3' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:5: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:15: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:16: '0' .. '7'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:15: ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:16: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:26: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1011:27: '0' .. '7'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:26: ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1018:27: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2088,17 +2088,17 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1012:4: ( '0' .. '7' ) ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1019:4: ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1012:4: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1012:5: '0' .. '7'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1019:4: ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1019:5: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1012:15: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1012:16: '0' .. '7'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1019:15: ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1019:16: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2108,10 +2108,10 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1013:4: ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1020:4: ( '0' .. '7' )
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1013:4: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1013:5: '0' .. '7'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1020:4: ( '0' .. '7' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1020:5: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2135,8 +2135,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1019:2: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1019:4: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1026:2: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1026:4: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -2158,11 +2158,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = CHARACTER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1026:2: ( '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\'' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1026:4: '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\''
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1033:2: ( '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\'' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1033:4: '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\''
             {
             match('\''); 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1027:3: ( CharEscape | ~ ( '\\\\' | '\\'' ) )+
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1034:3: ( CharEscape | ~ ( '\\\\' | '\\'' ) )+
             int cnt6=0;
             loop6:
             do {
@@ -2179,14 +2179,14 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1028:4: CharEscape
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1035:4: CharEscape
             	    {
             	    mCharEscape(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1029:4: ~ ( '\\\\' | '\\'' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1036:4: ~ ( '\\\\' | '\\'' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2227,11 +2227,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1038:2: ( '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1038:4: '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1045:2: ( '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1045:4: '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1039:3: ( CharEscape | ~ ( '\\\\' | '\"' ) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1046:3: ( CharEscape | ~ ( '\\\\' | '\"' ) )*
             loop7:
             do {
                 int alt7=3;
@@ -2247,14 +2247,14 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1040:4: CharEscape
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1047:4: CharEscape
             	    {
             	    mCharEscape(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1041:4: ~ ( '\\\\' | '\"' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1048:4: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2289,8 +2289,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1052:2: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1059:2: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -2313,7 +2313,7 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "IntegerConstantSuffix"
     public final void mIntegerConstantSuffix() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1059:2: ( ( 'u' | 'U' ) | ( ( 'l' | 'L' ) ( 'l' | 'L' )? ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1066:2: ( ( 'u' | 'U' ) | ( ( 'l' | 'L' ) ( 'l' | 'L' )? ) )
             int alt9=2;
             int LA9_0 = input.LA(1);
 
@@ -2331,7 +2331,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt9) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1059:4: ( 'u' | 'U' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1066:4: ( 'u' | 'U' )
                     {
                     if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
                         input.consume();
@@ -2346,10 +2346,10 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1060:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1067:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1060:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1061:4: ( 'l' | 'L' ) ( 'l' | 'L' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1067:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1068:4: ( 'l' | 'L' ) ( 'l' | 'L' )?
                     {
                     if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                         input.consume();
@@ -2360,7 +2360,7 @@ public class ObjCppLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1062:4: ( 'l' | 'L' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1069:4: ( 'l' | 'L' )?
                     int alt8=2;
                     int LA8_0 = input.LA(1);
 
@@ -2369,7 +2369,7 @@ public class ObjCppLexer extends Lexer {
                     }
                     switch (alt8) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
                             {
                             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                                 input.consume();
@@ -2405,8 +2405,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = HEXADECIMAL_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1067:2: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1067:4: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1074:2: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1074:4: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )?
             {
             match('0'); 
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -2418,7 +2418,7 @@ public class ObjCppLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1068:3: ( HexDigit )+
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1075:3: ( HexDigit )+
             int cnt10=0;
             loop10:
             do {
@@ -2432,7 +2432,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt10) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1068:3: HexDigit
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1075:3: HexDigit
             	    {
             	    mHexDigit(); 
 
@@ -2448,7 +2448,7 @@ public class ObjCppLexer extends Lexer {
                 cnt10++;
             } while (true);
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1069:3: ( IntegerConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1076:3: ( IntegerConstantSuffix )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -2457,7 +2457,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1069:3: IntegerConstantSuffix
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1076:3: IntegerConstantSuffix
                     {
                     mIntegerConstantSuffix(); 
 
@@ -2482,10 +2482,10 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = DECIMAL_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1073:2: ( ( '-' | '+' )? ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1073:4: ( '-' | '+' )? ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1080:2: ( ( '-' | '+' )? ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1080:4: ( '-' | '+' )? ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )?
             {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1073:4: ( '-' | '+' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1080:4: ( '-' | '+' )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -2494,7 +2494,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt12) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2511,7 +2511,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1074:3: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1081:3: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -2529,17 +2529,17 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt14) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1074:4: '0'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1081:4: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1074:10: '1' .. '9' ( '0' .. '9' )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1081:10: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1074:19: ( '0' .. '9' )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1081:19: ( '0' .. '9' )*
                     loop13:
                     do {
                         int alt13=2;
@@ -2552,7 +2552,7 @@ public class ObjCppLexer extends Lexer {
 
                         switch (alt13) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1074:19: '0' .. '9'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1081:19: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2570,7 +2570,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1075:3: ( IntegerConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1082:3: ( IntegerConstantSuffix )?
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -2579,7 +2579,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt15) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1075:3: IntegerConstantSuffix
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1082:3: IntegerConstantSuffix
                     {
                     mIntegerConstantSuffix(); 
 
@@ -2604,11 +2604,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = OCTAL_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1079:2: ( '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1079:5: '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1086:2: ( '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1086:5: '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )?
             {
             match('0'); 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1080:3: ( '0' .. '7' )+
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1087:3: ( '0' .. '7' )+
             int cnt16=0;
             loop16:
             do {
@@ -2622,7 +2622,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1080:4: '0' .. '7'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1087:4: '0' .. '7'
             	    {
             	    matchRange('0','7'); 
 
@@ -2638,7 +2638,7 @@ public class ObjCppLexer extends Lexer {
                 cnt16++;
             } while (true);
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1081:3: ( IntegerConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1088:3: ( IntegerConstantSuffix )?
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -2647,7 +2647,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt17) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1081:3: IntegerConstantSuffix
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1088:3: IntegerConstantSuffix
                     {
                     mIntegerConstantSuffix(); 
 
@@ -2672,10 +2672,10 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = FLOAT_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1085:2: ( ( '-' | '+' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1085:4: ( '-' | '+' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1092:2: ( ( '-' | '+' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1092:4: ( '-' | '+' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )?
             {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1085:4: ( '-' | '+' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1092:4: ( '-' | '+' )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -2684,7 +2684,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt18) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2701,7 +2701,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1086:3: ( '0' .. '9' )+
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1093:3: ( '0' .. '9' )+
             int cnt19=0;
             loop19:
             do {
@@ -2715,7 +2715,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt19) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1086:4: '0' .. '9'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1093:4: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -2731,7 +2731,7 @@ public class ObjCppLexer extends Lexer {
                 cnt19++;
             } while (true);
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1087:3: ( '.' ( '0' .. '9' )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1094:3: ( '.' ( '0' .. '9' )* )?
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -2740,10 +2740,10 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt21) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1088:4: '.' ( '0' .. '9' )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1095:4: '.' ( '0' .. '9' )*
                     {
                     match('.'); 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1089:4: ( '0' .. '9' )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1096:4: ( '0' .. '9' )*
                     loop20:
                     do {
                         int alt20=2;
@@ -2756,7 +2756,7 @@ public class ObjCppLexer extends Lexer {
 
                         switch (alt20) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1089:5: '0' .. '9'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1096:5: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2774,7 +2774,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1091:3: ( FloatingPointExponentSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1098:3: ( FloatingPointExponentSuffix )?
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2783,7 +2783,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt22) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1091:3: FloatingPointExponentSuffix
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1098:3: FloatingPointExponentSuffix
                     {
                     mFloatingPointExponentSuffix(); 
 
@@ -2792,7 +2792,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1092:3: ( FloatingPointConstantSuffix )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1099:3: ( FloatingPointConstantSuffix )?
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -2801,7 +2801,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt23) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1092:3: FloatingPointConstantSuffix
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1099:3: FloatingPointConstantSuffix
                     {
                     mFloatingPointConstantSuffix(); 
 
@@ -2826,8 +2826,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1096:2: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1096:4: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1103:2: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1103:4: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -2857,15 +2857,15 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1108:2: ( ( '/*' ( options {greedy=false; } : . )* '*/' ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1108:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:2: ( ( '/*' ( options {greedy=false; } : . )* '*/' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
             {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1108:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1109:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1116:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1110:4: ( options {greedy=false; } : . )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1117:4: ( options {greedy=false; } : . )*
             loop24:
             do {
                 int alt24=2;
@@ -2890,7 +2890,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt24) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1110:32: .
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1117:32: .
             	    {
             	    matchAny(); 
 
@@ -2926,15 +2926,15 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1118:2: ( ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1118:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1125:2: ( ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1125:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
             {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1118:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1119:4: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1125:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1126:4: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1120:4: (~ ( '\\n' | '\\r' ) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1127:4: (~ ( '\\n' | '\\r' ) )*
             loop25:
             do {
                 int alt25=2;
@@ -2947,7 +2947,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt25) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1120:4: ~ ( '\\n' | '\\r' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1127:4: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2967,7 +2967,7 @@ public class ObjCppLexer extends Lexer {
                 }
             } while (true);
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1121:4: ( '\\r' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1128:4: ( '\\r' )?
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -2976,7 +2976,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt26) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1121:4: '\\r'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1128:4: '\\r'
                     {
                     match('\r'); 
 
@@ -3004,628 +3004,628 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR end "LINE_COMMENT"
 
     public void mTokens() throws RecognitionException {
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:8: ( T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | LONG | IDENTIFIER | CHARACTER | STRING | HEXADECIMAL_NUMBER | DECIMAL_NUMBER | OCTAL_NUMBER | FLOAT_NUMBER | WS | COMMENT | LINE_COMMENT )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:8: ( T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | LONG | IDENTIFIER | CHARACTER | STRING | HEXADECIMAL_NUMBER | DECIMAL_NUMBER | OCTAL_NUMBER | FLOAT_NUMBER | WS | COMMENT | LINE_COMMENT )
         int alt27=89;
         alt27 = dfa27.predict(input);
         switch (alt27) {
             case 1 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:10: T__23
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:10: T__23
                 {
                 mT__23(); 
 
                 }
                 break;
             case 2 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:16: T__24
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:16: T__24
                 {
                 mT__24(); 
 
                 }
                 break;
             case 3 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:22: T__25
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:22: T__25
                 {
                 mT__25(); 
 
                 }
                 break;
             case 4 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:28: T__26
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:28: T__26
                 {
                 mT__26(); 
 
                 }
                 break;
             case 5 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:34: T__27
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:34: T__27
                 {
                 mT__27(); 
 
                 }
                 break;
             case 6 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:40: T__28
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:40: T__28
                 {
                 mT__28(); 
 
                 }
                 break;
             case 7 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:46: T__29
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:46: T__29
                 {
                 mT__29(); 
 
                 }
                 break;
             case 8 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:52: T__30
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:52: T__30
                 {
                 mT__30(); 
 
                 }
                 break;
             case 9 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:58: T__31
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:58: T__31
                 {
                 mT__31(); 
 
                 }
                 break;
             case 10 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:64: T__32
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:64: T__32
                 {
                 mT__32(); 
 
                 }
                 break;
             case 11 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:70: T__33
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:70: T__33
                 {
                 mT__33(); 
 
                 }
                 break;
             case 12 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:76: T__34
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:76: T__34
                 {
                 mT__34(); 
 
                 }
                 break;
             case 13 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:82: T__35
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:82: T__35
                 {
                 mT__35(); 
 
                 }
                 break;
             case 14 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:88: T__36
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:88: T__36
                 {
                 mT__36(); 
 
                 }
                 break;
             case 15 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:94: T__37
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:94: T__37
                 {
                 mT__37(); 
 
                 }
                 break;
             case 16 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:100: T__38
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:100: T__38
                 {
                 mT__38(); 
 
                 }
                 break;
             case 17 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:106: T__39
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:106: T__39
                 {
                 mT__39(); 
 
                 }
                 break;
             case 18 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:112: T__40
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:112: T__40
                 {
                 mT__40(); 
 
                 }
                 break;
             case 19 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:118: T__41
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:118: T__41
                 {
                 mT__41(); 
 
                 }
                 break;
             case 20 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:124: T__42
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:124: T__42
                 {
                 mT__42(); 
 
                 }
                 break;
             case 21 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:130: T__43
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:130: T__43
                 {
                 mT__43(); 
 
                 }
                 break;
             case 22 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:136: T__44
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:136: T__44
                 {
                 mT__44(); 
 
                 }
                 break;
             case 23 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:142: T__45
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:142: T__45
                 {
                 mT__45(); 
 
                 }
                 break;
             case 24 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:148: T__46
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:148: T__46
                 {
                 mT__46(); 
 
                 }
                 break;
             case 25 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:154: T__47
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:154: T__47
                 {
                 mT__47(); 
 
                 }
                 break;
             case 26 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:160: T__48
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:160: T__48
                 {
                 mT__48(); 
 
                 }
                 break;
             case 27 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:166: T__49
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:166: T__49
                 {
                 mT__49(); 
 
                 }
                 break;
             case 28 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:172: T__50
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:172: T__50
                 {
                 mT__50(); 
 
                 }
                 break;
             case 29 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:178: T__51
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:178: T__51
                 {
                 mT__51(); 
 
                 }
                 break;
             case 30 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:184: T__52
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:184: T__52
                 {
                 mT__52(); 
 
                 }
                 break;
             case 31 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:190: T__53
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:190: T__53
                 {
                 mT__53(); 
 
                 }
                 break;
             case 32 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:196: T__54
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:196: T__54
                 {
                 mT__54(); 
 
                 }
                 break;
             case 33 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:202: T__55
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:202: T__55
                 {
                 mT__55(); 
 
                 }
                 break;
             case 34 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:208: T__56
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:208: T__56
                 {
                 mT__56(); 
 
                 }
                 break;
             case 35 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:214: T__57
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:214: T__57
                 {
                 mT__57(); 
 
                 }
                 break;
             case 36 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:220: T__58
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:220: T__58
                 {
                 mT__58(); 
 
                 }
                 break;
             case 37 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:226: T__59
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:226: T__59
                 {
                 mT__59(); 
 
                 }
                 break;
             case 38 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:232: T__60
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:232: T__60
                 {
                 mT__60(); 
 
                 }
                 break;
             case 39 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:238: T__61
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:238: T__61
                 {
                 mT__61(); 
 
                 }
                 break;
             case 40 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:244: T__62
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:244: T__62
                 {
                 mT__62(); 
 
                 }
                 break;
             case 41 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:250: T__63
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:250: T__63
                 {
                 mT__63(); 
 
                 }
                 break;
             case 42 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:256: T__64
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:256: T__64
                 {
                 mT__64(); 
 
                 }
                 break;
             case 43 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:262: T__65
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:262: T__65
                 {
                 mT__65(); 
 
                 }
                 break;
             case 44 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:268: T__66
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:268: T__66
                 {
                 mT__66(); 
 
                 }
                 break;
             case 45 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:274: T__67
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:274: T__67
                 {
                 mT__67(); 
 
                 }
                 break;
             case 46 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:280: T__68
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:280: T__68
                 {
                 mT__68(); 
 
                 }
                 break;
             case 47 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:286: T__69
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:286: T__69
                 {
                 mT__69(); 
 
                 }
                 break;
             case 48 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:292: T__70
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:292: T__70
                 {
                 mT__70(); 
 
                 }
                 break;
             case 49 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:298: T__71
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:298: T__71
                 {
                 mT__71(); 
 
                 }
                 break;
             case 50 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:304: T__72
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:304: T__72
                 {
                 mT__72(); 
 
                 }
                 break;
             case 51 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:310: T__73
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:310: T__73
                 {
                 mT__73(); 
 
                 }
                 break;
             case 52 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:316: T__74
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:316: T__74
                 {
                 mT__74(); 
 
                 }
                 break;
             case 53 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:322: T__75
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:322: T__75
                 {
                 mT__75(); 
 
                 }
                 break;
             case 54 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:328: T__76
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:328: T__76
                 {
                 mT__76(); 
 
                 }
                 break;
             case 55 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:334: T__77
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:334: T__77
                 {
                 mT__77(); 
 
                 }
                 break;
             case 56 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:340: T__78
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:340: T__78
                 {
                 mT__78(); 
 
                 }
                 break;
             case 57 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:346: T__79
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:346: T__79
                 {
                 mT__79(); 
 
                 }
                 break;
             case 58 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:352: T__80
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:352: T__80
                 {
                 mT__80(); 
 
                 }
                 break;
             case 59 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:358: T__81
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:358: T__81
                 {
                 mT__81(); 
 
                 }
                 break;
             case 60 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:364: T__82
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:364: T__82
                 {
                 mT__82(); 
 
                 }
                 break;
             case 61 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:370: T__83
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:370: T__83
                 {
                 mT__83(); 
 
                 }
                 break;
             case 62 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:376: T__84
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:376: T__84
                 {
                 mT__84(); 
 
                 }
                 break;
             case 63 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:382: T__85
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:382: T__85
                 {
                 mT__85(); 
 
                 }
                 break;
             case 64 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:388: T__86
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:388: T__86
                 {
                 mT__86(); 
 
                 }
                 break;
             case 65 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:394: T__87
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:394: T__87
                 {
                 mT__87(); 
 
                 }
                 break;
             case 66 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:400: T__88
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:400: T__88
                 {
                 mT__88(); 
 
                 }
                 break;
             case 67 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:406: T__89
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:406: T__89
                 {
                 mT__89(); 
 
                 }
                 break;
             case 68 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:412: T__90
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:412: T__90
                 {
                 mT__90(); 
 
                 }
                 break;
             case 69 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:418: T__91
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:418: T__91
                 {
                 mT__91(); 
 
                 }
                 break;
             case 70 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:424: T__92
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:424: T__92
                 {
                 mT__92(); 
 
                 }
                 break;
             case 71 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:430: T__93
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:430: T__93
                 {
                 mT__93(); 
 
                 }
                 break;
             case 72 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:436: T__94
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:436: T__94
                 {
                 mT__94(); 
 
                 }
                 break;
             case 73 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:442: T__95
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:442: T__95
                 {
                 mT__95(); 
 
                 }
                 break;
             case 74 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:448: T__96
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:448: T__96
                 {
                 mT__96(); 
 
                 }
                 break;
             case 75 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:454: T__97
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:454: T__97
                 {
                 mT__97(); 
 
                 }
                 break;
             case 76 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:460: T__98
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:460: T__98
                 {
                 mT__98(); 
 
                 }
                 break;
             case 77 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:466: T__99
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:466: T__99
                 {
                 mT__99(); 
 
                 }
                 break;
             case 78 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:472: T__100
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:472: T__100
                 {
                 mT__100(); 
 
                 }
                 break;
             case 79 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:479: LONG
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:479: LONG
                 {
                 mLONG(); 
 
                 }
                 break;
             case 80 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:484: IDENTIFIER
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:484: IDENTIFIER
                 {
                 mIDENTIFIER(); 
 
                 }
                 break;
             case 81 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:495: CHARACTER
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:495: CHARACTER
                 {
                 mCHARACTER(); 
 
                 }
                 break;
             case 82 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:505: STRING
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:505: STRING
                 {
                 mSTRING(); 
 
                 }
                 break;
             case 83 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:512: HEXADECIMAL_NUMBER
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:512: HEXADECIMAL_NUMBER
                 {
                 mHEXADECIMAL_NUMBER(); 
 
                 }
                 break;
             case 84 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:531: DECIMAL_NUMBER
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:531: DECIMAL_NUMBER
                 {
                 mDECIMAL_NUMBER(); 
 
                 }
                 break;
             case 85 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:546: OCTAL_NUMBER
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:546: OCTAL_NUMBER
                 {
                 mOCTAL_NUMBER(); 
 
                 }
                 break;
             case 86 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:559: FLOAT_NUMBER
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:559: FLOAT_NUMBER
                 {
                 mFLOAT_NUMBER(); 
 
                 }
                 break;
             case 87 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:572: WS
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:572: WS
                 {
                 mWS(); 
 
                 }
                 break;
             case 88 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:575: COMMENT
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:575: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
             case 89 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:1:583: LINE_COMMENT
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:583: LINE_COMMENT
                 {
                 mLINE_COMMENT(); 
 

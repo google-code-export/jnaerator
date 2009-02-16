@@ -960,7 +960,7 @@ constant returns [Constant constant]
 		OCTAL_NUMBER { $constant = Constant.parseOctal($OCTAL_NUMBER.text); } |
 		CHARACTER { $constant =  Constant.parseCharOrStringInteger($CHARACTER.text); } |
 		FLOAT_NUMBER { $constant = Constant.parseFloat($FLOAT_NUMBER.text); } |
-		CHARACTER { $constant =  Constant.parseChar($CHARACTER.text); } |
+		//CHARACTER { $constant =  Constant.parseChar($CHARACTER.text); } |
 		STRING { $constant =  Constant.parseString($STRING.text); }
 	;
 	

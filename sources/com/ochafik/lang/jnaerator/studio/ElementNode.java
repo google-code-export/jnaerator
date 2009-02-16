@@ -98,4 +98,8 @@ class ElementNode extends AbstractNode {
 		
 		return s;
 	}
+
+	public Element getElement() {
+		return element;
+	}
 }

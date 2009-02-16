@@ -60,12 +60,12 @@ public class PreprocessorUtils {
 		String sourceContent = ReadText.readText(new CppReader(preProcessor));
 		
 		if (config.preprocessorConfig.WORKAROUND_PP_BUGS) {
-			WriteText.writeText(sourceContent, new File("_jnaerator_debug.raw.c"));
+			//WriteText.writeText(sourceContent, new File("_jnaerator_debug.raw.c"));
 			
 			sourceContent = PreprocessorUtils.removePreprocessorDirectives(sourceContent);
-			File cleanedFile = new File("_jnaerator_debug.clean.cpp");
+			//File cleanedFile = new File("_jnaerator_debug.clean.cpp");
 			
-			WriteText.writeText(StringUtils.implode(preProcessor.getMacros().entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
+			//WriteText.writeText(StringUtils.implode(preProcessor.getMacros().entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
 			
 			sourceContent = "\n" + sourceContent;
 			sourceContent = RegexUtils.regexReplace(Pattern.compile("(?s)\\n#line\\s+(\\d+)\\s+\"([^\"]+)\""), sourceContent, new Adapter<String[], String>() {
@@ -76,13 +76,14 @@ public class PreprocessorUtils {
 				
 			});
 			sourceContent = sourceContent.replaceAll("(?s)\n#line", "\n//##line");
-			WriteText.writeText(sourceContent, cleanedFile);
+			//WriteText.writeText(sourceContent, cleanedFile);
 			
 			Preprocessor preProcessor2 = PreprocessorUtils.createPreProcessor(new JNAeratorConfig.PreprocessorConfig());
 			preProcessor2.getMacros().putAll(preProcessor.getMacros());
 			//File temp = File.createTempFile("temp", ".h");
 			
-			preProcessor2.addInput(new FileLexerSource(cleanedFile));
+			//preProcessor2.addInput(new FileLexerSource(cleanedFile));
+			preProcessor2.addInput(new StringLexerSource(sourceContent));
 			sourceContent = ReadText.readText(new CppReader(preProcessor2));
 			sourceContent = "\n" + sourceContent;
 			sourceContent = sourceContent.replaceAll("(?s)\n#line.*?\n", "\n");
