@@ -102,14 +102,14 @@ include com/ochafik/lang/grammar/objcpp/ObjCpp.g
 
 public class JNAerator {
 	
-	static Pattern definePattern = Pattern.compile("#\\s*define\\s+(\\w+)\\s+(.*)");
-	static boolean fullFilePathInComments = true;
+	static final Pattern definePattern = Pattern.compile("#\\s*define\\s+(\\w+)\\s+(.*)");
+	static final boolean fullFilePathInComments = true;
 	
 	final JNAeratorConfig config;
 	Result result = new Result(this);
 	SourceFiles sourceFiles = new SourceFiles();
 	
-	static Class<?>[] includeClassesHack = new Class<?>[] {
+	static final Class<?>[] includeClassesHack = new Class<?>[] {
 		ObjCppParsingTests.class,
 		ObjCppElementsTests.class
 	};
@@ -125,14 +125,14 @@ public class JNAerator {
 	private static void displayHelp() {
 		System.out.println("Credits:   JNAerator is Copyright (c) 2008-2009 Olivier Chafik");
 		System.out.println("           Includes Anarres JCPP (Apache 2.0 license), Copyright (c) 2007-2008, Shevek");
-		System.out.println("           Includes Native Access (JNA) (LGPL license), Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others");
+		System.out.println("           Includes Java Native Access (JNA) (LGPL license), Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others");
 		//System.out.println("           Includes the library GNU Trove (LGPL 2.1 license)");
 		System.out.println("           Includes ANTLR's runtime (BSD license), Copyright (c) 2003-2008, Terence Parr");
 		System.out.println("           Licensing & Copyright details : http://code.google.com/p/jnaerator/wiki/CreditsAndLicense");
 		System.out.println("   Syntax: " + JNAerator.class.getSimpleName() + " options (-framework framework)* files-or-directories*");
 		System.out.println("  Options:");
 		System.out.println("\t-Iinclude-path");
-		System.out.println("\t\tAdd inclusion path.");
+		System.out.println("\t\tAdd include path.");
 		System.out.println("\t-v");
 		System.out.println("\t\tVerbose mode.");
 		System.out.println("\t-Dsymbol[=value]");
@@ -152,7 +152,6 @@ public class JNAerator {
 		System.out.println("\t\tBy default: " + JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 	}
 	public static void main(String[] args) {
-		//File file = new File(args.length == 0 ? "/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSArray.h" : args[0]);
 		if (args.length == 0) {
 			if (new File("/Users/ochafik").exists()) {
 				args = new String[] {

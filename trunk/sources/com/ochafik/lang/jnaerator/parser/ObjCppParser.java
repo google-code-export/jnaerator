@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g 2009-02-15 18:20:47
+// $ANTLR 3.1.1 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-02-16 22:17:25
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -19,7 +19,7 @@
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	package com.ochafik.lang.jnaerator.parser;
+package com.ochafik.lang.jnaerator.parser;
 import java.util.Arrays;
 import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
@@ -37,6 +37,12 @@ import java.util.HashMap;
 
 import org.antlr.runtime.tree.*;
 
+/**
+	This grammar is by no mean complete.
+	It is able to parse preprocessed C & Objective-C files and can tolerate some amount of C++. 
+	It lacks serious expression support, which is being worked on.
+	Complex variable declarations may not be supported, such as complex signatures of functions that return function pointers...
+*/
 public class ObjCppParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "DECIMAL_NUMBER", "STRING", "IDENTIFIER", "LONG", "HEXADECIMAL_NUMBER", "OCTAL_NUMBER", "CHARACTER", "FLOAT_NUMBER", "Letter", "FloatingPointExponentSuffix", "FloatingPointConstantSuffix", "OctalEscape", "CharEscape", "HexDigit", "UnicodeEscape", "IntegerConstantSuffix", "WS", "COMMENT", "LINE_COMMENT", "'#line'", "'{'", "'}'", "'namespace'", "'@class'", "','", "';'", "'='", "'enum'", "'@protocol'", "'@interface'", "':'", "'('", "')'", "'<'", "'>'", "'@public'", "'@private'", "'@protected'", "'@end'", "'+'", "'-'", "'...'", "'struct'", "'class'", "'union'", "'public'", "'private'", "'protected'", "'const'", "'__const'", "'*'", "'&'", "'^'", "'['", "']'", "'typedef'", "'typename'", "'template'", "'signed'", "'unsigned'", "'__signed'", "'__unsigned'", "'short'", "'int'", "'double'", "'float'", "'char'", "'void'", "'__int8'", "'__int16'", "'__int32'", "'__int64'", "'sizeof'", "'!'", "'~'", "'/'", "'%'", "'<<'", "'>>>'", "'>>'", "'||'", "'|'", "'&&'", "'<='", "'>='", "'=='", "'!='", "'.'", "'?'", "'return'", "'if'", "'else'", "'while'", "'do'", "'for'", "'switch'", "'case'"
@@ -162,7 +168,7 @@ public class ObjCppParser extends Parser {
     }
 
     public String[] getTokenNames() { return ObjCppParser.tokenNames; }
-    public String getGrammarFileName() { return "/Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g"; }
+    public String getGrammarFileName() { return "/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g"; }
 
 
     	String lastComment;
@@ -239,7 +245,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "lineDirective"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:149:1: lineDirective : ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:156:1: lineDirective : ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? ;
     public final ObjCppParser.lineDirective_return lineDirective() throws RecognitionException {
         ObjCppParser.lineDirective_return retval = new ObjCppParser.lineDirective_return();
         retval.start = input.LT(1);
@@ -257,17 +263,17 @@ public class ObjCppParser extends Parser {
         Object depth_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:150:2: (ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:150:4: ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:157:2: (ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:157:4: ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )?
             {
             root_0 = (Object)adaptor.nil();
 
-            ln=(Token)match(input,23,FOLLOW_23_in_lineDirective62); if (state.failed) return retval;
+            ln=(Token)match(input,23,FOLLOW_23_in_lineDirective65); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             ln_tree = (Object)adaptor.create(ln);
             adaptor.addChild(root_0, ln_tree);
             }
-            line=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_lineDirective66); if (state.failed) return retval;
+            line=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_lineDirective69); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             line_tree = (Object)adaptor.create(line);
             adaptor.addChild(root_0, line_tree);
@@ -282,14 +288,14 @@ public class ObjCppParser extends Parser {
               			}
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:158:3: (unescapedString= STRING )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:165:3: (unescapedString= STRING )?
             int alt1=2;
             alt1 = dfa1.predict(input);
             switch (alt1) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:159:4: unescapedString= STRING
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:166:4: unescapedString= STRING
                     {
-                    unescapedString=(Token)match(input,STRING,FOLLOW_STRING_in_lineDirective79); if (state.failed) return retval;
+                    unescapedString=(Token)match(input,STRING,FOLLOW_STRING_in_lineDirective82); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     unescapedString_tree = (Object)adaptor.create(unescapedString);
                     adaptor.addChild(root_0, unescapedString_tree);
@@ -311,14 +317,14 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:169:8: (depth= DECIMAL_NUMBER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:176:8: (depth= DECIMAL_NUMBER )?
             int alt2=2;
             alt2 = dfa2.predict(input);
             switch (alt2) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: depth= DECIMAL_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: depth= DECIMAL_NUMBER
                     {
-                    depth=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_lineDirective94); if (state.failed) return retval;
+                    depth=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_lineDirective97); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     depth_tree = (Object)adaptor.create(depth);
                     adaptor.addChild(root_0, depth_tree);
@@ -359,7 +365,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "sourceFile"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:172:1: sourceFile returns [SourceFile sourceFile] : ( declaration | lineDirective )* EOF ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:179:1: sourceFile returns [SourceFile sourceFile] : ( declaration | lineDirective )* EOF ;
     public final ObjCppParser.sourceFile_return sourceFile() throws RecognitionException {
         ObjCppParser.sourceFile_return retval = new ObjCppParser.sourceFile_return();
         retval.start = input.LT(1);
@@ -375,24 +381,24 @@ public class ObjCppParser extends Parser {
         Object EOF3_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:173:2: ( ( declaration | lineDirective )* EOF )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:174:3: ( declaration | lineDirective )* EOF
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:180:2: ( ( declaration | lineDirective )* EOF )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:181:3: ( declaration | lineDirective )* EOF
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.sourceFile = mark(new SourceFile(), getLine()); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:175:3: ( declaration | lineDirective )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:182:3: ( declaration | lineDirective )*
             loop3:
             do {
                 int alt3=3;
                 alt3 = dfa3.predict(input);
                 switch (alt3) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:176:4: declaration
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:183:4: declaration
             	    {
-            	    pushFollow(FOLLOW_declaration_in_sourceFile123);
+            	    pushFollow(FOLLOW_declaration_in_sourceFile126);
             	    declaration1=declaration();
 
             	    state._fsp--;
@@ -408,9 +414,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:180:4: lineDirective
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:187:4: lineDirective
             	    {
-            	    pushFollow(FOLLOW_lineDirective_in_sourceFile132);
+            	    pushFollow(FOLLOW_lineDirective_in_sourceFile135);
             	    lineDirective2=lineDirective();
 
             	    state._fsp--;
@@ -425,7 +431,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            EOF3=(Token)match(input,EOF,FOLLOW_EOF_in_sourceFile142); if (state.failed) return retval;
+            EOF3=(Token)match(input,EOF,FOLLOW_EOF_in_sourceFile145); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             EOF3_tree = (Object)adaptor.create(EOF3);
             adaptor.addChild(root_0, EOF3_tree);
@@ -460,7 +466,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "externDeclarations"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:185:1: externDeclarations returns [List<Declaration> declarations] : IDENTIFIER {...}? STRING '{' (ed= declaration )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:192:1: externDeclarations returns [List<Declaration> declarations] : IDENTIFIER {...}? STRING '{' (ed= declaration )* '}' ;
     public final ObjCppParser.externDeclarations_return externDeclarations() throws RecognitionException {
         ObjCppParser.externDeclarations_return retval = new ObjCppParser.externDeclarations_return();
         retval.start = input.LT(1);
@@ -480,15 +486,15 @@ public class ObjCppParser extends Parser {
         Object char_literal7_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:186:2: ( IDENTIFIER {...}? STRING '{' (ed= declaration )* '}' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:186:4: IDENTIFIER {...}? STRING '{' (ed= declaration )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:193:2: ( IDENTIFIER {...}? STRING '{' (ed= declaration )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:193:4: IDENTIFIER {...}? STRING '{' (ed= declaration )* '}'
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.declarations = new ArrayList<Declaration>(); 
             }
-            IDENTIFIER4=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_externDeclarations161); if (state.failed) return retval;
+            IDENTIFIER4=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_externDeclarations164); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             IDENTIFIER4_tree = (Object)adaptor.create(IDENTIFIER4);
             adaptor.addChild(root_0, IDENTIFIER4_tree);
@@ -497,26 +503,26 @@ public class ObjCppParser extends Parser {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "externDeclarations", " $IDENTIFIER.text.equals(\"extern\") ");
             }
-            STRING5=(Token)match(input,STRING,FOLLOW_STRING_in_externDeclarations168); if (state.failed) return retval;
+            STRING5=(Token)match(input,STRING,FOLLOW_STRING_in_externDeclarations171); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             STRING5_tree = (Object)adaptor.create(STRING5);
             adaptor.addChild(root_0, STRING5_tree);
             }
-            char_literal6=(Token)match(input,24,FOLLOW_24_in_externDeclarations173); if (state.failed) return retval;
+            char_literal6=(Token)match(input,24,FOLLOW_24_in_externDeclarations176); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal6_tree = (Object)adaptor.create(char_literal6);
             adaptor.addChild(root_0, char_literal6_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:190:4: (ed= declaration )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:197:4: (ed= declaration )*
             loop4:
             do {
                 int alt4=2;
                 alt4 = dfa4.predict(input);
                 switch (alt4) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:191:5: ed= declaration
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:198:5: ed= declaration
             	    {
-            	    pushFollow(FOLLOW_declaration_in_externDeclarations187);
+            	    pushFollow(FOLLOW_declaration_in_externDeclarations190);
             	    ed=declaration();
 
             	    state._fsp--;
@@ -536,7 +542,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal7=(Token)match(input,25,FOLLOW_25_in_externDeclarations200); if (state.failed) return retval;
+            char_literal7=(Token)match(input,25,FOLLOW_25_in_externDeclarations203); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal7_tree = (Object)adaptor.create(char_literal7);
             adaptor.addChild(root_0, char_literal7_tree);
@@ -574,7 +580,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "declaration"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:198:1: declaration returns [List<Declaration> declarations, List<Declaration.Modifier> modifiers, String preComment, int startTokenIndex] : ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:205:1: declaration returns [List<Declaration> declarations, List<Declaration.Modifier> modifiers, String preComment, int startTokenIndex] : ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) ;
     public final ObjCppParser.declaration_return declaration() throws RecognitionException {
         ObjCppParser.declaration_return retval = new ObjCppParser.declaration_return();
         retval.start = input.LT(1);
@@ -612,8 +618,8 @@ public class ObjCppParser extends Parser {
         Object char_literal19_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:199:2: ( ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:200:3: ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:206:2: ( ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:207:3: ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
             {
             root_0 = (Object)adaptor.nil();
 
@@ -624,14 +630,14 @@ public class ObjCppParser extends Parser {
               		  retval.preComment = getCommentBefore(retval.startTokenIndex);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:205:3: ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:212:3: ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
             int alt7=2;
             alt7 = dfa7.predict(input);
             switch (alt7) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:206:4: externDeclarations
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:213:4: externDeclarations
                     {
-                    pushFollow(FOLLOW_externDeclarations_in_declaration228);
+                    pushFollow(FOLLOW_externDeclarations_in_declaration231);
                     externDeclarations8=externDeclarations();
 
                     state._fsp--;
@@ -646,9 +652,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:209:4: exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:216:4: exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
                     {
-                    pushFollow(FOLLOW_exportationModifiers_in_declaration237);
+                    pushFollow(FOLLOW_exportationModifiers_in_declaration240);
                     exportationModifiers9=exportationModifiers();
 
                     state._fsp--;
@@ -659,14 +665,14 @@ public class ObjCppParser extends Parser {
                       				retval.modifiers.addAll((exportationModifiers9!=null?exportationModifiers9.modifiers:null)); 
                       			
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:212:4: ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:219:4: ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
                     int alt6=8;
                     alt6 = dfa6.predict(input);
                     switch (alt6) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:214:5: functionDeclaration
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:221:5: functionDeclaration
                             {
-                            pushFollow(FOLLOW_functionDeclaration_in_declaration255);
+                            pushFollow(FOLLOW_functionDeclaration_in_declaration258);
                             functionDeclaration10=functionDeclaration();
 
                             state._fsp--;
@@ -681,9 +687,9 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:217:5: varDecl
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:224:5: varDecl
                             {
-                            pushFollow(FOLLOW_varDecl_in_declaration265);
+                            pushFollow(FOLLOW_varDecl_in_declaration268);
                             varDecl11=varDecl();
 
                             state._fsp--;
@@ -698,9 +704,9 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 3 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:220:5: objCClassDef
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:227:5: objCClassDef
                             {
-                            pushFollow(FOLLOW_objCClassDef_in_declaration275);
+                            pushFollow(FOLLOW_objCClassDef_in_declaration278);
                             objCClassDef12=objCClassDef();
 
                             state._fsp--;
@@ -715,9 +721,9 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 4 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:223:5: typeDef
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:230:5: typeDef
                             {
-                            pushFollow(FOLLOW_typeDef_in_declaration285);
+                            pushFollow(FOLLOW_typeDef_in_declaration288);
                             typeDef13=typeDef();
 
                             state._fsp--;
@@ -732,9 +738,9 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 5 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:226:5: forwardClassDecl
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:233:5: forwardClassDecl
                             {
-                            pushFollow(FOLLOW_forwardClassDecl_in_declaration295);
+                            pushFollow(FOLLOW_forwardClassDecl_in_declaration298);
                             forwardClassDecl14=forwardClassDecl();
 
                             state._fsp--;
@@ -749,9 +755,9 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 6 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:229:5: enumDecl
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:236:5: enumDecl
                             {
-                            pushFollow(FOLLOW_enumDecl_in_declaration305);
+                            pushFollow(FOLLOW_enumDecl_in_declaration308);
                             enumDecl15=enumDecl();
 
                             state._fsp--;
@@ -766,9 +772,9 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 7 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:232:5: structDef
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:239:5: structDef
                             {
-                            pushFollow(FOLLOW_structDef_in_declaration315);
+                            pushFollow(FOLLOW_structDef_in_declaration318);
                             structDef16=structDef();
 
                             state._fsp--;
@@ -783,33 +789,33 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 8 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:235:5: 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}'
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:242:5: 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}'
                             {
-                            string_literal17=(Token)match(input,26,FOLLOW_26_in_declaration325); if (state.failed) return retval;
+                            string_literal17=(Token)match(input,26,FOLLOW_26_in_declaration328); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             string_literal17_tree = (Object)adaptor.create(string_literal17);
                             adaptor.addChild(root_0, string_literal17_tree);
                             }
-                            ns=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_declaration329); if (state.failed) return retval;
+                            ns=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_declaration332); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             ns_tree = (Object)adaptor.create(ns);
                             adaptor.addChild(root_0, ns_tree);
                             }
-                            char_literal18=(Token)match(input,24,FOLLOW_24_in_declaration331); if (state.failed) return retval;
+                            char_literal18=(Token)match(input,24,FOLLOW_24_in_declaration334); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal18_tree = (Object)adaptor.create(char_literal18);
                             adaptor.addChild(root_0, char_literal18_tree);
                             }
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:236:6: (subD= declaration )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:243:6: (subD= declaration )*
                             loop5:
                             do {
                                 int alt5=2;
                                 alt5 = dfa5.predict(input);
                                 switch (alt5) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:237:7: subD= declaration
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:244:7: subD= declaration
                             	    {
-                            	    pushFollow(FOLLOW_declaration_in_declaration349);
+                            	    pushFollow(FOLLOW_declaration_in_declaration352);
                             	    subD=declaration();
 
                             	    state._fsp--;
@@ -832,7 +838,7 @@ public class ObjCppParser extends Parser {
                                 }
                             } while (true);
 
-                            char_literal19=(Token)match(input,25,FOLLOW_25_in_declaration365); if (state.failed) return retval;
+                            char_literal19=(Token)match(input,25,FOLLOW_25_in_declaration368); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal19_tree = (Object)adaptor.create(char_literal19);
                             adaptor.addChild(root_0, char_literal19_tree);
@@ -891,7 +897,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "forwardClassDecl"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:260:1: forwardClassDecl returns [List<Declaration> declarations] : '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:267:1: forwardClassDecl returns [List<Declaration> declarations] : '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' ;
     public final ObjCppParser.forwardClassDecl_return forwardClassDecl() throws RecognitionException {
         ObjCppParser.forwardClassDecl_return retval = new ObjCppParser.forwardClassDecl_return();
         retval.start = input.LT(1);
@@ -911,20 +917,20 @@ public class ObjCppParser extends Parser {
         Object char_literal22_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:261:2: ( '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:261:5: '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:268:2: ( '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:268:5: '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';'
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.declarations = new ArrayList<Declaration>(); 
             }
-            string_literal20=(Token)match(input,27,FOLLOW_27_in_forwardClassDecl405); if (state.failed) return retval;
+            string_literal20=(Token)match(input,27,FOLLOW_27_in_forwardClassDecl408); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             string_literal20_tree = (Object)adaptor.create(string_literal20);
             adaptor.addChild(root_0, string_literal20_tree);
             }
-            n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_forwardClassDecl412); if (state.failed) return retval;
+            n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_forwardClassDecl415); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             n1_tree = (Object)adaptor.create(n1);
             adaptor.addChild(root_0, n1_tree);
@@ -932,7 +938,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.declarations.add(Struct.forwardDecl((n1!=null?n1.getText():null), Struct.Type.ObjCClass)); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:264:3: ( ',' nx= IDENTIFIER )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:271:3: ( ',' nx= IDENTIFIER )*
             loop8:
             do {
                 int alt8=2;
@@ -945,14 +951,14 @@ public class ObjCppParser extends Parser {
 
                 switch (alt8) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:264:4: ',' nx= IDENTIFIER
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:271:4: ',' nx= IDENTIFIER
             	    {
-            	    char_literal21=(Token)match(input,28,FOLLOW_28_in_forwardClassDecl419); if (state.failed) return retval;
+            	    char_literal21=(Token)match(input,28,FOLLOW_28_in_forwardClassDecl422); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal21_tree = (Object)adaptor.create(char_literal21);
             	    adaptor.addChild(root_0, char_literal21_tree);
             	    }
-            	    nx=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_forwardClassDecl426); if (state.failed) return retval;
+            	    nx=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_forwardClassDecl429); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    nx_tree = (Object)adaptor.create(nx);
             	    adaptor.addChild(root_0, nx_tree);
@@ -969,7 +975,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal22=(Token)match(input,29,FOLLOW_29_in_forwardClassDecl437); if (state.failed) return retval;
+            char_literal22=(Token)match(input,29,FOLLOW_29_in_forwardClassDecl440); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal22_tree = (Object)adaptor.create(char_literal22);
             adaptor.addChild(root_0, char_literal22_tree);
@@ -1004,7 +1010,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "functionPointerVarDecl"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:270:1: functionPointerVarDecl returns [List<? extends Declaration> declarations] : typeRef {...}? ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:277:1: functionPointerVarDecl returns [List<? extends Declaration> declarations] : typeRef {...}? ';' ;
     public final ObjCppParser.functionPointerVarDecl_return functionPointerVarDecl() throws RecognitionException {
         ObjCppParser.functionPointerVarDecl_return retval = new ObjCppParser.functionPointerVarDecl_return();
         retval.start = input.LT(1);
@@ -1018,12 +1024,12 @@ public class ObjCppParser extends Parser {
         Object char_literal24_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:271:2: ( typeRef {...}? ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:271:4: typeRef {...}? ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:278:2: ( typeRef {...}? ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:278:4: typeRef {...}? ';'
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_typeRef_in_functionPointerVarDecl455);
+            pushFollow(FOLLOW_typeRef_in_functionPointerVarDecl458);
             typeRef23=typeRef();
 
             state._fsp--;
@@ -1041,7 +1047,7 @@ public class ObjCppParser extends Parser {
               			retval.declarations = Arrays.asList(new FunctionPointerDeclaration(((FunctionSignature)(typeRef23!=null?typeRef23.type:null))));
               		
             }
-            char_literal24=(Token)match(input,29,FOLLOW_29_in_functionPointerVarDecl463); if (state.failed) return retval;
+            char_literal24=(Token)match(input,29,FOLLOW_29_in_functionPointerVarDecl466); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal24_tree = (Object)adaptor.create(char_literal24);
             adaptor.addChild(root_0, char_literal24_tree);
@@ -1076,7 +1082,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "enumItem"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:280:1: enumItem returns [Enum.EnumItem item] : n= IDENTIFIER ( '=' v= expression )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:287:1: enumItem returns [Enum.EnumItem item] : n= IDENTIFIER ( '=' v= expression )? ;
     public final ObjCppParser.enumItem_return enumItem() throws RecognitionException {
         ObjCppParser.enumItem_return retval = new ObjCppParser.enumItem_return();
         retval.start = input.LT(1);
@@ -1092,17 +1098,17 @@ public class ObjCppParser extends Parser {
         Object char_literal25_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:281:2: (n= IDENTIFIER ( '=' v= expression )? )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:281:4: n= IDENTIFIER ( '=' v= expression )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:288:2: (n= IDENTIFIER ( '=' v= expression )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:288:4: n= IDENTIFIER ( '=' v= expression )?
             {
             root_0 = (Object)adaptor.nil();
 
-            n=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumItem481); if (state.failed) return retval;
+            n=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumItem484); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             n_tree = (Object)adaptor.create(n);
             adaptor.addChild(root_0, n_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:281:17: ( '=' v= expression )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:288:17: ( '=' v= expression )?
             int alt9=2;
             int LA9_0 = input.LA(1);
 
@@ -1111,14 +1117,14 @@ public class ObjCppParser extends Parser {
             }
             switch (alt9) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:281:18: '=' v= expression
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:288:18: '=' v= expression
                     {
-                    char_literal25=(Token)match(input,30,FOLLOW_30_in_enumItem484); if (state.failed) return retval;
+                    char_literal25=(Token)match(input,30,FOLLOW_30_in_enumItem487); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal25_tree = (Object)adaptor.create(char_literal25);
                     adaptor.addChild(root_0, char_literal25_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_enumItem488);
+                    pushFollow(FOLLOW_expression_in_enumItem491);
                     v=expression();
 
                     state._fsp--;
@@ -1166,7 +1172,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "enumCore"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:287:1: enumCore returns [Enum e] : t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:294:1: enumCore returns [Enum e] : t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' ;
     public final ObjCppParser.enumCore_return enumCore() throws RecognitionException {
         ObjCppParser.enumCore_return retval = new ObjCppParser.enumCore_return();
         retval.start = input.LT(1);
@@ -1190,12 +1196,12 @@ public class ObjCppParser extends Parser {
         Object char_literal28_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:288:2: (t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:289:3: t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:295:2: (t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:296:3: t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}'
             {
             root_0 = (Object)adaptor.nil();
 
-            t=(Token)match(input,31,FOLLOW_31_in_enumCore512); if (state.failed) return retval;
+            t=(Token)match(input,31,FOLLOW_31_in_enumCore515); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             t_tree = (Object)adaptor.create(t);
             adaptor.addChild(root_0, t_tree);
@@ -1206,7 +1212,7 @@ public class ObjCppParser extends Parser {
               			retval.e.setCommentBefore(getCommentBefore(t.getTokenIndex()));
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:292:5: (n1= IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:299:5: (n1= IDENTIFIER )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -1215,9 +1221,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt10) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:293:4: n1= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:300:4: n1= IDENTIFIER
                     {
-                    n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumCore523); if (state.failed) return retval;
+                    n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumCore526); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     n1_tree = (Object)adaptor.create(n1);
                     adaptor.addChild(root_0, n1_tree);
@@ -1233,12 +1239,12 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal26=(Token)match(input,24,FOLLOW_24_in_enumCore535); if (state.failed) return retval;
+            char_literal26=(Token)match(input,24,FOLLOW_24_in_enumCore538); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal26_tree = (Object)adaptor.create(char_literal26);
             adaptor.addChild(root_0, char_literal26_tree);
             }
-            pushFollow(FOLLOW_enumItem_in_enumCore542);
+            pushFollow(FOLLOW_enumItem_in_enumCore545);
             i1=enumItem();
 
             state._fsp--;
@@ -1249,7 +1255,7 @@ public class ObjCppParser extends Parser {
               				retval.e.addItem((i1!=null?i1.item:null)); 
               			
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:301:4: ( ',' (ix= enumItem )? )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:308:4: ( ',' (ix= enumItem )? )*
             loop12:
             do {
                 int alt12=2;
@@ -1262,14 +1268,14 @@ public class ObjCppParser extends Parser {
 
                 switch (alt12) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:302:5: ',' (ix= enumItem )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:309:5: ',' (ix= enumItem )?
             	    {
-            	    char_literal27=(Token)match(input,28,FOLLOW_28_in_enumCore555); if (state.failed) return retval;
+            	    char_literal27=(Token)match(input,28,FOLLOW_28_in_enumCore558); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal27_tree = (Object)adaptor.create(char_literal27);
             	    adaptor.addChild(root_0, char_literal27_tree);
             	    }
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:303:5: (ix= enumItem )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:310:5: (ix= enumItem )?
             	    int alt11=2;
             	    int LA11_0 = input.LA(1);
 
@@ -1278,9 +1284,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    switch (alt11) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:303:6: ix= enumItem
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:310:6: ix= enumItem
             	            {
-            	            pushFollow(FOLLOW_enumItem_in_enumCore565);
+            	            pushFollow(FOLLOW_enumItem_in_enumCore568);
             	            ix=enumItem();
 
             	            state._fsp--;
@@ -1307,7 +1313,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal28=(Token)match(input,25,FOLLOW_25_in_enumCore579); if (state.failed) return retval;
+            char_literal28=(Token)match(input,25,FOLLOW_25_in_enumCore582); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal28_tree = (Object)adaptor.create(char_literal28);
             adaptor.addChild(root_0, char_literal28_tree);
@@ -1342,7 +1348,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "enumDecl"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:311:1: enumDecl returns [Enum e] : t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' (n2= IDENTIFIER )? ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:318:1: enumDecl returns [Enum e] : t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' (n2= IDENTIFIER )? ';' ;
     public final ObjCppParser.enumDecl_return enumDecl() throws RecognitionException {
         ObjCppParser.enumDecl_return retval = new ObjCppParser.enumDecl_return();
         retval.start = input.LT(1);
@@ -1370,12 +1376,12 @@ public class ObjCppParser extends Parser {
         Object char_literal32_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:312:2: (t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' (n2= IDENTIFIER )? ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:313:3: t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' (n2= IDENTIFIER )? ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:319:2: (t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' (n2= IDENTIFIER )? ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:320:3: t= 'enum' (n1= IDENTIFIER )? '{' i1= enumItem ( ',' (ix= enumItem )? )* '}' (n2= IDENTIFIER )? ';'
             {
             root_0 = (Object)adaptor.nil();
 
-            t=(Token)match(input,31,FOLLOW_31_in_enumDecl600); if (state.failed) return retval;
+            t=(Token)match(input,31,FOLLOW_31_in_enumDecl603); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             t_tree = (Object)adaptor.create(t);
             adaptor.addChild(root_0, t_tree);
@@ -1386,7 +1392,7 @@ public class ObjCppParser extends Parser {
               			retval.e.setCommentBefore(getCommentBefore(t.getTokenIndex()));
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:316:5: (n1= IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:323:5: (n1= IDENTIFIER )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1395,9 +1401,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt13) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:317:4: n1= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:324:4: n1= IDENTIFIER
                     {
-                    n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumDecl611); if (state.failed) return retval;
+                    n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumDecl614); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     n1_tree = (Object)adaptor.create(n1);
                     adaptor.addChild(root_0, n1_tree);
@@ -1413,12 +1419,12 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal29=(Token)match(input,24,FOLLOW_24_in_enumDecl623); if (state.failed) return retval;
+            char_literal29=(Token)match(input,24,FOLLOW_24_in_enumDecl626); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal29_tree = (Object)adaptor.create(char_literal29);
             adaptor.addChild(root_0, char_literal29_tree);
             }
-            pushFollow(FOLLOW_enumItem_in_enumDecl630);
+            pushFollow(FOLLOW_enumItem_in_enumDecl633);
             i1=enumItem();
 
             state._fsp--;
@@ -1429,7 +1435,7 @@ public class ObjCppParser extends Parser {
               				retval.e.addItem((i1!=null?i1.item:null)); 
               			
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:325:4: ( ',' (ix= enumItem )? )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:332:4: ( ',' (ix= enumItem )? )*
             loop15:
             do {
                 int alt15=2;
@@ -1442,14 +1448,14 @@ public class ObjCppParser extends Parser {
 
                 switch (alt15) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:326:5: ',' (ix= enumItem )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:333:5: ',' (ix= enumItem )?
             	    {
-            	    char_literal30=(Token)match(input,28,FOLLOW_28_in_enumDecl643); if (state.failed) return retval;
+            	    char_literal30=(Token)match(input,28,FOLLOW_28_in_enumDecl646); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal30_tree = (Object)adaptor.create(char_literal30);
             	    adaptor.addChild(root_0, char_literal30_tree);
             	    }
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:327:5: (ix= enumItem )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:334:5: (ix= enumItem )?
             	    int alt14=2;
             	    int LA14_0 = input.LA(1);
 
@@ -1458,9 +1464,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    switch (alt14) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:327:6: ix= enumItem
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:334:6: ix= enumItem
             	            {
-            	            pushFollow(FOLLOW_enumItem_in_enumDecl653);
+            	            pushFollow(FOLLOW_enumItem_in_enumDecl656);
             	            ix=enumItem();
 
             	            state._fsp--;
@@ -1487,12 +1493,12 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal31=(Token)match(input,25,FOLLOW_25_in_enumDecl667); if (state.failed) return retval;
+            char_literal31=(Token)match(input,25,FOLLOW_25_in_enumDecl670); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal31_tree = (Object)adaptor.create(char_literal31);
             adaptor.addChild(root_0, char_literal31_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:333:3: (n2= IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:340:3: (n2= IDENTIFIER )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1501,9 +1507,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt16) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:334:4: n2= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:341:4: n2= IDENTIFIER
                     {
-                    n2=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumDecl678); if (state.failed) return retval;
+                    n2=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumDecl681); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     n2_tree = (Object)adaptor.create(n2);
                     adaptor.addChild(root_0, n2_tree);
@@ -1519,7 +1525,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal32=(Token)match(input,29,FOLLOW_29_in_enumDecl689); if (state.failed) return retval;
+            char_literal32=(Token)match(input,29,FOLLOW_29_in_enumDecl692); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal32_tree = (Object)adaptor.create(char_literal32);
             adaptor.addChild(root_0, char_literal32_tree);
@@ -1554,7 +1560,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "objCClassDef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:348:1: objCClassDef returns [Struct struct] : octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | enumDecl )* '@end' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:355:1: objCClassDef returns [Struct struct] : octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | enumDecl )* '@end' ;
     public final ObjCppParser.objCClassDef_return objCClassDef() throws RecognitionException {
         ObjCppParser.objCClassDef_return retval = new ObjCppParser.objCClassDef_return();
         retval.start = input.LT(1);
@@ -1610,8 +1616,8 @@ public class ObjCppParser extends Parser {
         Object string_literal49_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:349:2: (octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | enumDecl )* '@end' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:350:3: octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | enumDecl )* '@end'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:356:2: (octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | enumDecl )* '@end' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:357:3: octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | enumDecl )* '@end'
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1627,7 +1633,7 @@ public class ObjCppParser extends Parser {
                 throw mse;
             }
 
-            className=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef725); if (state.failed) return retval;
+            className=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef728); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             className_tree = (Object)adaptor.create(className);
             adaptor.addChild(root_0, className_tree);
@@ -1643,14 +1649,14 @@ public class ObjCppParser extends Parser {
               			retval.struct.setName((className!=null?className.getText():null));
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:360:3: ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:367:3: ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' )
             int alt18=2;
             alt18 = dfa18.predict(input);
             switch (alt18) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:361:4: ( ':' parentClass= IDENTIFIER )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:368:4: ( ':' parentClass= IDENTIFIER )?
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:361:4: ( ':' parentClass= IDENTIFIER )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:368:4: ( ':' parentClass= IDENTIFIER )?
                     int alt17=2;
                     int LA17_0 = input.LA(1);
 
@@ -1659,14 +1665,14 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt17) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:362:5: ':' parentClass= IDENTIFIER
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:369:5: ':' parentClass= IDENTIFIER
                             {
-                            char_literal33=(Token)match(input,34,FOLLOW_34_in_objCClassDef743); if (state.failed) return retval;
+                            char_literal33=(Token)match(input,34,FOLLOW_34_in_objCClassDef746); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal33_tree = (Object)adaptor.create(char_literal33);
                             adaptor.addChild(root_0, char_literal33_tree);
                             }
-                            parentClass=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef747); if (state.failed) return retval;
+                            parentClass=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef750); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             parentClass_tree = (Object)adaptor.create(parentClass);
                             adaptor.addChild(root_0, parentClass_tree);
@@ -1687,19 +1693,19 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:367:4: '(' categoryName= IDENTIFIER ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:374:4: '(' categoryName= IDENTIFIER ')'
                     {
-                    char_literal34=(Token)match(input,35,FOLLOW_35_in_objCClassDef762); if (state.failed) return retval;
+                    char_literal34=(Token)match(input,35,FOLLOW_35_in_objCClassDef765); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal34_tree = (Object)adaptor.create(char_literal34);
                     adaptor.addChild(root_0, char_literal34_tree);
                     }
-                    categoryName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef766); if (state.failed) return retval;
+                    categoryName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef769); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     categoryName_tree = (Object)adaptor.create(categoryName);
                     adaptor.addChild(root_0, categoryName_tree);
                     }
-                    char_literal35=(Token)match(input,36,FOLLOW_36_in_objCClassDef768); if (state.failed) return retval;
+                    char_literal35=(Token)match(input,36,FOLLOW_36_in_objCClassDef771); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal35_tree = (Object)adaptor.create(char_literal35);
                     adaptor.addChild(root_0, char_literal35_tree);
@@ -1715,7 +1721,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:371:3: ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:378:3: ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )?
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -1724,14 +1730,14 @@ public class ObjCppParser extends Parser {
             }
             switch (alt21) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:372:4: '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:379:4: '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>'
                     {
-                    char_literal36=(Token)match(input,37,FOLLOW_37_in_objCClassDef784); if (state.failed) return retval;
+                    char_literal36=(Token)match(input,37,FOLLOW_37_in_objCClassDef787); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal36_tree = (Object)adaptor.create(char_literal36);
                     adaptor.addChild(root_0, char_literal36_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:372:8: (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:379:8: (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )?
                     int alt20=2;
                     int LA20_0 = input.LA(1);
 
@@ -1740,9 +1746,9 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt20) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:373:5: p1= IDENTIFIER ( ',' px= IDENTIFIER )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:380:5: p1= IDENTIFIER ( ',' px= IDENTIFIER )*
                             {
-                            p1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef794); if (state.failed) return retval;
+                            p1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef797); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             p1_tree = (Object)adaptor.create(p1);
                             adaptor.addChild(root_0, p1_tree);
@@ -1750,7 +1756,7 @@ public class ObjCppParser extends Parser {
                             if ( state.backtracking==0 ) {
                                retval.struct.addProtocol((p1!=null?p1.getText():null)); 
                             }
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:374:5: ( ',' px= IDENTIFIER )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:381:5: ( ',' px= IDENTIFIER )*
                             loop19:
                             do {
                                 int alt19=2;
@@ -1763,14 +1769,14 @@ public class ObjCppParser extends Parser {
 
                                 switch (alt19) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:375:6: ',' px= IDENTIFIER
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:382:6: ',' px= IDENTIFIER
                             	    {
-                            	    char_literal37=(Token)match(input,28,FOLLOW_28_in_objCClassDef809); if (state.failed) return retval;
+                            	    char_literal37=(Token)match(input,28,FOLLOW_28_in_objCClassDef812); if (state.failed) return retval;
                             	    if ( state.backtracking==0 ) {
                             	    char_literal37_tree = (Object)adaptor.create(char_literal37);
                             	    adaptor.addChild(root_0, char_literal37_tree);
                             	    }
-                            	    px=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef819); if (state.failed) return retval;
+                            	    px=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef822); if (state.failed) return retval;
                             	    if ( state.backtracking==0 ) {
                             	    px_tree = (Object)adaptor.create(px);
                             	    adaptor.addChild(root_0, px_tree);
@@ -1793,7 +1799,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal38=(Token)match(input,38,FOLLOW_38_in_objCClassDef836); if (state.failed) return retval;
+                    char_literal38=(Token)match(input,38,FOLLOW_38_in_objCClassDef839); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal38_tree = (Object)adaptor.create(char_literal38);
                     adaptor.addChild(root_0, char_literal38_tree);
@@ -1804,7 +1810,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:380:3: ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:387:3: ( '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}' )?
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -1813,23 +1819,23 @@ public class ObjCppParser extends Parser {
             }
             switch (alt24) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:381:4: '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:388:4: '{' ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )* '}'
                     {
-                    char_literal39=(Token)match(input,24,FOLLOW_24_in_objCClassDef850); if (state.failed) return retval;
+                    char_literal39=(Token)match(input,24,FOLLOW_24_in_objCClassDef853); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal39_tree = (Object)adaptor.create(char_literal39);
                     adaptor.addChild(root_0, char_literal39_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:382:4: ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:389:4: ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )*
                     loop23:
                     do {
                         int alt23=5;
                         alt23 = dfa23.predict(input);
                         switch (alt23) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:383:5: '@public'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:390:5: '@public'
                     	    {
-                    	    string_literal40=(Token)match(input,39,FOLLOW_39_in_objCClassDef862); if (state.failed) return retval;
+                    	    string_literal40=(Token)match(input,39,FOLLOW_39_in_objCClassDef865); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    string_literal40_tree = (Object)adaptor.create(string_literal40);
                     	    adaptor.addChild(root_0, string_literal40_tree);
@@ -1841,9 +1847,9 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:384:5: '@private'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:391:5: '@private'
                     	    {
-                    	    string_literal41=(Token)match(input,40,FOLLOW_40_in_objCClassDef873); if (state.failed) return retval;
+                    	    string_literal41=(Token)match(input,40,FOLLOW_40_in_objCClassDef876); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    string_literal41_tree = (Object)adaptor.create(string_literal41);
                     	    adaptor.addChild(root_0, string_literal41_tree);
@@ -1855,9 +1861,9 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 3 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:385:5: '@protected'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:392:5: '@protected'
                     	    {
-                    	    string_literal42=(Token)match(input,41,FOLLOW_41_in_objCClassDef884); if (state.failed) return retval;
+                    	    string_literal42=(Token)match(input,41,FOLLOW_41_in_objCClassDef887); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    string_literal42_tree = (Object)adaptor.create(string_literal42);
                     	    adaptor.addChild(root_0, string_literal42_tree);
@@ -1869,19 +1875,19 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 4 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:386:5: ( ( varDecl | functionPointerVarDecl ) )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:393:5: ( ( varDecl | functionPointerVarDecl ) )
                     	    {
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:386:5: ( ( varDecl | functionPointerVarDecl ) )
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:387:6: ( varDecl | functionPointerVarDecl )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:393:5: ( ( varDecl | functionPointerVarDecl ) )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:394:6: ( varDecl | functionPointerVarDecl )
                     	    {
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:387:6: ( varDecl | functionPointerVarDecl )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:394:6: ( varDecl | functionPointerVarDecl )
                     	    int alt22=2;
                     	    alt22 = dfa22.predict(input);
                     	    switch (alt22) {
                     	        case 1 :
-                    	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:388:7: varDecl
+                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:395:7: varDecl
                     	            {
-                    	            pushFollow(FOLLOW_varDecl_in_objCClassDef909);
+                    	            pushFollow(FOLLOW_varDecl_in_objCClassDef912);
                     	            varDecl43=varDecl();
 
                     	            state._fsp--;
@@ -1896,9 +1902,9 @@ public class ObjCppParser extends Parser {
                     	            }
                     	            break;
                     	        case 2 :
-                    	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:391:7: functionPointerVarDecl
+                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:398:7: functionPointerVarDecl
                     	            {
-                    	            pushFollow(FOLLOW_functionPointerVarDecl_in_objCClassDef921);
+                    	            pushFollow(FOLLOW_functionPointerVarDecl_in_objCClassDef924);
                     	            functionPointerVarDecl44=functionPointerVarDecl();
 
                     	            state._fsp--;
@@ -1927,7 +1933,7 @@ public class ObjCppParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal45=(Token)match(input,25,FOLLOW_25_in_objCClassDef948); if (state.failed) return retval;
+                    char_literal45=(Token)match(input,25,FOLLOW_25_in_objCClassDef951); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal45_tree = (Object)adaptor.create(char_literal45);
                     adaptor.addChild(root_0, char_literal45_tree);
@@ -1941,7 +1947,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.struct.setNextMemberVisibility(Struct.MemberVisibility.Public); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:400:3: ( objCMethodDecl | typeDef | enumDecl )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:407:3: ( objCMethodDecl | typeDef | enumDecl )*
             loop25:
             do {
                 int alt25=4;
@@ -1967,9 +1973,9 @@ public class ObjCppParser extends Parser {
 
                 switch (alt25) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:401:4: objCMethodDecl
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:408:4: objCMethodDecl
             	    {
-            	    pushFollow(FOLLOW_objCMethodDecl_in_objCClassDef966);
+            	    pushFollow(FOLLOW_objCMethodDecl_in_objCClassDef969);
             	    objCMethodDecl46=objCMethodDecl();
 
             	    state._fsp--;
@@ -1984,9 +1990,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:404:4: typeDef
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:411:4: typeDef
             	    {
-            	    pushFollow(FOLLOW_typeDef_in_objCClassDef975);
+            	    pushFollow(FOLLOW_typeDef_in_objCClassDef978);
             	    typeDef47=typeDef();
 
             	    state._fsp--;
@@ -2001,9 +2007,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:407:4: enumDecl
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:414:4: enumDecl
             	    {
-            	    pushFollow(FOLLOW_enumDecl_in_objCClassDef984);
+            	    pushFollow(FOLLOW_enumDecl_in_objCClassDef987);
             	    enumDecl48=enumDecl();
 
             	    state._fsp--;
@@ -2023,7 +2029,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            string_literal49=(Token)match(input,42,FOLLOW_42_in_objCClassDef995); if (state.failed) return retval;
+            string_literal49=(Token)match(input,42,FOLLOW_42_in_objCClassDef998); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             string_literal49_tree = (Object)adaptor.create(string_literal49);
             adaptor.addChild(root_0, string_literal49_tree);
@@ -2058,7 +2064,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "objCMethodDecl"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:414:1: objCMethodDecl returns [Function function] : tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= typeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:421:1: objCMethodDecl returns [Function function] : tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= typeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' ;
     public final ObjCppParser.objCMethodDecl_return objCMethodDecl() throws RecognitionException {
         ObjCppParser.objCMethodDecl_return retval = new ObjCppParser.objCMethodDecl_return();
         retval.start = input.LT(1);
@@ -2110,8 +2116,8 @@ public class ObjCppParser extends Parser {
         Object char_literal60_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:415:2: (tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= typeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:415:4: tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= typeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:422:2: (tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= typeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:422:4: tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= typeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';'
             {
             root_0 = (Object)adaptor.nil();
 
@@ -2121,7 +2127,7 @@ public class ObjCppParser extends Parser {
               			retval.function.setType(Function.Type.ObjCMethod);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:419:6: (tp= '+' | tm= '-' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:426:6: (tp= '+' | tm= '-' )
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -2140,9 +2146,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt26) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:420:4: tp= '+'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:427:4: tp= '+'
                     {
-                    tp=(Token)match(input,43,FOLLOW_43_in_objCMethodDecl1029); if (state.failed) return retval;
+                    tp=(Token)match(input,43,FOLLOW_43_in_objCMethodDecl1032); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     tp_tree = (Object)adaptor.create(tp);
                     adaptor.addChild(root_0, tp_tree);
@@ -2158,9 +2164,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:425:4: tm= '-'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:432:4: tm= '-'
                     {
-                    tm=(Token)match(input,44,FOLLOW_44_in_objCMethodDecl1041); if (state.failed) return retval;
+                    tm=(Token)match(input,44,FOLLOW_44_in_objCMethodDecl1044); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     tm_tree = (Object)adaptor.create(tm);
                     adaptor.addChild(root_0, tm_tree);
@@ -2177,7 +2183,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:430:3: ( '(' (returnTypeRef= typeRef )? ')' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:437:3: ( '(' (returnTypeRef= typeRef )? ')' )?
             int alt28=2;
             int LA28_0 = input.LA(1);
 
@@ -2186,21 +2192,21 @@ public class ObjCppParser extends Parser {
             }
             switch (alt28) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:432:4: '(' (returnTypeRef= typeRef )? ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:439:4: '(' (returnTypeRef= typeRef )? ')'
                     {
-                    char_literal50=(Token)match(input,35,FOLLOW_35_in_objCMethodDecl1060); if (state.failed) return retval;
+                    char_literal50=(Token)match(input,35,FOLLOW_35_in_objCMethodDecl1063); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal50_tree = (Object)adaptor.create(char_literal50);
                     adaptor.addChild(root_0, char_literal50_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:433:18: (returnTypeRef= typeRef )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:440:18: (returnTypeRef= typeRef )?
                     int alt27=2;
                     alt27 = dfa27.predict(input);
                     switch (alt27) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: returnTypeRef= typeRef
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: returnTypeRef= typeRef
                             {
-                            pushFollow(FOLLOW_typeRef_in_objCMethodDecl1068);
+                            pushFollow(FOLLOW_typeRef_in_objCMethodDecl1071);
                             returnTypeRef=typeRef();
 
                             state._fsp--;
@@ -2217,7 +2223,7 @@ public class ObjCppParser extends Parser {
                       					retval.function.setValueType((returnTypeRef!=null?returnTypeRef.type:null)); 
                       				
                     }
-                    char_literal51=(Token)match(input,36,FOLLOW_36_in_objCMethodDecl1076); if (state.failed) return retval;
+                    char_literal51=(Token)match(input,36,FOLLOW_36_in_objCMethodDecl1079); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal51_tree = (Object)adaptor.create(char_literal51);
                     adaptor.addChild(root_0, char_literal51_tree);
@@ -2228,7 +2234,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            methodName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1087); if (state.failed) return retval;
+            methodName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1090); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             methodName_tree = (Object)adaptor.create(methodName);
             adaptor.addChild(root_0, methodName_tree);
@@ -2239,7 +2245,7 @@ public class ObjCppParser extends Parser {
               			retval.function.setCommentAfter(getCommentAfterOnSameLine(methodName.getTokenIndex()));
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:442:3: ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:449:3: ( ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )?
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -2248,30 +2254,30 @@ public class ObjCppParser extends Parser {
             }
             switch (alt31) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:443:4: ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:450:4: ':' '(' argType1= typeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )* ( ',' '...' )?
                     {
-                    char_literal52=(Token)match(input,34,FOLLOW_34_in_objCMethodDecl1099); if (state.failed) return retval;
+                    char_literal52=(Token)match(input,34,FOLLOW_34_in_objCMethodDecl1102); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal52_tree = (Object)adaptor.create(char_literal52);
                     adaptor.addChild(root_0, char_literal52_tree);
                     }
-                    char_literal53=(Token)match(input,35,FOLLOW_35_in_objCMethodDecl1101); if (state.failed) return retval;
+                    char_literal53=(Token)match(input,35,FOLLOW_35_in_objCMethodDecl1104); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal53_tree = (Object)adaptor.create(char_literal53);
                     adaptor.addChild(root_0, char_literal53_tree);
                     }
-                    pushFollow(FOLLOW_typeRef_in_objCMethodDecl1105);
+                    pushFollow(FOLLOW_typeRef_in_objCMethodDecl1108);
                     argType1=typeRef();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, argType1.getTree());
-                    char_literal54=(Token)match(input,36,FOLLOW_36_in_objCMethodDecl1107); if (state.failed) return retval;
+                    char_literal54=(Token)match(input,36,FOLLOW_36_in_objCMethodDecl1110); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal54_tree = (Object)adaptor.create(char_literal54);
                     adaptor.addChild(root_0, char_literal54_tree);
                     }
-                    argName1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1111); if (state.failed) return retval;
+                    argName1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1114); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     argName1_tree = (Object)adaptor.create(argName1);
                     adaptor.addChild(root_0, argName1_tree);
@@ -2283,7 +2289,7 @@ public class ObjCppParser extends Parser {
                       				retval.function.addArg(arg);
                       			
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:448:4: (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:455:4: (sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER )*
                     loop29:
                     do {
                         int alt29=2;
@@ -2296,35 +2302,35 @@ public class ObjCppParser extends Parser {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:449:5: sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:456:5: sel= IDENTIFIER ':' '(' argType= typeRef ')' argName= IDENTIFIER
                     	    {
-                    	    sel=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1126); if (state.failed) return retval;
+                    	    sel=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1129); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    sel_tree = (Object)adaptor.create(sel);
                     	    adaptor.addChild(root_0, sel_tree);
                     	    }
-                    	    char_literal55=(Token)match(input,34,FOLLOW_34_in_objCMethodDecl1128); if (state.failed) return retval;
+                    	    char_literal55=(Token)match(input,34,FOLLOW_34_in_objCMethodDecl1131); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal55_tree = (Object)adaptor.create(char_literal55);
                     	    adaptor.addChild(root_0, char_literal55_tree);
                     	    }
-                    	    char_literal56=(Token)match(input,35,FOLLOW_35_in_objCMethodDecl1135); if (state.failed) return retval;
+                    	    char_literal56=(Token)match(input,35,FOLLOW_35_in_objCMethodDecl1138); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal56_tree = (Object)adaptor.create(char_literal56);
                     	    adaptor.addChild(root_0, char_literal56_tree);
                     	    }
-                    	    pushFollow(FOLLOW_typeRef_in_objCMethodDecl1139);
+                    	    pushFollow(FOLLOW_typeRef_in_objCMethodDecl1142);
                     	    argType=typeRef();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) adaptor.addChild(root_0, argType.getTree());
-                    	    char_literal57=(Token)match(input,36,FOLLOW_36_in_objCMethodDecl1141); if (state.failed) return retval;
+                    	    char_literal57=(Token)match(input,36,FOLLOW_36_in_objCMethodDecl1144); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal57_tree = (Object)adaptor.create(char_literal57);
                     	    adaptor.addChild(root_0, char_literal57_tree);
                     	    }
-                    	    argName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1150); if (state.failed) return retval;
+                    	    argName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1153); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    argName_tree = (Object)adaptor.create(argName);
                     	    adaptor.addChild(root_0, argName_tree);
@@ -2345,7 +2351,7 @@ public class ObjCppParser extends Parser {
                         }
                     } while (true);
 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:457:4: ( ',' '...' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:464:4: ( ',' '...' )?
                     int alt30=2;
                     int LA30_0 = input.LA(1);
 
@@ -2354,14 +2360,14 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt30) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:458:5: ',' '...'
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:465:5: ',' '...'
                             {
-                            char_literal58=(Token)match(input,28,FOLLOW_28_in_objCMethodDecl1169); if (state.failed) return retval;
+                            char_literal58=(Token)match(input,28,FOLLOW_28_in_objCMethodDecl1172); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal58_tree = (Object)adaptor.create(char_literal58);
                             adaptor.addChild(root_0, char_literal58_tree);
                             }
-                            string_literal59=(Token)match(input,45,FOLLOW_45_in_objCMethodDecl1171); if (state.failed) return retval;
+                            string_literal59=(Token)match(input,45,FOLLOW_45_in_objCMethodDecl1174); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             string_literal59_tree = (Object)adaptor.create(string_literal59);
                             adaptor.addChild(root_0, string_literal59_tree);
@@ -2383,7 +2389,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal60=(Token)match(input,29,FOLLOW_29_in_objCMethodDecl1188); if (state.failed) return retval;
+            char_literal60=(Token)match(input,29,FOLLOW_29_in_objCMethodDecl1191); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal60_tree = (Object)adaptor.create(char_literal60);
             adaptor.addChild(root_0, char_literal60_tree);
@@ -2418,7 +2424,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "structDef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:466:1: structDef returns [Struct struct] : structCore ( varStoragesWithInit )* ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:473:1: structDef returns [Struct struct] : structCore ( varStoragesWithInit )* ';' ;
     public final ObjCppParser.structDef_return structDef() throws RecognitionException {
         ObjCppParser.structDef_return retval = new ObjCppParser.structDef_return();
         retval.start = input.LT(1);
@@ -2434,12 +2440,12 @@ public class ObjCppParser extends Parser {
         Object char_literal63_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:467:2: ( structCore ( varStoragesWithInit )* ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:468:3: structCore ( varStoragesWithInit )* ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:474:2: ( structCore ( varStoragesWithInit )* ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:475:3: structCore ( varStoragesWithInit )* ';'
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_structCore_in_structDef1206);
+            pushFollow(FOLLOW_structCore_in_structDef1209);
             structCore61=structCore();
 
             state._fsp--;
@@ -2448,16 +2454,16 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.struct = (structCore61!=null?structCore61.struct:null); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:469:3: ( varStoragesWithInit )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:476:3: ( varStoragesWithInit )*
             loop32:
             do {
                 int alt32=2;
                 alt32 = dfa32.predict(input);
                 switch (alt32) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:470:4: varStoragesWithInit
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:4: varStoragesWithInit
             	    {
-            	    pushFollow(FOLLOW_varStoragesWithInit_in_structDef1217);
+            	    pushFollow(FOLLOW_varStoragesWithInit_in_structDef1220);
             	    varStoragesWithInit62=varStoragesWithInit();
 
             	    state._fsp--;
@@ -2478,7 +2484,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal63=(Token)match(input,29,FOLLOW_29_in_structDef1228); if (state.failed) return retval;
+            char_literal63=(Token)match(input,29,FOLLOW_29_in_structDef1231); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal63_tree = (Object)adaptor.create(char_literal63);
             adaptor.addChild(root_0, char_literal63_tree);
@@ -2513,7 +2519,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "structCore"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:478:1: structCore returns [Struct struct] : t= ( 'struct' | 'class' | 'union' ) ( ( exportationModifiers )? n1= IDENTIFIER )? '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:485:1: structCore returns [Struct struct] : t= ( 'struct' | 'class' | 'union' ) ( ( exportationModifiers )? n1= IDENTIFIER )? '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration )* '}' ;
     public final ObjCppParser.structCore_return structCore() throws RecognitionException {
         ObjCppParser.structCore_return retval = new ObjCppParser.structCore_return();
         retval.start = input.LT(1);
@@ -2543,8 +2549,8 @@ public class ObjCppParser extends Parser {
         Object char_literal71_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:479:2: (t= ( 'struct' | 'class' | 'union' ) ( ( exportationModifiers )? n1= IDENTIFIER )? '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration )* '}' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:480:3: t= ( 'struct' | 'class' | 'union' ) ( ( exportationModifiers )? n1= IDENTIFIER )? '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:486:2: (t= ( 'struct' | 'class' | 'union' ) ( ( exportationModifiers )? n1= IDENTIFIER )? '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:487:3: t= ( 'struct' | 'class' | 'union' ) ( ( exportationModifiers )? n1= IDENTIFIER )? '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration )* '}'
             {
             root_0 = (Object)adaptor.nil();
 
@@ -2570,7 +2576,7 @@ public class ObjCppParser extends Parser {
               			);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:488:3: ( ( exportationModifiers )? n1= IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:495:3: ( ( exportationModifiers )? n1= IDENTIFIER )?
             int alt34=2;
             int LA34_0 = input.LA(1);
 
@@ -2579,9 +2585,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt34) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:489:4: ( exportationModifiers )? n1= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:496:4: ( exportationModifiers )? n1= IDENTIFIER
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:489:4: ( exportationModifiers )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:496:4: ( exportationModifiers )?
                     int alt33=2;
                     int LA33_0 = input.LA(1);
 
@@ -2594,9 +2600,9 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt33) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:489:6: exportationModifiers
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:496:6: exportationModifiers
                             {
-                            pushFollow(FOLLOW_exportationModifiers_in_structCore1273);
+                            pushFollow(FOLLOW_exportationModifiers_in_structCore1276);
                             exportationModifiers64=exportationModifiers();
 
                             state._fsp--;
@@ -2614,7 +2620,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_structCore1285); if (state.failed) return retval;
+                    n1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_structCore1288); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     n1_tree = (Object)adaptor.create(n1);
                     adaptor.addChild(root_0, n1_tree);
@@ -2628,21 +2634,21 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal65=(Token)match(input,24,FOLLOW_24_in_structCore1297); if (state.failed) return retval;
+            char_literal65=(Token)match(input,24,FOLLOW_24_in_structCore1300); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal65_tree = (Object)adaptor.create(char_literal65);
             adaptor.addChild(root_0, char_literal65_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:496:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:503:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration )*
             loop36:
             do {
                 int alt36=3;
                 alt36 = dfa36.predict(input);
                 switch (alt36) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:497:5: ( 'public' | 'private' | 'protected' ) ':'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:504:5: ( 'public' | 'private' | 'protected' ) ':'
             	    {
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:497:5: ( 'public' | 'private' | 'protected' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:504:5: ( 'public' | 'private' | 'protected' )
             	    int alt35=3;
             	    switch ( input.LA(1) ) {
             	    case 49:
@@ -2670,9 +2676,9 @@ public class ObjCppParser extends Parser {
 
             	    switch (alt35) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:498:6: 'public'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:505:6: 'public'
             	            {
-            	            string_literal66=(Token)match(input,49,FOLLOW_49_in_structCore1315); if (state.failed) return retval;
+            	            string_literal66=(Token)match(input,49,FOLLOW_49_in_structCore1318); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            string_literal66_tree = (Object)adaptor.create(string_literal66);
             	            adaptor.addChild(root_0, string_literal66_tree);
@@ -2684,9 +2690,9 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 2 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:499:6: 'private'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:506:6: 'private'
             	            {
-            	            string_literal67=(Token)match(input,50,FOLLOW_50_in_structCore1327); if (state.failed) return retval;
+            	            string_literal67=(Token)match(input,50,FOLLOW_50_in_structCore1330); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            string_literal67_tree = (Object)adaptor.create(string_literal67);
             	            adaptor.addChild(root_0, string_literal67_tree);
@@ -2698,9 +2704,9 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 3 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:500:6: 'protected'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:507:6: 'protected'
             	            {
-            	            string_literal68=(Token)match(input,51,FOLLOW_51_in_structCore1339); if (state.failed) return retval;
+            	            string_literal68=(Token)match(input,51,FOLLOW_51_in_structCore1342); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            string_literal68_tree = (Object)adaptor.create(string_literal68);
             	            adaptor.addChild(root_0, string_literal68_tree);
@@ -2714,7 +2720,7 @@ public class ObjCppParser extends Parser {
 
             	    }
 
-            	    char_literal69=(Token)match(input,34,FOLLOW_34_in_structCore1350); if (state.failed) return retval;
+            	    char_literal69=(Token)match(input,34,FOLLOW_34_in_structCore1353); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal69_tree = (Object)adaptor.create(char_literal69);
             	    adaptor.addChild(root_0, char_literal69_tree);
@@ -2723,9 +2729,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:502:5: declaration
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:509:5: declaration
             	    {
-            	    pushFollow(FOLLOW_declaration_in_structCore1358);
+            	    pushFollow(FOLLOW_declaration_in_structCore1361);
             	    declaration70=declaration();
 
             	    state._fsp--;
@@ -2745,7 +2751,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal71=(Token)match(input,25,FOLLOW_25_in_structCore1370); if (state.failed) return retval;
+            char_literal71=(Token)match(input,25,FOLLOW_25_in_structCore1373); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal71_tree = (Object)adaptor.create(char_literal71);
             adaptor.addChild(root_0, char_literal71_tree);
@@ -2780,7 +2786,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "functionDeclaration"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:509:1: functionDeclaration returns [Function function] : (returnTypeRef= typeRef )? preMods= exportationModifiers IDENTIFIER '(' ( (a1= argDef ( ',' ax= argDef )* ) )? ')' (ct= ( 'const' | '__const' ) )? postMods= exportationModifiers ( ';' | statementsBlock ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:516:1: functionDeclaration returns [Function function] : (returnTypeRef= typeRef )? preMods= exportationModifiers IDENTIFIER '(' ( (a1= argDef ( ',' ax= argDef )* ) )? ')' (ct= ( 'const' | '__const' ) )? postMods= exportationModifiers ( ';' | statementsBlock ) ;
     public final ObjCppParser.functionDeclaration_return functionDeclaration() throws RecognitionException {
         ObjCppParser.functionDeclaration_return retval = new ObjCppParser.functionDeclaration_return();
         retval.start = input.LT(1);
@@ -2814,8 +2820,8 @@ public class ObjCppParser extends Parser {
         Object char_literal76_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:510:2: ( (returnTypeRef= typeRef )? preMods= exportationModifiers IDENTIFIER '(' ( (a1= argDef ( ',' ax= argDef )* ) )? ')' (ct= ( 'const' | '__const' ) )? postMods= exportationModifiers ( ';' | statementsBlock ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:510:4: (returnTypeRef= typeRef )? preMods= exportationModifiers IDENTIFIER '(' ( (a1= argDef ( ',' ax= argDef )* ) )? ')' (ct= ( 'const' | '__const' ) )? postMods= exportationModifiers ( ';' | statementsBlock )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:517:2: ( (returnTypeRef= typeRef )? preMods= exportationModifiers IDENTIFIER '(' ( (a1= argDef ( ',' ax= argDef )* ) )? ')' (ct= ( 'const' | '__const' ) )? postMods= exportationModifiers ( ';' | statementsBlock ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:517:4: (returnTypeRef= typeRef )? preMods= exportationModifiers IDENTIFIER '(' ( (a1= argDef ( ',' ax= argDef )* ) )? ')' (ct= ( 'const' | '__const' ) )? postMods= exportationModifiers ( ';' | statementsBlock )
             {
             root_0 = (Object)adaptor.nil();
 
@@ -2825,14 +2831,14 @@ public class ObjCppParser extends Parser {
               			retval.function.setType(Function.Type.CFunction);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:517:16: (returnTypeRef= typeRef )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:524:16: (returnTypeRef= typeRef )?
             int alt37=2;
             alt37 = dfa37.predict(input);
             switch (alt37) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: returnTypeRef= typeRef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: returnTypeRef= typeRef
                     {
-                    pushFollow(FOLLOW_typeRef_in_functionDeclaration1395);
+                    pushFollow(FOLLOW_typeRef_in_functionDeclaration1398);
                     returnTypeRef=typeRef();
 
                     state._fsp--;
@@ -2849,7 +2855,7 @@ public class ObjCppParser extends Parser {
               			retval.function.setValueType((returnTypeRef!=null?returnTypeRef.type:null)); 
               		
             }
-            pushFollow(FOLLOW_exportationModifiers_in_functionDeclaration1404);
+            pushFollow(FOLLOW_exportationModifiers_in_functionDeclaration1407);
             preMods=exportationModifiers();
 
             state._fsp--;
@@ -2861,7 +2867,7 @@ public class ObjCppParser extends Parser {
               				retval.function.addModifier(m);
               		
             }
-            IDENTIFIER72=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_functionDeclaration1410); if (state.failed) return retval;
+            IDENTIFIER72=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_functionDeclaration1413); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             IDENTIFIER72_tree = (Object)adaptor.create(IDENTIFIER72);
             adaptor.addChild(root_0, IDENTIFIER72_tree);
@@ -2872,22 +2878,22 @@ public class ObjCppParser extends Parser {
               			retval.function = mark(retval.function, getLine(IDENTIFIER72));
               		
             }
-            char_literal73=(Token)match(input,35,FOLLOW_35_in_functionDeclaration1417); if (state.failed) return retval;
+            char_literal73=(Token)match(input,35,FOLLOW_35_in_functionDeclaration1420); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal73_tree = (Object)adaptor.create(char_literal73);
             adaptor.addChild(root_0, char_literal73_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:529:4: ( (a1= argDef ( ',' ax= argDef )* ) )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:536:4: ( (a1= argDef ( ',' ax= argDef )* ) )?
             int alt39=2;
             alt39 = dfa39.predict(input);
             switch (alt39) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:530:5: (a1= argDef ( ',' ax= argDef )* )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:537:5: (a1= argDef ( ',' ax= argDef )* )
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:530:5: (a1= argDef ( ',' ax= argDef )* )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:531:6: a1= argDef ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:537:5: (a1= argDef ( ',' ax= argDef )* )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:538:6: a1= argDef ( ',' ax= argDef )*
                     {
-                    pushFollow(FOLLOW_argDef_in_functionDeclaration1438);
+                    pushFollow(FOLLOW_argDef_in_functionDeclaration1441);
                     a1=argDef();
 
                     state._fsp--;
@@ -2899,7 +2905,7 @@ public class ObjCppParser extends Parser {
                       							retval.function.addArg((a1!=null?a1.arg:null));
                       					
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:535:6: ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:542:6: ( ',' ax= argDef )*
                     loop38:
                     do {
                         int alt38=2;
@@ -2912,14 +2918,14 @@ public class ObjCppParser extends Parser {
 
                         switch (alt38) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:536:7: ',' ax= argDef
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:543:7: ',' ax= argDef
                     	    {
-                    	    char_literal74=(Token)match(input,28,FOLLOW_28_in_functionDeclaration1455); if (state.failed) return retval;
+                    	    char_literal74=(Token)match(input,28,FOLLOW_28_in_functionDeclaration1458); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal74_tree = (Object)adaptor.create(char_literal74);
                     	    adaptor.addChild(root_0, char_literal74_tree);
                     	    }
-                    	    pushFollow(FOLLOW_argDef_in_functionDeclaration1466);
+                    	    pushFollow(FOLLOW_argDef_in_functionDeclaration1469);
                     	    ax=argDef();
 
                     	    state._fsp--;
@@ -2948,12 +2954,12 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal75=(Token)match(input,36,FOLLOW_36_in_functionDeclaration1494); if (state.failed) return retval;
+            char_literal75=(Token)match(input,36,FOLLOW_36_in_functionDeclaration1497); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal75_tree = (Object)adaptor.create(char_literal75);
             adaptor.addChild(root_0, char_literal75_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:544:5: (ct= ( 'const' | '__const' ) )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:551:5: (ct= ( 'const' | '__const' ) )?
             int alt40=2;
             int LA40_0 = input.LA(1);
 
@@ -2962,7 +2968,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt40) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: ct= ( 'const' | '__const' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: ct= ( 'const' | '__const' )
                     {
                     ct=(Token)input.LT(1);
                     if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
@@ -2988,7 +2994,7 @@ public class ObjCppParser extends Parser {
               				retval.function.addModifier(Declaration.Modifier.Const);
               		
             }
-            pushFollow(FOLLOW_exportationModifiers_in_functionDeclaration1517);
+            pushFollow(FOLLOW_exportationModifiers_in_functionDeclaration1520);
             postMods=exportationModifiers();
 
             state._fsp--;
@@ -3000,7 +3006,7 @@ public class ObjCppParser extends Parser {
               				retval.function.addModifier(m);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:552:3: ( ';' | statementsBlock )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:559:3: ( ';' | statementsBlock )
             int alt41=2;
             int LA41_0 = input.LA(1);
 
@@ -3019,9 +3025,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt41) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:553:4: ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:560:4: ';'
                     {
-                    char_literal76=(Token)match(input,29,FOLLOW_29_in_functionDeclaration1529); if (state.failed) return retval;
+                    char_literal76=(Token)match(input,29,FOLLOW_29_in_functionDeclaration1532); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal76_tree = (Object)adaptor.create(char_literal76);
                     adaptor.addChild(root_0, char_literal76_tree);
@@ -3030,9 +3036,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:554:4: statementsBlock
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:561:4: statementsBlock
                     {
-                    pushFollow(FOLLOW_statementsBlock_in_functionDeclaration1536);
+                    pushFollow(FOLLOW_statementsBlock_in_functionDeclaration1539);
                     statementsBlock77=statementsBlock();
 
                     state._fsp--;
@@ -3078,7 +3084,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "functionDefinition"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:560:1: functionDefinition : functionDeclaration '{' '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:567:1: functionDefinition : functionDeclaration '{' '}' ;
     public final ObjCppParser.functionDefinition_return functionDefinition() throws RecognitionException {
         ObjCppParser.functionDefinition_return retval = new ObjCppParser.functionDefinition_return();
         retval.start = input.LT(1);
@@ -3094,23 +3100,23 @@ public class ObjCppParser extends Parser {
         Object char_literal80_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:561:2: ( functionDeclaration '{' '}' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:561:4: functionDeclaration '{' '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:568:2: ( functionDeclaration '{' '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:568:4: functionDeclaration '{' '}'
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_functionDeclaration_in_functionDefinition1553);
+            pushFollow(FOLLOW_functionDeclaration_in_functionDefinition1556);
             functionDeclaration78=functionDeclaration();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, functionDeclaration78.getTree());
-            char_literal79=(Token)match(input,24,FOLLOW_24_in_functionDefinition1555); if (state.failed) return retval;
+            char_literal79=(Token)match(input,24,FOLLOW_24_in_functionDefinition1558); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal79_tree = (Object)adaptor.create(char_literal79);
             adaptor.addChild(root_0, char_literal79_tree);
             }
-            char_literal80=(Token)match(input,25,FOLLOW_25_in_functionDefinition1557); if (state.failed) return retval;
+            char_literal80=(Token)match(input,25,FOLLOW_25_in_functionDefinition1560); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal80_tree = (Object)adaptor.create(char_literal80);
             adaptor.addChild(root_0, char_literal80_tree);
@@ -3145,7 +3151,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "exportationModifiers"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:564:1: exportationModifiers returns [List<Modifier> modifiers] : ( exportationModifier )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:571:1: exportationModifiers returns [List<Modifier> modifiers] : ( exportationModifier )* ;
     public final ObjCppParser.exportationModifiers_return exportationModifiers() throws RecognitionException {
         ObjCppParser.exportationModifiers_return retval = new ObjCppParser.exportationModifiers_return();
         retval.start = input.LT(1);
@@ -3157,24 +3163,24 @@ public class ObjCppParser extends Parser {
 
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:565:2: ( ( exportationModifier )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:565:5: ( exportationModifier )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:572:2: ( ( exportationModifier )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:572:5: ( exportationModifier )*
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.modifiers = new ArrayList<Declaration.Modifier>(); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:566:3: ( exportationModifier )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:573:3: ( exportationModifier )*
             loop42:
             do {
                 int alt42=2;
                 alt42 = dfa42.predict(input);
                 switch (alt42) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:567:4: exportationModifier
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:574:4: exportationModifier
             	    {
-            	    pushFollow(FOLLOW_exportationModifier_in_exportationModifiers1584);
+            	    pushFollow(FOLLOW_exportationModifier_in_exportationModifiers1587);
             	    exportationModifier81=exportationModifier();
 
             	    state._fsp--;
@@ -3224,7 +3230,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "exportationModifier"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:573:1: exportationModifier returns [List<Modifier> modifiers] : IDENTIFIER ({...}? | {...}? '(' extendedDeclModifiers ')' ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:580:1: exportationModifier returns [List<Modifier> modifiers] : IDENTIFIER ({...}? | {...}? '(' extendedDeclModifiers ')' ) ;
     public final ObjCppParser.exportationModifier_return exportationModifier() throws RecognitionException {
         ObjCppParser.exportationModifier_return retval = new ObjCppParser.exportationModifier_return();
         retval.start = input.LT(1);
@@ -3242,25 +3248,25 @@ public class ObjCppParser extends Parser {
         Object char_literal85_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:574:2: ( IDENTIFIER ({...}? | {...}? '(' extendedDeclModifiers ')' ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:574:5: IDENTIFIER ({...}? | {...}? '(' extendedDeclModifiers ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:581:2: ( IDENTIFIER ({...}? | {...}? '(' extendedDeclModifiers ')' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:581:5: IDENTIFIER ({...}? | {...}? '(' extendedDeclModifiers ')' )
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.modifiers = new ArrayList<Declaration.Modifier>(); 
             }
-            IDENTIFIER82=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_exportationModifier1613); if (state.failed) return retval;
+            IDENTIFIER82=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_exportationModifier1616); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             IDENTIFIER82_tree = (Object)adaptor.create(IDENTIFIER82);
             adaptor.addChild(root_0, IDENTIFIER82_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:575:14: ({...}? | {...}? '(' extendedDeclModifiers ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:582:14: ({...}? | {...}? '(' extendedDeclModifiers ')' )
             int alt43=2;
             alt43 = dfa43.predict(input);
             switch (alt43) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:576:4: {...}?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:583:4: {...}?
                     {
                     if ( !(( 	Declaration.getModifier((IDENTIFIER82!=null?IDENTIFIER82.getText():null)) != null ||
                     				Declaration.getExportationModifier((IDENTIFIER82!=null?IDENTIFIER82.getText():null)) != null
@@ -3280,24 +3286,24 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:584:4: {...}? '(' extendedDeclModifiers ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:591:4: {...}? '(' extendedDeclModifiers ')'
                     {
                     if ( !(( (IDENTIFIER82!=null?IDENTIFIER82.getText():null).equals("__declspec") || (IDENTIFIER82!=null?IDENTIFIER82.getText():null).equals("__attribute__") )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         throw new FailedPredicateException(input, "exportationModifier", " $IDENTIFIER.text.equals(\"__declspec\") || $IDENTIFIER.text.equals(\"__attribute__\") ");
                     }
-                    char_literal83=(Token)match(input,35,FOLLOW_35_in_exportationModifier1635); if (state.failed) return retval;
+                    char_literal83=(Token)match(input,35,FOLLOW_35_in_exportationModifier1638); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal83_tree = (Object)adaptor.create(char_literal83);
                     adaptor.addChild(root_0, char_literal83_tree);
                     }
-                    pushFollow(FOLLOW_extendedDeclModifiers_in_exportationModifier1637);
+                    pushFollow(FOLLOW_extendedDeclModifiers_in_exportationModifier1640);
                     extendedDeclModifiers84=extendedDeclModifiers();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, extendedDeclModifiers84.getTree());
-                    char_literal85=(Token)match(input,36,FOLLOW_36_in_exportationModifier1639); if (state.failed) return retval;
+                    char_literal85=(Token)match(input,36,FOLLOW_36_in_exportationModifier1642); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal85_tree = (Object)adaptor.create(char_literal85);
                     adaptor.addChild(root_0, char_literal85_tree);
@@ -3343,7 +3349,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "extendedDeclModifiers"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:592:1: extendedDeclModifiers returns [List<Function.Modifier> modifiers] : (i= IDENTIFIER ({...}?) )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:599:1: extendedDeclModifiers returns [List<Function.Modifier> modifiers] : (i= IDENTIFIER ({...}?) )* ;
     public final ObjCppParser.extendedDeclModifiers_return extendedDeclModifiers() throws RecognitionException {
         ObjCppParser.extendedDeclModifiers_return retval = new ObjCppParser.extendedDeclModifiers_return();
         retval.start = input.LT(1);
@@ -3355,15 +3361,15 @@ public class ObjCppParser extends Parser {
         Object i_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:593:2: ( (i= IDENTIFIER ({...}?) )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:593:4: (i= IDENTIFIER ({...}?) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:600:2: ( (i= IDENTIFIER ({...}?) )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:600:4: (i= IDENTIFIER ({...}?) )*
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.modifiers = new ArrayList<Declaration.Modifier>(); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:594:3: (i= IDENTIFIER ({...}?) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:601:3: (i= IDENTIFIER ({...}?) )*
             loop44:
             do {
                 int alt44=2;
@@ -3376,15 +3382,15 @@ public class ObjCppParser extends Parser {
 
                 switch (alt44) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:595:4: i= IDENTIFIER ({...}?)
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:602:4: i= IDENTIFIER ({...}?)
             	    {
-            	    i=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_extendedDeclModifiers1672); if (state.failed) return retval;
+            	    i=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_extendedDeclModifiers1675); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    i_tree = (Object)adaptor.create(i);
             	    adaptor.addChild(root_0, i_tree);
             	    }
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:596:4: ({...}?)
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:597:5: {...}?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:603:4: ({...}?)
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:604:5: {...}?
             	    {
             	    if ( !(( Declaration.getExtendedModifier((i!=null?i.getText():null)) != null )) ) {
             	        if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3437,7 +3443,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "argDef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:607:1: argDef returns [Arg arg] : ( typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )? | '...' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:614:1: argDef returns [Arg arg] : ( typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )? | '...' );
     public final ObjCppParser.argDef_return argDef() throws RecognitionException {
         ObjCppParser.argDef_return retval = new ObjCppParser.argDef_return();
         retval.start = input.LT(1);
@@ -3459,22 +3465,22 @@ public class ObjCppParser extends Parser {
         Object string_literal91_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:608:2: ( typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )? | '...' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:615:2: ( typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )? | '...' )
             int alt48=2;
             alt48 = dfa48.predict(input);
             switch (alt48) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:608:4: typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:615:4: typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )?
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_typeRef_in_argDef1711);
+                    pushFollow(FOLLOW_typeRef_in_argDef1714);
                     typeRef86=typeRef();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, typeRef86.getTree());
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:608:12: ( IDENTIFIER ( arrayTypeMutator )? )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:615:12: ( IDENTIFIER ( arrayTypeMutator )? )?
                     int alt46=2;
                     int LA46_0 = input.LA(1);
 
@@ -3483,14 +3489,14 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt46) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:608:13: IDENTIFIER ( arrayTypeMutator )?
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:615:13: IDENTIFIER ( arrayTypeMutator )?
                             {
-                            IDENTIFIER87=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_argDef1714); if (state.failed) return retval;
+                            IDENTIFIER87=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_argDef1717); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             IDENTIFIER87_tree = (Object)adaptor.create(IDENTIFIER87);
                             adaptor.addChild(root_0, IDENTIFIER87_tree);
                             }
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:608:24: ( arrayTypeMutator )?
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:615:24: ( arrayTypeMutator )?
                             int alt45=2;
                             int LA45_0 = input.LA(1);
 
@@ -3499,9 +3505,9 @@ public class ObjCppParser extends Parser {
                             }
                             switch (alt45) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: arrayTypeMutator
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: arrayTypeMutator
                                     {
-                                    pushFollow(FOLLOW_arrayTypeMutator_in_argDef1716);
+                                    pushFollow(FOLLOW_arrayTypeMutator_in_argDef1719);
                                     arrayTypeMutator88=arrayTypeMutator();
 
                                     state._fsp--;
@@ -3527,7 +3533,7 @@ public class ObjCppParser extends Parser {
                       			retval.arg = new Arg((IDENTIFIER87!=null?IDENTIFIER87.getText():null), type); 
                       		
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:614:3: ( '=' expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:621:3: ( '=' expression )?
                     int alt47=2;
                     int LA47_0 = input.LA(1);
 
@@ -3536,14 +3542,14 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt47) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:614:4: '=' expression
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:621:4: '=' expression
                             {
-                            char_literal89=(Token)match(input,30,FOLLOW_30_in_argDef1727); if (state.failed) return retval;
+                            char_literal89=(Token)match(input,30,FOLLOW_30_in_argDef1730); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal89_tree = (Object)adaptor.create(char_literal89);
                             adaptor.addChild(root_0, char_literal89_tree);
                             }
-                            pushFollow(FOLLOW_expression_in_argDef1729);
+                            pushFollow(FOLLOW_expression_in_argDef1732);
                             expression90=expression();
 
                             state._fsp--;
@@ -3564,11 +3570,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:618:3: '...'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:625:3: '...'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal91=(Token)match(input,45,FOLLOW_45_in_argDef1743); if (state.failed) return retval;
+                    string_literal91=(Token)match(input,45,FOLLOW_45_in_argDef1746); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal91_tree = (Object)adaptor.create(string_literal91);
                     adaptor.addChild(root_0, string_literal91_tree);
@@ -3610,7 +3616,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "varStorage"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:623:1: varStorage returns [VariableStorage storage] : ( ( 'const' | '__const' ) | '*' | '&' | '^' )* ( IDENTIFIER )? ( '[' ( expression )? ']' )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:630:1: varStorage returns [VariableStorage storage] : ( ( 'const' | '__const' ) | '*' | '&' | '^' )* ( IDENTIFIER )? ( '[' ( expression )? ']' )* ;
     public final ObjCppParser.varStorage_return varStorage() throws RecognitionException {
         ObjCppParser.varStorage_return retval = new ObjCppParser.varStorage_return();
         retval.start = input.LT(1);
@@ -3636,8 +3642,8 @@ public class ObjCppParser extends Parser {
         Object char_literal99_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:624:2: ( ( ( 'const' | '__const' ) | '*' | '&' | '^' )* ( IDENTIFIER )? ( '[' ( expression )? ']' )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:624:4: ( ( 'const' | '__const' ) | '*' | '&' | '^' )* ( IDENTIFIER )? ( '[' ( expression )? ']' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:631:2: ( ( ( 'const' | '__const' ) | '*' | '&' | '^' )* ( IDENTIFIER )? ( '[' ( expression )? ']' )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:631:4: ( ( 'const' | '__const' ) | '*' | '&' | '^' )* ( IDENTIFIER )? ( '[' ( expression )? ']' )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -3646,14 +3652,14 @@ public class ObjCppParser extends Parser {
               			retval.storage = new VariableStorage();
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:627:3: ( ( 'const' | '__const' ) | '*' | '&' | '^' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:634:3: ( ( 'const' | '__const' ) | '*' | '&' | '^' )*
             loop49:
             do {
                 int alt49=5;
                 alt49 = dfa49.predict(input);
                 switch (alt49) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:628:4: ( 'const' | '__const' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:635:4: ( 'const' | '__const' )
             	    {
             	    set92=(Token)input.LT(1);
             	    if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
@@ -3674,9 +3680,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:629:4: '*'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:636:4: '*'
             	    {
-            	    char_literal93=(Token)match(input,54,FOLLOW_54_in_varStorage1785); if (state.failed) return retval;
+            	    char_literal93=(Token)match(input,54,FOLLOW_54_in_varStorage1788); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal93_tree = (Object)adaptor.create(char_literal93);
             	    adaptor.addChild(root_0, char_literal93_tree);
@@ -3688,9 +3694,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:630:4: '&'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:637:4: '&'
             	    {
-            	    char_literal94=(Token)match(input,55,FOLLOW_55_in_varStorage1795); if (state.failed) return retval;
+            	    char_literal94=(Token)match(input,55,FOLLOW_55_in_varStorage1798); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal94_tree = (Object)adaptor.create(char_literal94);
             	    adaptor.addChild(root_0, char_literal94_tree);
@@ -3702,9 +3708,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 4 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:631:4: '^'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:638:4: '^'
             	    {
-            	    char_literal95=(Token)match(input,56,FOLLOW_56_in_varStorage1805); if (state.failed) return retval;
+            	    char_literal95=(Token)match(input,56,FOLLOW_56_in_varStorage1808); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal95_tree = (Object)adaptor.create(char_literal95);
             	    adaptor.addChild(root_0, char_literal95_tree);
@@ -3721,14 +3727,14 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:633:3: ( IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:640:3: ( IDENTIFIER )?
             int alt50=2;
             alt50 = dfa50.predict(input);
             switch (alt50) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: IDENTIFIER
                     {
-                    IDENTIFIER96=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_varStorage1817); if (state.failed) return retval;
+                    IDENTIFIER96=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_varStorage1820); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     IDENTIFIER96_tree = (Object)adaptor.create(IDENTIFIER96);
                     adaptor.addChild(root_0, IDENTIFIER96_tree);
@@ -3744,28 +3750,28 @@ public class ObjCppParser extends Parser {
               			retval.storage.setName((IDENTIFIER96!=null?IDENTIFIER96.getText():null)); 
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:636:3: ( '[' ( expression )? ']' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:643:3: ( '[' ( expression )? ']' )*
             loop52:
             do {
                 int alt52=2;
                 alt52 = dfa52.predict(input);
                 switch (alt52) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:637:4: '[' ( expression )? ']'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:4: '[' ( expression )? ']'
             	    {
-            	    char_literal97=(Token)match(input,57,FOLLOW_57_in_varStorage1830); if (state.failed) return retval;
+            	    char_literal97=(Token)match(input,57,FOLLOW_57_in_varStorage1833); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal97_tree = (Object)adaptor.create(char_literal97);
             	    adaptor.addChild(root_0, char_literal97_tree);
             	    }
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:637:8: ( expression )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:8: ( expression )?
             	    int alt51=2;
             	    alt51 = dfa51.predict(input);
             	    switch (alt51) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: expression
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: expression
             	            {
-            	            pushFollow(FOLLOW_expression_in_varStorage1832);
+            	            pushFollow(FOLLOW_expression_in_varStorage1835);
             	            expression98=expression();
 
             	            state._fsp--;
@@ -3777,7 +3783,7 @@ public class ObjCppParser extends Parser {
 
             	    }
 
-            	    char_literal99=(Token)match(input,58,FOLLOW_58_in_varStorage1835); if (state.failed) return retval;
+            	    char_literal99=(Token)match(input,58,FOLLOW_58_in_varStorage1838); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal99_tree = (Object)adaptor.create(char_literal99);
             	    adaptor.addChild(root_0, char_literal99_tree);
@@ -3829,7 +3835,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "varDecl"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:646:1: varDecl returns [StoredDeclarations decl] : tr= plainTypeRef varStoragesWithInit ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:653:1: varDecl returns [StoredDeclarations decl] : tr= plainTypeRef varStoragesWithInit ';' ;
     public final ObjCppParser.varDecl_return varDecl() throws RecognitionException {
         ObjCppParser.varDecl_return retval = new ObjCppParser.varDecl_return();
         retval.start = input.LT(1);
@@ -3845,12 +3851,12 @@ public class ObjCppParser extends Parser {
         Object char_literal101_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:647:2: (tr= plainTypeRef varStoragesWithInit ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:648:3: tr= plainTypeRef varStoragesWithInit ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:654:2: (tr= plainTypeRef varStoragesWithInit ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:655:3: tr= plainTypeRef varStoragesWithInit ';'
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_plainTypeRef_in_varDecl1862);
+            pushFollow(FOLLOW_plainTypeRef_in_varDecl1865);
             tr=plainTypeRef();
 
             state._fsp--;
@@ -3862,7 +3868,7 @@ public class ObjCppParser extends Parser {
               			retval.decl.setValueType((tr!=null?tr.type:null));
               		
             }
-            pushFollow(FOLLOW_varStoragesWithInit_in_varDecl1868);
+            pushFollow(FOLLOW_varStoragesWithInit_in_varDecl1871);
             varStoragesWithInit100=varStoragesWithInit();
 
             state._fsp--;
@@ -3881,7 +3887,7 @@ public class ObjCppParser extends Parser {
               				retval.decl.addVariableStorage(s);
               		
             }
-            char_literal101=(Token)match(input,29,FOLLOW_29_in_varDecl1874); if (state.failed) return retval;
+            char_literal101=(Token)match(input,29,FOLLOW_29_in_varDecl1877); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal101_tree = (Object)adaptor.create(char_literal101);
             adaptor.addChild(root_0, char_literal101_tree);
@@ -3916,7 +3922,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "varStoragesWithInit"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:666:1: varStoragesWithInit returns [List<VariableStorage> storages] : v1= varStorage ( '=' e1= expression )? ( ',' vx= varStorage ( '=' ex= expression )? )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:673:1: varStoragesWithInit returns [List<VariableStorage> storages] : v1= varStorage ( '=' e1= expression )? ( ',' vx= varStorage ( '=' ex= expression )? )* ;
     public final ObjCppParser.varStoragesWithInit_return varStoragesWithInit() throws RecognitionException {
         ObjCppParser.varStoragesWithInit_return retval = new ObjCppParser.varStoragesWithInit_return();
         retval.start = input.LT(1);
@@ -3940,33 +3946,33 @@ public class ObjCppParser extends Parser {
         Object char_literal104_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:667:2: (v1= varStorage ( '=' e1= expression )? ( ',' vx= varStorage ( '=' ex= expression )? )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:667:4: v1= varStorage ( '=' e1= expression )? ( ',' vx= varStorage ( '=' ex= expression )? )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:674:2: (v1= varStorage ( '=' e1= expression )? ( ',' vx= varStorage ( '=' ex= expression )? )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:674:4: v1= varStorage ( '=' e1= expression )? ( ',' vx= varStorage ( '=' ex= expression )? )*
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.storages = new ArrayList<VariableStorage>(); 
             }
-            pushFollow(FOLLOW_varStorage_in_varStoragesWithInit1895);
+            pushFollow(FOLLOW_varStorage_in_varStoragesWithInit1898);
             v1=varStorage();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, v1.getTree());
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:668:17: ( '=' e1= expression )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:675:17: ( '=' e1= expression )?
             int alt53=2;
             alt53 = dfa53.predict(input);
             switch (alt53) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:668:18: '=' e1= expression
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:675:18: '=' e1= expression
                     {
-                    char_literal102=(Token)match(input,30,FOLLOW_30_in_varStoragesWithInit1898); if (state.failed) return retval;
+                    char_literal102=(Token)match(input,30,FOLLOW_30_in_varStoragesWithInit1901); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal102_tree = (Object)adaptor.create(char_literal102);
                     adaptor.addChild(root_0, char_literal102_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_varStoragesWithInit1902);
+                    pushFollow(FOLLOW_expression_in_varStoragesWithInit1905);
                     e1=expression();
 
                     state._fsp--;
@@ -3986,39 +3992,39 @@ public class ObjCppParser extends Parser {
               			retval.storages.add((v1!=null?v1.storage:null));
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:671:3: ( ',' vx= varStorage ( '=' ex= expression )? )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:678:3: ( ',' vx= varStorage ( '=' ex= expression )? )*
             loop55:
             do {
                 int alt55=2;
                 alt55 = dfa55.predict(input);
                 switch (alt55) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:4: ',' vx= varStorage ( '=' ex= expression )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:4: ',' vx= varStorage ( '=' ex= expression )?
             	    {
-            	    char_literal103=(Token)match(input,28,FOLLOW_28_in_varStoragesWithInit1917); if (state.failed) return retval;
+            	    char_literal103=(Token)match(input,28,FOLLOW_28_in_varStoragesWithInit1920); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal103_tree = (Object)adaptor.create(char_literal103);
             	    adaptor.addChild(root_0, char_literal103_tree);
             	    }
-            	    pushFollow(FOLLOW_varStorage_in_varStoragesWithInit1921);
+            	    pushFollow(FOLLOW_varStorage_in_varStoragesWithInit1924);
             	    vx=varStorage();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
             	    if ( state.backtracking==0 ) adaptor.addChild(root_0, vx.getTree());
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:22: ( '=' ex= expression )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:22: ( '=' ex= expression )?
             	    int alt54=2;
             	    alt54 = dfa54.predict(input);
             	    switch (alt54) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:23: '=' ex= expression
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:23: '=' ex= expression
             	            {
-            	            char_literal104=(Token)match(input,30,FOLLOW_30_in_varStoragesWithInit1924); if (state.failed) return retval;
+            	            char_literal104=(Token)match(input,30,FOLLOW_30_in_varStoragesWithInit1927); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            char_literal104_tree = (Object)adaptor.create(char_literal104);
             	            adaptor.addChild(root_0, char_literal104_tree);
             	            }
-            	            pushFollow(FOLLOW_expression_in_varStoragesWithInit1928);
+            	            pushFollow(FOLLOW_expression_in_varStoragesWithInit1931);
             	            ex=expression();
 
             	            state._fsp--;
@@ -4077,7 +4083,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "typeDef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:678:1: typeDef returns [TypeDef declarations] : t= 'typedef' plainTypeRef v1= varStorage ( ',' vx= varStorage )* ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:685:1: typeDef returns [TypeDef declarations] : t= 'typedef' plainTypeRef v1= varStorage ( ',' vx= varStorage )* ';' ;
     public final ObjCppParser.typeDef_return typeDef() throws RecognitionException {
         ObjCppParser.typeDef_return retval = new ObjCppParser.typeDef_return();
         retval.start = input.LT(1);
@@ -4099,17 +4105,17 @@ public class ObjCppParser extends Parser {
         Object char_literal107_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:679:2: (t= 'typedef' plainTypeRef v1= varStorage ( ',' vx= varStorage )* ';' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:680:3: t= 'typedef' plainTypeRef v1= varStorage ( ',' vx= varStorage )* ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:686:2: (t= 'typedef' plainTypeRef v1= varStorage ( ',' vx= varStorage )* ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:687:3: t= 'typedef' plainTypeRef v1= varStorage ( ',' vx= varStorage )* ';'
             {
             root_0 = (Object)adaptor.nil();
 
-            t=(Token)match(input,59,FOLLOW_59_in_typeDef1960); if (state.failed) return retval;
+            t=(Token)match(input,59,FOLLOW_59_in_typeDef1963); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             t_tree = (Object)adaptor.create(t);
             adaptor.addChild(root_0, t_tree);
             }
-            pushFollow(FOLLOW_plainTypeRef_in_typeDef1965);
+            pushFollow(FOLLOW_plainTypeRef_in_typeDef1968);
             plainTypeRef105=plainTypeRef();
 
             state._fsp--;
@@ -4122,7 +4128,7 @@ public class ObjCppParser extends Parser {
               			retval.declarations.setValueType((plainTypeRef105!=null?plainTypeRef105.type:null));
               		
             }
-            pushFollow(FOLLOW_varStorage_in_typeDef1973);
+            pushFollow(FOLLOW_varStorage_in_typeDef1976);
             v1=varStorage();
 
             state._fsp--;
@@ -4131,7 +4137,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.declarations.addVariableStorage((v1!=null?v1.storage:null)); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:687:3: ( ',' vx= varStorage )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:694:3: ( ',' vx= varStorage )*
             loop56:
             do {
                 int alt56=2;
@@ -4144,14 +4150,14 @@ public class ObjCppParser extends Parser {
 
                 switch (alt56) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:687:4: ',' vx= varStorage
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:694:4: ',' vx= varStorage
             	    {
-            	    char_literal106=(Token)match(input,28,FOLLOW_28_in_typeDef1980); if (state.failed) return retval;
+            	    char_literal106=(Token)match(input,28,FOLLOW_28_in_typeDef1983); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal106_tree = (Object)adaptor.create(char_literal106);
             	    adaptor.addChild(root_0, char_literal106_tree);
             	    }
-            	    pushFollow(FOLLOW_varStorage_in_typeDef1984);
+            	    pushFollow(FOLLOW_varStorage_in_typeDef1987);
             	    vx=varStorage();
 
             	    state._fsp--;
@@ -4169,7 +4175,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal107=(Token)match(input,29,FOLLOW_29_in_typeDef1992); if (state.failed) return retval;
+            char_literal107=(Token)match(input,29,FOLLOW_29_in_typeDef1995); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal107_tree = (Object)adaptor.create(char_literal107);
             adaptor.addChild(root_0, char_literal107_tree);
@@ -4204,7 +4210,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "typeMutator"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:691:1: typeMutator returns [TypeMutator mutator] : ( ( 'const' | '__const' ) '*' | '*' | '&' | '[' ']' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:698:1: typeMutator returns [TypeMutator mutator] : ( ( 'const' | '__const' ) '*' | '*' | '&' | '[' ']' );
     public final ObjCppParser.typeMutator_return typeMutator() throws RecognitionException {
         ObjCppParser.typeMutator_return retval = new ObjCppParser.typeMutator_return();
         retval.start = input.LT(1);
@@ -4226,7 +4232,7 @@ public class ObjCppParser extends Parser {
         Object char_literal113_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:692:2: ( ( 'const' | '__const' ) '*' | '*' | '&' | '[' ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:699:2: ( ( 'const' | '__const' ) '*' | '*' | '&' | '[' ']' )
             int alt57=4;
             switch ( input.LA(1) ) {
             case 52:
@@ -4260,7 +4266,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt57) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:692:4: ( 'const' | '__const' ) '*'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:699:4: ( 'const' | '__const' ) '*'
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4276,7 +4282,7 @@ public class ObjCppParser extends Parser {
                         throw mse;
                     }
 
-                    char_literal109=(Token)match(input,54,FOLLOW_54_in_typeMutator2016); if (state.failed) return retval;
+                    char_literal109=(Token)match(input,54,FOLLOW_54_in_typeMutator2019); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal109_tree = (Object)adaptor.create(char_literal109);
                     adaptor.addChild(root_0, char_literal109_tree);
@@ -4288,11 +4294,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:693:3: '*'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:700:3: '*'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    char_literal110=(Token)match(input,54,FOLLOW_54_in_typeMutator2024); if (state.failed) return retval;
+                    char_literal110=(Token)match(input,54,FOLLOW_54_in_typeMutator2027); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal110_tree = (Object)adaptor.create(char_literal110);
                     adaptor.addChild(root_0, char_literal110_tree);
@@ -4304,11 +4310,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:694:3: '&'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:701:3: '&'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    char_literal111=(Token)match(input,55,FOLLOW_55_in_typeMutator2032); if (state.failed) return retval;
+                    char_literal111=(Token)match(input,55,FOLLOW_55_in_typeMutator2035); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal111_tree = (Object)adaptor.create(char_literal111);
                     adaptor.addChild(root_0, char_literal111_tree);
@@ -4320,16 +4326,16 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:695:3: '[' ']'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:702:3: '[' ']'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    char_literal112=(Token)match(input,57,FOLLOW_57_in_typeMutator2041); if (state.failed) return retval;
+                    char_literal112=(Token)match(input,57,FOLLOW_57_in_typeMutator2044); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal112_tree = (Object)adaptor.create(char_literal112);
                     adaptor.addChild(root_0, char_literal112_tree);
                     }
-                    char_literal113=(Token)match(input,58,FOLLOW_58_in_typeMutator2043); if (state.failed) return retval;
+                    char_literal113=(Token)match(input,58,FOLLOW_58_in_typeMutator2046); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal113_tree = (Object)adaptor.create(char_literal113);
                     adaptor.addChild(root_0, char_literal113_tree);
@@ -4369,7 +4375,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "arrayTypeMutator"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:698:1: arrayTypeMutator returns [TypeMutator mutator] : '[' expression ']' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:705:1: arrayTypeMutator returns [TypeMutator mutator] : '[' expression ']' ;
     public final ObjCppParser.arrayTypeMutator_return arrayTypeMutator() throws RecognitionException {
         ObjCppParser.arrayTypeMutator_return retval = new ObjCppParser.arrayTypeMutator_return();
         retval.start = input.LT(1);
@@ -4385,17 +4391,17 @@ public class ObjCppParser extends Parser {
         Object char_literal116_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:699:2: ( '[' expression ']' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:699:4: '[' expression ']'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:706:2: ( '[' expression ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:706:4: '[' expression ']'
             {
             root_0 = (Object)adaptor.nil();
 
-            char_literal114=(Token)match(input,57,FOLLOW_57_in_arrayTypeMutator2061); if (state.failed) return retval;
+            char_literal114=(Token)match(input,57,FOLLOW_57_in_arrayTypeMutator2064); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal114_tree = (Object)adaptor.create(char_literal114);
             adaptor.addChild(root_0, char_literal114_tree);
             }
-            pushFollow(FOLLOW_expression_in_arrayTypeMutator2067);
+            pushFollow(FOLLOW_expression_in_arrayTypeMutator2070);
             expression115=expression();
 
             state._fsp--;
@@ -4406,7 +4412,7 @@ public class ObjCppParser extends Parser {
               				retval.mutator = TypeMutator.array((expression115!=null?expression115.expr:null)); 
               			
             }
-            char_literal116=(Token)match(input,58,FOLLOW_58_in_arrayTypeMutator2076); if (state.failed) return retval;
+            char_literal116=(Token)match(input,58,FOLLOW_58_in_arrayTypeMutator2079); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal116_tree = (Object)adaptor.create(char_literal116);
             adaptor.addChild(root_0, char_literal116_tree);
@@ -4441,7 +4447,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "typeRefCore"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:706:1: typeRefCore returns [TypeRef type] : (ct= ( 'const' | '__const' ) )? (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:713:1: typeRefCore returns [TypeRef type] : (ct= ( 'const' | '__const' ) )? (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) ) ;
     public final ObjCppParser.typeRefCore_return typeRefCore() throws RecognitionException {
         ObjCppParser.typeRefCore_return retval = new ObjCppParser.typeRefCore_return();
         retval.start = input.LT(1);
@@ -4471,12 +4477,12 @@ public class ObjCppParser extends Parser {
         Object char_literal121_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:707:2: ( (ct= ( 'const' | '__const' ) )? (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:707:4: (ct= ( 'const' | '__const' ) )? (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:714:2: ( (ct= ( 'const' | '__const' ) )? (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:714:4: (ct= ( 'const' | '__const' ) )? (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) )
             {
             root_0 = (Object)adaptor.nil();
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:707:6: (ct= ( 'const' | '__const' ) )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:714:6: (ct= ( 'const' | '__const' ) )?
             int alt58=2;
             int LA58_0 = input.LA(1);
 
@@ -4485,7 +4491,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt58) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: ct= ( 'const' | '__const' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: ct= ( 'const' | '__const' )
                     {
                     ct=(Token)input.LT(1);
                     if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
@@ -4505,7 +4511,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:708:3: (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:715:3: (mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef | ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) ) )
             int alt63=2;
             int LA63_0 = input.LA(1);
 
@@ -4524,7 +4530,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt63) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:709:4: mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:716:4: mod= ( 'typename' | 'struct' | 'class' ) tr= typeRef
                     {
                     mod=(Token)input.LT(1);
                     if ( (input.LA(1)>=46 && input.LA(1)<=47)||input.LA(1)==60 ) {
@@ -4538,7 +4544,7 @@ public class ObjCppParser extends Parser {
                         throw mse;
                     }
 
-                    pushFollow(FOLLOW_typeRef_in_typeRefCore2127);
+                    pushFollow(FOLLOW_typeRef_in_typeRefCore2130);
                     tr=typeRef();
 
                     state._fsp--;
@@ -4553,9 +4559,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:712:5: ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:719:5: ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) )
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:712:5: ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:719:5: ( primitiveTypeRef | IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' ) )
                     int alt62=2;
                     int LA62_0 = input.LA(1);
 
@@ -4574,9 +4580,9 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt62) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:713:5: primitiveTypeRef
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:720:5: primitiveTypeRef
                             {
-                            pushFollow(FOLLOW_primitiveTypeRef_in_typeRefCore2144);
+                            pushFollow(FOLLOW_primitiveTypeRef_in_typeRefCore2147);
                             primitiveTypeRef117=primitiveTypeRef();
 
                             state._fsp--;
@@ -4589,19 +4595,19 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:714:5: IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' )
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:721:5: IDENTIFIER ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' )
                             {
-                            IDENTIFIER118=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_typeRefCore2155); if (state.failed) return retval;
+                            IDENTIFIER118=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_typeRefCore2158); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             IDENTIFIER118_tree = (Object)adaptor.create(IDENTIFIER118);
                             adaptor.addChild(root_0, IDENTIFIER118_tree);
                             }
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:714:16: ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' )
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:721:16: ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' )
                             int alt61=2;
                             alt61 = dfa61.predict(input);
                             switch (alt61) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:715:6: 
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:722:6: 
                                     {
                                     if ( state.backtracking==0 ) {
                                        retval.type = new SimpleTypeRef((IDENTIFIER118!=null?IDENTIFIER118.getText():null)); 
@@ -4610,9 +4616,9 @@ public class ObjCppParser extends Parser {
                                     }
                                     break;
                                 case 2 :
-                                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:716:6: '<' (t1= typeRef ( ',' tx= typeRef )* )? '>'
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:723:6: '<' (t1= typeRef ( ',' tx= typeRef )* )? '>'
                                     {
-                                    char_literal119=(Token)match(input,37,FOLLOW_37_in_typeRefCore2173); if (state.failed) return retval;
+                                    char_literal119=(Token)match(input,37,FOLLOW_37_in_typeRefCore2176); if (state.failed) return retval;
                                     if ( state.backtracking==0 ) {
                                     char_literal119_tree = (Object)adaptor.create(char_literal119);
                                     adaptor.addChild(root_0, char_literal119_tree);
@@ -4620,14 +4626,14 @@ public class ObjCppParser extends Parser {
                                     if ( state.backtracking==0 ) {
                                        retval.type = new TemplateRef((IDENTIFIER118!=null?IDENTIFIER118.getText():null)); 
                                     }
-                                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:717:7: (t1= typeRef ( ',' tx= typeRef )* )?
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:724:7: (t1= typeRef ( ',' tx= typeRef )* )?
                                     int alt60=2;
                                     alt60 = dfa60.predict(input);
                                     switch (alt60) {
                                         case 1 :
-                                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:718:8: t1= typeRef ( ',' tx= typeRef )*
+                                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:725:8: t1= typeRef ( ',' tx= typeRef )*
                                             {
-                                            pushFollow(FOLLOW_typeRef_in_typeRefCore2194);
+                                            pushFollow(FOLLOW_typeRef_in_typeRefCore2197);
                                             t1=typeRef();
 
                                             state._fsp--;
@@ -4636,7 +4642,7 @@ public class ObjCppParser extends Parser {
                                             if ( state.backtracking==0 ) {
                                                ((TemplateRef)retval.type).addParameter((t1!=null?t1.type:null)); 
                                             }
-                                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:719:8: ( ',' tx= typeRef )*
+                                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:726:8: ( ',' tx= typeRef )*
                                             loop59:
                                             do {
                                                 int alt59=2;
@@ -4649,14 +4655,14 @@ public class ObjCppParser extends Parser {
 
                                                 switch (alt59) {
                                             	case 1 :
-                                            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:720:9: ',' tx= typeRef
+                                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:727:9: ',' tx= typeRef
                                             	    {
-                                            	    char_literal120=(Token)match(input,28,FOLLOW_28_in_typeRefCore2215); if (state.failed) return retval;
+                                            	    char_literal120=(Token)match(input,28,FOLLOW_28_in_typeRefCore2218); if (state.failed) return retval;
                                             	    if ( state.backtracking==0 ) {
                                             	    char_literal120_tree = (Object)adaptor.create(char_literal120);
                                             	    adaptor.addChild(root_0, char_literal120_tree);
                                             	    }
-                                            	    pushFollow(FOLLOW_typeRef_in_typeRefCore2228);
+                                            	    pushFollow(FOLLOW_typeRef_in_typeRefCore2231);
                                             	    tx=typeRef();
 
                                             	    state._fsp--;
@@ -4680,7 +4686,7 @@ public class ObjCppParser extends Parser {
 
                                     }
 
-                                    char_literal121=(Token)match(input,38,FOLLOW_38_in_typeRefCore2256); if (state.failed) return retval;
+                                    char_literal121=(Token)match(input,38,FOLLOW_38_in_typeRefCore2259); if (state.failed) return retval;
                                     if ( state.backtracking==0 ) {
                                     char_literal121_tree = (Object)adaptor.create(char_literal121);
                                     adaptor.addChild(root_0, char_literal121_tree);
@@ -4743,7 +4749,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "templateDef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:735:1: templateDef : ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef | functionDefinition );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:742:1: templateDef : ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef | functionDefinition );
     public final ObjCppParser.templateDef_return templateDef() throws RecognitionException {
         ObjCppParser.templateDef_return retval = new ObjCppParser.templateDef_return();
         retval.start = input.LT(1);
@@ -4769,26 +4775,26 @@ public class ObjCppParser extends Parser {
         Object char_literal127_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:736:2: ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef | functionDefinition )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:743:2: ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef | functionDefinition )
             int alt66=2;
             alt66 = dfa66.predict(input);
             switch (alt66) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:736:4: 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:743:4: 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal122=(Token)match(input,61,FOLLOW_61_in_templateDef2288); if (state.failed) return retval;
+                    string_literal122=(Token)match(input,61,FOLLOW_61_in_templateDef2291); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal122_tree = (Object)adaptor.create(string_literal122);
                     adaptor.addChild(root_0, string_literal122_tree);
                     }
-                    char_literal123=(Token)match(input,37,FOLLOW_37_in_templateDef2290); if (state.failed) return retval;
+                    char_literal123=(Token)match(input,37,FOLLOW_37_in_templateDef2293); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal123_tree = (Object)adaptor.create(char_literal123);
                     adaptor.addChild(root_0, char_literal123_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:736:19: ( templateArgDecl ( ',' templateArgDecl )* )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:743:19: ( templateArgDecl ( ',' templateArgDecl )* )?
                     int alt65=2;
                     int LA65_0 = input.LA(1);
 
@@ -4797,15 +4803,15 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt65) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:736:20: templateArgDecl ( ',' templateArgDecl )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:743:20: templateArgDecl ( ',' templateArgDecl )*
                             {
-                            pushFollow(FOLLOW_templateArgDecl_in_templateDef2293);
+                            pushFollow(FOLLOW_templateArgDecl_in_templateDef2296);
                             templateArgDecl124=templateArgDecl();
 
                             state._fsp--;
                             if (state.failed) return retval;
                             if ( state.backtracking==0 ) adaptor.addChild(root_0, templateArgDecl124.getTree());
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:736:36: ( ',' templateArgDecl )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:743:36: ( ',' templateArgDecl )*
                             loop64:
                             do {
                                 int alt64=2;
@@ -4818,14 +4824,14 @@ public class ObjCppParser extends Parser {
 
                                 switch (alt64) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:736:37: ',' templateArgDecl
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:743:37: ',' templateArgDecl
                             	    {
-                            	    char_literal125=(Token)match(input,28,FOLLOW_28_in_templateDef2296); if (state.failed) return retval;
+                            	    char_literal125=(Token)match(input,28,FOLLOW_28_in_templateDef2299); if (state.failed) return retval;
                             	    if ( state.backtracking==0 ) {
                             	    char_literal125_tree = (Object)adaptor.create(char_literal125);
                             	    adaptor.addChild(root_0, char_literal125_tree);
                             	    }
-                            	    pushFollow(FOLLOW_templateArgDecl_in_templateDef2298);
+                            	    pushFollow(FOLLOW_templateArgDecl_in_templateDef2301);
                             	    templateArgDecl126=templateArgDecl();
 
                             	    state._fsp--;
@@ -4846,12 +4852,12 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal127=(Token)match(input,38,FOLLOW_38_in_templateDef2305); if (state.failed) return retval;
+                    char_literal127=(Token)match(input,38,FOLLOW_38_in_templateDef2308); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal127_tree = (Object)adaptor.create(char_literal127);
                     adaptor.addChild(root_0, char_literal127_tree);
                     }
-                    pushFollow(FOLLOW_structDef_in_templateDef2309);
+                    pushFollow(FOLLOW_structDef_in_templateDef2312);
                     structDef128=structDef();
 
                     state._fsp--;
@@ -4861,11 +4867,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:737:15: functionDefinition
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:744:15: functionDefinition
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_functionDefinition_in_templateDef2313);
+                    pushFollow(FOLLOW_functionDefinition_in_templateDef2316);
                     functionDefinition129=functionDefinition();
 
                     state._fsp--;
@@ -4902,7 +4908,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "templateArgDecl"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:740:1: templateArgDecl : ( primitiveTypeRef ( '=' constant ) | ( 'typename' | 'class' ) IDENTIFIER ( '=' typeRef ) );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:747:1: templateArgDecl : ( primitiveTypeRef ( '=' constant ) | ( 'typename' | 'class' ) IDENTIFIER ( '=' typeRef ) );
     public final ObjCppParser.templateArgDecl_return templateArgDecl() throws RecognitionException {
         ObjCppParser.templateArgDecl_return retval = new ObjCppParser.templateArgDecl_return();
         retval.start = input.LT(1);
@@ -4926,7 +4932,7 @@ public class ObjCppParser extends Parser {
         Object char_literal135_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:741:2: ( primitiveTypeRef ( '=' constant ) | ( 'typename' | 'class' ) IDENTIFIER ( '=' typeRef ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:748:2: ( primitiveTypeRef ( '=' constant ) | ( 'typename' | 'class' ) IDENTIFIER ( '=' typeRef ) )
             int alt67=2;
             int LA67_0 = input.LA(1);
 
@@ -4945,25 +4951,25 @@ public class ObjCppParser extends Parser {
             }
             switch (alt67) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:741:4: primitiveTypeRef ( '=' constant )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:748:4: primitiveTypeRef ( '=' constant )
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_primitiveTypeRef_in_templateArgDecl2325);
+                    pushFollow(FOLLOW_primitiveTypeRef_in_templateArgDecl2328);
                     primitiveTypeRef130=primitiveTypeRef();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, primitiveTypeRef130.getTree());
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:741:21: ( '=' constant )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:741:22: '=' constant
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:748:21: ( '=' constant )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:748:22: '=' constant
                     {
-                    char_literal131=(Token)match(input,30,FOLLOW_30_in_templateArgDecl2328); if (state.failed) return retval;
+                    char_literal131=(Token)match(input,30,FOLLOW_30_in_templateArgDecl2331); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal131_tree = (Object)adaptor.create(char_literal131);
                     adaptor.addChild(root_0, char_literal131_tree);
                     }
-                    pushFollow(FOLLOW_constant_in_templateArgDecl2330);
+                    pushFollow(FOLLOW_constant_in_templateArgDecl2333);
                     constant132=constant();
 
                     state._fsp--;
@@ -4976,7 +4982,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:742:3: ( 'typename' | 'class' ) IDENTIFIER ( '=' typeRef )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:749:3: ( 'typename' | 'class' ) IDENTIFIER ( '=' typeRef )
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4992,20 +4998,20 @@ public class ObjCppParser extends Parser {
                         throw mse;
                     }
 
-                    IDENTIFIER134=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_templateArgDecl2345); if (state.failed) return retval;
+                    IDENTIFIER134=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_templateArgDecl2348); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     IDENTIFIER134_tree = (Object)adaptor.create(IDENTIFIER134);
                     adaptor.addChild(root_0, IDENTIFIER134_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:742:37: ( '=' typeRef )
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:742:38: '=' typeRef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:749:37: ( '=' typeRef )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:749:38: '=' typeRef
                     {
-                    char_literal135=(Token)match(input,30,FOLLOW_30_in_templateArgDecl2348); if (state.failed) return retval;
+                    char_literal135=(Token)match(input,30,FOLLOW_30_in_templateArgDecl2351); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal135_tree = (Object)adaptor.create(char_literal135);
                     adaptor.addChild(root_0, char_literal135_tree);
                     }
-                    pushFollow(FOLLOW_typeRef_in_templateArgDecl2350);
+                    pushFollow(FOLLOW_typeRef_in_templateArgDecl2353);
                     typeRef136=typeRef();
 
                     state._fsp--;
@@ -5046,7 +5052,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "functionSignatureSuffix"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:745:1: functionSignatureSuffix returns [FunctionSignature signature] : tk= '(' exportationModifiers '*' ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:752:1: functionSignatureSuffix returns [FunctionSignature signature] : tk= '(' exportationModifiers '*' ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' ;
     public final ObjCppParser.functionSignatureSuffix_return functionSignatureSuffix() throws RecognitionException {
         ObjCppParser.functionSignatureSuffix_return retval = new ObjCppParser.functionSignatureSuffix_return();
         retval.start = input.LT(1);
@@ -5076,28 +5082,28 @@ public class ObjCppParser extends Parser {
         Object char_literal143_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:746:2: (tk= '(' exportationModifiers '*' ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:746:4: tk= '(' exportationModifiers '*' ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:753:2: (tk= '(' exportationModifiers '*' ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:753:4: tk= '(' exportationModifiers '*' ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')'
             {
             root_0 = (Object)adaptor.nil();
 
-            tk=(Token)match(input,35,FOLLOW_35_in_functionSignatureSuffix2369); if (state.failed) return retval;
+            tk=(Token)match(input,35,FOLLOW_35_in_functionSignatureSuffix2372); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             tk_tree = (Object)adaptor.create(tk);
             adaptor.addChild(root_0, tk_tree);
             }
-            pushFollow(FOLLOW_exportationModifiers_in_functionSignatureSuffix2371);
+            pushFollow(FOLLOW_exportationModifiers_in_functionSignatureSuffix2374);
             exportationModifiers137=exportationModifiers();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, exportationModifiers137.getTree());
-            char_literal138=(Token)match(input,54,FOLLOW_54_in_functionSignatureSuffix2373); if (state.failed) return retval;
+            char_literal138=(Token)match(input,54,FOLLOW_54_in_functionSignatureSuffix2376); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal138_tree = (Object)adaptor.create(char_literal138);
             adaptor.addChild(root_0, char_literal138_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:746:36: ( IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:753:36: ( IDENTIFIER )?
             int alt68=2;
             int LA68_0 = input.LA(1);
 
@@ -5106,9 +5112,9 @@ public class ObjCppParser extends Parser {
             }
             switch (alt68) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: IDENTIFIER
                     {
-                    IDENTIFIER139=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_functionSignatureSuffix2375); if (state.failed) return retval;
+                    IDENTIFIER139=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_functionSignatureSuffix2378); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     IDENTIFIER139_tree = (Object)adaptor.create(IDENTIFIER139);
                     adaptor.addChild(root_0, IDENTIFIER139_tree);
@@ -5119,7 +5125,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal140=(Token)match(input,36,FOLLOW_36_in_functionSignatureSuffix2378); if (state.failed) return retval;
+            char_literal140=(Token)match(input,36,FOLLOW_36_in_functionSignatureSuffix2381); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal140_tree = (Object)adaptor.create(char_literal140);
             adaptor.addChild(root_0, char_literal140_tree);
@@ -5131,19 +5137,19 @@ public class ObjCppParser extends Parser {
               			retval.signature.getFunction().addModifiers((exportationModifiers137!=null?exportationModifiers137.modifiers:null));
               		
             }
-            char_literal141=(Token)match(input,35,FOLLOW_35_in_functionSignatureSuffix2384); if (state.failed) return retval;
+            char_literal141=(Token)match(input,35,FOLLOW_35_in_functionSignatureSuffix2387); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal141_tree = (Object)adaptor.create(char_literal141);
             adaptor.addChild(root_0, char_literal141_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:751:7: (a1= argDef ( ',' ax= argDef )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:758:7: (a1= argDef ( ',' ax= argDef )* )?
             int alt70=2;
             alt70 = dfa70.predict(input);
             switch (alt70) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:752:4: a1= argDef ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:759:4: a1= argDef ( ',' ax= argDef )*
                     {
-                    pushFollow(FOLLOW_argDef_in_functionSignatureSuffix2393);
+                    pushFollow(FOLLOW_argDef_in_functionSignatureSuffix2396);
                     a1=argDef();
 
                     state._fsp--;
@@ -5155,7 +5161,7 @@ public class ObjCppParser extends Parser {
                       					((FunctionSignature)retval.signature).getFunction().addArg((a1!=null?a1.arg:null)); 
                       			
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:756:4: ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:4: ( ',' ax= argDef )*
                     loop69:
                     do {
                         int alt69=2;
@@ -5168,14 +5174,14 @@ public class ObjCppParser extends Parser {
 
                         switch (alt69) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:757:5: ',' ax= argDef
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:764:5: ',' ax= argDef
                     	    {
-                    	    char_literal142=(Token)match(input,28,FOLLOW_28_in_functionSignatureSuffix2406); if (state.failed) return retval;
+                    	    char_literal142=(Token)match(input,28,FOLLOW_28_in_functionSignatureSuffix2409); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal142_tree = (Object)adaptor.create(char_literal142);
                     	    adaptor.addChild(root_0, char_literal142_tree);
                     	    }
-                    	    pushFollow(FOLLOW_argDef_in_functionSignatureSuffix2415);
+                    	    pushFollow(FOLLOW_argDef_in_functionSignatureSuffix2418);
                     	    ax=argDef();
 
                     	    state._fsp--;
@@ -5201,7 +5207,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal143=(Token)match(input,36,FOLLOW_36_in_functionSignatureSuffix2430); if (state.failed) return retval;
+            char_literal143=(Token)match(input,36,FOLLOW_36_in_functionSignatureSuffix2433); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal143_tree = (Object)adaptor.create(char_literal143);
             adaptor.addChild(root_0, char_literal143_tree);
@@ -5236,7 +5242,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "plainTypeRef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:765:1: plainTypeRef returns [TypeRef type] : ( structCore | enumCore | typeRefCore ( functionSignatureSuffix )? );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:772:1: plainTypeRef returns [TypeRef type] : ( structCore | enumCore | typeRefCore ( functionSignatureSuffix )? );
     public final ObjCppParser.plainTypeRef_return plainTypeRef() throws RecognitionException {
         ObjCppParser.plainTypeRef_return retval = new ObjCppParser.plainTypeRef_return();
         retval.start = input.LT(1);
@@ -5254,16 +5260,16 @@ public class ObjCppParser extends Parser {
 
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:766:2: ( structCore | enumCore | typeRefCore ( functionSignatureSuffix )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:773:2: ( structCore | enumCore | typeRefCore ( functionSignatureSuffix )? )
             int alt72=3;
             alt72 = dfa72.predict(input);
             switch (alt72) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:767:3: structCore
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:3: structCore
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_structCore_in_plainTypeRef2448);
+                    pushFollow(FOLLOW_structCore_in_plainTypeRef2451);
                     structCore144=structCore();
 
                     state._fsp--;
@@ -5276,11 +5282,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:768:3: enumCore
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:775:3: enumCore
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_enumCore_in_plainTypeRef2456);
+                    pushFollow(FOLLOW_enumCore_in_plainTypeRef2459);
                     enumCore145=enumCore();
 
                     state._fsp--;
@@ -5293,11 +5299,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:769:3: typeRefCore ( functionSignatureSuffix )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:776:3: typeRefCore ( functionSignatureSuffix )?
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_typeRefCore_in_plainTypeRef2464);
+                    pushFollow(FOLLOW_typeRefCore_in_plainTypeRef2467);
                     typeRefCore146=typeRefCore();
 
                     state._fsp--;
@@ -5306,14 +5312,14 @@ public class ObjCppParser extends Parser {
                     if ( state.backtracking==0 ) {
                        retval.type = (typeRefCore146!=null?typeRefCore146.type:null); 
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:770:3: ( functionSignatureSuffix )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:777:3: ( functionSignatureSuffix )?
                     int alt71=2;
                     alt71 = dfa71.predict(input);
                     switch (alt71) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:771:4: functionSignatureSuffix
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:778:4: functionSignatureSuffix
                             {
-                            pushFollow(FOLLOW_functionSignatureSuffix_in_plainTypeRef2475);
+                            pushFollow(FOLLOW_functionSignatureSuffix_in_plainTypeRef2478);
                             functionSignatureSuffix147=functionSignatureSuffix();
 
                             state._fsp--;
@@ -5363,7 +5369,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "typeRef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:778:1: typeRef returns [TypeRef type] : plainTypeRef ( typeMutator )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:785:1: typeRef returns [TypeRef type] : plainTypeRef ( typeMutator )* ;
     public final ObjCppParser.typeRef_return typeRef() throws RecognitionException {
         ObjCppParser.typeRef_return retval = new ObjCppParser.typeRef_return();
         retval.start = input.LT(1);
@@ -5377,12 +5383,12 @@ public class ObjCppParser extends Parser {
 
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:779:2: ( plainTypeRef ( typeMutator )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:780:3: plainTypeRef ( typeMutator )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:786:2: ( plainTypeRef ( typeMutator )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:787:3: plainTypeRef ( typeMutator )*
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_plainTypeRef_in_typeRef2501);
+            pushFollow(FOLLOW_plainTypeRef_in_typeRef2504);
             plainTypeRef148=plainTypeRef();
 
             state._fsp--;
@@ -5393,16 +5399,16 @@ public class ObjCppParser extends Parser {
               			retval.type = (plainTypeRef148!=null?plainTypeRef148.type:null);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:783:3: ( typeMutator )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:790:3: ( typeMutator )*
             loop73:
             do {
                 int alt73=2;
                 alt73 = dfa73.predict(input);
                 switch (alt73) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:784:4: typeMutator
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:4: typeMutator
             	    {
-            	    pushFollow(FOLLOW_typeMutator_in_typeRef2512);
+            	    pushFollow(FOLLOW_typeMutator_in_typeRef2515);
             	    typeMutator149=typeMutator();
 
             	    state._fsp--;
@@ -5451,7 +5457,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "primSignModifier"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:790:1: primSignModifier : ( 'signed' | 'unsigned' | '__signed' | '__unsigned' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:1: primSignModifier : ( 'signed' | 'unsigned' | '__signed' | '__unsigned' );
     public final ObjCppParser.primSignModifier_return primSignModifier() throws RecognitionException {
         ObjCppParser.primSignModifier_return retval = new ObjCppParser.primSignModifier_return();
         retval.start = input.LT(1);
@@ -5463,8 +5469,8 @@ public class ObjCppParser extends Parser {
         Object set150_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:791:2: ( 'signed' | 'unsigned' | '__signed' | '__unsigned' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:798:2: ( 'signed' | 'unsigned' | '__signed' | '__unsigned' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5509,7 +5515,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "primSizeModifier"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:793:1: primSizeModifier : ( 'long' | 'short' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:800:1: primSizeModifier : ( 'long' | 'short' );
     public final ObjCppParser.primSizeModifier_return primSizeModifier() throws RecognitionException {
         ObjCppParser.primSizeModifier_return retval = new ObjCppParser.primSizeModifier_return();
         retval.start = input.LT(1);
@@ -5521,8 +5527,8 @@ public class ObjCppParser extends Parser {
         Object set151_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:794:2: ( 'long' | 'short' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:801:2: ( 'long' | 'short' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5567,7 +5573,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "primitiveTypeName"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:796:1: primitiveTypeName : ( 'long' | 'int' | 'short' | 'double' | 'float' | 'char' | 'void' | '__int8' | '__int16' | '__int32' | '__int64' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:803:1: primitiveTypeName : ( 'long' | 'int' | 'short' | 'double' | 'float' | 'char' | 'void' | '__int8' | '__int16' | '__int32' | '__int64' );
     public final ObjCppParser.primitiveTypeName_return primitiveTypeName() throws RecognitionException {
         ObjCppParser.primitiveTypeName_return retval = new ObjCppParser.primitiveTypeName_return();
         retval.start = input.LT(1);
@@ -5579,8 +5585,8 @@ public class ObjCppParser extends Parser {
         Object set152_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:797:2: ( 'long' | 'int' | 'short' | 'double' | 'float' | 'char' | 'void' | '__int8' | '__int16' | '__int32' | '__int64' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:804:2: ( 'long' | 'int' | 'short' | 'double' | 'float' | 'char' | 'void' | '__int8' | '__int16' | '__int32' | '__int64' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5627,7 +5633,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "primitiveTypeRef"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:811:1: primitiveTypeRef returns [TypeRef type, int line] : ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:818:1: primitiveTypeRef returns [TypeRef type, int line] : ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier ) ;
     public final ObjCppParser.primitiveTypeRef_return primitiveTypeRef() throws RecognitionException {
         ObjCppParser.primitiveTypeRef_return retval = new ObjCppParser.primitiveTypeRef_return();
         retval.start = input.LT(1);
@@ -5647,22 +5653,22 @@ public class ObjCppParser extends Parser {
 
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:812:2: ( ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier ) )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:812:4: ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:819:2: ( ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:819:4: ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier )
             {
             root_0 = (Object)adaptor.nil();
 
             if ( state.backtracking==0 ) {
                retval.line = getLine(); 
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:813:3: ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:820:3: ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier )
             int alt77=2;
             alt77 = dfa77.predict(input);
             switch (alt77) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:813:5: (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:820:5: (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName
                     {
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:813:9: (mod1= primSignModifier )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:820:9: (mod1= primSignModifier )?
                     int alt74=2;
                     int LA74_0 = input.LA(1);
 
@@ -5671,9 +5677,9 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt74) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: mod1= primSignModifier
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: mod1= primSignModifier
                             {
-                            pushFollow(FOLLOW_primSignModifier_in_primitiveTypeRef2656);
+                            pushFollow(FOLLOW_primSignModifier_in_primitiveTypeRef2659);
                             mod1=primSignModifier();
 
                             state._fsp--;
@@ -5685,27 +5691,27 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:815:4: (mod2= primSizeModifier (mod3= primSizeModifier )? )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:822:4: (mod2= primSizeModifier (mod3= primSizeModifier )? )?
                     int alt76=2;
                     alt76 = dfa76.predict(input);
                     switch (alt76) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:815:5: mod2= primSizeModifier (mod3= primSizeModifier )?
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:822:5: mod2= primSizeModifier (mod3= primSizeModifier )?
                             {
-                            pushFollow(FOLLOW_primSizeModifier_in_primitiveTypeRef2669);
+                            pushFollow(FOLLOW_primSizeModifier_in_primitiveTypeRef2672);
                             mod2=primSizeModifier();
 
                             state._fsp--;
                             if (state.failed) return retval;
                             if ( state.backtracking==0 ) adaptor.addChild(root_0, mod2.getTree());
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:816:8: (mod3= primSizeModifier )?
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:823:8: (mod3= primSizeModifier )?
                             int alt75=2;
                             alt75 = dfa75.predict(input);
                             switch (alt75) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: mod3= primSizeModifier
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: mod3= primSizeModifier
                                     {
-                                    pushFollow(FOLLOW_primSizeModifier_in_primitiveTypeRef2676);
+                                    pushFollow(FOLLOW_primSizeModifier_in_primitiveTypeRef2679);
                                     mod3=primSizeModifier();
 
                                     state._fsp--;
@@ -5723,7 +5729,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    pushFollow(FOLLOW_primitiveTypeName_in_primitiveTypeRef2686);
+                    pushFollow(FOLLOW_primitiveTypeName_in_primitiveTypeRef2689);
                     name=primitiveTypeName();
 
                     state._fsp--;
@@ -5741,9 +5747,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:824:4: mod= primSignModifier
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:831:4: mod= primSignModifier
                     {
-                    pushFollow(FOLLOW_primSignModifier_in_primitiveTypeRef2700);
+                    pushFollow(FOLLOW_primSignModifier_in_primitiveTypeRef2703);
                     mod=primSignModifier();
 
                     state._fsp--;
@@ -5791,7 +5797,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "objCMethodCall"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:831:1: objCMethodCall returns [FunctionCall expr] : '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:1: objCMethodCall returns [FunctionCall expr] : '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' ;
     public final ObjCppParser.objCMethodCall_return objCMethodCall() throws RecognitionException {
         ObjCppParser.objCMethodCall_return retval = new ObjCppParser.objCMethodCall_return();
         retval.start = input.LT(1);
@@ -5819,23 +5825,23 @@ public class ObjCppParser extends Parser {
         Object char_literal156_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:832:2: ( '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:833:3: '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:2: ( '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:840:3: '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']'
             {
             root_0 = (Object)adaptor.nil();
 
-            char_literal153=(Token)match(input,57,FOLLOW_57_in_objCMethodCall2723); if (state.failed) return retval;
+            char_literal153=(Token)match(input,57,FOLLOW_57_in_objCMethodCall2726); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal153_tree = (Object)adaptor.create(char_literal153);
             adaptor.addChild(root_0, char_literal153_tree);
             }
-            pushFollow(FOLLOW_expression_in_objCMethodCall2727);
+            pushFollow(FOLLOW_expression_in_objCMethodCall2730);
             target=expression();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, target.getTree());
-            methodName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodCall2731); if (state.failed) return retval;
+            methodName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodCall2734); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             methodName_tree = (Object)adaptor.create(methodName);
             adaptor.addChild(root_0, methodName_tree);
@@ -5847,7 +5853,7 @@ public class ObjCppParser extends Parser {
               			retval.expr.setMemberRefStyle(MemberRefStyle.SquareBrackets);
               		
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:838:3: ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:845:3: ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )?
             int alt79=2;
             int LA79_0 = input.LA(1);
 
@@ -5856,14 +5862,14 @@ public class ObjCppParser extends Parser {
             }
             switch (alt79) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:839:4: ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:846:4: ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )*
                     {
-                    char_literal154=(Token)match(input,34,FOLLOW_34_in_objCMethodCall2742); if (state.failed) return retval;
+                    char_literal154=(Token)match(input,34,FOLLOW_34_in_objCMethodCall2745); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal154_tree = (Object)adaptor.create(char_literal154);
                     adaptor.addChild(root_0, char_literal154_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_objCMethodCall2746);
+                    pushFollow(FOLLOW_expression_in_objCMethodCall2749);
                     arg1=expression();
 
                     state._fsp--;
@@ -5874,7 +5880,7 @@ public class ObjCppParser extends Parser {
                       				retval.expr.addArgument(null, (arg1!=null?arg1.expr:null));
                       			
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:842:4: (selx= IDENTIFIER ':' argx= expression )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:849:4: (selx= IDENTIFIER ':' argx= expression )*
                     loop78:
                     do {
                         int alt78=2;
@@ -5887,19 +5893,19 @@ public class ObjCppParser extends Parser {
 
                         switch (alt78) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:843:5: selx= IDENTIFIER ':' argx= expression
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:5: selx= IDENTIFIER ':' argx= expression
                     	    {
-                    	    selx=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodCall2761); if (state.failed) return retval;
+                    	    selx=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodCall2764); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    selx_tree = (Object)adaptor.create(selx);
                     	    adaptor.addChild(root_0, selx_tree);
                     	    }
-                    	    char_literal155=(Token)match(input,34,FOLLOW_34_in_objCMethodCall2763); if (state.failed) return retval;
+                    	    char_literal155=(Token)match(input,34,FOLLOW_34_in_objCMethodCall2766); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal155_tree = (Object)adaptor.create(char_literal155);
                     	    adaptor.addChild(root_0, char_literal155_tree);
                     	    }
-                    	    pushFollow(FOLLOW_expression_in_objCMethodCall2767);
+                    	    pushFollow(FOLLOW_expression_in_objCMethodCall2770);
                     	    argx=expression();
 
                     	    state._fsp--;
@@ -5925,7 +5931,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            char_literal156=(Token)match(input,58,FOLLOW_58_in_objCMethodCall2784); if (state.failed) return retval;
+            char_literal156=(Token)match(input,58,FOLLOW_58_in_objCMethodCall2787); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal156_tree = (Object)adaptor.create(char_literal156);
             adaptor.addChild(root_0, char_literal156_tree);
@@ -5960,7 +5966,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "functionCall"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:851:1: functionCall returns [FunctionCall expr] : ( 'sizeof' '(' typeRef ')' | IDENTIFIER '(' (a1= expression ( ',' ax= expression )* )? ')' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:858:1: functionCall returns [FunctionCall expr] : ( 'sizeof' '(' typeRef ')' | IDENTIFIER '(' (a1= expression ( ',' ax= expression )* )? ')' );
     public final ObjCppParser.functionCall_return functionCall() throws RecognitionException {
         ObjCppParser.functionCall_return retval = new ObjCppParser.functionCall_return();
         retval.start = input.LT(1);
@@ -5990,7 +5996,7 @@ public class ObjCppParser extends Parser {
         Object char_literal164_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:852:2: ( 'sizeof' '(' typeRef ')' | IDENTIFIER '(' (a1= expression ( ',' ax= expression )* )? ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:859:2: ( 'sizeof' '(' typeRef ')' | IDENTIFIER '(' (a1= expression ( ',' ax= expression )* )? ')' )
             int alt82=2;
             int LA82_0 = input.LA(1);
 
@@ -6009,27 +6015,27 @@ public class ObjCppParser extends Parser {
             }
             switch (alt82) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:853:3: 'sizeof' '(' typeRef ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:860:3: 'sizeof' '(' typeRef ')'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal157=(Token)match(input,76,FOLLOW_76_in_functionCall2804); if (state.failed) return retval;
+                    string_literal157=(Token)match(input,76,FOLLOW_76_in_functionCall2807); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal157_tree = (Object)adaptor.create(string_literal157);
                     adaptor.addChild(root_0, string_literal157_tree);
                     }
-                    char_literal158=(Token)match(input,35,FOLLOW_35_in_functionCall2806); if (state.failed) return retval;
+                    char_literal158=(Token)match(input,35,FOLLOW_35_in_functionCall2809); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal158_tree = (Object)adaptor.create(char_literal158);
                     adaptor.addChild(root_0, char_literal158_tree);
                     }
-                    pushFollow(FOLLOW_typeRef_in_functionCall2808);
+                    pushFollow(FOLLOW_typeRef_in_functionCall2811);
                     typeRef159=typeRef();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, typeRef159.getTree());
-                    char_literal160=(Token)match(input,36,FOLLOW_36_in_functionCall2810); if (state.failed) return retval;
+                    char_literal160=(Token)match(input,36,FOLLOW_36_in_functionCall2813); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal160_tree = (Object)adaptor.create(char_literal160);
                     adaptor.addChild(root_0, char_literal160_tree);
@@ -6044,16 +6050,16 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:857:3: IDENTIFIER '(' (a1= expression ( ',' ax= expression )* )? ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:864:3: IDENTIFIER '(' (a1= expression ( ',' ax= expression )* )? ')'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    IDENTIFIER161=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_functionCall2818); if (state.failed) return retval;
+                    IDENTIFIER161=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_functionCall2821); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     IDENTIFIER161_tree = (Object)adaptor.create(IDENTIFIER161);
                     adaptor.addChild(root_0, IDENTIFIER161_tree);
                     }
-                    char_literal162=(Token)match(input,35,FOLLOW_35_in_functionCall2820); if (state.failed) return retval;
+                    char_literal162=(Token)match(input,35,FOLLOW_35_in_functionCall2823); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal162_tree = (Object)adaptor.create(char_literal162);
                     adaptor.addChild(root_0, char_literal162_tree);
@@ -6063,14 +6069,14 @@ public class ObjCppParser extends Parser {
                       			retval.expr = new FunctionCall((IDENTIFIER161!=null?IDENTIFIER161.getText():null));
                       		
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:860:3: (a1= expression ( ',' ax= expression )* )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:867:3: (a1= expression ( ',' ax= expression )* )?
                     int alt81=2;
                     alt81 = dfa81.predict(input);
                     switch (alt81) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:861:4: a1= expression ( ',' ax= expression )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:868:4: a1= expression ( ',' ax= expression )*
                             {
-                            pushFollow(FOLLOW_expression_in_functionCall2833);
+                            pushFollow(FOLLOW_expression_in_functionCall2836);
                             a1=expression();
 
                             state._fsp--;
@@ -6081,7 +6087,7 @@ public class ObjCppParser extends Parser {
                               				retval.expr.addArgument((a1!=null?a1.expr:null));
                               			
                             }
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:864:4: ( ',' ax= expression )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:871:4: ( ',' ax= expression )*
                             loop80:
                             do {
                                 int alt80=2;
@@ -6094,14 +6100,14 @@ public class ObjCppParser extends Parser {
 
                                 switch (alt80) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:864:6: ',' ax= expression
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:871:6: ',' ax= expression
                             	    {
-                            	    char_literal163=(Token)match(input,28,FOLLOW_28_in_functionCall2842); if (state.failed) return retval;
+                            	    char_literal163=(Token)match(input,28,FOLLOW_28_in_functionCall2845); if (state.failed) return retval;
                             	    if ( state.backtracking==0 ) {
                             	    char_literal163_tree = (Object)adaptor.create(char_literal163);
                             	    adaptor.addChild(root_0, char_literal163_tree);
                             	    }
-                            	    pushFollow(FOLLOW_expression_in_functionCall2851);
+                            	    pushFollow(FOLLOW_expression_in_functionCall2854);
                             	    ax=expression();
 
                             	    state._fsp--;
@@ -6127,7 +6133,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal164=(Token)match(input,36,FOLLOW_36_in_functionCall2869); if (state.failed) return retval;
+                    char_literal164=(Token)match(input,36,FOLLOW_36_in_functionCall2872); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal164_tree = (Object)adaptor.create(char_literal164);
                     adaptor.addChild(root_0, char_literal164_tree);
@@ -6164,7 +6170,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "expression"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:873:1: expression returns [Expression expr] : (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' ) (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:880:1: expression returns [Expression expr] : (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' ) (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )* ;
     public final ObjCppParser.expression_return expression() throws RecognitionException {
         ObjCppParser.expression_return retval = new ObjCppParser.expression_return();
         retval.start = input.LT(1);
@@ -6238,19 +6244,19 @@ public class ObjCppParser extends Parser {
         Object char_literal182_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:874:2: ( (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' ) (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )* )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:874:4: (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' ) (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:881:2: ( (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' ) (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:881:4: (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' ) (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )*
             {
             root_0 = (Object)adaptor.nil();
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:874:4: (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:881:4: (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' )
             int alt84=7;
             alt84 = dfa84.predict(input);
             switch (alt84) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:875:4: id= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:882:4: id= IDENTIFIER
                     {
-                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression2891); if (state.failed) return retval;
+                    id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression2894); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     id_tree = (Object)adaptor.create(id);
                     adaptor.addChild(root_0, id_tree);
@@ -6264,9 +6270,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:878:4: fc1= functionCall
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:885:4: fc1= functionCall
                     {
-                    pushFollow(FOLLOW_functionCall_in_expression2902);
+                    pushFollow(FOLLOW_functionCall_in_expression2905);
                     fc1=functionCall();
 
                     state._fsp--;
@@ -6281,9 +6287,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:881:4: objCMethodCall
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:888:4: objCMethodCall
                     {
-                    pushFollow(FOLLOW_objCMethodCall_in_expression2911);
+                    pushFollow(FOLLOW_objCMethodCall_in_expression2914);
                     objCMethodCall165=objCMethodCall();
 
                     state._fsp--;
@@ -6298,7 +6304,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:884:4: prefixOp= ( '!' | '~' ) opd= expression
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:891:4: prefixOp= ( '!' | '~' ) opd= expression
                     {
                     prefixOp=(Token)input.LT(1);
                     if ( (input.LA(1)>=77 && input.LA(1)<=78) ) {
@@ -6312,7 +6318,7 @@ public class ObjCppParser extends Parser {
                         throw mse;
                     }
 
-                    pushFollow(FOLLOW_expression_in_expression2932);
+                    pushFollow(FOLLOW_expression_in_expression2935);
                     opd=expression();
 
                     state._fsp--;
@@ -6327,27 +6333,27 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:887:4: '(' (par= expression ')' | typeRef ')' casted= expression )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:894:4: '(' (par= expression ')' | typeRef ')' casted= expression )
                     {
-                    char_literal166=(Token)match(input,35,FOLLOW_35_in_expression2941); if (state.failed) return retval;
+                    char_literal166=(Token)match(input,35,FOLLOW_35_in_expression2944); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal166_tree = (Object)adaptor.create(char_literal166);
                     adaptor.addChild(root_0, char_literal166_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:887:8: (par= expression ')' | typeRef ')' casted= expression )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:894:8: (par= expression ')' | typeRef ')' casted= expression )
                     int alt83=2;
                     alt83 = dfa83.predict(input);
                     switch (alt83) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:888:5: par= expression ')'
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:895:5: par= expression ')'
                             {
-                            pushFollow(FOLLOW_expression_in_expression2951);
+                            pushFollow(FOLLOW_expression_in_expression2954);
                             par=expression();
 
                             state._fsp--;
                             if (state.failed) return retval;
                             if ( state.backtracking==0 ) adaptor.addChild(root_0, par.getTree());
-                            char_literal167=(Token)match(input,36,FOLLOW_36_in_expression2953); if (state.failed) return retval;
+                            char_literal167=(Token)match(input,36,FOLLOW_36_in_expression2956); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal167_tree = (Object)adaptor.create(char_literal167);
                             adaptor.addChild(root_0, char_literal167_tree);
@@ -6363,20 +6369,20 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:893:5: typeRef ')' casted= expression
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:900:5: typeRef ')' casted= expression
                             {
-                            pushFollow(FOLLOW_typeRef_in_expression2963);
+                            pushFollow(FOLLOW_typeRef_in_expression2966);
                             typeRef168=typeRef();
 
                             state._fsp--;
                             if (state.failed) return retval;
                             if ( state.backtracking==0 ) adaptor.addChild(root_0, typeRef168.getTree());
-                            char_literal169=(Token)match(input,36,FOLLOW_36_in_expression2965); if (state.failed) return retval;
+                            char_literal169=(Token)match(input,36,FOLLOW_36_in_expression2968); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal169_tree = (Object)adaptor.create(char_literal169);
                             adaptor.addChild(root_0, char_literal169_tree);
                             }
-                            pushFollow(FOLLOW_expression_in_expression2969);
+                            pushFollow(FOLLOW_expression_in_expression2972);
                             casted=expression();
 
                             state._fsp--;
@@ -6397,9 +6403,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:897:4: constant
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:904:4: constant
                     {
-                    pushFollow(FOLLOW_constant_in_expression2984);
+                    pushFollow(FOLLOW_constant_in_expression2987);
                     constant170=constant();
 
                     state._fsp--;
@@ -6412,20 +6418,20 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:898:4: '{' expression '}'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:905:4: '{' expression '}'
                     {
-                    char_literal171=(Token)match(input,24,FOLLOW_24_in_expression2993); if (state.failed) return retval;
+                    char_literal171=(Token)match(input,24,FOLLOW_24_in_expression2996); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal171_tree = (Object)adaptor.create(char_literal171);
                     adaptor.addChild(root_0, char_literal171_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_expression2995);
+                    pushFollow(FOLLOW_expression_in_expression2998);
                     expression172=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression172.getTree());
-                    char_literal173=(Token)match(input,25,FOLLOW_25_in_expression2997); if (state.failed) return retval;
+                    char_literal173=(Token)match(input,25,FOLLOW_25_in_expression3000); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal173_tree = (Object)adaptor.create(char_literal173);
                     adaptor.addChild(root_0, char_literal173_tree);
@@ -6436,14 +6442,14 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:900:3: (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:907:3: (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )*
             loop86:
             do {
                 int alt86=6;
                 alt86 = dfa86.predict(input);
                 switch (alt86) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:901:4: bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:908:4: bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression
             	    {
             	    bop=(Token)input.LT(1);
             	    if ( (input.LA(1)>=37 && input.LA(1)<=38)||(input.LA(1)>=43 && input.LA(1)<=44)||(input.LA(1)>=54 && input.LA(1)<=56)||(input.LA(1)>=79 && input.LA(1)<=90) ) {
@@ -6457,7 +6463,7 @@ public class ObjCppParser extends Parser {
             	        throw mse;
             	    }
 
-            	    pushFollow(FOLLOW_expression_in_expression3107);
+            	    pushFollow(FOLLOW_expression_in_expression3110);
             	    opd2=expression();
 
             	    state._fsp--;
@@ -6472,14 +6478,14 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:908:4: '=' val= expression
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:915:4: '=' val= expression
             	    {
-            	    char_literal174=(Token)match(input,30,FOLLOW_30_in_expression3116); if (state.failed) return retval;
+            	    char_literal174=(Token)match(input,30,FOLLOW_30_in_expression3119); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal174_tree = (Object)adaptor.create(char_literal174);
             	    adaptor.addChild(root_0, char_literal174_tree);
             	    }
-            	    pushFollow(FOLLOW_expression_in_expression3120);
+            	    pushFollow(FOLLOW_expression_in_expression3123);
             	    val=expression();
 
             	    state._fsp--;
@@ -6494,14 +6500,14 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:911:4: '.' fieldName= IDENTIFIER
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:918:4: '.' fieldName= IDENTIFIER
             	    {
-            	    char_literal175=(Token)match(input,91,FOLLOW_91_in_expression3129); if (state.failed) return retval;
+            	    char_literal175=(Token)match(input,91,FOLLOW_91_in_expression3132); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal175_tree = (Object)adaptor.create(char_literal175);
             	    adaptor.addChild(root_0, char_literal175_tree);
             	    }
-            	    fieldName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression3133); if (state.failed) return retval;
+            	    fieldName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression3136); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    fieldName_tree = (Object)adaptor.create(fieldName);
             	    adaptor.addChild(root_0, fieldName_tree);
@@ -6515,9 +6521,9 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 4 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:4: refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:4: refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall
             	    {
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:13: ( ':' ':' | '-' '>' | '.' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:13: ( ':' ':' | '-' '>' | '.' )
             	    int alt85=3;
             	    switch ( input.LA(1) ) {
             	    case 34:
@@ -6545,14 +6551,14 @@ public class ObjCppParser extends Parser {
 
             	    switch (alt85) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:14: ':' ':'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:14: ':' ':'
             	            {
-            	            char_literal176=(Token)match(input,34,FOLLOW_34_in_expression3145); if (state.failed) return retval;
+            	            char_literal176=(Token)match(input,34,FOLLOW_34_in_expression3148); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            char_literal176_tree = (Object)adaptor.create(char_literal176);
             	            adaptor.addChild(root_0, char_literal176_tree);
             	            }
-            	            char_literal177=(Token)match(input,34,FOLLOW_34_in_expression3147); if (state.failed) return retval;
+            	            char_literal177=(Token)match(input,34,FOLLOW_34_in_expression3150); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            char_literal177_tree = (Object)adaptor.create(char_literal177);
             	            adaptor.addChild(root_0, char_literal177_tree);
@@ -6561,14 +6567,14 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 2 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:24: '-' '>'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:24: '-' '>'
             	            {
-            	            char_literal178=(Token)match(input,44,FOLLOW_44_in_expression3151); if (state.failed) return retval;
+            	            char_literal178=(Token)match(input,44,FOLLOW_44_in_expression3154); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            char_literal178_tree = (Object)adaptor.create(char_literal178);
             	            adaptor.addChild(root_0, char_literal178_tree);
             	            }
-            	            char_literal179=(Token)match(input,38,FOLLOW_38_in_expression3153); if (state.failed) return retval;
+            	            char_literal179=(Token)match(input,38,FOLLOW_38_in_expression3156); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            char_literal179_tree = (Object)adaptor.create(char_literal179);
             	            adaptor.addChild(root_0, char_literal179_tree);
@@ -6577,9 +6583,9 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 3 :
-            	            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:34: '.'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:34: '.'
             	            {
-            	            char_literal180=(Token)match(input,91,FOLLOW_91_in_expression3157); if (state.failed) return retval;
+            	            char_literal180=(Token)match(input,91,FOLLOW_91_in_expression3160); if (state.failed) return retval;
             	            if ( state.backtracking==0 ) {
             	            char_literal180_tree = (Object)adaptor.create(char_literal180);
             	            adaptor.addChild(root_0, char_literal180_tree);
@@ -6590,7 +6596,7 @@ public class ObjCppParser extends Parser {
 
             	    }
 
-            	    pushFollow(FOLLOW_functionCall_in_expression3162);
+            	    pushFollow(FOLLOW_functionCall_in_expression3165);
             	    fc2=functionCall();
 
             	    state._fsp--;
@@ -6609,25 +6615,25 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 5 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:921:4: '?' xif= expression ':' xelse= expression
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:4: '?' xif= expression ':' xelse= expression
             	    {
-            	    char_literal181=(Token)match(input,92,FOLLOW_92_in_expression3171); if (state.failed) return retval;
+            	    char_literal181=(Token)match(input,92,FOLLOW_92_in_expression3174); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal181_tree = (Object)adaptor.create(char_literal181);
             	    adaptor.addChild(root_0, char_literal181_tree);
             	    }
-            	    pushFollow(FOLLOW_expression_in_expression3175);
+            	    pushFollow(FOLLOW_expression_in_expression3178);
             	    xif=expression();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
             	    if ( state.backtracking==0 ) adaptor.addChild(root_0, xif.getTree());
-            	    char_literal182=(Token)match(input,34,FOLLOW_34_in_expression3177); if (state.failed) return retval;
+            	    char_literal182=(Token)match(input,34,FOLLOW_34_in_expression3180); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal182_tree = (Object)adaptor.create(char_literal182);
             	    adaptor.addChild(root_0, char_literal182_tree);
             	    }
-            	    pushFollow(FOLLOW_expression_in_expression3181);
+            	    pushFollow(FOLLOW_expression_in_expression3184);
             	    xelse=expression();
 
             	    state._fsp--;
@@ -6676,7 +6682,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "statementsBlock"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:928:1: statementsBlock : '{' ( statement )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:935:1: statementsBlock : '{' ( statement )* '}' ;
     public final ObjCppParser.statementsBlock_return statementsBlock() throws RecognitionException {
         ObjCppParser.statementsBlock_return retval = new ObjCppParser.statementsBlock_return();
         retval.start = input.LT(1);
@@ -6692,26 +6698,26 @@ public class ObjCppParser extends Parser {
         Object char_literal185_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:929:2: ( '{' ( statement )* '}' )
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:929:4: '{' ( statement )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:936:2: ( '{' ( statement )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:936:4: '{' ( statement )* '}'
             {
             root_0 = (Object)adaptor.nil();
 
-            char_literal183=(Token)match(input,24,FOLLOW_24_in_statementsBlock3202); if (state.failed) return retval;
+            char_literal183=(Token)match(input,24,FOLLOW_24_in_statementsBlock3205); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal183_tree = (Object)adaptor.create(char_literal183);
             adaptor.addChild(root_0, char_literal183_tree);
             }
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:929:8: ( statement )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:936:8: ( statement )*
             loop87:
             do {
                 int alt87=2;
                 alt87 = dfa87.predict(input);
                 switch (alt87) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: statement
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: statement
             	    {
-            	    pushFollow(FOLLOW_statement_in_statementsBlock3204);
+            	    pushFollow(FOLLOW_statement_in_statementsBlock3207);
             	    statement184=statement();
 
             	    state._fsp--;
@@ -6726,7 +6732,7 @@ public class ObjCppParser extends Parser {
                 }
             } while (true);
 
-            char_literal185=(Token)match(input,25,FOLLOW_25_in_statementsBlock3207); if (state.failed) return retval;
+            char_literal185=(Token)match(input,25,FOLLOW_25_in_statementsBlock3210); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal185_tree = (Object)adaptor.create(char_literal185);
             adaptor.addChild(root_0, char_literal185_tree);
@@ -6760,7 +6766,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "statement"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:931:1: statement : ( statementsBlock | declaration | expression ( '=' expression )? ';' | 'return' expression ';' | 'if' '(' expression ')' statement ( 'else' statement )? | 'while' '(' expression ')' statement | 'do' statement 'while' '(' expression ')' ';' | 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}' | ';' | IDENTIFIER {...}? '(' varDecl ':' expression ')' statement );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:938:1: statement : ( statementsBlock | declaration | expression ( '=' expression )? ';' | 'return' expression ';' | 'if' '(' expression ')' statement ( 'else' statement )? | 'while' '(' expression ')' statement | 'do' statement 'while' '(' expression ')' ';' | 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}' | ';' | IDENTIFIER {...}? '(' varDecl ':' expression ')' statement );
     public final ObjCppParser.statement_return statement() throws RecognitionException {
         ObjCppParser.statement_return retval = new ObjCppParser.statement_return();
         retval.start = input.LT(1);
@@ -6880,16 +6886,16 @@ public class ObjCppParser extends Parser {
         Object char_literal239_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:932:2: ( statementsBlock | declaration | expression ( '=' expression )? ';' | 'return' expression ';' | 'if' '(' expression ')' statement ( 'else' statement )? | 'while' '(' expression ')' statement | 'do' statement 'while' '(' expression ')' ';' | 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}' | ';' | IDENTIFIER {...}? '(' varDecl ':' expression ')' statement )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:939:2: ( statementsBlock | declaration | expression ( '=' expression )? ';' | 'return' expression ';' | 'if' '(' expression ')' statement ( 'else' statement )? | 'while' '(' expression ')' statement | 'do' statement 'while' '(' expression ')' ';' | 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}' | ';' | IDENTIFIER {...}? '(' varDecl ':' expression ')' statement )
             int alt94=11;
             alt94 = dfa94.predict(input);
             switch (alt94) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:933:3: statementsBlock
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:940:3: statementsBlock
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_statementsBlock_in_statement3220);
+                    pushFollow(FOLLOW_statementsBlock_in_statement3223);
                     statementsBlock186=statementsBlock();
 
                     state._fsp--;
@@ -6899,11 +6905,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:934:3: declaration
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:941:3: declaration
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_declaration_in_statement3226);
+                    pushFollow(FOLLOW_declaration_in_statement3229);
                     declaration187=declaration();
 
                     state._fsp--;
@@ -6913,17 +6919,17 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:3: expression ( '=' expression )? ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:3: expression ( '=' expression )? ';'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_expression_in_statement3232);
+                    pushFollow(FOLLOW_expression_in_statement3235);
                     expression188=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression188.getTree());
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:14: ( '=' expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:14: ( '=' expression )?
                     int alt88=2;
                     int LA88_0 = input.LA(1);
 
@@ -6932,14 +6938,14 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt88) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:15: '=' expression
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:15: '=' expression
                             {
-                            char_literal189=(Token)match(input,30,FOLLOW_30_in_statement3235); if (state.failed) return retval;
+                            char_literal189=(Token)match(input,30,FOLLOW_30_in_statement3238); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             char_literal189_tree = (Object)adaptor.create(char_literal189);
                             adaptor.addChild(root_0, char_literal189_tree);
                             }
-                            pushFollow(FOLLOW_expression_in_statement3237);
+                            pushFollow(FOLLOW_expression_in_statement3240);
                             expression190=expression();
 
                             state._fsp--;
@@ -6951,7 +6957,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal191=(Token)match(input,29,FOLLOW_29_in_statement3242); if (state.failed) return retval;
+                    char_literal191=(Token)match(input,29,FOLLOW_29_in_statement3245); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal191_tree = (Object)adaptor.create(char_literal191);
                     adaptor.addChild(root_0, char_literal191_tree);
@@ -6960,22 +6966,22 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:936:3: 'return' expression ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:943:3: 'return' expression ';'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal192=(Token)match(input,93,FOLLOW_93_in_statement3248); if (state.failed) return retval;
+                    string_literal192=(Token)match(input,93,FOLLOW_93_in_statement3251); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal192_tree = (Object)adaptor.create(string_literal192);
                     adaptor.addChild(root_0, string_literal192_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_statement3250);
+                    pushFollow(FOLLOW_expression_in_statement3253);
                     expression193=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression193.getTree());
-                    char_literal194=(Token)match(input,29,FOLLOW_29_in_statement3252); if (state.failed) return retval;
+                    char_literal194=(Token)match(input,29,FOLLOW_29_in_statement3255); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal194_tree = (Object)adaptor.create(char_literal194);
                     adaptor.addChild(root_0, char_literal194_tree);
@@ -6984,50 +6990,50 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:937:3: 'if' '(' expression ')' statement ( 'else' statement )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:944:3: 'if' '(' expression ')' statement ( 'else' statement )?
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal195=(Token)match(input,94,FOLLOW_94_in_statement3258); if (state.failed) return retval;
+                    string_literal195=(Token)match(input,94,FOLLOW_94_in_statement3261); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal195_tree = (Object)adaptor.create(string_literal195);
                     adaptor.addChild(root_0, string_literal195_tree);
                     }
-                    char_literal196=(Token)match(input,35,FOLLOW_35_in_statement3260); if (state.failed) return retval;
+                    char_literal196=(Token)match(input,35,FOLLOW_35_in_statement3263); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal196_tree = (Object)adaptor.create(char_literal196);
                     adaptor.addChild(root_0, char_literal196_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_statement3262);
+                    pushFollow(FOLLOW_expression_in_statement3265);
                     expression197=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression197.getTree());
-                    char_literal198=(Token)match(input,36,FOLLOW_36_in_statement3264); if (state.failed) return retval;
+                    char_literal198=(Token)match(input,36,FOLLOW_36_in_statement3267); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal198_tree = (Object)adaptor.create(char_literal198);
                     adaptor.addChild(root_0, char_literal198_tree);
                     }
-                    pushFollow(FOLLOW_statement_in_statement3266);
+                    pushFollow(FOLLOW_statement_in_statement3269);
                     statement199=statement();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, statement199.getTree());
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:937:37: ( 'else' statement )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:944:37: ( 'else' statement )?
                     int alt89=2;
                     alt89 = dfa89.predict(input);
                     switch (alt89) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:937:38: 'else' statement
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:944:38: 'else' statement
                             {
-                            string_literal200=(Token)match(input,95,FOLLOW_95_in_statement3269); if (state.failed) return retval;
+                            string_literal200=(Token)match(input,95,FOLLOW_95_in_statement3272); if (state.failed) return retval;
                             if ( state.backtracking==0 ) {
                             string_literal200_tree = (Object)adaptor.create(string_literal200);
                             adaptor.addChild(root_0, string_literal200_tree);
                             }
-                            pushFollow(FOLLOW_statement_in_statement3271);
+                            pushFollow(FOLLOW_statement_in_statement3274);
                             statement201=statement();
 
                             state._fsp--;
@@ -7043,32 +7049,32 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:938:3: 'while' '(' expression ')' statement
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:945:3: 'while' '(' expression ')' statement
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal202=(Token)match(input,96,FOLLOW_96_in_statement3279); if (state.failed) return retval;
+                    string_literal202=(Token)match(input,96,FOLLOW_96_in_statement3282); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal202_tree = (Object)adaptor.create(string_literal202);
                     adaptor.addChild(root_0, string_literal202_tree);
                     }
-                    char_literal203=(Token)match(input,35,FOLLOW_35_in_statement3281); if (state.failed) return retval;
+                    char_literal203=(Token)match(input,35,FOLLOW_35_in_statement3284); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal203_tree = (Object)adaptor.create(char_literal203);
                     adaptor.addChild(root_0, char_literal203_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_statement3283);
+                    pushFollow(FOLLOW_expression_in_statement3286);
                     expression204=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression204.getTree());
-                    char_literal205=(Token)match(input,36,FOLLOW_36_in_statement3285); if (state.failed) return retval;
+                    char_literal205=(Token)match(input,36,FOLLOW_36_in_statement3288); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal205_tree = (Object)adaptor.create(char_literal205);
                     adaptor.addChild(root_0, char_literal205_tree);
                     }
-                    pushFollow(FOLLOW_statement_in_statement3287);
+                    pushFollow(FOLLOW_statement_in_statement3290);
                     statement206=statement();
 
                     state._fsp--;
@@ -7078,43 +7084,43 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:939:3: 'do' statement 'while' '(' expression ')' ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:946:3: 'do' statement 'while' '(' expression ')' ';'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal207=(Token)match(input,97,FOLLOW_97_in_statement3293); if (state.failed) return retval;
+                    string_literal207=(Token)match(input,97,FOLLOW_97_in_statement3296); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal207_tree = (Object)adaptor.create(string_literal207);
                     adaptor.addChild(root_0, string_literal207_tree);
                     }
-                    pushFollow(FOLLOW_statement_in_statement3295);
+                    pushFollow(FOLLOW_statement_in_statement3298);
                     statement208=statement();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, statement208.getTree());
-                    string_literal209=(Token)match(input,96,FOLLOW_96_in_statement3297); if (state.failed) return retval;
+                    string_literal209=(Token)match(input,96,FOLLOW_96_in_statement3300); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal209_tree = (Object)adaptor.create(string_literal209);
                     adaptor.addChild(root_0, string_literal209_tree);
                     }
-                    char_literal210=(Token)match(input,35,FOLLOW_35_in_statement3299); if (state.failed) return retval;
+                    char_literal210=(Token)match(input,35,FOLLOW_35_in_statement3302); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal210_tree = (Object)adaptor.create(char_literal210);
                     adaptor.addChild(root_0, char_literal210_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_statement3301);
+                    pushFollow(FOLLOW_expression_in_statement3304);
                     expression211=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression211.getTree());
-                    char_literal212=(Token)match(input,36,FOLLOW_36_in_statement3303); if (state.failed) return retval;
+                    char_literal212=(Token)match(input,36,FOLLOW_36_in_statement3306); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal212_tree = (Object)adaptor.create(char_literal212);
                     adaptor.addChild(root_0, char_literal212_tree);
                     }
-                    char_literal213=(Token)match(input,29,FOLLOW_29_in_statement3305); if (state.failed) return retval;
+                    char_literal213=(Token)match(input,29,FOLLOW_29_in_statement3308); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal213_tree = (Object)adaptor.create(char_literal213);
                     adaptor.addChild(root_0, char_literal213_tree);
@@ -7123,28 +7129,28 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:940:3: 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:3: 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal214=(Token)match(input,98,FOLLOW_98_in_statement3311); if (state.failed) return retval;
+                    string_literal214=(Token)match(input,98,FOLLOW_98_in_statement3314); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal214_tree = (Object)adaptor.create(string_literal214);
                     adaptor.addChild(root_0, string_literal214_tree);
                     }
-                    char_literal215=(Token)match(input,35,FOLLOW_35_in_statement3313); if (state.failed) return retval;
+                    char_literal215=(Token)match(input,35,FOLLOW_35_in_statement3316); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal215_tree = (Object)adaptor.create(char_literal215);
                     adaptor.addChild(root_0, char_literal215_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:940:13: ( statement )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:13: ( statement )?
                     int alt90=2;
                     alt90 = dfa90.predict(input);
                     switch (alt90) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: statement
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: statement
                             {
-                            pushFollow(FOLLOW_statement_in_statement3315);
+                            pushFollow(FOLLOW_statement_in_statement3318);
                             statement216=statement();
 
                             state._fsp--;
@@ -7156,19 +7162,19 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal217=(Token)match(input,29,FOLLOW_29_in_statement3318); if (state.failed) return retval;
+                    char_literal217=(Token)match(input,29,FOLLOW_29_in_statement3321); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal217_tree = (Object)adaptor.create(char_literal217);
                     adaptor.addChild(root_0, char_literal217_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:940:28: ( expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:28: ( expression )?
                     int alt91=2;
                     alt91 = dfa91.predict(input);
                     switch (alt91) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: expression
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: expression
                             {
-                            pushFollow(FOLLOW_expression_in_statement3320);
+                            pushFollow(FOLLOW_expression_in_statement3323);
                             expression218=expression();
 
                             state._fsp--;
@@ -7180,19 +7186,19 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal219=(Token)match(input,29,FOLLOW_29_in_statement3323); if (state.failed) return retval;
+                    char_literal219=(Token)match(input,29,FOLLOW_29_in_statement3326); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal219_tree = (Object)adaptor.create(char_literal219);
                     adaptor.addChild(root_0, char_literal219_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:940:44: ( statement )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:44: ( statement )?
                     int alt92=2;
                     alt92 = dfa92.predict(input);
                     switch (alt92) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: statement
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: statement
                             {
-                            pushFollow(FOLLOW_statement_in_statement3325);
+                            pushFollow(FOLLOW_statement_in_statement3328);
                             statement220=statement();
 
                             state._fsp--;
@@ -7204,12 +7210,12 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    char_literal221=(Token)match(input,36,FOLLOW_36_in_statement3328); if (state.failed) return retval;
+                    char_literal221=(Token)match(input,36,FOLLOW_36_in_statement3331); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal221_tree = (Object)adaptor.create(char_literal221);
                     adaptor.addChild(root_0, char_literal221_tree);
                     }
-                    pushFollow(FOLLOW_statement_in_statement3330);
+                    pushFollow(FOLLOW_statement_in_statement3333);
                     statement222=statement();
 
                     state._fsp--;
@@ -7219,57 +7225,57 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:941:3: 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:948:3: 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    string_literal223=(Token)match(input,99,FOLLOW_99_in_statement3336); if (state.failed) return retval;
+                    string_literal223=(Token)match(input,99,FOLLOW_99_in_statement3339); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal223_tree = (Object)adaptor.create(string_literal223);
                     adaptor.addChild(root_0, string_literal223_tree);
                     }
-                    char_literal224=(Token)match(input,35,FOLLOW_35_in_statement3338); if (state.failed) return retval;
+                    char_literal224=(Token)match(input,35,FOLLOW_35_in_statement3341); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal224_tree = (Object)adaptor.create(char_literal224);
                     adaptor.addChild(root_0, char_literal224_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_statement3340);
+                    pushFollow(FOLLOW_expression_in_statement3343);
                     expression225=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression225.getTree());
-                    char_literal226=(Token)match(input,36,FOLLOW_36_in_statement3342); if (state.failed) return retval;
+                    char_literal226=(Token)match(input,36,FOLLOW_36_in_statement3345); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal226_tree = (Object)adaptor.create(char_literal226);
                     adaptor.addChild(root_0, char_literal226_tree);
                     }
-                    char_literal227=(Token)match(input,24,FOLLOW_24_in_statement3344); if (state.failed) return retval;
+                    char_literal227=(Token)match(input,24,FOLLOW_24_in_statement3347); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal227_tree = (Object)adaptor.create(char_literal227);
                     adaptor.addChild(root_0, char_literal227_tree);
                     }
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:942:3: ( 'case' expression ':' | statement )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:949:3: ( 'case' expression ':' | statement )*
                     loop93:
                     do {
                         int alt93=3;
                         alt93 = dfa93.predict(input);
                         switch (alt93) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:942:5: 'case' expression ':'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:949:5: 'case' expression ':'
                     	    {
-                    	    string_literal228=(Token)match(input,100,FOLLOW_100_in_statement3350); if (state.failed) return retval;
+                    	    string_literal228=(Token)match(input,100,FOLLOW_100_in_statement3353); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    string_literal228_tree = (Object)adaptor.create(string_literal228);
                     	    adaptor.addChild(root_0, string_literal228_tree);
                     	    }
-                    	    pushFollow(FOLLOW_expression_in_statement3352);
+                    	    pushFollow(FOLLOW_expression_in_statement3355);
                     	    expression229=expression();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) adaptor.addChild(root_0, expression229.getTree());
-                    	    char_literal230=(Token)match(input,34,FOLLOW_34_in_statement3354); if (state.failed) return retval;
+                    	    char_literal230=(Token)match(input,34,FOLLOW_34_in_statement3357); if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) {
                     	    char_literal230_tree = (Object)adaptor.create(char_literal230);
                     	    adaptor.addChild(root_0, char_literal230_tree);
@@ -7278,9 +7284,9 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:943:4: statement
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:950:4: statement
                     	    {
-                    	    pushFollow(FOLLOW_statement_in_statement3361);
+                    	    pushFollow(FOLLOW_statement_in_statement3364);
                     	    statement231=statement();
 
                     	    state._fsp--;
@@ -7295,7 +7301,7 @@ public class ObjCppParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal232=(Token)match(input,25,FOLLOW_25_in_statement3370); if (state.failed) return retval;
+                    char_literal232=(Token)match(input,25,FOLLOW_25_in_statement3373); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal232_tree = (Object)adaptor.create(char_literal232);
                     adaptor.addChild(root_0, char_literal232_tree);
@@ -7304,11 +7310,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:946:3: ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:953:3: ';'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    char_literal233=(Token)match(input,29,FOLLOW_29_in_statement3376); if (state.failed) return retval;
+                    char_literal233=(Token)match(input,29,FOLLOW_29_in_statement3379); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal233_tree = (Object)adaptor.create(char_literal233);
                     adaptor.addChild(root_0, char_literal233_tree);
@@ -7317,11 +7323,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:947:3: IDENTIFIER {...}? '(' varDecl ':' expression ')' statement
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:954:3: IDENTIFIER {...}? '(' varDecl ':' expression ')' statement
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    IDENTIFIER234=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_statement3382); if (state.failed) return retval;
+                    IDENTIFIER234=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_statement3385); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     IDENTIFIER234_tree = (Object)adaptor.create(IDENTIFIER234);
                     adaptor.addChild(root_0, IDENTIFIER234_tree);
@@ -7330,34 +7336,34 @@ public class ObjCppParser extends Parser {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         throw new FailedPredicateException(input, "statement", " $IDENTIFIER.text.equals(\"foreach\") ");
                     }
-                    char_literal235=(Token)match(input,35,FOLLOW_35_in_statement3386); if (state.failed) return retval;
+                    char_literal235=(Token)match(input,35,FOLLOW_35_in_statement3389); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal235_tree = (Object)adaptor.create(char_literal235);
                     adaptor.addChild(root_0, char_literal235_tree);
                     }
-                    pushFollow(FOLLOW_varDecl_in_statement3388);
+                    pushFollow(FOLLOW_varDecl_in_statement3391);
                     varDecl236=varDecl();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, varDecl236.getTree());
-                    char_literal237=(Token)match(input,34,FOLLOW_34_in_statement3390); if (state.failed) return retval;
+                    char_literal237=(Token)match(input,34,FOLLOW_34_in_statement3393); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal237_tree = (Object)adaptor.create(char_literal237);
                     adaptor.addChild(root_0, char_literal237_tree);
                     }
-                    pushFollow(FOLLOW_expression_in_statement3392);
+                    pushFollow(FOLLOW_expression_in_statement3395);
                     expression238=expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression238.getTree());
-                    char_literal239=(Token)match(input,36,FOLLOW_36_in_statement3394); if (state.failed) return retval;
+                    char_literal239=(Token)match(input,36,FOLLOW_36_in_statement3397); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal239_tree = (Object)adaptor.create(char_literal239);
                     adaptor.addChild(root_0, char_literal239_tree);
                     }
-                    pushFollow(FOLLOW_statement_in_statement3396);
+                    pushFollow(FOLLOW_statement_in_statement3399);
                     statement240=statement();
 
                     state._fsp--;
@@ -7395,7 +7401,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "constant"
-    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:950:1: constant returns [Constant constant] : ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER | CHARACTER | FLOAT_NUMBER | CHARACTER | STRING );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:957:1: constant returns [Constant constant] : ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER | CHARACTER | FLOAT_NUMBER | STRING );
     public final ObjCppParser.constant_return constant() throws RecognitionException {
         ObjCppParser.constant_return retval = new ObjCppParser.constant_return();
         retval.start = input.LT(1);
@@ -7407,28 +7413,64 @@ public class ObjCppParser extends Parser {
         Token OCTAL_NUMBER243=null;
         Token CHARACTER244=null;
         Token FLOAT_NUMBER245=null;
-        Token CHARACTER246=null;
-        Token STRING247=null;
+        Token STRING246=null;
 
         Object DECIMAL_NUMBER241_tree=null;
         Object HEXADECIMAL_NUMBER242_tree=null;
         Object OCTAL_NUMBER243_tree=null;
         Object CHARACTER244_tree=null;
         Object FLOAT_NUMBER245_tree=null;
-        Object CHARACTER246_tree=null;
-        Object STRING247_tree=null;
+        Object STRING246_tree=null;
 
         try {
-            // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:951:2: ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER | CHARACTER | FLOAT_NUMBER | CHARACTER | STRING )
-            int alt95=7;
-            alt95 = dfa95.predict(input);
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:2: ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER | CHARACTER | FLOAT_NUMBER | STRING )
+            int alt95=6;
+            switch ( input.LA(1) ) {
+            case DECIMAL_NUMBER:
+                {
+                alt95=1;
+                }
+                break;
+            case HEXADECIMAL_NUMBER:
+                {
+                alt95=2;
+                }
+                break;
+            case OCTAL_NUMBER:
+                {
+                alt95=3;
+                }
+                break;
+            case CHARACTER:
+                {
+                alt95=4;
+                }
+                break;
+            case FLOAT_NUMBER:
+                {
+                alt95=5;
+                }
+                break;
+            case STRING:
+                {
+                alt95=6;
+                }
+                break;
+            default:
+                if (state.backtracking>0) {state.failed=true; return retval;}
+                NoViableAltException nvae =
+                    new NoViableAltException("", 95, 0, input);
+
+                throw nvae;
+            }
+
             switch (alt95) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:951:4: DECIMAL_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:4: DECIMAL_NUMBER
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    DECIMAL_NUMBER241=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_constant3412); if (state.failed) return retval;
+                    DECIMAL_NUMBER241=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_constant3415); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     DECIMAL_NUMBER241_tree = (Object)adaptor.create(DECIMAL_NUMBER241);
                     adaptor.addChild(root_0, DECIMAL_NUMBER241_tree);
@@ -7440,11 +7482,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:952:3: HEXADECIMAL_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:959:3: HEXADECIMAL_NUMBER
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    HEXADECIMAL_NUMBER242=(Token)match(input,HEXADECIMAL_NUMBER,FOLLOW_HEXADECIMAL_NUMBER_in_constant3420); if (state.failed) return retval;
+                    HEXADECIMAL_NUMBER242=(Token)match(input,HEXADECIMAL_NUMBER,FOLLOW_HEXADECIMAL_NUMBER_in_constant3423); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     HEXADECIMAL_NUMBER242_tree = (Object)adaptor.create(HEXADECIMAL_NUMBER242);
                     adaptor.addChild(root_0, HEXADECIMAL_NUMBER242_tree);
@@ -7456,11 +7498,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:953:3: OCTAL_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:960:3: OCTAL_NUMBER
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    OCTAL_NUMBER243=(Token)match(input,OCTAL_NUMBER,FOLLOW_OCTAL_NUMBER_in_constant3428); if (state.failed) return retval;
+                    OCTAL_NUMBER243=(Token)match(input,OCTAL_NUMBER,FOLLOW_OCTAL_NUMBER_in_constant3431); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     OCTAL_NUMBER243_tree = (Object)adaptor.create(OCTAL_NUMBER243);
                     adaptor.addChild(root_0, OCTAL_NUMBER243_tree);
@@ -7472,11 +7514,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:954:3: CHARACTER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:961:3: CHARACTER
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    CHARACTER244=(Token)match(input,CHARACTER,FOLLOW_CHARACTER_in_constant3436); if (state.failed) return retval;
+                    CHARACTER244=(Token)match(input,CHARACTER,FOLLOW_CHARACTER_in_constant3439); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     CHARACTER244_tree = (Object)adaptor.create(CHARACTER244);
                     adaptor.addChild(root_0, CHARACTER244_tree);
@@ -7488,11 +7530,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:955:3: FLOAT_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:962:3: FLOAT_NUMBER
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    FLOAT_NUMBER245=(Token)match(input,FLOAT_NUMBER,FOLLOW_FLOAT_NUMBER_in_constant3444); if (state.failed) return retval;
+                    FLOAT_NUMBER245=(Token)match(input,FLOAT_NUMBER,FOLLOW_FLOAT_NUMBER_in_constant3447); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     FLOAT_NUMBER245_tree = (Object)adaptor.create(FLOAT_NUMBER245);
                     adaptor.addChild(root_0, FLOAT_NUMBER245_tree);
@@ -7504,33 +7546,17 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:956:3: CHARACTER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:964:3: STRING
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    CHARACTER246=(Token)match(input,CHARACTER,FOLLOW_CHARACTER_in_constant3452); if (state.failed) return retval;
+                    STRING246=(Token)match(input,STRING,FOLLOW_STRING_in_constant3458); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    CHARACTER246_tree = (Object)adaptor.create(CHARACTER246);
-                    adaptor.addChild(root_0, CHARACTER246_tree);
+                    STRING246_tree = (Object)adaptor.create(STRING246);
+                    adaptor.addChild(root_0, STRING246_tree);
                     }
                     if ( state.backtracking==0 ) {
-                       retval.constant =  Constant.parseChar((CHARACTER246!=null?CHARACTER246.getText():null)); 
-                    }
-
-                    }
-                    break;
-                case 7 :
-                    // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:957:3: STRING
-                    {
-                    root_0 = (Object)adaptor.nil();
-
-                    STRING247=(Token)match(input,STRING,FOLLOW_STRING_in_constant3460); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    STRING247_tree = (Object)adaptor.create(STRING247);
-                    adaptor.addChild(root_0, STRING247_tree);
-                    }
-                    if ( state.backtracking==0 ) {
-                       retval.constant =  Constant.parseString((STRING247!=null?STRING247.getText():null)); 
+                       retval.constant =  Constant.parseString((STRING246!=null?STRING246.getText():null)); 
                     }
 
                     }
@@ -7559,10 +7585,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred7_ObjCpp
     public final void synpred7_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:214:5: ( functionDeclaration )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:214:5: functionDeclaration
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:221:5: ( functionDeclaration )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:221:5: functionDeclaration
         {
-        pushFollow(FOLLOW_functionDeclaration_in_synpred7_ObjCpp255);
+        pushFollow(FOLLOW_functionDeclaration_in_synpred7_ObjCpp258);
         functionDeclaration();
 
         state._fsp--;
@@ -7574,10 +7600,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred8_ObjCpp
     public final void synpred8_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:217:5: ( varDecl )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:217:5: varDecl
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:224:5: ( varDecl )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:224:5: varDecl
         {
-        pushFollow(FOLLOW_varDecl_in_synpred8_ObjCpp265);
+        pushFollow(FOLLOW_varDecl_in_synpred8_ObjCpp268);
         varDecl();
 
         state._fsp--;
@@ -7589,10 +7615,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred12_ObjCpp
     public final void synpred12_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:229:5: ( enumDecl )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:229:5: enumDecl
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:236:5: ( enumDecl )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:236:5: enumDecl
         {
-        pushFollow(FOLLOW_enumDecl_in_synpred12_ObjCpp305);
+        pushFollow(FOLLOW_enumDecl_in_synpred12_ObjCpp308);
         enumDecl();
 
         state._fsp--;
@@ -7604,10 +7630,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred13_ObjCpp
     public final void synpred13_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:232:5: ( structDef )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:232:5: structDef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:239:5: ( structDef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:239:5: structDef
         {
-        pushFollow(FOLLOW_structDef_in_synpred13_ObjCpp315);
+        pushFollow(FOLLOW_structDef_in_synpred13_ObjCpp318);
         structDef();
 
         state._fsp--;
@@ -7619,10 +7645,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred33_ObjCpp
     public final void synpred33_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:388:7: ( varDecl )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:388:7: varDecl
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:395:7: ( varDecl )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:395:7: varDecl
         {
-        pushFollow(FOLLOW_varDecl_in_synpred33_ObjCpp909);
+        pushFollow(FOLLOW_varDecl_in_synpred33_ObjCpp912);
         varDecl();
 
         state._fsp--;
@@ -7634,10 +7660,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred45_ObjCpp
     public final void synpred45_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:470:4: ( varStoragesWithInit )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:470:4: varStoragesWithInit
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:4: ( varStoragesWithInit )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:4: varStoragesWithInit
         {
-        pushFollow(FOLLOW_varStoragesWithInit_in_synpred45_ObjCpp1217);
+        pushFollow(FOLLOW_varStoragesWithInit_in_synpred45_ObjCpp1220);
         varStoragesWithInit();
 
         state._fsp--;
@@ -7649,10 +7675,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred48_ObjCpp
     public final void synpred48_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:489:6: ( exportationModifiers )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:489:6: exportationModifiers
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:496:6: ( exportationModifiers )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:496:6: exportationModifiers
         {
-        pushFollow(FOLLOW_exportationModifiers_in_synpred48_ObjCpp1273);
+        pushFollow(FOLLOW_exportationModifiers_in_synpred48_ObjCpp1276);
         exportationModifiers();
 
         state._fsp--;
@@ -7667,10 +7693,10 @@ public class ObjCppParser extends Parser {
         ObjCppParser.typeRef_return returnTypeRef = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:517:16: (returnTypeRef= typeRef )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:517:16: returnTypeRef= typeRef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:524:16: (returnTypeRef= typeRef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:524:16: returnTypeRef= typeRef
         {
-        pushFollow(FOLLOW_typeRef_in_synpred54_ObjCpp1395);
+        pushFollow(FOLLOW_typeRef_in_synpred54_ObjCpp1398);
         returnTypeRef=typeRef();
 
         state._fsp--;
@@ -7682,10 +7708,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred61_ObjCpp
     public final void synpred61_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:567:4: ( exportationModifier )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:567:4: exportationModifier
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:574:4: ( exportationModifier )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:574:4: exportationModifier
         {
-        pushFollow(FOLLOW_exportationModifier_in_synpred61_ObjCpp1584);
+        pushFollow(FOLLOW_exportationModifier_in_synpred61_ObjCpp1587);
         exportationModifier();
 
         state._fsp--;
@@ -7697,8 +7723,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred69_ObjCpp
     public final void synpred69_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:628:4: ( ( 'const' | '__const' ) )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:628:4: ( 'const' | '__const' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:635:4: ( ( 'const' | '__const' ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:635:4: ( 'const' | '__const' )
         {
         if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
             input.consume();
@@ -7717,10 +7743,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred70_ObjCpp
     public final void synpred70_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:629:4: ( '*' )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:629:4: '*'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:636:4: ( '*' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:636:4: '*'
         {
-        match(input,54,FOLLOW_54_in_synpred70_ObjCpp1785); if (state.failed) return ;
+        match(input,54,FOLLOW_54_in_synpred70_ObjCpp1788); if (state.failed) return ;
 
         }
     }
@@ -7728,10 +7754,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred71_ObjCpp
     public final void synpred71_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:630:4: ( '&' )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:630:4: '&'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:637:4: ( '&' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:637:4: '&'
         {
-        match(input,55,FOLLOW_55_in_synpred71_ObjCpp1795); if (state.failed) return ;
+        match(input,55,FOLLOW_55_in_synpred71_ObjCpp1798); if (state.failed) return ;
 
         }
     }
@@ -7739,10 +7765,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred72_ObjCpp
     public final void synpred72_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:631:4: ( '^' )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:631:4: '^'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:638:4: ( '^' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:638:4: '^'
         {
-        match(input,56,FOLLOW_56_in_synpred72_ObjCpp1805); if (state.failed) return ;
+        match(input,56,FOLLOW_56_in_synpred72_ObjCpp1808); if (state.failed) return ;
 
         }
     }
@@ -7750,10 +7776,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred73_ObjCpp
     public final void synpred73_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:633:3: ( IDENTIFIER )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:633:3: IDENTIFIER
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:640:3: ( IDENTIFIER )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:640:3: IDENTIFIER
         {
-        match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred73_ObjCpp1817); if (state.failed) return ;
+        match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred73_ObjCpp1820); if (state.failed) return ;
 
         }
     }
@@ -7761,18 +7787,18 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred75_ObjCpp
     public final void synpred75_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:637:4: ( '[' ( expression )? ']' )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:637:4: '[' ( expression )? ']'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:4: ( '[' ( expression )? ']' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:4: '[' ( expression )? ']'
         {
-        match(input,57,FOLLOW_57_in_synpred75_ObjCpp1830); if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:637:8: ( expression )?
+        match(input,57,FOLLOW_57_in_synpred75_ObjCpp1833); if (state.failed) return ;
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:8: ( expression )?
         int alt114=2;
         alt114 = dfa114.predict(input);
         switch (alt114) {
             case 1 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:0:0: expression
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:0:0: expression
                 {
-                pushFollow(FOLLOW_expression_in_synpred75_ObjCpp1832);
+                pushFollow(FOLLOW_expression_in_synpred75_ObjCpp1835);
                 expression();
 
                 state._fsp--;
@@ -7783,7 +7809,7 @@ public class ObjCppParser extends Parser {
 
         }
 
-        match(input,58,FOLLOW_58_in_synpred75_ObjCpp1835); if (state.failed) return ;
+        match(input,58,FOLLOW_58_in_synpred75_ObjCpp1838); if (state.failed) return ;
 
         }
     }
@@ -7794,11 +7820,11 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return e1 = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:668:18: ( '=' e1= expression )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:668:18: '=' e1= expression
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:675:18: ( '=' e1= expression )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:675:18: '=' e1= expression
         {
-        match(input,30,FOLLOW_30_in_synpred76_ObjCpp1898); if (state.failed) return ;
-        pushFollow(FOLLOW_expression_in_synpred76_ObjCpp1902);
+        match(input,30,FOLLOW_30_in_synpred76_ObjCpp1901); if (state.failed) return ;
+        pushFollow(FOLLOW_expression_in_synpred76_ObjCpp1905);
         e1=expression();
 
         state._fsp--;
@@ -7813,11 +7839,11 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return ex = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:23: ( '=' ex= expression )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:23: '=' ex= expression
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:23: ( '=' ex= expression )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:23: '=' ex= expression
         {
-        match(input,30,FOLLOW_30_in_synpred77_ObjCpp1924); if (state.failed) return ;
-        pushFollow(FOLLOW_expression_in_synpred77_ObjCpp1928);
+        match(input,30,FOLLOW_30_in_synpred77_ObjCpp1927); if (state.failed) return ;
+        pushFollow(FOLLOW_expression_in_synpred77_ObjCpp1931);
         ex=expression();
 
         state._fsp--;
@@ -7834,16 +7860,16 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return ex = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:4: ( ',' vx= varStorage ( '=' ex= expression )? )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:4: ',' vx= varStorage ( '=' ex= expression )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:4: ( ',' vx= varStorage ( '=' ex= expression )? )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:4: ',' vx= varStorage ( '=' ex= expression )?
         {
-        match(input,28,FOLLOW_28_in_synpred78_ObjCpp1917); if (state.failed) return ;
-        pushFollow(FOLLOW_varStorage_in_synpred78_ObjCpp1921);
+        match(input,28,FOLLOW_28_in_synpred78_ObjCpp1920); if (state.failed) return ;
+        pushFollow(FOLLOW_varStorage_in_synpred78_ObjCpp1924);
         vx=varStorage();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:22: ( '=' ex= expression )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:22: ( '=' ex= expression )?
         int alt115=2;
         int LA115_0 = input.LA(1);
 
@@ -7852,10 +7878,10 @@ public class ObjCppParser extends Parser {
         }
         switch (alt115) {
             case 1 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:672:23: '=' ex= expression
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:679:23: '=' ex= expression
                 {
-                match(input,30,FOLLOW_30_in_synpred78_ObjCpp1924); if (state.failed) return ;
-                pushFollow(FOLLOW_expression_in_synpred78_ObjCpp1928);
+                match(input,30,FOLLOW_30_in_synpred78_ObjCpp1927); if (state.failed) return ;
+                pushFollow(FOLLOW_expression_in_synpred78_ObjCpp1931);
                 ex=expression();
 
                 state._fsp--;
@@ -7873,10 +7899,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred102_ObjCpp
     public final void synpred102_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:767:3: ( structCore )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:767:3: structCore
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:3: ( structCore )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:3: structCore
         {
-        pushFollow(FOLLOW_structCore_in_synpred102_ObjCpp2448);
+        pushFollow(FOLLOW_structCore_in_synpred102_ObjCpp2451);
         structCore();
 
         state._fsp--;
@@ -7888,10 +7914,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred104_ObjCpp
     public final void synpred104_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:771:4: ( functionSignatureSuffix )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:771:4: functionSignatureSuffix
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:778:4: ( functionSignatureSuffix )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:778:4: functionSignatureSuffix
         {
-        pushFollow(FOLLOW_functionSignatureSuffix_in_synpred104_ObjCpp2475);
+        pushFollow(FOLLOW_functionSignatureSuffix_in_synpred104_ObjCpp2478);
         functionSignatureSuffix();
 
         state._fsp--;
@@ -7903,10 +7929,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred105_ObjCpp
     public final void synpred105_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:784:4: ( typeMutator )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:784:4: typeMutator
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:4: ( typeMutator )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:4: typeMutator
         {
-        pushFollow(FOLLOW_typeMutator_in_synpred105_ObjCpp2512);
+        pushFollow(FOLLOW_typeMutator_in_synpred105_ObjCpp2515);
         typeMutator();
 
         state._fsp--;
@@ -7921,15 +7947,15 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return par = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:888:5: (par= expression ')' )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:888:5: par= expression ')'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:895:5: (par= expression ')' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:895:5: par= expression ')'
         {
-        pushFollow(FOLLOW_expression_in_synpred134_ObjCpp2951);
+        pushFollow(FOLLOW_expression_in_synpred134_ObjCpp2954);
         par=expression();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,36,FOLLOW_36_in_synpred134_ObjCpp2953); if (state.failed) return ;
+        match(input,36,FOLLOW_36_in_synpred134_ObjCpp2956); if (state.failed) return ;
 
         }
     }
@@ -7941,8 +7967,8 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return opd2 = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:901:4: (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:901:4: bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:908:4: (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:908:4: bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression
         {
         bop=(Token)input.LT(1);
         if ( (input.LA(1)>=37 && input.LA(1)<=38)||(input.LA(1)>=43 && input.LA(1)<=44)||(input.LA(1)>=54 && input.LA(1)<=56)||(input.LA(1)>=79 && input.LA(1)<=90) ) {
@@ -7955,7 +7981,7 @@ public class ObjCppParser extends Parser {
             throw mse;
         }
 
-        pushFollow(FOLLOW_expression_in_synpred155_ObjCpp3107);
+        pushFollow(FOLLOW_expression_in_synpred155_ObjCpp3110);
         opd2=expression();
 
         state._fsp--;
@@ -7970,11 +7996,11 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return val = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:908:4: ( '=' val= expression )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:908:4: '=' val= expression
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:915:4: ( '=' val= expression )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:915:4: '=' val= expression
         {
-        match(input,30,FOLLOW_30_in_synpred156_ObjCpp3116); if (state.failed) return ;
-        pushFollow(FOLLOW_expression_in_synpred156_ObjCpp3120);
+        match(input,30,FOLLOW_30_in_synpred156_ObjCpp3119); if (state.failed) return ;
+        pushFollow(FOLLOW_expression_in_synpred156_ObjCpp3123);
         val=expression();
 
         state._fsp--;
@@ -7988,11 +8014,11 @@ public class ObjCppParser extends Parser {
     public final void synpred157_ObjCpp_fragment() throws RecognitionException {   
         Token fieldName=null;
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:911:4: ( '.' fieldName= IDENTIFIER )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:911:4: '.' fieldName= IDENTIFIER
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:918:4: ( '.' fieldName= IDENTIFIER )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:918:4: '.' fieldName= IDENTIFIER
         {
-        match(input,91,FOLLOW_91_in_synpred157_ObjCpp3129); if (state.failed) return ;
-        fieldName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred157_ObjCpp3133); if (state.failed) return ;
+        match(input,91,FOLLOW_91_in_synpred157_ObjCpp3132); if (state.failed) return ;
+        fieldName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred157_ObjCpp3136); if (state.failed) return ;
 
         }
     }
@@ -8004,10 +8030,10 @@ public class ObjCppParser extends Parser {
         ObjCppParser.functionCall_return fc2 = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:4: (refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:4: refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:4: (refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:4: refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall
         {
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:13: ( ':' ':' | '-' '>' | '.' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:13: ( ':' ':' | '-' '>' | '.' )
         int alt128=3;
         switch ( input.LA(1) ) {
         case 34:
@@ -8035,32 +8061,32 @@ public class ObjCppParser extends Parser {
 
         switch (alt128) {
             case 1 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:14: ':' ':'
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:14: ':' ':'
                 {
-                match(input,34,FOLLOW_34_in_synpred160_ObjCpp3145); if (state.failed) return ;
-                match(input,34,FOLLOW_34_in_synpred160_ObjCpp3147); if (state.failed) return ;
+                match(input,34,FOLLOW_34_in_synpred160_ObjCpp3148); if (state.failed) return ;
+                match(input,34,FOLLOW_34_in_synpred160_ObjCpp3150); if (state.failed) return ;
 
                 }
                 break;
             case 2 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:24: '-' '>'
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:24: '-' '>'
                 {
-                match(input,44,FOLLOW_44_in_synpred160_ObjCpp3151); if (state.failed) return ;
-                match(input,38,FOLLOW_38_in_synpred160_ObjCpp3153); if (state.failed) return ;
+                match(input,44,FOLLOW_44_in_synpred160_ObjCpp3154); if (state.failed) return ;
+                match(input,38,FOLLOW_38_in_synpred160_ObjCpp3156); if (state.failed) return ;
 
                 }
                 break;
             case 3 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:914:34: '.'
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:921:34: '.'
                 {
-                match(input,91,FOLLOW_91_in_synpred160_ObjCpp3157); if (state.failed) return ;
+                match(input,91,FOLLOW_91_in_synpred160_ObjCpp3160); if (state.failed) return ;
 
                 }
                 break;
 
         }
 
-        pushFollow(FOLLOW_functionCall_in_synpred160_ObjCpp3162);
+        pushFollow(FOLLOW_functionCall_in_synpred160_ObjCpp3165);
         fc2=functionCall();
 
         state._fsp--;
@@ -8077,17 +8103,17 @@ public class ObjCppParser extends Parser {
         ObjCppParser.expression_return xelse = null;
 
 
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:921:4: ( '?' xif= expression ':' xelse= expression )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:921:4: '?' xif= expression ':' xelse= expression
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:4: ( '?' xif= expression ':' xelse= expression )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:4: '?' xif= expression ':' xelse= expression
         {
-        match(input,92,FOLLOW_92_in_synpred161_ObjCpp3171); if (state.failed) return ;
-        pushFollow(FOLLOW_expression_in_synpred161_ObjCpp3175);
+        match(input,92,FOLLOW_92_in_synpred161_ObjCpp3174); if (state.failed) return ;
+        pushFollow(FOLLOW_expression_in_synpred161_ObjCpp3178);
         xif=expression();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,34,FOLLOW_34_in_synpred161_ObjCpp3177); if (state.failed) return ;
-        pushFollow(FOLLOW_expression_in_synpred161_ObjCpp3181);
+        match(input,34,FOLLOW_34_in_synpred161_ObjCpp3180); if (state.failed) return ;
+        pushFollow(FOLLOW_expression_in_synpred161_ObjCpp3184);
         xelse=expression();
 
         state._fsp--;
@@ -8099,10 +8125,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred163_ObjCpp
     public final void synpred163_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:933:3: ( statementsBlock )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:933:3: statementsBlock
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:940:3: ( statementsBlock )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:940:3: statementsBlock
         {
-        pushFollow(FOLLOW_statementsBlock_in_synpred163_ObjCpp3220);
+        pushFollow(FOLLOW_statementsBlock_in_synpred163_ObjCpp3223);
         statementsBlock();
 
         state._fsp--;
@@ -8114,10 +8140,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred164_ObjCpp
     public final void synpred164_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:934:3: ( declaration )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:934:3: declaration
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:941:3: ( declaration )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:941:3: declaration
         {
-        pushFollow(FOLLOW_declaration_in_synpred164_ObjCpp3226);
+        pushFollow(FOLLOW_declaration_in_synpred164_ObjCpp3229);
         declaration();
 
         state._fsp--;
@@ -8129,15 +8155,15 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred166_ObjCpp
     public final void synpred166_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:3: ( expression ( '=' expression )? ';' )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:3: expression ( '=' expression )? ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:3: ( expression ( '=' expression )? ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:3: expression ( '=' expression )? ';'
         {
-        pushFollow(FOLLOW_expression_in_synpred166_ObjCpp3232);
+        pushFollow(FOLLOW_expression_in_synpred166_ObjCpp3235);
         expression();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:14: ( '=' expression )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:14: ( '=' expression )?
         int alt129=2;
         int LA129_0 = input.LA(1);
 
@@ -8146,10 +8172,10 @@ public class ObjCppParser extends Parser {
         }
         switch (alt129) {
             case 1 :
-                // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:935:15: '=' expression
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:15: '=' expression
                 {
-                match(input,30,FOLLOW_30_in_synpred166_ObjCpp3235); if (state.failed) return ;
-                pushFollow(FOLLOW_expression_in_synpred166_ObjCpp3237);
+                match(input,30,FOLLOW_30_in_synpred166_ObjCpp3238); if (state.failed) return ;
+                pushFollow(FOLLOW_expression_in_synpred166_ObjCpp3240);
                 expression();
 
                 state._fsp--;
@@ -8160,7 +8186,7 @@ public class ObjCppParser extends Parser {
 
         }
 
-        match(input,29,FOLLOW_29_in_synpred166_ObjCpp3242); if (state.failed) return ;
+        match(input,29,FOLLOW_29_in_synpred166_ObjCpp3245); if (state.failed) return ;
 
         }
     }
@@ -8168,11 +8194,11 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred168_ObjCpp
     public final void synpred168_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:937:38: ( 'else' statement )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:937:38: 'else' statement
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:944:38: ( 'else' statement )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:944:38: 'else' statement
         {
-        match(input,95,FOLLOW_95_in_synpred168_ObjCpp3269); if (state.failed) return ;
-        pushFollow(FOLLOW_statement_in_synpred168_ObjCpp3271);
+        match(input,95,FOLLOW_95_in_synpred168_ObjCpp3272); if (state.failed) return ;
+        pushFollow(FOLLOW_statement_in_synpred168_ObjCpp3274);
         statement();
 
         state._fsp--;
@@ -8184,10 +8210,10 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred172_ObjCpp
     public final void synpred172_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:940:13: ( statement )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:940:13: statement
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:13: ( statement )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:13: statement
         {
-        pushFollow(FOLLOW_statement_in_synpred172_ObjCpp3315);
+        pushFollow(FOLLOW_statement_in_synpred172_ObjCpp3318);
         statement();
 
         state._fsp--;
@@ -8196,28 +8222,6 @@ public class ObjCppParser extends Parser {
         }
     }
     // $ANTLR end synpred172_ObjCpp
-
-    // $ANTLR start synpred183_ObjCpp
-    public final void synpred183_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:954:3: ( CHARACTER )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:954:3: CHARACTER
-        {
-        match(input,CHARACTER,FOLLOW_CHARACTER_in_synpred183_ObjCpp3436); if (state.failed) return ;
-
-        }
-    }
-    // $ANTLR end synpred183_ObjCpp
-
-    // $ANTLR start synpred185_ObjCpp
-    public final void synpred185_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:956:3: ( CHARACTER )
-        // /Users/ochafik/Prog/Java/resources/com/ochafik/lang/grammar/objcpp/ObjCpp.g:956:3: CHARACTER
-        {
-        match(input,CHARACTER,FOLLOW_CHARACTER_in_synpred185_ObjCpp3452); if (state.failed) return ;
-
-        }
-    }
-    // $ANTLR end synpred185_ObjCpp
 
     // Delegated rules
 
@@ -8324,20 +8328,6 @@ public class ObjCppParser extends Parser {
         int start = input.mark();
         try {
             synpred105_ObjCpp_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
-    public final boolean synpred183_ObjCpp() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred183_ObjCpp_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
@@ -8627,20 +8617,6 @@ public class ObjCppParser extends Parser {
         state.failed=false;
         return success;
     }
-    public final boolean synpred185_ObjCpp() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            synpred185_ObjCpp_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed=false;
-        return success;
-    }
     public final boolean synpred157_ObjCpp() {
         state.backtracking++;
         int start = input.mark();
@@ -8745,7 +8721,6 @@ public class ObjCppParser extends Parser {
     protected DFA91 dfa91 = new DFA91(this);
     protected DFA92 dfa92 = new DFA92(this);
     protected DFA93 dfa93 = new DFA93(this);
-    protected DFA95 dfa95 = new DFA95(this);
     protected DFA114 dfa114 = new DFA114(this);
     static final String DFA1_eotS =
         "\22\uffff";
@@ -8811,7 +8786,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA1_transition;
         }
         public String getDescription() {
-            return "158:3: (unescapedString= STRING )?";
+            return "165:3: (unescapedString= STRING )?";
         }
     }
     static final String DFA2_eotS =
@@ -8877,7 +8852,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA2_transition;
         }
         public String getDescription() {
-            return "169:8: (depth= DECIMAL_NUMBER )?";
+            return "176:8: (depth= DECIMAL_NUMBER )?";
         }
     }
     static final String DFA3_eotS =
@@ -8942,7 +8917,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA3_transition;
         }
         public String getDescription() {
-            return "()* loopback of 175:3: ( declaration | lineDirective )*";
+            return "()* loopback of 182:3: ( declaration | lineDirective )*";
         }
     }
     static final String DFA4_eotS =
@@ -9006,7 +8981,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA4_transition;
         }
         public String getDescription() {
-            return "()* loopback of 190:4: (ed= declaration )*";
+            return "()* loopback of 197:4: (ed= declaration )*";
         }
     }
     static final String DFA7_eotS =
@@ -9018,13 +8993,13 @@ public class ObjCppParser extends Parser {
     static final String DFA7_maxS =
         "\2\113\43\uffff";
     static final String DFA7_acceptS =
-        "\2\uffff\1\2\26\uffff\1\1\13\uffff";
+        "\2\uffff\1\2\31\uffff\1\1\10\uffff";
     static final String DFA7_specialS =
         "\45\uffff}>";
     static final String[] DFA7_transitionS = {
             "\1\1\1\2\22\uffff\2\2\3\uffff\3\2\14\uffff\3\2\3\uffff\2\2\5"+
             "\uffff\2\2\1\uffff\16\2",
-            "\1\31\2\2\22\uffff\10\2\1\uffff\1\2\1\uffff\1\2\10\uffff\3"+
+            "\1\34\2\2\22\uffff\10\2\1\uffff\1\2\1\uffff\1\2\10\uffff\3"+
             "\2\3\uffff\6\2\1\uffff\2\2\1\uffff\16\2",
             "",
             "",
@@ -9093,7 +9068,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA7_transition;
         }
         public String getDescription() {
-            return "205:3: ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )";
+            return "212:3: ( externDeclarations | exportationModifiers ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )";
         }
     }
     static final String DFA6_eotS =
@@ -9101,73 +9076,70 @@ public class ObjCppParser extends Parser {
     static final String DFA6_eofS =
         "\u0248\uffff";
     static final String DFA6_minS =
-        "\12\6\4\uffff\12\6\1\30\25\6\1\4\1\6\4\uffff\10\6\1\uffff\1\6\1"+
-        "\4\3\uffff\4\6\1\uffff\1\6\1\4\3\uffff\4\6\1\uffff\1\6\1\4\3\uffff"+
-        "\1\6\44\0\4\uffff\10\0\4\uffff\6\0\4\uffff\5\0\1\uffff\1\0\3\uffff"+
-        "\44\0\4\uffff\10\0\1\uffff\2\0\3\uffff\4\0\1\uffff\2\0\3\uffff\4"+
-        "\0\1\uffff\2\0\3\uffff\71\0\4\uffff\10\0\4\uffff\6\0\4\uffff\5\0"+
-        "\1\uffff\1\0\3\uffff\4\0\10\uffff\2\0\3\uffff\3\0\1\uffff\2\0\3"+
-        "\uffff\3\0\1\uffff\1\0\22\uffff\6\0\1\uffff\2\0\3\uffff\4\0\1\uffff"+
-        "\2\0\3\uffff\4\0\1\uffff\2\0\3\uffff\5\0\1\uffff\2\0\3\uffff\3\0"+
-        "\10\uffff\5\0\4\uffff\5\0\12\uffff\1\0\14\uffff\3\0\10\uffff\5\0"+
-        "\4\uffff\5\0\12\uffff\1\0\14\uffff\1\0\12\uffff\2\0\10\uffff\5\0"+
-        "\4\uffff\5\0\12\uffff\1\0\14\uffff\12\0\2\uffff";
+        "\12\6\4\uffff\12\6\1\30\27\6\1\4\1\6\4\uffff\4\6\1\4\3\6\4\uffff"+
+        "\4\6\1\4\1\6\4\uffff\5\6\1\uffff\1\4\3\uffff\1\6\41\0\1\uffff\1"+
+        "\0\3\uffff\12\0\4\uffff\6\0\4\uffff\10\0\4\uffff\44\0\4\uffff\10"+
+        "\0\4\uffff\6\0\4\uffff\7\0\4\uffff\65\0\1\uffff\1\0\3\uffff\12\0"+
+        "\4\uffff\6\0\4\uffff\7\0\4\uffff\10\0\4\uffff\6\0\4\uffff\3\0\10"+
+        "\uffff\2\0\3\uffff\3\0\1\uffff\5\0\4\uffff\1\0\22\uffff\3\0\10\uffff"+
+        "\2\0\3\uffff\3\0\1\uffff\5\0\4\uffff\1\0\22\uffff\6\0\4\uffff\7"+
+        "\0\4\uffff\3\0\10\uffff\2\0\3\uffff\3\0\1\uffff\5\0\4\uffff\1\0"+
+        "\30\uffff\2\0\12\uffff\1\0\10\uffff\2\0\3\uffff\3\0\1\uffff\5\0"+
+        "\4\uffff\1\0\14\uffff\12\0\2\uffff";
     static final String DFA6_maxS =
         "\2\113\1\30\1\113\1\30\3\113\2\71\4\uffff\1\113\1\30\1\113\1\30"+
         "\3\113\2\71\1\113\1\30\1\6\3\113\2\71\1\43\2\113\1\30\1\113\1\30"+
-        "\3\113\2\71\1\66\3\71\1\116\1\71\4\uffff\1\113\1\71\1\113\1\71\1"+
-        "\66\3\71\1\uffff\1\71\1\116\3\uffff\1\66\3\71\1\uffff\1\71\1\116"+
-        "\3\uffff\1\113\3\71\1\uffff\1\71\1\116\3\uffff\1\113\44\0\4\uffff"+
-        "\10\0\4\uffff\6\0\4\uffff\5\0\1\uffff\1\0\3\uffff\44\0\4\uffff\10"+
-        "\0\1\uffff\2\0\3\uffff\4\0\1\uffff\2\0\3\uffff\4\0\1\uffff\2\0\3"+
-        "\uffff\71\0\4\uffff\10\0\4\uffff\6\0\4\uffff\5\0\1\uffff\1\0\3\uffff"+
-        "\4\0\10\uffff\2\0\3\uffff\3\0\1\uffff\2\0\3\uffff\3\0\1\uffff\1"+
-        "\0\22\uffff\6\0\1\uffff\2\0\3\uffff\4\0\1\uffff\2\0\3\uffff\4\0"+
-        "\1\uffff\2\0\3\uffff\5\0\1\uffff\2\0\3\uffff\3\0\10\uffff\5\0\4"+
-        "\uffff\5\0\12\uffff\1\0\14\uffff\3\0\10\uffff\5\0\4\uffff\5\0\12"+
-        "\uffff\1\0\14\uffff\1\0\12\uffff\2\0\10\uffff\5\0\4\uffff\5\0\12"+
-        "\uffff\1\0\14\uffff\12\0\2\uffff";
+        "\3\113\2\71\1\113\1\71\1\66\3\71\1\116\1\71\4\uffff\1\66\3\71\1"+
+        "\116\1\71\1\113\1\71\4\uffff\1\66\3\71\1\116\1\71\4\uffff\1\71\1"+
+        "\113\3\71\1\uffff\1\116\3\uffff\1\113\41\0\1\uffff\1\0\3\uffff\12"+
+        "\0\4\uffff\6\0\4\uffff\10\0\4\uffff\44\0\4\uffff\10\0\4\uffff\6"+
+        "\0\4\uffff\7\0\4\uffff\65\0\1\uffff\1\0\3\uffff\12\0\4\uffff\6\0"+
+        "\4\uffff\7\0\4\uffff\10\0\4\uffff\6\0\4\uffff\3\0\10\uffff\2\0\3"+
+        "\uffff\3\0\1\uffff\5\0\4\uffff\1\0\22\uffff\3\0\10\uffff\2\0\3\uffff"+
+        "\3\0\1\uffff\5\0\4\uffff\1\0\22\uffff\6\0\4\uffff\7\0\4\uffff\3"+
+        "\0\10\uffff\2\0\3\uffff\3\0\1\uffff\5\0\4\uffff\1\0\30\uffff\2\0"+
+        "\12\uffff\1\0\10\uffff\2\0\3\uffff\3\0\1\uffff\5\0\4\uffff\1\0\14"+
+        "\uffff\12\0\2\uffff";
     static final String DFA6_acceptS =
-        "\12\uffff\1\3\1\4\1\5\1\10\42\uffff\1\2\u0140\uffff\1\1\u00d4\uffff"+
+        "\12\uffff\1\3\1\4\1\5\1\10\44\uffff\1\2\u0154\uffff\1\1\u00be\uffff"+
         "\1\7\1\6";
     static final String DFA6_specialS =
         "\127\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
         "\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25\1\26\1\27\1\30"+
-        "\1\31\1\32\1\33\1\34\1\35\1\36\1\37\1\40\1\41\1\42\1\43\4\uffff"+
-        "\1\44\1\45\1\46\1\47\1\50\1\51\1\52\1\53\4\uffff\1\54\1\55\1\56"+
-        "\1\57\1\60\1\61\4\uffff\1\62\1\63\1\64\1\65\1\66\1\uffff\1\67\3"+
-        "\uffff\1\70\1\71\1\72\1\73\1\74\1\75\1\76\1\77\1\100\1\101\1\102"+
+        "\1\31\1\32\1\33\1\34\1\35\1\36\1\37\1\40\1\uffff\1\41\3\uffff\1"+
+        "\42\1\43\1\44\1\45\1\46\1\47\1\50\1\51\1\52\1\53\4\uffff\1\54\1"+
+        "\55\1\56\1\57\1\60\1\61\4\uffff\1\62\1\63\1\64\1\65\1\66\1\67\1"+
+        "\70\1\71\4\uffff\1\72\1\73\1\74\1\75\1\76\1\77\1\100\1\101\1\102"+
         "\1\103\1\104\1\105\1\106\1\107\1\110\1\111\1\112\1\113\1\114\1\115"+
         "\1\116\1\117\1\120\1\121\1\122\1\123\1\124\1\125\1\126\1\127\1\130"+
-        "\1\131\1\132\1\133\4\uffff\1\134\1\135\1\136\1\137\1\140\1\141\1"+
-        "\142\1\143\1\uffff\1\144\1\145\3\uffff\1\146\1\147\1\150\1\151\1"+
-        "\uffff\1\152\1\153\3\uffff\1\154\1\155\1\156\1\157\1\uffff\1\160"+
-        "\1\161\3\uffff\1\162\1\163\1\164\1\165\1\166\1\167\1\170\1\171\1"+
-        "\172\1\173\1\174\1\175\1\176\1\177\1\u0080\1\u0081\1\u0082\1\u0083"+
-        "\1\u0084\1\u0085\1\u0086\1\u0087\1\u0088\1\u0089\1\u008a\1\u008b"+
-        "\1\u008c\1\u008d\1\u008e\1\u008f\1\u0090\1\u0091\1\u0092\1\u0093"+
-        "\1\u0094\1\u0095\1\u0096\1\u0097\1\u0098\1\u0099\1\u009a\1\u009b"+
-        "\1\u009c\1\u009d\1\u009e\1\u009f\1\u00a0\1\u00a1\1\u00a2\1\u00a3"+
-        "\1\u00a4\1\u00a5\1\u00a6\1\u00a7\1\u00a8\1\u00a9\1\u00aa\4\uffff"+
-        "\1\u00ab\1\u00ac\1\u00ad\1\u00ae\1\u00af\1\u00b0\1\u00b1\1\u00b2"+
-        "\4\uffff\1\u00b3\1\u00b4\1\u00b5\1\u00b6\1\u00b7\1\u00b8\4\uffff"+
-        "\1\u00b9\1\u00ba\1\u00bb\1\u00bc\1\u00bd\1\uffff\1\u00be\3\uffff"+
-        "\1\u00bf\1\u00c0\1\u00c1\1\u00c2\10\uffff\1\u00c3\1\u00c4\3\uffff"+
-        "\1\u00c5\1\u00c6\1\u00c7\1\uffff\1\u00c8\1\u00c9\3\uffff\1\u00ca"+
-        "\1\u00cb\1\u00cc\1\uffff\1\u00cd\22\uffff\1\u00ce\1\u00cf\1\u00d0"+
-        "\1\u00d1\1\u00d2\1\u00d3\1\uffff\1\u00d4\1\u00d5\3\uffff\1\u00d6"+
-        "\1\u00d7\1\u00d8\1\u00d9\1\uffff\1\u00da\1\u00db\3\uffff\1\u00dc"+
-        "\1\u00dd\1\u00de\1\u00df\1\uffff\1\u00e0\1\u00e1\3\uffff\1\u00e2"+
-        "\1\u00e3\1\u00e4\1\u00e5\1\u00e6\1\uffff\1\u00e7\1\u00e8\3\uffff"+
-        "\1\u00e9\1\u00ea\1\u00eb\10\uffff\1\u00ec\1\u00ed\1\u00ee\1\u00ef"+
-        "\1\u00f0\4\uffff\1\u00f1\1\u00f2\1\u00f3\1\u00f4\1\u00f5\12\uffff"+
-        "\1\u00f6\14\uffff\1\u00f7\1\u00f8\1\u00f9\10\uffff\1\u00fa\1\u00fb"+
-        "\1\u00fc\1\u00fd\1\u00fe\4\uffff\1\u00ff\1\u0100\1\u0101\1\u0102"+
-        "\1\u0103\12\uffff\1\u0104\14\uffff\1\u0105\12\uffff\1\u0106\1\u0107"+
-        "\10\uffff\1\u0108\1\u0109\1\u010a\1\u010b\1\u010c\4\uffff\1\u010d"+
-        "\1\u010e\1\u010f\1\u0110\1\u0111\12\uffff\1\u0112\14\uffff\1\u0113"+
-        "\1\u0114\1\u0115\1\u0116\1\u0117\1\u0118\1\u0119\1\u011a\1\u011b"+
-        "\1\u011c\2\uffff}>";
+        "\1\131\1\132\1\133\1\134\1\135\4\uffff\1\136\1\137\1\140\1\141\1"+
+        "\142\1\143\1\144\1\145\4\uffff\1\146\1\147\1\150\1\151\1\152\1\153"+
+        "\4\uffff\1\154\1\155\1\156\1\157\1\160\1\161\1\162\4\uffff\1\163"+
+        "\1\164\1\165\1\166\1\167\1\170\1\171\1\172\1\173\1\174\1\175\1\176"+
+        "\1\177\1\u0080\1\u0081\1\u0082\1\u0083\1\u0084\1\u0085\1\u0086\1"+
+        "\u0087\1\u0088\1\u0089\1\u008a\1\u008b\1\u008c\1\u008d\1\u008e\1"+
+        "\u008f\1\u0090\1\u0091\1\u0092\1\u0093\1\u0094\1\u0095\1\u0096\1"+
+        "\u0097\1\u0098\1\u0099\1\u009a\1\u009b\1\u009c\1\u009d\1\u009e\1"+
+        "\u009f\1\u00a0\1\u00a1\1\u00a2\1\u00a3\1\u00a4\1\u00a5\1\u00a6\1"+
+        "\u00a7\1\uffff\1\u00a8\3\uffff\1\u00a9\1\u00aa\1\u00ab\1\u00ac\1"+
+        "\u00ad\1\u00ae\1\u00af\1\u00b0\1\u00b1\1\u00b2\4\uffff\1\u00b3\1"+
+        "\u00b4\1\u00b5\1\u00b6\1\u00b7\1\u00b8\4\uffff\1\u00b9\1\u00ba\1"+
+        "\u00bb\1\u00bc\1\u00bd\1\u00be\1\u00bf\4\uffff\1\u00c0\1\u00c1\1"+
+        "\u00c2\1\u00c3\1\u00c4\1\u00c5\1\u00c6\1\u00c7\4\uffff\1\u00c8\1"+
+        "\u00c9\1\u00ca\1\u00cb\1\u00cc\1\u00cd\4\uffff\1\u00ce\1\u00cf\1"+
+        "\u00d0\10\uffff\1\u00d1\1\u00d2\3\uffff\1\u00d3\1\u00d4\1\u00d5"+
+        "\1\uffff\1\u00d6\1\u00d7\1\u00d8\1\u00d9\1\u00da\4\uffff\1\u00db"+
+        "\22\uffff\1\u00dc\1\u00dd\1\u00de\10\uffff\1\u00df\1\u00e0\3\uffff"+
+        "\1\u00e1\1\u00e2\1\u00e3\1\uffff\1\u00e4\1\u00e5\1\u00e6\1\u00e7"+
+        "\1\u00e8\4\uffff\1\u00e9\22\uffff\1\u00ea\1\u00eb\1\u00ec\1\u00ed"+
+        "\1\u00ee\1\u00ef\4\uffff\1\u00f0\1\u00f1\1\u00f2\1\u00f3\1\u00f4"+
+        "\1\u00f5\1\u00f6\4\uffff\1\u00f7\1\u00f8\1\u00f9\10\uffff\1\u00fa"+
+        "\1\u00fb\3\uffff\1\u00fc\1\u00fd\1\u00fe\1\uffff\1\u00ff\1\u0100"+
+        "\1\u0101\1\u0102\1\u0103\4\uffff\1\u0104\30\uffff\1\u0105\1\u0106"+
+        "\12\uffff\1\u0107\10\uffff\1\u0108\1\u0109\3\uffff\1\u010a\1\u010b"+
+        "\1\u010c\1\uffff\1\u010d\1\u010e\1\u010f\1\u0110\1\u0111\4\uffff"+
+        "\1\u0112\14\uffff\1\u0113\1\u0114\1\u0115\1\u0116\1\u0117\1\u0118"+
+        "\1\u0119\1\u011a\1\u011b\1\u011c\2\uffff}>";
     static final String[] DFA6_transitionS = {
             "\1\11\1\7\22\uffff\1\15\1\14\3\uffff\1\2\2\12\14\uffff\2\1\1"+
             "\4\3\uffff\2\3\5\uffff\1\13\1\5\1\uffff\4\6\1\7\11\10",
@@ -9179,14 +9151,14 @@ public class ObjCppParser extends Parser {
             "\1\37\21\uffff\1\40",
             "\1\51\1\47\27\uffff\1\42\16\uffff\2\41\1\44\3\uffff\2\43\6"+
             "\uffff\1\45\1\uffff\4\46\1\47\11\50",
-            "\1\57\1\64\24\uffff\3\60\4\uffff\1\52\20\uffff\2\53\1\54\1"+
-            "\55\1\60\1\56\10\uffff\1\64\11\65",
-            "\1\75\1\66\24\uffff\3\60\4\uffff\1\70\20\uffff\2\71\1\72\1"+
-            "\73\1\60\1\76\10\uffff\1\66\11\67",
-            "\1\107\25\uffff\3\60\4\uffff\1\102\20\uffff\2\103\1\104\1\105"+
-            "\1\60\1\110",
-            "\1\121\25\uffff\3\60\4\uffff\1\114\1\uffff\1\126\16\uffff\2"+
-            "\115\1\116\1\117\1\60\1\122",
+            "\1\61\1\52\24\uffff\3\62\4\uffff\1\54\20\uffff\2\55\1\56\1"+
+            "\57\1\62\1\60\10\uffff\1\52\11\53",
+            "\1\73\1\74\24\uffff\3\62\4\uffff\1\66\20\uffff\2\67\1\70\1"+
+            "\71\1\62\1\72\10\uffff\1\74\11\75",
+            "\1\107\25\uffff\3\62\4\uffff\1\102\20\uffff\2\103\1\104\1\105"+
+            "\1\62\1\106",
+            "\1\114\25\uffff\3\62\4\uffff\1\115\1\uffff\1\126\16\uffff\2"+
+            "\116\1\117\1\120\1\62\1\122",
             "",
             "",
             "",
@@ -9199,14 +9171,14 @@ public class ObjCppParser extends Parser {
             "\1\150\21\uffff\1\151",
             "\1\162\1\160\27\uffff\1\153\16\uffff\2\152\1\155\3\uffff\2"+
             "\154\6\uffff\1\156\1\uffff\4\157\1\160\11\161",
-            "\1\170\1\171\24\uffff\3\60\4\uffff\1\163\20\uffff\2\164\1\165"+
-            "\1\166\1\60\1\167\10\uffff\1\171\11\172",
-            "\1\u0086\1\177\24\uffff\3\60\4\uffff\1\u0081\20\uffff\2\u0082"+
-            "\1\u0083\1\u0084\1\60\1\u0085\10\uffff\1\177\11\u0080",
-            "\1\u0090\25\uffff\3\60\4\uffff\1\u008b\20\uffff\2\u008c\1\u008d"+
-            "\1\u008e\1\60\1\u008f",
-            "\1\u009b\21\uffff\1\u00a0\3\uffff\3\60\4\uffff\1\u0095\1\uffff"+
-            "\1\u009f\16\uffff\2\u0096\1\u0097\1\u0098\1\60\1\u0099",
+            "\1\171\1\175\24\uffff\3\62\4\uffff\1\163\20\uffff\2\164\1\165"+
+            "\1\166\1\62\1\167\10\uffff\1\175\11\176",
+            "\1\u0086\1\177\24\uffff\3\62\4\uffff\1\u0081\20\uffff\2\u0082"+
+            "\1\u0083\1\u0084\1\62\1\u0085\10\uffff\1\177\11\u0080",
+            "\1\u0090\25\uffff\3\62\4\uffff\1\u008b\20\uffff\2\u008c\1\u008d"+
+            "\1\u008e\1\62\1\u008f",
+            "\1\u0095\21\uffff\1\u009c\3\uffff\3\62\4\uffff\1\u0096\1\uffff"+
+            "\1\u009b\16\uffff\2\u0097\1\u0098\1\u0099\1\62\1\u009a",
             "\1\u00a4\1\u00ab\21\uffff\1\u00b1\1\u00b0\1\u00af\3\uffff\1"+
             "\u00a6\2\u00ad\14\uffff\2\u00a5\1\u00a8\1\u00a1\1\u00a2\1\u00a3"+
             "\2\u00a7\5\uffff\1\u00ae\1\u00a9\1\uffff\4\u00aa\1\u00ab\11"+
@@ -9216,15 +9188,15 @@ public class ObjCppParser extends Parser {
             "\1\u00bc\1\u00ba\27\uffff\1\u00b5\16\uffff\2\u00b4\1\u00b7"+
             "\3\uffff\2\u00b6\6\uffff\1\u00b8\1\uffff\4\u00b9\1\u00ba\11"+
             "\u00bb",
-            "\1\u00c2\1\u00c7\24\uffff\3\60\4\uffff\1\u00bd\20\uffff\2\u00be"+
-            "\1\u00bf\1\u00c0\1\60\1\u00c1\10\uffff\1\u00c7\11\u00c8",
-            "\1\u00d0\1\u00c9\24\uffff\3\60\4\uffff\1\u00cb\20\uffff\2\u00cc"+
-            "\1\u00cd\1\u00ce\1\60\1\u00d1\10\uffff\1\u00c9\11\u00ca",
-            "\1\u00da\25\uffff\3\60\4\uffff\1\u00d5\20\uffff\2\u00d6\1\u00d7"+
-            "\1\u00d8\1\60\1\u00db",
-            "\1\u00e4\25\uffff\3\60\4\uffff\1\u00df\1\uffff\1\u00e9\16\uffff"+
-            "\2\u00e0\1\u00e1\1\u00e2\1\60\1\u00e5",
-            "\1\u00eb\21\uffff\1\u00ea\12\uffff\1\u00ec",
+            "\1\u00c4\1\u00bd\24\uffff\3\62\4\uffff\1\u00bf\20\uffff\2\u00c0"+
+            "\1\u00c1\1\u00c2\1\62\1\u00c3\10\uffff\1\u00bd\11\u00be",
+            "\1\u00ce\1\u00cf\24\uffff\3\62\4\uffff\1\u00c9\20\uffff\2\u00ca"+
+            "\1\u00cb\1\u00cc\1\62\1\u00cd\10\uffff\1\u00cf\11\u00d0",
+            "\1\u00da\25\uffff\3\62\4\uffff\1\u00d5\20\uffff\2\u00d6\1\u00d7"+
+            "\1\u00d8\1\62\1\u00d9",
+            "\1\u00e4\25\uffff\3\62\4\uffff\1\u00df\1\uffff\1\u00e5\16\uffff"+
+            "\2\u00e0\1\u00e1\1\u00e2\1\62\1\u00e3",
+            "\1\u00ea\21\uffff\1\u00ec\12\uffff\1\u00eb",
             "\1\u00f0\1\u00f7\21\uffff\1\u00fd\1\u00fc\1\u00fb\3\uffff\1"+
             "\u00f2\2\u00f9\14\uffff\2\u00f1\1\u00f4\1\u00ed\1\u00ee\1\u00ef"+
             "\2\u00f3\5\uffff\1\u00fa\1\u00f5\1\uffff\4\u00f6\1\u00f7\11"+
@@ -9239,73 +9211,73 @@ public class ObjCppParser extends Parser {
             "\1\u0119\1\u0117\27\uffff\1\u0112\16\uffff\2\u0111\1\u0114"+
             "\3\uffff\2\u0113\6\uffff\1\u0115\1\uffff\4\u0116\1\u0117\11"+
             "\u0118",
-            "\1\u011f\1\u0120\24\uffff\3\60\4\uffff\1\u011a\20\uffff\2\u011b"+
-            "\1\u011c\1\u011d\1\60\1\u011e\10\uffff\1\u0120\11\u0121",
-            "\1\u012d\1\u0126\24\uffff\3\60\4\uffff\1\u0128\20\uffff\2\u0129"+
-            "\1\u012a\1\u012b\1\60\1\u012c\10\uffff\1\u0126\11\u0127",
-            "\1\u0137\25\uffff\3\60\4\uffff\1\u0132\20\uffff\2\u0133\1\u0134"+
-            "\1\u0135\1\60\1\u0136",
-            "\1\u0142\25\uffff\3\60\4\uffff\1\u013c\1\uffff\1\u0146\16\uffff"+
-            "\2\u013d\1\u013e\1\u013f\1\60\1\u0140",
-            "\1\u0147\57\uffff\1\u0148",
-            "\1\60\25\uffff\3\60\25\uffff\2\60\1\u0149\3\60",
-            "\1\u0152\25\uffff\3\60\25\uffff\2\u0157\1\u0158\1\u0159\1\60"+
-            "\1\u0153",
-            "\1\u015b\25\uffff\3\60\25\uffff\2\u0160\1\u0161\1\u0162\1\60"+
-            "\1\u015c",
-            "\3\60\1\uffff\4\60\14\uffff\1\60\12\uffff\1\60\25\uffff\1\60"+
-            "\1\u0164\21\uffff\3\60",
-            "\1\u0171\25\uffff\3\60\4\uffff\1\u0171\25\uffff\1\60",
+            "\1\u0120\1\u0124\24\uffff\3\62\4\uffff\1\u011a\20\uffff\2\u011b"+
+            "\1\u011c\1\u011d\1\62\1\u011e\10\uffff\1\u0124\11\u0125",
+            "\1\u012d\1\u0126\24\uffff\3\62\4\uffff\1\u0128\20\uffff\2\u0129"+
+            "\1\u012a\1\u012b\1\62\1\u012c\10\uffff\1\u0126\11\u0127",
+            "\1\u0137\25\uffff\3\62\4\uffff\1\u0132\20\uffff\2\u0133\1\u0134"+
+            "\1\u0135\1\62\1\u0136",
+            "\1\u0141\25\uffff\3\62\4\uffff\1\u013c\1\uffff\1\u0142\16\uffff"+
+            "\2\u013d\1\u013e\1\u013f\1\62\1\u0140",
+            "\1\u014c\1\u014d\24\uffff\3\62\4\uffff\1\u0147\20\uffff\2\u0148"+
+            "\1\u0149\1\u014a\1\62\1\u014b\10\uffff\1\u014d\11\u014e",
+            "\1\u0158\25\uffff\3\62\4\uffff\1\u0153\20\uffff\2\u0154\1\u0155"+
+            "\1\u0156\1\62\1\u0157",
+            "\1\u015d\57\uffff\1\u015e",
+            "\1\62\25\uffff\3\62\25\uffff\2\62\1\u015f\3\62",
+            "\1\u0168\25\uffff\3\62\25\uffff\2\u016d\1\u016e\1\u016f\1\62"+
+            "\1\u0169",
+            "\1\u0171\25\uffff\3\62\25\uffff\2\u0172\1\u0173\1\u0174\1\62"+
+            "\1\u0175",
+            "\3\62\1\uffff\4\62\14\uffff\1\62\12\uffff\1\62\25\uffff\1\62"+
+            "\1\u017a\21\uffff\3\62",
+            "\1\u0187\25\uffff\3\62\4\uffff\1\u0187\25\uffff\1\62",
             "",
             "",
             "",
             "",
-            "\1\u017e\1\u0177\24\uffff\3\60\4\uffff\1\u0179\20\uffff\2\u017a"+
-            "\1\u017b\1\u017c\1\60\1\u017f\10\uffff\1\u0177\11\u0178",
-            "\1\u0188\25\uffff\3\60\4\uffff\1\u0183\20\uffff\2\u0184\1\u0185"+
-            "\1\u0186\1\60\1\u0189",
-            "\1\u0192\1\u0197\24\uffff\3\60\4\uffff\1\u018d\20\uffff\2\u018e"+
-            "\1\u018f\1\u0190\1\60\1\u0193\10\uffff\12\u0197",
-            "\1\u019d\25\uffff\3\60\4\uffff\1\u0198\20\uffff\2\u0199\1\u019a"+
-            "\1\u019b\1\60\1\u019e",
-            "\1\u01a2\57\uffff\1\u01a3",
-            "\1\60\25\uffff\3\60\25\uffff\2\60\1\u01a4\3\60",
-            "\1\u01ad\25\uffff\3\60\25\uffff\2\u01ae\1\u01af\1\u01b0\1\60"+
-            "\1\u01b1",
-            "\1\u01b6\25\uffff\3\60\25\uffff\2\u01b7\1\u01b8\1\u01b9\1\60"+
-            "\1\u01ba",
+            "\1\u018d\57\uffff\1\u018e",
+            "\1\62\25\uffff\3\62\25\uffff\2\62\1\u018f\3\62",
+            "\1\u0198\25\uffff\3\62\25\uffff\2\u019d\1\u019e\1\u019f\1\62"+
+            "\1\u0199",
+            "\1\u01a1\25\uffff\3\62\25\uffff\2\u01a2\1\u01a3\1\u01a4\1\62"+
+            "\1\u01a5",
+            "\3\62\1\uffff\4\62\14\uffff\1\62\12\uffff\1\62\25\uffff\1\62"+
+            "\1\u01aa\21\uffff\3\62",
+            "\1\u0187\25\uffff\3\62\4\uffff\1\u0187\25\uffff\1\62",
+            "\1\u01c2\1\u01c7\24\uffff\3\62\4\uffff\1\u01bd\20\uffff\2\u01be"+
+            "\1\u01bf\1\u01c0\1\62\1\u01c1\10\uffff\12\u01c7",
+            "\1\u01cd\25\uffff\3\62\4\uffff\1\u01c8\20\uffff\2\u01c9\1\u01ca"+
+            "\1\u01cb\1\62\1\u01cc",
             "",
-            "\1\u0171\25\uffff\3\60\4\uffff\1\u0171\25\uffff\1\60",
-            "\3\60\1\uffff\4\60\14\uffff\1\60\12\uffff\1\60\25\uffff\1\60"+
-            "\1\u01c5\21\uffff\3\60",
             "",
             "",
             "",
             "\1\u01d2\57\uffff\1\u01d3",
-            "\1\60\25\uffff\3\60\25\uffff\2\60\1\u01d4\3\60",
-            "\1\u01dd\25\uffff\3\60\25\uffff\2\u01de\1\u01df\1\u01e0\1\60"+
-            "\1\u01e1",
-            "\1\u01e6\25\uffff\3\60\25\uffff\2\u01e7\1\u01e8\1\u01e9\1\60"+
+            "\1\62\25\uffff\3\62\25\uffff\2\62\1\u01d4\3\62",
+            "\1\u01dd\25\uffff\3\62\25\uffff\2\u01e2\1\u01e3\1\u01e4\1\62"+
+            "\1\u01de",
+            "\1\u01e6\25\uffff\3\62\25\uffff\2\u01e7\1\u01e8\1\u01e9\1\62"+
             "\1\u01ea",
-            "",
-            "\1\u0171\25\uffff\3\60\4\uffff\1\u0171\25\uffff\1\60",
-            "\3\60\1\uffff\4\60\14\uffff\1\60\12\uffff\1\60\25\uffff\1\60"+
-            "\1\u01f5\21\uffff\3\60",
-            "",
+            "\3\62\1\uffff\4\62\14\uffff\1\62\12\uffff\1\62\25\uffff\1\62"+
+            "\1\u01ef\21\uffff\3\62",
+            "\1\u0187\25\uffff\3\62\4\uffff\1\u0187\25\uffff\1\62",
             "",
             "",
-            "\1\u0202\1\u0171\27\uffff\1\u0171\4\uffff\1\u0171\10\uffff"+
-            "\4\u0171\3\uffff\2\u0171\1\u020d\5\uffff\1\u0171\1\uffff\16"+
-            "\u0171",
-            "\1\60\25\uffff\3\60\25\uffff\2\60\1\u020e\3\60",
-            "\1\u0217\25\uffff\3\60\25\uffff\2\u0218\1\u0219\1\u021a\1\60"+
-            "\1\u021b",
-            "\1\u0220\25\uffff\3\60\25\uffff\2\u0221\1\u0222\1\u0223\1\60"+
-            "\1\u0224",
             "",
-            "\1\u0171\25\uffff\3\60\4\uffff\1\u0171\25\uffff\1\60",
-            "\3\60\1\uffff\4\60\14\uffff\1\60\12\uffff\1\60\25\uffff\1\60"+
-            "\1\u022f\21\uffff\3\60",
+            "",
+            "\1\u0187\25\uffff\3\62\4\uffff\1\u0187\25\uffff\1\62",
+            "\1\u0208\1\u0187\27\uffff\1\u0187\4\uffff\1\u0187\10\uffff"+
+            "\4\u0187\3\uffff\2\u0187\1\u0209\5\uffff\1\u0187\1\uffff\16"+
+            "\u0187",
+            "\1\62\25\uffff\3\62\25\uffff\2\62\1\u0214\3\62",
+            "\1\u021d\25\uffff\3\62\25\uffff\2\u0222\1\u0223\1\u0224\1\62"+
+            "\1\u021e",
+            "\1\u0226\25\uffff\3\62\25\uffff\2\u0227\1\u0228\1\u0229\1\62"+
+            "\1\u022a",
+            "",
+            "\3\62\1\uffff\4\62\14\uffff\1\62\12\uffff\1\62\25\uffff\1\62"+
+            "\1\u022f\21\uffff\3\62",
             "",
             "",
             "",
@@ -9345,13 +9317,12 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
+            "\1\uffff",
             "",
             "",
             "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9360,6 +9331,7 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -9379,11 +9351,13 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9433,8 +9407,6 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
             "",
@@ -9442,22 +9414,28 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
             "\1\uffff",
             "",
             "",
             "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
+            "",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9506,6 +9484,12 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "",
+            "\1\uffff",
+            "",
+            "",
+            "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9519,10 +9503,19 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "\1\uffff",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9537,6 +9530,8 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -9546,12 +9541,11 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
             "",
             "",
             "",
-            "\1\uffff",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9574,13 +9568,13 @@ public class ObjCppParser extends Parser {
             "",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
-            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "",
+            "",
+            "",
+            "",
             "\1\uffff",
             "",
             "",
@@ -9600,32 +9594,16 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
             "\1\uffff",
             "",
             "",
             "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
             "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "\1\uffff",
             "\1\uffff",
@@ -9635,17 +9613,23 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "",
             "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
-            "\1\uffff",
-            "\1\uffff",
+            "",
             "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "",
             "",
             "",
@@ -9654,6 +9638,11 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "",
+            "",
+            "",
+            "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9668,18 +9657,15 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
             "",
             "\1\uffff",
-            "",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -9688,20 +9674,15 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
             "",
-            "",
-            "",
-            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -9711,11 +9692,7 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
             "",
@@ -9726,7 +9703,6 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "",
             "",
             "",
@@ -9739,7 +9715,10 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "",
+            "",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -9750,7 +9729,6 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "\1\uffff",
             "",
             "",
@@ -9762,24 +9740,18 @@ public class ObjCppParser extends Parser {
             "",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
             "",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
             "",
             "",
             "",
@@ -9841,7 +9813,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA6_transition;
         }
         public String getDescription() {
-            return "212:4: ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )";
+            return "219:4: ( functionDeclaration | varDecl | objCClassDef | typeDef | forwardClassDecl | enumDecl | structDef | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -9854,9 +9826,9 @@ public class ObjCppParser extends Parser {
                         int index6_87 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_87);
@@ -9869,9 +9841,9 @@ public class ObjCppParser extends Parser {
                         int index6_88 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_88);
@@ -9884,9 +9856,9 @@ public class ObjCppParser extends Parser {
                         int index6_89 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_89);
@@ -9899,9 +9871,9 @@ public class ObjCppParser extends Parser {
                         int index6_90 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_90);
@@ -9914,9 +9886,9 @@ public class ObjCppParser extends Parser {
                         int index6_91 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_91);
@@ -9929,9 +9901,9 @@ public class ObjCppParser extends Parser {
                         int index6_92 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_92);
@@ -9944,9 +9916,9 @@ public class ObjCppParser extends Parser {
                         int index6_93 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_93);
@@ -9959,9 +9931,9 @@ public class ObjCppParser extends Parser {
                         int index6_94 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_94);
@@ -9974,9 +9946,9 @@ public class ObjCppParser extends Parser {
                         int index6_95 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_95);
@@ -9989,9 +9961,9 @@ public class ObjCppParser extends Parser {
                         int index6_96 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_96);
@@ -10004,9 +9976,9 @@ public class ObjCppParser extends Parser {
                         int index6_97 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_97);
@@ -10019,9 +9991,9 @@ public class ObjCppParser extends Parser {
                         int index6_98 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_98);
@@ -10034,9 +10006,9 @@ public class ObjCppParser extends Parser {
                         int index6_99 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_99);
@@ -10049,9 +10021,9 @@ public class ObjCppParser extends Parser {
                         int index6_100 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_100);
@@ -10064,9 +10036,9 @@ public class ObjCppParser extends Parser {
                         int index6_101 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_101);
@@ -10079,9 +10051,9 @@ public class ObjCppParser extends Parser {
                         int index6_102 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_102);
@@ -10094,9 +10066,9 @@ public class ObjCppParser extends Parser {
                         int index6_103 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_103);
@@ -10109,9 +10081,9 @@ public class ObjCppParser extends Parser {
                         int index6_104 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_104);
@@ -10124,9 +10096,9 @@ public class ObjCppParser extends Parser {
                         int index6_105 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_105);
@@ -10139,9 +10111,9 @@ public class ObjCppParser extends Parser {
                         int index6_106 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_106);
@@ -10154,9 +10126,9 @@ public class ObjCppParser extends Parser {
                         int index6_107 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_107);
@@ -10169,9 +10141,9 @@ public class ObjCppParser extends Parser {
                         int index6_108 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_108);
@@ -10184,9 +10156,9 @@ public class ObjCppParser extends Parser {
                         int index6_109 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_109);
@@ -10199,9 +10171,9 @@ public class ObjCppParser extends Parser {
                         int index6_110 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_110);
@@ -10214,9 +10186,9 @@ public class ObjCppParser extends Parser {
                         int index6_111 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_111);
@@ -10229,9 +10201,9 @@ public class ObjCppParser extends Parser {
                         int index6_112 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_112);
@@ -10244,9 +10216,9 @@ public class ObjCppParser extends Parser {
                         int index6_113 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_113);
@@ -10259,9 +10231,9 @@ public class ObjCppParser extends Parser {
                         int index6_114 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_114);
@@ -10274,9 +10246,9 @@ public class ObjCppParser extends Parser {
                         int index6_115 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_115);
@@ -10289,9 +10261,9 @@ public class ObjCppParser extends Parser {
                         int index6_116 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_116);
@@ -10304,9 +10276,9 @@ public class ObjCppParser extends Parser {
                         int index6_117 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_117);
@@ -10319,9 +10291,9 @@ public class ObjCppParser extends Parser {
                         int index6_118 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_118);
@@ -10334,57 +10306,57 @@ public class ObjCppParser extends Parser {
                         int index6_119 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_119);
                         if ( s>=0 ) return s;
                         break;
                     case 33 : 
-                        int LA6_120 = input.LA(1);
-
-                         
-                        int index6_120 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_120);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 34 : 
                         int LA6_121 = input.LA(1);
 
                          
                         int index6_121 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_121);
                         if ( s>=0 ) return s;
                         break;
-                    case 35 : 
-                        int LA6_122 = input.LA(1);
+                    case 34 : 
+                        int LA6_125 = input.LA(1);
 
                          
-                        int index6_122 = input.index();
+                        int index6_125 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_122);
+                        input.seek(index6_125);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 35 : 
+                        int LA6_126 = input.LA(1);
+
+                         
+                        int index6_126 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_126);
                         if ( s>=0 ) return s;
                         break;
                     case 36 : 
@@ -10394,9 +10366,9 @@ public class ObjCppParser extends Parser {
                         int index6_127 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_127);
@@ -10409,9 +10381,9 @@ public class ObjCppParser extends Parser {
                         int index6_128 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_128);
@@ -10424,9 +10396,9 @@ public class ObjCppParser extends Parser {
                         int index6_129 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_129);
@@ -10439,9 +10411,9 @@ public class ObjCppParser extends Parser {
                         int index6_130 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_130);
@@ -10454,9 +10426,9 @@ public class ObjCppParser extends Parser {
                         int index6_131 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_131);
@@ -10469,9 +10441,9 @@ public class ObjCppParser extends Parser {
                         int index6_132 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_132);
@@ -10484,9 +10456,9 @@ public class ObjCppParser extends Parser {
                         int index6_133 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_133);
@@ -10499,9 +10471,9 @@ public class ObjCppParser extends Parser {
                         int index6_134 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_134);
@@ -10514,9 +10486,9 @@ public class ObjCppParser extends Parser {
                         int index6_139 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_139);
@@ -10529,9 +10501,9 @@ public class ObjCppParser extends Parser {
                         int index6_140 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_140);
@@ -10544,9 +10516,9 @@ public class ObjCppParser extends Parser {
                         int index6_141 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_141);
@@ -10559,9 +10531,9 @@ public class ObjCppParser extends Parser {
                         int index6_142 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_142);
@@ -10574,9 +10546,9 @@ public class ObjCppParser extends Parser {
                         int index6_143 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_143);
@@ -10589,9 +10561,9 @@ public class ObjCppParser extends Parser {
                         int index6_144 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_144);
@@ -10604,9 +10576,9 @@ public class ObjCppParser extends Parser {
                         int index6_149 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10621,9 +10593,11 @@ public class ObjCppParser extends Parser {
                         int index6_150 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                        else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
                          
                         input.seek(index6_150);
@@ -10636,9 +10610,9 @@ public class ObjCppParser extends Parser {
                         int index6_151 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_151);
@@ -10651,9 +10625,9 @@ public class ObjCppParser extends Parser {
                         int index6_152 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_152);
@@ -10666,61 +10640,59 @@ public class ObjCppParser extends Parser {
                         int index6_153 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_153);
                         if ( s>=0 ) return s;
                         break;
                     case 55 : 
+                        int LA6_154 = input.LA(1);
+
+                         
+                        int index6_154 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_154);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 56 : 
                         int LA6_155 = input.LA(1);
 
                          
                         int index6_155 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                        else if ( (synpred13_ObjCpp()) ) {s = 582;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_155);
                         if ( s>=0 ) return s;
                         break;
-                    case 56 : 
-                        int LA6_159 = input.LA(1);
-
-                         
-                        int index6_159 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_159);
-                        if ( s>=0 ) return s;
-                        break;
                     case 57 : 
-                        int LA6_160 = input.LA(1);
+                        int LA6_156 = input.LA(1);
 
                          
-                        int index6_160 = input.index();
+                        int index6_156 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
                          
-                        input.seek(index6_160);
+                        input.seek(index6_156);
                         if ( s>=0 ) return s;
                         break;
                     case 58 : 
@@ -10730,9 +10702,9 @@ public class ObjCppParser extends Parser {
                         int index6_161 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10747,9 +10719,9 @@ public class ObjCppParser extends Parser {
                         int index6_162 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10764,9 +10736,9 @@ public class ObjCppParser extends Parser {
                         int index6_163 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10781,9 +10753,9 @@ public class ObjCppParser extends Parser {
                         int index6_164 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10798,9 +10770,9 @@ public class ObjCppParser extends Parser {
                         int index6_165 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10815,9 +10787,9 @@ public class ObjCppParser extends Parser {
                         int index6_166 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10832,9 +10804,9 @@ public class ObjCppParser extends Parser {
                         int index6_167 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10849,9 +10821,9 @@ public class ObjCppParser extends Parser {
                         int index6_168 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10866,9 +10838,9 @@ public class ObjCppParser extends Parser {
                         int index6_169 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10883,9 +10855,9 @@ public class ObjCppParser extends Parser {
                         int index6_170 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10900,9 +10872,9 @@ public class ObjCppParser extends Parser {
                         int index6_171 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10917,9 +10889,9 @@ public class ObjCppParser extends Parser {
                         int index6_172 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10934,9 +10906,9 @@ public class ObjCppParser extends Parser {
                         int index6_173 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10951,9 +10923,9 @@ public class ObjCppParser extends Parser {
                         int index6_174 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10968,9 +10940,9 @@ public class ObjCppParser extends Parser {
                         int index6_175 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -10985,9 +10957,9 @@ public class ObjCppParser extends Parser {
                         int index6_176 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11002,9 +10974,9 @@ public class ObjCppParser extends Parser {
                         int index6_177 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11019,9 +10991,9 @@ public class ObjCppParser extends Parser {
                         int index6_178 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred12_ObjCpp()) ) {s = 583;}
 
@@ -11036,9 +11008,9 @@ public class ObjCppParser extends Parser {
                         int index6_179 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred12_ObjCpp()) ) {s = 583;}
 
@@ -11053,9 +11025,9 @@ public class ObjCppParser extends Parser {
                         int index6_180 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_180);
@@ -11068,9 +11040,9 @@ public class ObjCppParser extends Parser {
                         int index6_181 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_181);
@@ -11083,9 +11055,9 @@ public class ObjCppParser extends Parser {
                         int index6_182 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_182);
@@ -11098,9 +11070,9 @@ public class ObjCppParser extends Parser {
                         int index6_183 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_183);
@@ -11113,9 +11085,9 @@ public class ObjCppParser extends Parser {
                         int index6_184 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_184);
@@ -11128,9 +11100,9 @@ public class ObjCppParser extends Parser {
                         int index6_185 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_185);
@@ -11143,9 +11115,9 @@ public class ObjCppParser extends Parser {
                         int index6_186 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_186);
@@ -11158,9 +11130,9 @@ public class ObjCppParser extends Parser {
                         int index6_187 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_187);
@@ -11173,9 +11145,9 @@ public class ObjCppParser extends Parser {
                         int index6_188 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_188);
@@ -11188,9 +11160,9 @@ public class ObjCppParser extends Parser {
                         int index6_189 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_189);
@@ -11203,9 +11175,9 @@ public class ObjCppParser extends Parser {
                         int index6_190 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_190);
@@ -11218,9 +11190,9 @@ public class ObjCppParser extends Parser {
                         int index6_191 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_191);
@@ -11233,9 +11205,9 @@ public class ObjCppParser extends Parser {
                         int index6_192 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_192);
@@ -11248,9 +11220,9 @@ public class ObjCppParser extends Parser {
                         int index6_193 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_193);
@@ -11263,42 +11235,42 @@ public class ObjCppParser extends Parser {
                         int index6_194 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_194);
                         if ( s>=0 ) return s;
                         break;
                     case 92 : 
-                        int LA6_199 = input.LA(1);
+                        int LA6_195 = input.LA(1);
 
                          
-                        int index6_199 = input.index();
+                        int index6_195 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_199);
+                        input.seek(index6_195);
                         if ( s>=0 ) return s;
                         break;
                     case 93 : 
-                        int LA6_200 = input.LA(1);
+                        int LA6_196 = input.LA(1);
 
                          
-                        int index6_200 = input.index();
+                        int index6_196 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_200);
+                        input.seek(index6_196);
                         if ( s>=0 ) return s;
                         break;
                     case 94 : 
@@ -11308,9 +11280,9 @@ public class ObjCppParser extends Parser {
                         int index6_201 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_201);
@@ -11323,9 +11295,9 @@ public class ObjCppParser extends Parser {
                         int index6_202 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_202);
@@ -11338,9 +11310,9 @@ public class ObjCppParser extends Parser {
                         int index6_203 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_203);
@@ -11353,9 +11325,9 @@ public class ObjCppParser extends Parser {
                         int index6_204 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_204);
@@ -11368,9 +11340,9 @@ public class ObjCppParser extends Parser {
                         int index6_205 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_205);
@@ -11383,42 +11355,42 @@ public class ObjCppParser extends Parser {
                         int index6_206 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_206);
                         if ( s>=0 ) return s;
                         break;
                     case 100 : 
+                        int LA6_207 = input.LA(1);
+
+                         
+                        int index6_207 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_207);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 101 : 
                         int LA6_208 = input.LA(1);
 
                          
                         int index6_208 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_208);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 101 : 
-                        int LA6_209 = input.LA(1);
-
-                         
-                        int index6_209 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_209);
                         if ( s>=0 ) return s;
                         break;
                     case 102 : 
@@ -11428,9 +11400,9 @@ public class ObjCppParser extends Parser {
                         int index6_213 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_213);
@@ -11443,9 +11415,9 @@ public class ObjCppParser extends Parser {
                         int index6_214 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_214);
@@ -11458,9 +11430,9 @@ public class ObjCppParser extends Parser {
                         int index6_215 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_215);
@@ -11473,42 +11445,42 @@ public class ObjCppParser extends Parser {
                         int index6_216 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_216);
                         if ( s>=0 ) return s;
                         break;
                     case 106 : 
+                        int LA6_217 = input.LA(1);
+
+                         
+                        int index6_217 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_217);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 107 : 
                         int LA6_218 = input.LA(1);
 
                          
                         int index6_218 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_218);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 107 : 
-                        int LA6_219 = input.LA(1);
-
-                         
-                        int index6_219 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_219);
                         if ( s>=0 ) return s;
                         break;
                     case 108 : 
@@ -11518,9 +11490,9 @@ public class ObjCppParser extends Parser {
                         int index6_223 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_223);
@@ -11533,9 +11505,9 @@ public class ObjCppParser extends Parser {
                         int index6_224 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_224);
@@ -11548,9 +11520,9 @@ public class ObjCppParser extends Parser {
                         int index6_225 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_225);
@@ -11563,57 +11535,57 @@ public class ObjCppParser extends Parser {
                         int index6_226 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_226);
                         if ( s>=0 ) return s;
                         break;
                     case 112 : 
+                        int LA6_227 = input.LA(1);
+
+                         
+                        int index6_227 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_227);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 113 : 
                         int LA6_228 = input.LA(1);
 
                          
                         int index6_228 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_228);
                         if ( s>=0 ) return s;
                         break;
-                    case 113 : 
+                    case 114 : 
                         int LA6_229 = input.LA(1);
 
                          
                         int index6_229 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_229);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 114 : 
-                        int LA6_233 = input.LA(1);
-
-                         
-                        int index6_233 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_233);
                         if ( s>=0 ) return s;
                         break;
                     case 115 : 
@@ -11623,9 +11595,9 @@ public class ObjCppParser extends Parser {
                         int index6_234 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11640,9 +11612,9 @@ public class ObjCppParser extends Parser {
                         int index6_235 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11657,9 +11629,9 @@ public class ObjCppParser extends Parser {
                         int index6_236 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11674,9 +11646,9 @@ public class ObjCppParser extends Parser {
                         int index6_237 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11691,9 +11663,9 @@ public class ObjCppParser extends Parser {
                         int index6_238 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11708,9 +11680,9 @@ public class ObjCppParser extends Parser {
                         int index6_239 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11725,9 +11697,9 @@ public class ObjCppParser extends Parser {
                         int index6_240 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11742,9 +11714,9 @@ public class ObjCppParser extends Parser {
                         int index6_241 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11759,9 +11731,9 @@ public class ObjCppParser extends Parser {
                         int index6_242 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11776,9 +11748,9 @@ public class ObjCppParser extends Parser {
                         int index6_243 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11793,9 +11765,9 @@ public class ObjCppParser extends Parser {
                         int index6_244 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11810,9 +11782,9 @@ public class ObjCppParser extends Parser {
                         int index6_245 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11827,9 +11799,9 @@ public class ObjCppParser extends Parser {
                         int index6_246 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11844,9 +11816,9 @@ public class ObjCppParser extends Parser {
                         int index6_247 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11861,9 +11833,9 @@ public class ObjCppParser extends Parser {
                         int index6_248 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11878,9 +11850,9 @@ public class ObjCppParser extends Parser {
                         int index6_249 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11895,9 +11867,9 @@ public class ObjCppParser extends Parser {
                         int index6_250 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11912,9 +11884,9 @@ public class ObjCppParser extends Parser {
                         int index6_251 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11929,9 +11901,9 @@ public class ObjCppParser extends Parser {
                         int index6_252 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11946,9 +11918,9 @@ public class ObjCppParser extends Parser {
                         int index6_253 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                         else if ( (synpred13_ObjCpp()) ) {s = 582;}
 
@@ -11963,9 +11935,9 @@ public class ObjCppParser extends Parser {
                         int index6_254 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_254);
@@ -11978,9 +11950,9 @@ public class ObjCppParser extends Parser {
                         int index6_255 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_255);
@@ -11993,9 +11965,9 @@ public class ObjCppParser extends Parser {
                         int index6_256 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_256);
@@ -12008,9 +11980,9 @@ public class ObjCppParser extends Parser {
                         int index6_257 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_257);
@@ -12023,9 +11995,9 @@ public class ObjCppParser extends Parser {
                         int index6_258 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_258);
@@ -12038,9 +12010,9 @@ public class ObjCppParser extends Parser {
                         int index6_259 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_259);
@@ -12053,9 +12025,9 @@ public class ObjCppParser extends Parser {
                         int index6_260 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_260);
@@ -12068,9 +12040,9 @@ public class ObjCppParser extends Parser {
                         int index6_261 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_261);
@@ -12083,9 +12055,9 @@ public class ObjCppParser extends Parser {
                         int index6_262 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_262);
@@ -12098,9 +12070,9 @@ public class ObjCppParser extends Parser {
                         int index6_263 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_263);
@@ -12113,9 +12085,9 @@ public class ObjCppParser extends Parser {
                         int index6_264 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_264);
@@ -12128,9 +12100,9 @@ public class ObjCppParser extends Parser {
                         int index6_265 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_265);
@@ -12143,9 +12115,9 @@ public class ObjCppParser extends Parser {
                         int index6_266 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_266);
@@ -12158,9 +12130,9 @@ public class ObjCppParser extends Parser {
                         int index6_267 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_267);
@@ -12173,9 +12145,9 @@ public class ObjCppParser extends Parser {
                         int index6_268 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_268);
@@ -12188,9 +12160,9 @@ public class ObjCppParser extends Parser {
                         int index6_269 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_269);
@@ -12203,9 +12175,9 @@ public class ObjCppParser extends Parser {
                         int index6_270 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_270);
@@ -12218,9 +12190,9 @@ public class ObjCppParser extends Parser {
                         int index6_271 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_271);
@@ -12233,9 +12205,9 @@ public class ObjCppParser extends Parser {
                         int index6_272 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_272);
@@ -12248,9 +12220,9 @@ public class ObjCppParser extends Parser {
                         int index6_273 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_273);
@@ -12263,9 +12235,9 @@ public class ObjCppParser extends Parser {
                         int index6_274 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_274);
@@ -12278,9 +12250,9 @@ public class ObjCppParser extends Parser {
                         int index6_275 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_275);
@@ -12293,9 +12265,9 @@ public class ObjCppParser extends Parser {
                         int index6_276 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_276);
@@ -12308,9 +12280,9 @@ public class ObjCppParser extends Parser {
                         int index6_277 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_277);
@@ -12323,9 +12295,9 @@ public class ObjCppParser extends Parser {
                         int index6_278 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_278);
@@ -12338,9 +12310,9 @@ public class ObjCppParser extends Parser {
                         int index6_279 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_279);
@@ -12353,9 +12325,9 @@ public class ObjCppParser extends Parser {
                         int index6_280 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_280);
@@ -12368,9 +12340,9 @@ public class ObjCppParser extends Parser {
                         int index6_281 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_281);
@@ -12383,9 +12355,9 @@ public class ObjCppParser extends Parser {
                         int index6_282 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_282);
@@ -12398,9 +12370,9 @@ public class ObjCppParser extends Parser {
                         int index6_283 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_283);
@@ -12413,9 +12385,9 @@ public class ObjCppParser extends Parser {
                         int index6_284 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_284);
@@ -12428,9 +12400,9 @@ public class ObjCppParser extends Parser {
                         int index6_285 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_285);
@@ -12443,57 +12415,57 @@ public class ObjCppParser extends Parser {
                         int index6_286 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_286);
                         if ( s>=0 ) return s;
                         break;
                     case 168 : 
-                        int LA6_287 = input.LA(1);
-
-                         
-                        int index6_287 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_287);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 169 : 
                         int LA6_288 = input.LA(1);
 
                          
                         int index6_288 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_288);
                         if ( s>=0 ) return s;
                         break;
-                    case 170 : 
-                        int LA6_289 = input.LA(1);
+                    case 169 : 
+                        int LA6_292 = input.LA(1);
 
                          
-                        int index6_289 = input.index();
+                        int index6_292 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_289);
+                        input.seek(index6_292);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 170 : 
+                        int LA6_293 = input.LA(1);
+
+                         
+                        int index6_293 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_293);
                         if ( s>=0 ) return s;
                         break;
                     case 171 : 
@@ -12503,9 +12475,9 @@ public class ObjCppParser extends Parser {
                         int index6_294 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_294);
@@ -12518,9 +12490,9 @@ public class ObjCppParser extends Parser {
                         int index6_295 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_295);
@@ -12533,9 +12505,9 @@ public class ObjCppParser extends Parser {
                         int index6_296 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_296);
@@ -12548,9 +12520,9 @@ public class ObjCppParser extends Parser {
                         int index6_297 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_297);
@@ -12563,9 +12535,9 @@ public class ObjCppParser extends Parser {
                         int index6_298 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_298);
@@ -12578,9 +12550,9 @@ public class ObjCppParser extends Parser {
                         int index6_299 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_299);
@@ -12593,9 +12565,9 @@ public class ObjCppParser extends Parser {
                         int index6_300 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_300);
@@ -12608,9 +12580,9 @@ public class ObjCppParser extends Parser {
                         int index6_301 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_301);
@@ -12623,9 +12595,9 @@ public class ObjCppParser extends Parser {
                         int index6_306 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_306);
@@ -12638,9 +12610,9 @@ public class ObjCppParser extends Parser {
                         int index6_307 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_307);
@@ -12653,9 +12625,9 @@ public class ObjCppParser extends Parser {
                         int index6_308 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_308);
@@ -12668,9 +12640,9 @@ public class ObjCppParser extends Parser {
                         int index6_309 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_309);
@@ -12683,9 +12655,9 @@ public class ObjCppParser extends Parser {
                         int index6_310 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_310);
@@ -12698,9 +12670,9 @@ public class ObjCppParser extends Parser {
                         int index6_311 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_311);
@@ -12713,9 +12685,9 @@ public class ObjCppParser extends Parser {
                         int index6_316 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_316);
@@ -12728,9 +12700,9 @@ public class ObjCppParser extends Parser {
                         int index6_317 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_317);
@@ -12743,9 +12715,9 @@ public class ObjCppParser extends Parser {
                         int index6_318 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_318);
@@ -12758,9 +12730,9 @@ public class ObjCppParser extends Parser {
                         int index6_319 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_319);
@@ -12773,42 +12745,42 @@ public class ObjCppParser extends Parser {
                         int index6_320 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_320);
                         if ( s>=0 ) return s;
                         break;
                     case 190 : 
+                        int LA6_321 = input.LA(1);
+
+                         
+                        int index6_321 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_321);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 191 : 
                         int LA6_322 = input.LA(1);
 
                          
                         int index6_322 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_322);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 191 : 
-                        int LA6_326 = input.LA(1);
-
-                         
-                        int index6_326 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_326);
                         if ( s>=0 ) return s;
                         break;
                     case 192 : 
@@ -12818,9 +12790,9 @@ public class ObjCppParser extends Parser {
                         int index6_327 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_327);
@@ -12833,9 +12805,9 @@ public class ObjCppParser extends Parser {
                         int index6_328 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_328);
@@ -12848,387 +12820,387 @@ public class ObjCppParser extends Parser {
                         int index6_329 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_329);
                         if ( s>=0 ) return s;
                         break;
                     case 195 : 
-                        int LA6_338 = input.LA(1);
+                        int LA6_330 = input.LA(1);
 
                          
-                        int index6_338 = input.index();
+                        int index6_330 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_338);
+                        input.seek(index6_330);
                         if ( s>=0 ) return s;
                         break;
                     case 196 : 
+                        int LA6_331 = input.LA(1);
+
+                         
+                        int index6_331 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_331);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 197 : 
+                        int LA6_332 = input.LA(1);
+
+                         
+                        int index6_332 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_332);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 198 : 
+                        int LA6_333 = input.LA(1);
+
+                         
+                        int index6_333 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_333);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 199 : 
+                        int LA6_334 = input.LA(1);
+
+                         
+                        int index6_334 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_334);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 200 : 
                         int LA6_339 = input.LA(1);
 
                          
                         int index6_339 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_339);
                         if ( s>=0 ) return s;
                         break;
-                    case 197 : 
+                    case 201 : 
+                        int LA6_340 = input.LA(1);
+
+                         
+                        int index6_340 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_340);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 202 : 
+                        int LA6_341 = input.LA(1);
+
+                         
+                        int index6_341 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_341);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 203 : 
+                        int LA6_342 = input.LA(1);
+
+                         
+                        int index6_342 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_342);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 204 : 
                         int LA6_343 = input.LA(1);
 
                          
                         int index6_343 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_343);
                         if ( s>=0 ) return s;
                         break;
-                    case 198 : 
+                    case 205 : 
                         int LA6_344 = input.LA(1);
 
                          
                         int index6_344 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_344);
                         if ( s>=0 ) return s;
                         break;
-                    case 199 : 
-                        int LA6_345 = input.LA(1);
-
-                         
-                        int index6_345 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_345);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 200 : 
-                        int LA6_347 = input.LA(1);
-
-                         
-                        int index6_347 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_347);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 201 : 
-                        int LA6_348 = input.LA(1);
-
-                         
-                        int index6_348 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_348);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 202 : 
-                        int LA6_352 = input.LA(1);
-
-                         
-                        int index6_352 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_352);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 203 : 
-                        int LA6_353 = input.LA(1);
-
-                         
-                        int index6_353 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_353);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 204 : 
-                        int LA6_354 = input.LA(1);
-
-                         
-                        int index6_354 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_354);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 205 : 
-                        int LA6_356 = input.LA(1);
-
-                         
-                        int index6_356 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_356);
-                        if ( s>=0 ) return s;
-                        break;
                     case 206 : 
-                        int LA6_375 = input.LA(1);
+                        int LA6_349 = input.LA(1);
 
                          
-                        int index6_375 = input.index();
+                        int index6_349 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_375);
+                        input.seek(index6_349);
                         if ( s>=0 ) return s;
                         break;
                     case 207 : 
-                        int LA6_376 = input.LA(1);
+                        int LA6_350 = input.LA(1);
 
                          
-                        int index6_376 = input.index();
+                        int index6_350 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_376);
+                        input.seek(index6_350);
                         if ( s>=0 ) return s;
                         break;
                     case 208 : 
-                        int LA6_377 = input.LA(1);
+                        int LA6_351 = input.LA(1);
 
                          
-                        int index6_377 = input.index();
+                        int index6_351 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_377);
+                        input.seek(index6_351);
                         if ( s>=0 ) return s;
                         break;
                     case 209 : 
+                        int LA6_360 = input.LA(1);
+
+                         
+                        int index6_360 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_360);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 210 : 
+                        int LA6_361 = input.LA(1);
+
+                         
+                        int index6_361 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_361);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 211 : 
+                        int LA6_365 = input.LA(1);
+
+                         
+                        int index6_365 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_365);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 212 : 
+                        int LA6_366 = input.LA(1);
+
+                         
+                        int index6_366 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_366);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 213 : 
+                        int LA6_367 = input.LA(1);
+
+                         
+                        int index6_367 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_367);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 214 : 
+                        int LA6_369 = input.LA(1);
+
+                         
+                        int index6_369 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_369);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 215 : 
+                        int LA6_370 = input.LA(1);
+
+                         
+                        int index6_370 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_370);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 216 : 
+                        int LA6_371 = input.LA(1);
+
+                         
+                        int index6_371 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_371);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 217 : 
+                        int LA6_372 = input.LA(1);
+
+                         
+                        int index6_372 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_372);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 218 : 
+                        int LA6_373 = input.LA(1);
+
+                         
+                        int index6_373 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_373);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 219 : 
                         int LA6_378 = input.LA(1);
 
                          
                         int index6_378 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_378);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 210 : 
-                        int LA6_379 = input.LA(1);
-
-                         
-                        int index6_379 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_379);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 211 : 
-                        int LA6_380 = input.LA(1);
-
-                         
-                        int index6_380 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_380);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 212 : 
-                        int LA6_382 = input.LA(1);
-
-                         
-                        int index6_382 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_382);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 213 : 
-                        int LA6_383 = input.LA(1);
-
-                         
-                        int index6_383 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_383);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 214 : 
-                        int LA6_387 = input.LA(1);
-
-                         
-                        int index6_387 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_387);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 215 : 
-                        int LA6_388 = input.LA(1);
-
-                         
-                        int index6_388 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_388);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 216 : 
-                        int LA6_389 = input.LA(1);
-
-                         
-                        int index6_389 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_389);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 217 : 
-                        int LA6_390 = input.LA(1);
-
-                         
-                        int index6_390 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_390);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 218 : 
-                        int LA6_392 = input.LA(1);
-
-                         
-                        int index6_392 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_392);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 219 : 
-                        int LA6_393 = input.LA(1);
-
-                         
-                        int index6_393 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_393);
                         if ( s>=0 ) return s;
                         break;
                     case 220 : 
@@ -13238,9 +13210,9 @@ public class ObjCppParser extends Parser {
                         int index6_397 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_397);
@@ -13253,9 +13225,9 @@ public class ObjCppParser extends Parser {
                         int index6_398 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_398);
@@ -13268,372 +13240,372 @@ public class ObjCppParser extends Parser {
                         int index6_399 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_399);
                         if ( s>=0 ) return s;
                         break;
                     case 223 : 
-                        int LA6_400 = input.LA(1);
-
-                         
-                        int index6_400 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_400);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 224 : 
-                        int LA6_402 = input.LA(1);
-
-                         
-                        int index6_402 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_402);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 225 : 
-                        int LA6_403 = input.LA(1);
-
-                         
-                        int index6_403 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_403);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 226 : 
-                        int LA6_407 = input.LA(1);
-
-                         
-                        int index6_407 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_407);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 227 : 
                         int LA6_408 = input.LA(1);
 
                          
                         int index6_408 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_408);
                         if ( s>=0 ) return s;
                         break;
-                    case 228 : 
+                    case 224 : 
                         int LA6_409 = input.LA(1);
 
                          
                         int index6_409 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_409);
                         if ( s>=0 ) return s;
                         break;
-                    case 229 : 
-                        int LA6_410 = input.LA(1);
-
-                         
-                        int index6_410 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_410);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 230 : 
-                        int LA6_411 = input.LA(1);
-
-                         
-                        int index6_411 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_411);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 231 : 
+                    case 225 : 
                         int LA6_413 = input.LA(1);
 
                          
                         int index6_413 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_413);
                         if ( s>=0 ) return s;
                         break;
-                    case 232 : 
+                    case 226 : 
                         int LA6_414 = input.LA(1);
 
                          
                         int index6_414 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_414);
                         if ( s>=0 ) return s;
                         break;
-                    case 233 : 
+                    case 227 : 
+                        int LA6_415 = input.LA(1);
+
+                         
+                        int index6_415 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_415);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 228 : 
+                        int LA6_417 = input.LA(1);
+
+                         
+                        int index6_417 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_417);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 229 : 
                         int LA6_418 = input.LA(1);
 
                          
                         int index6_418 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_418);
                         if ( s>=0 ) return s;
                         break;
-                    case 234 : 
+                    case 230 : 
                         int LA6_419 = input.LA(1);
 
                          
                         int index6_419 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_419);
                         if ( s>=0 ) return s;
                         break;
-                    case 235 : 
+                    case 231 : 
                         int LA6_420 = input.LA(1);
 
                          
                         int index6_420 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_420);
                         if ( s>=0 ) return s;
                         break;
-                    case 236 : 
-                        int LA6_429 = input.LA(1);
+                    case 232 : 
+                        int LA6_421 = input.LA(1);
 
                          
-                        int index6_429 = input.index();
+                        int index6_421 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_429);
+                        input.seek(index6_421);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 233 : 
+                        int LA6_426 = input.LA(1);
+
+                         
+                        int index6_426 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_426);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 234 : 
+                        int LA6_445 = input.LA(1);
+
+                         
+                        int index6_445 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_445);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 235 : 
+                        int LA6_446 = input.LA(1);
+
+                         
+                        int index6_446 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_446);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 236 : 
+                        int LA6_447 = input.LA(1);
+
+                         
+                        int index6_447 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_447);
                         if ( s>=0 ) return s;
                         break;
                     case 237 : 
-                        int LA6_430 = input.LA(1);
+                        int LA6_448 = input.LA(1);
 
                          
-                        int index6_430 = input.index();
+                        int index6_448 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_430);
+                        input.seek(index6_448);
                         if ( s>=0 ) return s;
                         break;
                     case 238 : 
-                        int LA6_431 = input.LA(1);
+                        int LA6_449 = input.LA(1);
 
                          
-                        int index6_431 = input.index();
+                        int index6_449 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_431);
+                        input.seek(index6_449);
                         if ( s>=0 ) return s;
                         break;
                     case 239 : 
-                        int LA6_432 = input.LA(1);
+                        int LA6_450 = input.LA(1);
 
                          
-                        int index6_432 = input.index();
+                        int index6_450 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_432);
+                        input.seek(index6_450);
                         if ( s>=0 ) return s;
                         break;
                     case 240 : 
-                        int LA6_433 = input.LA(1);
+                        int LA6_455 = input.LA(1);
 
                          
-                        int index6_433 = input.index();
+                        int index6_455 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_433);
+                        input.seek(index6_455);
                         if ( s>=0 ) return s;
                         break;
                     case 241 : 
-                        int LA6_438 = input.LA(1);
+                        int LA6_456 = input.LA(1);
 
                          
-                        int index6_438 = input.index();
+                        int index6_456 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_438);
+                        input.seek(index6_456);
                         if ( s>=0 ) return s;
                         break;
                     case 242 : 
-                        int LA6_439 = input.LA(1);
+                        int LA6_457 = input.LA(1);
 
                          
-                        int index6_439 = input.index();
+                        int index6_457 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_439);
+                        input.seek(index6_457);
                         if ( s>=0 ) return s;
                         break;
                     case 243 : 
-                        int LA6_440 = input.LA(1);
+                        int LA6_458 = input.LA(1);
 
                          
-                        int index6_440 = input.index();
+                        int index6_458 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_440);
+                        input.seek(index6_458);
                         if ( s>=0 ) return s;
                         break;
                     case 244 : 
-                        int LA6_441 = input.LA(1);
+                        int LA6_459 = input.LA(1);
 
                          
-                        int index6_441 = input.index();
+                        int index6_459 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_441);
+                        input.seek(index6_459);
                         if ( s>=0 ) return s;
                         break;
                     case 245 : 
-                        int LA6_442 = input.LA(1);
+                        int LA6_460 = input.LA(1);
 
                          
-                        int index6_442 = input.index();
+                        int index6_460 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_442);
+                        input.seek(index6_460);
                         if ( s>=0 ) return s;
                         break;
                     case 246 : 
-                        int LA6_453 = input.LA(1);
+                        int LA6_461 = input.LA(1);
 
                          
-                        int index6_453 = input.index();
+                        int index6_461 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_453);
+                        input.seek(index6_461);
                         if ( s>=0 ) return s;
                         break;
                     case 247 : 
@@ -13643,9 +13615,9 @@ public class ObjCppParser extends Parser {
                         int index6_466 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_466);
@@ -13658,9 +13630,9 @@ public class ObjCppParser extends Parser {
                         int index6_467 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_467);
@@ -13673,9 +13645,9 @@ public class ObjCppParser extends Parser {
                         int index6_468 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_468);
@@ -13688,9 +13660,9 @@ public class ObjCppParser extends Parser {
                         int index6_477 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_477);
@@ -13703,57 +13675,57 @@ public class ObjCppParser extends Parser {
                         int index6_478 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_478);
                         if ( s>=0 ) return s;
                         break;
                     case 252 : 
-                        int LA6_479 = input.LA(1);
+                        int LA6_482 = input.LA(1);
 
                          
-                        int index6_479 = input.index();
+                        int index6_482 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_479);
+                        input.seek(index6_482);
                         if ( s>=0 ) return s;
                         break;
                     case 253 : 
-                        int LA6_480 = input.LA(1);
+                        int LA6_483 = input.LA(1);
 
                          
-                        int index6_480 = input.index();
+                        int index6_483 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_480);
+                        input.seek(index6_483);
                         if ( s>=0 ) return s;
                         break;
                     case 254 : 
-                        int LA6_481 = input.LA(1);
+                        int LA6_484 = input.LA(1);
 
                          
-                        int index6_481 = input.index();
+                        int index6_484 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_481);
+                        input.seek(index6_484);
                         if ( s>=0 ) return s;
                         break;
                     case 255 : 
@@ -13763,9 +13735,9 @@ public class ObjCppParser extends Parser {
                         int index6_486 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_486);
@@ -13778,9 +13750,9 @@ public class ObjCppParser extends Parser {
                         int index6_487 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_487);
@@ -13793,9 +13765,9 @@ public class ObjCppParser extends Parser {
                         int index6_488 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_488);
@@ -13808,9 +13780,9 @@ public class ObjCppParser extends Parser {
                         int index6_489 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_489);
@@ -13823,222 +13795,222 @@ public class ObjCppParser extends Parser {
                         int index6_490 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_490);
                         if ( s>=0 ) return s;
                         break;
                     case 260 : 
-                        int LA6_501 = input.LA(1);
+                        int LA6_495 = input.LA(1);
 
                          
-                        int index6_501 = input.index();
+                        int index6_495 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_501);
+                        input.seek(index6_495);
                         if ( s>=0 ) return s;
                         break;
                     case 261 : 
-                        int LA6_514 = input.LA(1);
+                        int LA6_520 = input.LA(1);
 
                          
-                        int index6_514 = input.index();
+                        int index6_520 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_514);
+                        input.seek(index6_520);
                         if ( s>=0 ) return s;
                         break;
                     case 262 : 
-                        int LA6_525 = input.LA(1);
+                        int LA6_521 = input.LA(1);
 
                          
-                        int index6_525 = input.index();
+                        int index6_521 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_525);
+                        input.seek(index6_521);
                         if ( s>=0 ) return s;
                         break;
                     case 263 : 
-                        int LA6_526 = input.LA(1);
+                        int LA6_532 = input.LA(1);
 
                          
-                        int index6_526 = input.index();
+                        int index6_532 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_526);
+                        input.seek(index6_532);
                         if ( s>=0 ) return s;
                         break;
                     case 264 : 
-                        int LA6_535 = input.LA(1);
+                        int LA6_541 = input.LA(1);
 
                          
-                        int index6_535 = input.index();
+                        int index6_541 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_535);
+                        input.seek(index6_541);
                         if ( s>=0 ) return s;
                         break;
                     case 265 : 
-                        int LA6_536 = input.LA(1);
+                        int LA6_542 = input.LA(1);
 
                          
-                        int index6_536 = input.index();
+                        int index6_542 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
-                        input.seek(index6_536);
+                        input.seek(index6_542);
                         if ( s>=0 ) return s;
                         break;
                     case 266 : 
-                        int LA6_537 = input.LA(1);
-
-                         
-                        int index6_537 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_537);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 267 : 
-                        int LA6_538 = input.LA(1);
-
-                         
-                        int index6_538 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_538);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 268 : 
-                        int LA6_539 = input.LA(1);
-
-                         
-                        int index6_539 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_539);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 269 : 
-                        int LA6_544 = input.LA(1);
-
-                         
-                        int index6_544 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_544);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 270 : 
-                        int LA6_545 = input.LA(1);
-
-                         
-                        int index6_545 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
-
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
-
-                         
-                        input.seek(index6_545);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 271 : 
                         int LA6_546 = input.LA(1);
 
                          
                         int index6_546 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_546);
                         if ( s>=0 ) return s;
                         break;
-                    case 272 : 
+                    case 267 : 
                         int LA6_547 = input.LA(1);
 
                          
                         int index6_547 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_547);
                         if ( s>=0 ) return s;
                         break;
-                    case 273 : 
+                    case 268 : 
                         int LA6_548 = input.LA(1);
 
                          
                         int index6_548 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_548);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 269 : 
+                        int LA6_550 = input.LA(1);
+
+                         
+                        int index6_550 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_550);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 270 : 
+                        int LA6_551 = input.LA(1);
+
+                         
+                        int index6_551 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_551);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 271 : 
+                        int LA6_552 = input.LA(1);
+
+                         
+                        int index6_552 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_552);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 272 : 
+                        int LA6_553 = input.LA(1);
+
+                         
+                        int index6_553 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_553);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 273 : 
+                        int LA6_554 = input.LA(1);
+
+                         
+                        int index6_554 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
+
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
+
+                         
+                        input.seek(index6_554);
                         if ( s>=0 ) return s;
                         break;
                     case 274 : 
@@ -14048,9 +14020,9 @@ public class ObjCppParser extends Parser {
                         int index6_559 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_559);
@@ -14063,9 +14035,9 @@ public class ObjCppParser extends Parser {
                         int index6_572 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_572);
@@ -14078,9 +14050,9 @@ public class ObjCppParser extends Parser {
                         int index6_573 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_573);
@@ -14093,9 +14065,9 @@ public class ObjCppParser extends Parser {
                         int index6_574 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_574);
@@ -14108,9 +14080,9 @@ public class ObjCppParser extends Parser {
                         int index6_575 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_575);
@@ -14123,9 +14095,9 @@ public class ObjCppParser extends Parser {
                         int index6_576 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_576);
@@ -14138,9 +14110,9 @@ public class ObjCppParser extends Parser {
                         int index6_577 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_577);
@@ -14153,9 +14125,9 @@ public class ObjCppParser extends Parser {
                         int index6_578 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_578);
@@ -14168,9 +14140,9 @@ public class ObjCppParser extends Parser {
                         int index6_579 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_579);
@@ -14183,9 +14155,9 @@ public class ObjCppParser extends Parser {
                         int index6_580 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_580);
@@ -14198,9 +14170,9 @@ public class ObjCppParser extends Parser {
                         int index6_581 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7_ObjCpp()) ) {s = 369;}
+                        if ( (synpred7_ObjCpp()) ) {s = 391;}
 
-                        else if ( (synpred8_ObjCpp()) ) {s = 48;}
+                        else if ( (synpred8_ObjCpp()) ) {s = 50;}
 
                          
                         input.seek(index6_581);
@@ -14275,7 +14247,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA5_transition;
         }
         public String getDescription() {
-            return "()* loopback of 236:6: (subD= declaration )*";
+            return "()* loopback of 243:6: (subD= declaration )*";
         }
     }
     static final String DFA18_eotS =
@@ -14334,7 +14306,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA18_transition;
         }
         public String getDescription() {
-            return "360:3: ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' )";
+            return "367:3: ( ( ':' parentClass= IDENTIFIER )? | '(' categoryName= IDENTIFIER ')' )";
         }
     }
     static final String DFA23_eotS =
@@ -14397,7 +14369,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA23_transition;
         }
         public String getDescription() {
-            return "()* loopback of 382:4: ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )*";
+            return "()* loopback of 389:4: ( '@public' | '@private' | '@protected' | ( ( varDecl | functionPointerVarDecl ) ) )*";
         }
     }
     static final String DFA22_eotS =
@@ -14405,69 +14377,72 @@ public class ObjCppParser extends Parser {
     static final String DFA22_eofS =
         "\u0255\uffff";
     static final String DFA22_minS =
-        "\24\6\1\30\27\6\1\4\1\0\4\uffff\4\6\1\4\1\0\2\6\4\uffff\4\6\1\4"+
-        "\1\0\4\uffff\4\6\2\uffff\1\4\2\uffff\1\0\1\6\43\0\4\uffff\6\0\4"+
-        "\uffff\10\0\4\uffff\6\0\1\uffff\1\0\2\uffff\47\0\4\uffff\10\0\4"+
-        "\uffff\6\0\4\uffff\4\0\2\uffff\1\0\2\uffff\71\0\4\uffff\6\0\4\uffff"+
-        "\10\0\4\uffff\6\0\4\uffff\12\0\4\uffff\6\0\4\uffff\3\0\10\uffff"+
-        "\5\0\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\32\uffff\3\0\10\uffff\5"+
-        "\0\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff\7\0\4\uffff\6\0"+
-        "\4\uffff\3\0\10\uffff\5\0\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31"+
-        "\uffff\3\0\10\uffff\5\0\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff"+
-        "\12\0";
+        "\24\6\1\30\27\6\1\4\1\0\4\uffff\4\6\2\uffff\1\4\2\uffff\1\0\6\6"+
+        "\2\uffff\1\4\2\uffff\1\0\4\6\1\4\1\0\1\6\4\uffff\41\0\4\uffff\10"+
+        "\0\4\uffff\10\0\4\uffff\10\0\3\uffff\46\0\4\uffff\4\0\2\uffff\1"+
+        "\0\2\uffff\7\0\2\uffff\1\0\2\uffff\10\0\4\uffff\65\0\4\uffff\10"+
+        "\0\4\uffff\10\0\4\uffff\6\0\4\uffff\6\0\2\uffff\1\0\2\uffff\7\0"+
+        "\2\uffff\1\0\2\uffff\4\0\11\uffff\1\0\2\uffff\4\0\2\uffff\1\0\2"+
+        "\uffff\4\0\1\uffff\1\0\32\uffff\3\0\10\uffff\5\0\5\uffff\1\0\2\uffff"+
+        "\4\0\1\uffff\1\0\31\uffff\5\0\2\uffff\1\0\2\uffff\5\0\2\uffff\1"+
+        "\0\2\uffff\4\0\10\uffff\5\0\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0"+
+        "\31\uffff\3\0\11\uffff\1\0\2\uffff\4\0\2\uffff\1\0\2\uffff\4\0\1"+
+        "\uffff\1\0\31\uffff\12\0";
     static final String DFA22_maxS =
         "\2\113\1\30\1\113\1\30\3\113\2\71\1\113\1\30\1\113\1\30\3\113\2"+
         "\71\1\113\1\30\1\6\3\113\2\71\1\43\2\113\1\30\1\113\1\30\3\113\2"+
-        "\71\1\113\1\71\1\66\3\71\1\116\1\0\4\uffff\1\66\3\71\1\116\1\0\1"+
-        "\113\1\71\4\uffff\1\66\3\71\1\116\1\0\4\uffff\1\66\3\71\2\uffff"+
-        "\1\116\2\uffff\1\0\1\113\43\0\4\uffff\6\0\4\uffff\10\0\4\uffff\6"+
-        "\0\1\uffff\1\0\2\uffff\47\0\4\uffff\10\0\4\uffff\6\0\4\uffff\4\0"+
-        "\2\uffff\1\0\2\uffff\71\0\4\uffff\6\0\4\uffff\10\0\4\uffff\6\0\4"+
-        "\uffff\12\0\4\uffff\6\0\4\uffff\3\0\10\uffff\5\0\5\uffff\1\0\2\uffff"+
-        "\4\0\1\uffff\1\0\32\uffff\3\0\10\uffff\5\0\5\uffff\1\0\2\uffff\4"+
-        "\0\1\uffff\1\0\31\uffff\7\0\4\uffff\6\0\4\uffff\3\0\10\uffff\5\0"+
-        "\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff\3\0\10\uffff\5\0\5"+
-        "\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff\12\0";
+        "\71\1\113\1\71\1\66\3\71\1\116\1\0\4\uffff\1\66\3\71\2\uffff\1\116"+
+        "\2\uffff\1\0\1\113\1\71\1\66\3\71\2\uffff\1\116\2\uffff\1\0\1\66"+
+        "\3\71\1\116\1\0\1\113\4\uffff\41\0\4\uffff\10\0\4\uffff\10\0\4\uffff"+
+        "\10\0\3\uffff\46\0\4\uffff\4\0\2\uffff\1\0\2\uffff\7\0\2\uffff\1"+
+        "\0\2\uffff\10\0\4\uffff\65\0\4\uffff\10\0\4\uffff\10\0\4\uffff\6"+
+        "\0\4\uffff\6\0\2\uffff\1\0\2\uffff\7\0\2\uffff\1\0\2\uffff\4\0\11"+
+        "\uffff\1\0\2\uffff\4\0\2\uffff\1\0\2\uffff\4\0\1\uffff\1\0\32\uffff"+
+        "\3\0\10\uffff\5\0\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff\5"+
+        "\0\2\uffff\1\0\2\uffff\5\0\2\uffff\1\0\2\uffff\4\0\10\uffff\5\0"+
+        "\5\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff\3\0\11\uffff\1\0\2"+
+        "\uffff\4\0\2\uffff\1\0\2\uffff\4\0\1\uffff\1\0\31\uffff\12\0";
     static final String DFA22_acceptS =
         "\56\uffff\1\1\u0161\uffff\1\2\u00c4\uffff";
     static final String DFA22_specialS =
-        "\55\uffff\1\0\11\uffff\1\1\13\uffff\1\2\15\uffff\1\3\1\uffff\1\4"+
+        "\55\uffff\1\0\15\uffff\1\1\13\uffff\1\2\5\uffff\1\3\5\uffff\1\4"+
         "\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1\17\1\20\1\21\1"+
         "\22\1\23\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33\1\34\1\35\1\36"+
-        "\1\37\1\40\1\41\1\42\1\43\1\44\1\45\1\46\4\uffff\1\47\1\50\1\51"+
+        "\1\37\1\40\1\41\1\42\1\43\1\44\4\uffff\1\45\1\46\1\47\1\50\1\51"+
         "\1\52\1\53\1\54\4\uffff\1\55\1\56\1\57\1\60\1\61\1\62\1\63\1\64"+
-        "\4\uffff\1\65\1\66\1\67\1\70\1\71\1\72\1\uffff\1\73\2\uffff\1\74"+
-        "\1\75\1\76\1\77\1\100\1\101\1\102\1\103\1\104\1\105\1\106\1\107"+
-        "\1\110\1\111\1\112\1\113\1\114\1\115\1\116\1\117\1\120\1\121\1\122"+
-        "\1\123\1\124\1\125\1\126\1\127\1\130\1\131\1\132\1\133\1\134\1\135"+
-        "\1\136\1\137\1\140\1\141\1\142\4\uffff\1\143\1\144\1\145\1\146\1"+
-        "\147\1\150\1\151\1\152\4\uffff\1\153\1\154\1\155\1\156\1\157\1\160"+
-        "\4\uffff\1\161\1\162\1\163\1\164\2\uffff\1\165\2\uffff\1\166\1\167"+
-        "\1\170\1\171\1\172\1\173\1\174\1\175\1\176\1\177\1\u0080\1\u0081"+
-        "\1\u0082\1\u0083\1\u0084\1\u0085\1\u0086\1\u0087\1\u0088\1\u0089"+
-        "\1\u008a\1\u008b\1\u008c\1\u008d\1\u008e\1\u008f\1\u0090\1\u0091"+
-        "\1\u0092\1\u0093\1\u0094\1\u0095\1\u0096\1\u0097\1\u0098\1\u0099"+
-        "\1\u009a\1\u009b\1\u009c\1\u009d\1\u009e\1\u009f\1\u00a0\1\u00a1"+
-        "\1\u00a2\1\u00a3\1\u00a4\1\u00a5\1\u00a6\1\u00a7\1\u00a8\1\u00a9"+
-        "\1\u00aa\1\u00ab\1\u00ac\1\u00ad\1\u00ae\4\uffff\1\u00af\1\u00b0"+
-        "\1\u00b1\1\u00b2\1\u00b3\1\u00b4\4\uffff\1\u00b5\1\u00b6\1\u00b7"+
-        "\1\u00b8\1\u00b9\1\u00ba\1\u00bb\1\u00bc\4\uffff\1\u00bd\1\u00be"+
-        "\1\u00bf\1\u00c0\1\u00c1\1\u00c2\4\uffff\1\u00c3\1\u00c4\1\u00c5"+
-        "\1\u00c6\1\u00c7\1\u00c8\1\u00c9\1\u00ca\1\u00cb\1\u00cc\4\uffff"+
-        "\1\u00cd\1\u00ce\1\u00cf\1\u00d0\1\u00d1\1\u00d2\4\uffff\1\u00d3"+
-        "\1\u00d4\1\u00d5\10\uffff\1\u00d6\1\u00d7\1\u00d8\1\u00d9\1\u00da"+
-        "\5\uffff\1\u00db\2\uffff\1\u00dc\1\u00dd\1\u00de\1\u00df\1\uffff"+
-        "\1\u00e0\32\uffff\1\u00e1\1\u00e2\1\u00e3\10\uffff\1\u00e4\1\u00e5"+
-        "\1\u00e6\1\u00e7\1\u00e8\5\uffff\1\u00e9\2\uffff\1\u00ea\1\u00eb"+
-        "\1\u00ec\1\u00ed\1\uffff\1\u00ee\31\uffff\1\u00ef\1\u00f0\1\u00f1"+
-        "\1\u00f2\1\u00f3\1\u00f4\1\u00f5\4\uffff\1\u00f6\1\u00f7\1\u00f8"+
-        "\1\u00f9\1\u00fa\1\u00fb\4\uffff\1\u00fc\1\u00fd\1\u00fe\10\uffff"+
-        "\1\u00ff\1\u0100\1\u0101\1\u0102\1\u0103\5\uffff\1\u0104\2\uffff"+
-        "\1\u0105\1\u0106\1\u0107\1\u0108\1\uffff\1\u0109\31\uffff\1\u010a"+
-        "\1\u010b\1\u010c\10\uffff\1\u010d\1\u010e\1\u010f\1\u0110\1\u0111"+
-        "\5\uffff\1\u0112\2\uffff\1\u0113\1\u0114\1\u0115\1\u0116\1\uffff"+
-        "\1\u0117\31\uffff\1\u0118\1\u0119\1\u011a\1\u011b\1\u011c\1\u011d"+
-        "\1\u011e\1\u011f\1\u0120\1\u0121}>";
+        "\4\uffff\1\65\1\66\1\67\1\70\1\71\1\72\1\73\1\74\3\uffff\1\75\1"+
+        "\76\1\77\1\100\1\101\1\102\1\103\1\104\1\105\1\106\1\107\1\110\1"+
+        "\111\1\112\1\113\1\114\1\115\1\116\1\117\1\120\1\121\1\122\1\123"+
+        "\1\124\1\125\1\126\1\127\1\130\1\131\1\132\1\133\1\134\1\135\1\136"+
+        "\1\137\1\140\1\141\1\142\4\uffff\1\143\1\144\1\145\1\146\2\uffff"+
+        "\1\147\2\uffff\1\150\1\151\1\152\1\153\1\154\1\155\1\156\2\uffff"+
+        "\1\157\2\uffff\1\160\1\161\1\162\1\163\1\164\1\165\1\166\1\167\4"+
+        "\uffff\1\170\1\171\1\172\1\173\1\174\1\175\1\176\1\177\1\u0080\1"+
+        "\u0081\1\u0082\1\u0083\1\u0084\1\u0085\1\u0086\1\u0087\1\u0088\1"+
+        "\u0089\1\u008a\1\u008b\1\u008c\1\u008d\1\u008e\1\u008f\1\u0090\1"+
+        "\u0091\1\u0092\1\u0093\1\u0094\1\u0095\1\u0096\1\u0097\1\u0098\1"+
+        "\u0099\1\u009a\1\u009b\1\u009c\1\u009d\1\u009e\1\u009f\1\u00a0\1"+
+        "\u00a1\1\u00a2\1\u00a3\1\u00a4\1\u00a5\1\u00a6\1\u00a7\1\u00a8\1"+
+        "\u00a9\1\u00aa\1\u00ab\1\u00ac\4\uffff\1\u00ad\1\u00ae\1\u00af\1"+
+        "\u00b0\1\u00b1\1\u00b2\1\u00b3\1\u00b4\4\uffff\1\u00b5\1\u00b6\1"+
+        "\u00b7\1\u00b8\1\u00b9\1\u00ba\1\u00bb\1\u00bc\4\uffff\1\u00bd\1"+
+        "\u00be\1\u00bf\1\u00c0\1\u00c1\1\u00c2\4\uffff\1\u00c3\1\u00c4\1"+
+        "\u00c5\1\u00c6\1\u00c7\1\u00c8\2\uffff\1\u00c9\2\uffff\1\u00ca\1"+
+        "\u00cb\1\u00cc\1\u00cd\1\u00ce\1\u00cf\1\u00d0\2\uffff\1\u00d1\2"+
+        "\uffff\1\u00d2\1\u00d3\1\u00d4\1\u00d5\11\uffff\1\u00d6\2\uffff"+
+        "\1\u00d7\1\u00d8\1\u00d9\1\u00da\2\uffff\1\u00db\2\uffff\1\u00dc"+
+        "\1\u00dd\1\u00de\1\u00df\1\uffff\1\u00e0\32\uffff\1\u00e1\1\u00e2"+
+        "\1\u00e3\10\uffff\1\u00e4\1\u00e5\1\u00e6\1\u00e7\1\u00e8\5\uffff"+
+        "\1\u00e9\2\uffff\1\u00ea\1\u00eb\1\u00ec\1\u00ed\1\uffff\1\u00ee"+
+        "\31\uffff\1\u00ef\1\u00f0\1\u00f1\1\u00f2\1\u00f3\2\uffff\1\u00f4"+
+        "\2\uffff\1\u00f5\1\u00f6\1\u00f7\1\u00f8\1\u00f9\2\uffff\1\u00fa"+
+        "\2\uffff\1\u00fb\1\u00fc\1\u00fd\1\u00fe\10\uffff\1\u00ff\1\u0100"+
+        "\1\u0101\1\u0102\1\u0103\5\uffff\1\u0104\2\uffff\1\u0105\1\u0106"+
+        "\1\u0107\1\u0108\1\uffff\1\u0109\31\uffff\1\u010a\1\u010b\1\u010c"+
+        "\11\uffff\1\u010d\2\uffff\1\u010e\1\u010f\1\u0110\1\u0111\2\uffff"+
+        "\1\u0112\2\uffff\1\u0113\1\u0114\1\u0115\1\u0116\1\uffff\1\u0117"+
+        "\31\uffff\1\u0118\1\u0119\1\u011a\1\u011b\1\u011c\1\u011d\1\u011e"+
+        "\1\u011f\1\u0120\1\u0121}>";
     static final String[] DFA22_transitionS = {
             "\1\11\1\7\27\uffff\1\2\16\uffff\2\1\1\4\3\uffff\2\3\6\uffff"+
             "\1\5\1\uffff\4\6\1\7\11\10",
@@ -14481,12 +14456,12 @@ public class ObjCppParser extends Parser {
             "\uffff\1\41\1\uffff\4\42\1\43\11\44",
             "\1\56\1\46\24\uffff\1\56\1\55\1\56\4\uffff\1\50\20\uffff\2"+
             "\51\1\52\1\53\1\56\1\54\10\uffff\1\46\11\47",
-            "\1\56\1\70\24\uffff\1\56\1\67\1\56\4\uffff\1\62\20\uffff\2"+
-            "\63\1\64\1\65\1\56\1\66\10\uffff\1\70\11\71",
-            "\1\56\25\uffff\1\56\1\103\1\56\4\uffff\1\76\20\uffff\2\77\1"+
-            "\100\1\101\1\56\1\102",
-            "\1\56\25\uffff\1\56\1\121\1\56\4\uffff\1\110\1\uffff\1\122"+
-            "\16\uffff\2\111\1\112\1\113\1\56\1\116",
+            "\1\56\1\74\24\uffff\1\56\1\73\1\56\4\uffff\1\62\20\uffff\2"+
+            "\63\1\64\1\65\1\56\1\70\10\uffff\1\74\11\75",
+            "\1\56\25\uffff\1\56\1\107\1\56\4\uffff\1\76\20\uffff\2\77\1"+
+            "\100\1\101\1\56\1\104",
+            "\1\56\25\uffff\1\56\1\115\1\56\4\uffff\1\110\1\uffff\1\116"+
+            "\16\uffff\2\111\1\112\1\113\1\56\1\114",
             "\1\133\1\131\20\uffff\1\134\6\uffff\1\124\16\uffff\2\123\1"+
             "\126\3\uffff\2\125\6\uffff\1\127\1\uffff\4\130\1\131\11\132",
             "\1\135\21\uffff\1\136",
@@ -14495,15 +14470,15 @@ public class ObjCppParser extends Parser {
             "\1\144\21\uffff\1\145",
             "\1\156\1\154\27\uffff\1\147\16\uffff\2\146\1\151\3\uffff\2"+
             "\150\6\uffff\1\152\1\uffff\4\153\1\154\11\155",
-            "\1\56\1\157\24\uffff\1\56\1\172\1\56\4\uffff\1\161\20\uffff"+
-            "\2\162\1\163\1\164\1\56\1\165\10\uffff\1\157\11\160",
+            "\1\56\1\171\24\uffff\1\56\1\170\1\56\4\uffff\1\157\20\uffff"+
+            "\2\160\1\161\1\162\1\56\1\163\10\uffff\1\171\11\172",
             "\1\56\1\u0085\24\uffff\1\56\1\u0084\1\56\4\uffff\1\173\20\uffff"+
             "\2\174\1\175\1\176\1\56\1\177\10\uffff\1\u0085\11\u0086",
             "\1\56\25\uffff\1\56\1\u0090\1\56\4\uffff\1\u0087\20\uffff\2"+
             "\u0088\1\u0089\1\u008a\1\56\1\u008b",
-            "\1\u0097\21\uffff\1\u009c\3\uffff\1\56\1\u009a\1\56\4\uffff"+
-            "\1\u0091\1\uffff\1\u009b\16\uffff\2\u0092\1\u0093\1\u0094\1"+
-            "\56\1\u0095",
+            "\1\u0092\21\uffff\1\u0091\3\uffff\1\56\1\u009b\1\56\4\uffff"+
+            "\1\u0093\1\uffff\1\u009c\16\uffff\2\u0094\1\u0095\1\u0096\1"+
+            "\56\1\u0097",
             "\1\u00a0\1\u00a7\21\uffff\1\u00ad\1\u00ac\1\u00ab\3\uffff\1"+
             "\u00a2\2\u00a9\14\uffff\2\u00a1\1\u00a4\1\u009d\1\u009e\1\u009f"+
             "\2\u00a3\5\uffff\1\u00aa\1\u00a5\1\uffff\4\u00a6\1\u00a7\11"+
@@ -14516,13 +14491,13 @@ public class ObjCppParser extends Parser {
             "\1\56\1\u00b9\24\uffff\1\56\1\u00c0\1\56\4\uffff\1\u00bb\20"+
             "\uffff\2\u00bc\1\u00bd\1\u00be\1\56\1\u00bf\10\uffff\1\u00b9"+
             "\11\u00ba",
-            "\1\56\1\u00cb\24\uffff\1\56\1\u00ca\1\56\4\uffff\1\u00c5\20"+
-            "\uffff\2\u00c6\1\u00c7\1\u00c8\1\56\1\u00c9\10\uffff\1\u00cb"+
-            "\11\u00cc",
-            "\1\56\25\uffff\1\56\1\u00d6\1\56\4\uffff\1\u00d1\20\uffff\2"+
-            "\u00d2\1\u00d3\1\u00d4\1\56\1\u00d5",
-            "\1\56\25\uffff\1\56\1\u00e4\1\56\4\uffff\1\u00db\1\uffff\1"+
-            "\u00e5\16\uffff\2\u00dc\1\u00dd\1\u00de\1\56\1\u00e1",
+            "\1\56\1\u00cf\24\uffff\1\56\1\u00ce\1\56\4\uffff\1\u00c5\20"+
+            "\uffff\2\u00c6\1\u00c7\1\u00c8\1\56\1\u00cb\10\uffff\1\u00cf"+
+            "\11\u00d0",
+            "\1\56\25\uffff\1\56\1\u00da\1\56\4\uffff\1\u00d1\20\uffff\2"+
+            "\u00d2\1\u00d3\1\u00d4\1\56\1\u00d7",
+            "\1\56\25\uffff\1\56\1\u00e0\1\56\4\uffff\1\u00db\1\uffff\1"+
+            "\u00e1\16\uffff\2\u00dc\1\u00dd\1\u00de\1\56\1\u00df",
             "\1\u00e7\21\uffff\1\u00e6\12\uffff\1\u00e8",
             "\1\u00ec\1\u00f3\21\uffff\1\u00f9\1\u00f8\1\u00f7\3\uffff\1"+
             "\u00ee\2\u00f5\14\uffff\2\u00ed\1\u00f0\1\u00e9\1\u00ea\1\u00eb"+
@@ -14538,9 +14513,9 @@ public class ObjCppParser extends Parser {
             "\1\u0115\1\u0113\27\uffff\1\u010e\16\uffff\2\u010d\1\u0110"+
             "\3\uffff\2\u010f\6\uffff\1\u0111\1\uffff\4\u0112\1\u0113\11"+
             "\u0114",
-            "\1\56\1\u0116\24\uffff\1\56\1\u0121\1\56\4\uffff\1\u0118\20"+
-            "\uffff\2\u0119\1\u011a\1\u011b\1\56\1\u011c\10\uffff\1\u0116"+
-            "\11\u0117",
+            "\1\56\1\u0120\24\uffff\1\56\1\u011f\1\56\4\uffff\1\u0116\20"+
+            "\uffff\2\u0117\1\u0118\1\u0119\1\56\1\u011a\10\uffff\1\u0120"+
+            "\11\u0121",
             "\1\56\1\u012c\24\uffff\1\56\1\u012b\1\56\4\uffff\1\u0122\20"+
             "\uffff\2\u0123\1\u0124\1\u0125\1\56\1\u0126\10\uffff\1\u012c"+
             "\11\u012d",
@@ -14548,15 +14523,15 @@ public class ObjCppParser extends Parser {
             "\u012f\1\u0130\1\u0131\1\56\1\u0132",
             "\1\56\25\uffff\1\56\1\u0141\1\56\4\uffff\1\u0138\1\uffff\1"+
             "\u0142\16\uffff\2\u0139\1\u013a\1\u013b\1\56\1\u013c",
-            "\1\56\1\u0149\24\uffff\1\56\1\u0148\1\56\4\uffff\1\u0143\20"+
-            "\uffff\2\u0144\1\u0145\1\u0146\1\56\1\u0147\10\uffff\1\u0149"+
-            "\11\u014a",
-            "\1\56\25\uffff\1\56\1\u0154\1\56\4\uffff\1\u014f\20\uffff\2"+
-            "\u0150\1\u0151\1\u0152\1\56\1\u0153",
+            "\1\56\1\u014d\24\uffff\1\56\1\u014c\1\56\4\uffff\1\u0143\20"+
+            "\uffff\2\u0144\1\u0145\1\u0146\1\56\1\u0149\10\uffff\1\u014d"+
+            "\11\u014e",
+            "\1\56\25\uffff\1\56\1\u0158\1\56\4\uffff\1\u014f\20\uffff\2"+
+            "\u0150\1\u0151\1\u0152\1\56\1\u0155",
             "\1\u0159\57\uffff\1\u015a",
             "\1\56\25\uffff\3\56\25\uffff\2\56\1\u015b\3\56",
-            "\1\56\25\uffff\1\56\1\u0164\1\56\25\uffff\2\u0165\1\u0166\1"+
-            "\u0167\1\56\1\u0168",
+            "\1\56\25\uffff\1\56\1\u0168\1\56\25\uffff\2\u0169\1\u016a\1"+
+            "\u016b\1\56\1\u0165",
             "\1\56\25\uffff\1\56\1\u0171\1\56\25\uffff\2\u0172\1\u0173\1"+
             "\u0174\1\56\1\u016e",
             "\3\56\1\uffff\4\56\14\uffff\1\56\12\uffff\1\56\25\uffff\1\56"+
@@ -14572,48 +14547,46 @@ public class ObjCppParser extends Parser {
             "\u019f\1\56\1\u01a0",
             "\1\56\25\uffff\1\56\1\u01a9\1\56\25\uffff\2\u01aa\1\u01ab\1"+
             "\u01ac\1\56\1\u01a6",
+            "",
+            "",
             "\3\56\1\uffff\4\56\14\uffff\1\56\12\uffff\1\56\25\uffff\1\56"+
             "\1\u01ae\21\uffff\3\56",
+            "",
+            "",
             "\1\uffff",
-            "\1\56\1\u01ce\24\uffff\1\56\1\u01cd\1\56\4\uffff\1\u01c8\20"+
-            "\uffff\2\u01c9\1\u01ca\1\u01cb\1\56\1\u01cc\10\uffff\12\u01ce",
-            "\1\56\25\uffff\1\56\1\u01d8\1\56\4\uffff\1\u01d3\20\uffff\2"+
-            "\u01d4\1\u01d5\1\u01d6\1\56\1\u01d7",
-            "",
-            "",
-            "",
-            "",
+            "\1\56\1\u01c8\24\uffff\1\56\1\u01d2\1\56\4\uffff\1\u01c9\20"+
+            "\uffff\2\u01ca\1\u01cb\1\u01cc\1\56\1\u01cf\10\uffff\12\u01c8",
+            "\1\56\25\uffff\1\56\1\u01dc\1\56\4\uffff\1\u01d3\20\uffff\2"+
+            "\u01d4\1\u01d5\1\u01d6\1\56\1\u01d9",
             "\1\u01dd\57\uffff\1\u01de",
             "\1\56\25\uffff\3\56\25\uffff\2\56\1\u01df\3\56",
             "\1\56\25\uffff\1\56\1\u01e8\1\56\25\uffff\2\u01e9\1\u01ea\1"+
             "\u01eb\1\56\1\u01ec",
             "\1\56\25\uffff\1\56\1\u01f5\1\56\25\uffff\2\u01f6\1\u01f7\1"+
             "\u01f8\1\56\1\u01f2",
+            "",
+            "",
             "\3\56\1\uffff\4\56\14\uffff\1\56\12\uffff\1\56\25\uffff\1\56"+
             "\1\u01fa\21\uffff\3\56",
+            "",
+            "",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
             "\1\u0214\57\uffff\1\u0215",
             "\1\56\25\uffff\3\56\25\uffff\2\56\1\u0216\3\56",
-            "\1\56\25\uffff\1\56\1\u021f\1\56\25\uffff\2\u0220\1\u0221\1"+
-            "\u0222\1\56\1\u0223",
+            "\1\56\25\uffff\1\56\1\u0223\1\56\25\uffff\2\u0224\1\u0225\1"+
+            "\u0226\1\56\1\u0220",
             "\1\56\25\uffff\1\56\1\u022c\1\56\25\uffff\2\u022d\1\u022e\1"+
             "\u022f\1\56\1\u0229",
-            "",
-            "",
             "\3\56\1\uffff\4\56\14\uffff\1\56\12\uffff\1\56\25\uffff\1\56"+
             "\1\u0231\21\uffff\3\56",
-            "",
-            "",
             "\1\uffff",
             "\1\u0253\1\u0251\27\uffff\1\u024c\6\uffff\1\u0254\7\uffff\2"+
             "\u024b\1\u024e\3\uffff\2\u024d\6\uffff\1\u024f\1\uffff\4\u0250"+
             "\1\u0251\11\u0252",
-            "\1\uffff",
-            "\1\uffff",
+            "",
+            "",
+            "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -14651,12 +14624,14 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -14679,11 +14654,11 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
+            "\1\uffff",
             "\1\uffff",
             "",
             "",
-            "\1\uffff",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -14726,16 +14701,13 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
-            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "",
             "",
             "\1\uffff",
@@ -14744,23 +14716,24 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "",
             "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
-            "",
-            "",
             "\1\uffff",
-            "",
-            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "",
+            "",
+            "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -14824,6 +14797,8 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -14850,18 +14825,15 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "",
             "",
             "\1\uffff",
@@ -14870,10 +14842,13 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -14885,16 +14860,16 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "",
             "\1\uffff",
+            "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
             "",
             "",
-            "",
-            "",
             "\1\uffff",
             "",
             "",
@@ -14985,15 +14960,14 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "",
             "",
             "\1\uffff",
@@ -15001,14 +14975,15 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\1\uffff",
             "",
             "",
+            "\1\uffff",
             "",
             "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -15072,14 +15047,14 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "",
             "\1\uffff",
+            "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
-            "",
             "",
             "",
             "\1\uffff",
@@ -15158,7 +15133,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA22_transition;
         }
         public String getDescription() {
-            return "387:6: ( varDecl | functionPointerVarDecl )";
+            return "394:6: ( varDecl | functionPointerVarDecl )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -15180,10 +15155,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA22_55 = input.LA(1);
+                        int LA22_59 = input.LA(1);
 
                          
-                        int index22_55 = input.index();
+                        int index22_59 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -15191,14 +15166,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_55);
+                        input.seek(index22_59);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA22_67 = input.LA(1);
+                        int LA22_71 = input.LA(1);
 
                          
-                        int index22_67 = input.index();
+                        int index22_71 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -15206,14 +15181,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_67);
+                        input.seek(index22_71);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA22_81 = input.LA(1);
+                        int LA22_77 = input.LA(1);
 
                          
-                        int index22_81 = input.index();
+                        int index22_77 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -15221,7 +15196,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_81);
+                        input.seek(index22_77);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
@@ -15720,10 +15695,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 37 : 
-                        int LA22_116 = input.LA(1);
+                        int LA22_120 = input.LA(1);
 
                          
-                        int index22_116 = input.index();
+                        int index22_120 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -15731,14 +15706,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_116);
+                        input.seek(index22_120);
                         if ( s>=0 ) return s;
                         break;
                     case 38 : 
-                        int LA22_117 = input.LA(1);
+                        int LA22_121 = input.LA(1);
 
                          
-                        int index22_117 = input.index();
+                        int index22_121 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -15746,7 +15721,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_117);
+                        input.seek(index22_121);
                         if ( s>=0 ) return s;
                         break;
                     case 39 : 
@@ -16050,6 +16025,21 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 59 : 
+                        int LA22_150 = input.LA(1);
+
+                         
+                        int index22_150 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_150);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 60 : 
                         int LA22_151 = input.LA(1);
 
                          
@@ -16062,21 +16052,6 @@ public class ObjCppParser extends Parser {
 
                          
                         input.seek(index22_151);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 60 : 
-                        int LA22_154 = input.LA(1);
-
-                         
-                        int index22_154 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_154);
                         if ( s>=0 ) return s;
                         break;
                     case 61 : 
@@ -16710,36 +16685,6 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 103 : 
-                        int LA22_201 = input.LA(1);
-
-                         
-                        int index22_201 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_201);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 104 : 
-                        int LA22_202 = input.LA(1);
-
-                         
-                        int index22_202 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_202);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 105 : 
                         int LA22_203 = input.LA(1);
 
                          
@@ -16754,11 +16699,11 @@ public class ObjCppParser extends Parser {
                         input.seek(index22_203);
                         if ( s>=0 ) return s;
                         break;
-                    case 106 : 
-                        int LA22_204 = input.LA(1);
+                    case 104 : 
+                        int LA22_206 = input.LA(1);
 
                          
-                        int index22_204 = input.index();
+                        int index22_206 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -16766,7 +16711,37 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_204);
+                        input.seek(index22_206);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 105 : 
+                        int LA22_207 = input.LA(1);
+
+                         
+                        int index22_207 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_207);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 106 : 
+                        int LA22_208 = input.LA(1);
+
+                         
+                        int index22_208 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_208);
                         if ( s>=0 ) return s;
                         break;
                     case 107 : 
@@ -16830,10 +16805,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 111 : 
-                        int LA22_213 = input.LA(1);
+                        int LA22_215 = input.LA(1);
 
                          
-                        int index22_213 = input.index();
+                        int index22_215 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -16841,14 +16816,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_213);
+                        input.seek(index22_215);
                         if ( s>=0 ) return s;
                         break;
                     case 112 : 
-                        int LA22_214 = input.LA(1);
+                        int LA22_218 = input.LA(1);
 
                          
-                        int index22_214 = input.index();
+                        int index22_218 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -16856,7 +16831,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_214);
+                        input.seek(index22_218);
                         if ( s>=0 ) return s;
                         break;
                     case 113 : 
@@ -16920,6 +16895,36 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 117 : 
+                        int LA22_223 = input.LA(1);
+
+                         
+                        int index22_223 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_223);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 118 : 
+                        int LA22_224 = input.LA(1);
+
+                         
+                        int index22_224 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_224);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 119 : 
                         int LA22_225 = input.LA(1);
 
                          
@@ -16932,36 +16937,6 @@ public class ObjCppParser extends Parser {
 
                          
                         input.seek(index22_225);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 118 : 
-                        int LA22_228 = input.LA(1);
-
-                         
-                        int index22_228 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_228);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 119 : 
-                        int LA22_229 = input.LA(1);
-
-                         
-                        int index22_229 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_229);
                         if ( s>=0 ) return s;
                         break;
                     case 120 : 
@@ -17760,10 +17735,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 173 : 
-                        int LA22_283 = input.LA(1);
+                        int LA22_287 = input.LA(1);
 
                          
-                        int index22_283 = input.index();
+                        int index22_287 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -17771,14 +17746,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_283);
+                        input.seek(index22_287);
                         if ( s>=0 ) return s;
                         break;
                     case 174 : 
-                        int LA22_284 = input.LA(1);
+                        int LA22_288 = input.LA(1);
 
                          
-                        int index22_284 = input.index();
+                        int index22_288 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -17786,7 +17761,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_284);
+                        input.seek(index22_288);
                         if ( s>=0 ) return s;
                         break;
                     case 175 : 
@@ -18180,36 +18155,6 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 201 : 
-                        int LA22_327 = input.LA(1);
-
-                         
-                        int index22_327 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_327);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 202 : 
-                        int LA22_328 = input.LA(1);
-
-                         
-                        int index22_328 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_328);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 203 : 
                         int LA22_329 = input.LA(1);
 
                          
@@ -18224,11 +18169,11 @@ public class ObjCppParser extends Parser {
                         input.seek(index22_329);
                         if ( s>=0 ) return s;
                         break;
-                    case 204 : 
-                        int LA22_330 = input.LA(1);
+                    case 202 : 
+                        int LA22_332 = input.LA(1);
 
                          
-                        int index22_330 = input.index();
+                        int index22_332 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18236,7 +18181,37 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_330);
+                        input.seek(index22_332);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 203 : 
+                        int LA22_333 = input.LA(1);
+
+                         
+                        int index22_333 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_333);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 204 : 
+                        int LA22_334 = input.LA(1);
+
+                         
+                        int index22_334 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_334);
                         if ( s>=0 ) return s;
                         break;
                     case 205 : 
@@ -18300,10 +18275,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 209 : 
-                        int LA22_339 = input.LA(1);
+                        int LA22_341 = input.LA(1);
 
                          
-                        int index22_339 = input.index();
+                        int index22_341 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18311,14 +18286,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_339);
+                        input.seek(index22_341);
                         if ( s>=0 ) return s;
                         break;
                     case 210 : 
-                        int LA22_340 = input.LA(1);
+                        int LA22_344 = input.LA(1);
 
                          
-                        int index22_340 = input.index();
+                        int index22_344 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18326,7 +18301,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_340);
+                        input.seek(index22_344);
                         if ( s>=0 ) return s;
                         break;
                     case 211 : 
@@ -18375,21 +18350,6 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 214 : 
-                        int LA22_356 = input.LA(1);
-
-                         
-                        int index22_356 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_356);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 215 : 
                         int LA22_357 = input.LA(1);
 
                          
@@ -18404,37 +18364,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index22_357);
                         if ( s>=0 ) return s;
                         break;
-                    case 216 : 
-                        int LA22_358 = input.LA(1);
-
-                         
-                        int index22_358 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_358);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 217 : 
-                        int LA22_359 = input.LA(1);
-
-                         
-                        int index22_359 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_359);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 218 : 
+                    case 215 : 
                         int LA22_360 = input.LA(1);
 
                          
@@ -18447,6 +18377,51 @@ public class ObjCppParser extends Parser {
 
                          
                         input.seek(index22_360);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 216 : 
+                        int LA22_361 = input.LA(1);
+
+                         
+                        int index22_361 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_361);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 217 : 
+                        int LA22_362 = input.LA(1);
+
+                         
+                        int index22_362 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_362);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 218 : 
+                        int LA22_363 = input.LA(1);
+
+                         
+                        int index22_363 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_363);
                         if ( s>=0 ) return s;
                         break;
                     case 219 : 
@@ -18825,10 +18800,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 244 : 
-                        int LA22_461 = input.LA(1);
+                        int LA22_463 = input.LA(1);
 
                          
-                        int index22_461 = input.index();
+                        int index22_463 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18836,14 +18811,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_461);
+                        input.seek(index22_463);
                         if ( s>=0 ) return s;
                         break;
                     case 245 : 
-                        int LA22_462 = input.LA(1);
+                        int LA22_466 = input.LA(1);
 
                          
-                        int index22_462 = input.index();
+                        int index22_466 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18851,7 +18826,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_462);
+                        input.seek(index22_466);
                         if ( s>=0 ) return s;
                         break;
                     case 246 : 
@@ -18915,10 +18890,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 250 : 
-                        int LA22_471 = input.LA(1);
+                        int LA22_473 = input.LA(1);
 
                          
-                        int index22_471 = input.index();
+                        int index22_473 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18926,14 +18901,14 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_471);
+                        input.seek(index22_473);
                         if ( s>=0 ) return s;
                         break;
                     case 251 : 
-                        int LA22_472 = input.LA(1);
+                        int LA22_476 = input.LA(1);
 
                          
-                        int index22_472 = input.index();
+                        int index22_476 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred33_ObjCpp()) ) {s = 46;}
@@ -18941,7 +18916,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 400;}
 
                          
-                        input.seek(index22_472);
+                        input.seek(index22_476);
                         if ( s>=0 ) return s;
                         break;
                     case 252 : 
@@ -19200,21 +19175,6 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 269 : 
-                        int LA22_543 = input.LA(1);
-
-                         
-                        int index22_543 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_543);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 270 : 
                         int LA22_544 = input.LA(1);
 
                          
@@ -19229,37 +19189,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index22_544);
                         if ( s>=0 ) return s;
                         break;
-                    case 271 : 
-                        int LA22_545 = input.LA(1);
-
-                         
-                        int index22_545 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_545);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 272 : 
-                        int LA22_546 = input.LA(1);
-
-                         
-                        int index22_546 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred33_ObjCpp()) ) {s = 46;}
-
-                        else if ( (true) ) {s = 400;}
-
-                         
-                        input.seek(index22_546);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 273 : 
+                    case 270 : 
                         int LA22_547 = input.LA(1);
 
                          
@@ -19272,6 +19202,51 @@ public class ObjCppParser extends Parser {
 
                          
                         input.seek(index22_547);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 271 : 
+                        int LA22_548 = input.LA(1);
+
+                         
+                        int index22_548 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_548);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 272 : 
+                        int LA22_549 = input.LA(1);
+
+                         
+                        int index22_549 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_549);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 273 : 
+                        int LA22_550 = input.LA(1);
+
+                         
+                        int index22_550 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred33_ObjCpp()) ) {s = 46;}
+
+                        else if ( (true) ) {s = 400;}
+
+                         
+                        input.seek(index22_550);
                         if ( s>=0 ) return s;
                         break;
                     case 274 : 
@@ -19579,7 +19554,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA27_transition;
         }
         public String getDescription() {
-            return "433:18: (returnTypeRef= typeRef )?";
+            return "440:18: (returnTypeRef= typeRef )?";
         }
     }
     static final String DFA32_eotS =
@@ -19678,7 +19653,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA32_transition;
         }
         public String getDescription() {
-            return "()* loopback of 469:3: ( varStoragesWithInit )*";
+            return "()* loopback of 476:3: ( varStoragesWithInit )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -19771,7 +19746,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA36_transition;
         }
         public String getDescription() {
-            return "()* loopback of 496:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration )*";
+            return "()* loopback of 503:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration )*";
         }
     }
     static final String DFA37_eotS =
@@ -19838,7 +19813,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA37_transition;
         }
         public String getDescription() {
-            return "517:16: (returnTypeRef= typeRef )?";
+            return "524:16: (returnTypeRef= typeRef )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -19925,7 +19900,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA39_transition;
         }
         public String getDescription() {
-            return "529:4: ( (a1= argDef ( ',' ax= argDef )* ) )?";
+            return "536:4: ( (a1= argDef ( ',' ax= argDef )* ) )?";
         }
     }
     static final String DFA42_eotS =
@@ -20017,7 +19992,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA42_transition;
         }
         public String getDescription() {
-            return "()* loopback of 566:3: ( exportationModifier )*";
+            return "()* loopback of 573:3: ( exportationModifier )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -20111,7 +20086,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA43_transition;
         }
         public String getDescription() {
-            return "575:14: ({...}? | {...}? '(' extendedDeclModifiers ')' )";
+            return "582:14: ({...}? | {...}? '(' extendedDeclModifiers ')' )";
         }
     }
     static final String DFA48_eotS =
@@ -20171,7 +20146,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA48_transition;
         }
         public String getDescription() {
-            return "607:1: argDef returns [Arg arg] : ( typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )? | '...' );";
+            return "614:1: argDef returns [Arg arg] : ( typeRef ( IDENTIFIER ( arrayTypeMutator )? )? ( '=' expression )? | '...' );";
         }
     }
     static final String DFA49_eotS =
@@ -20274,7 +20249,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA49_transition;
         }
         public String getDescription() {
-            return "()* loopback of 627:3: ( ( 'const' | '__const' ) | '*' | '&' | '^' )*";
+            return "()* loopback of 634:3: ( ( 'const' | '__const' ) | '*' | '&' | '^' )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -20415,7 +20390,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA50_transition;
         }
         public String getDescription() {
-            return "633:3: ( IDENTIFIER )?";
+            return "640:3: ( IDENTIFIER )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -20514,7 +20489,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA52_transition;
         }
         public String getDescription() {
-            return "()* loopback of 636:3: ( '[' ( expression )? ']' )*";
+            return "()* loopback of 643:3: ( '[' ( expression )? ']' )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -20603,7 +20578,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA51_transition;
         }
         public String getDescription() {
-            return "637:8: ( expression )?";
+            return "644:8: ( expression )?";
         }
     }
     static final String DFA53_eotS =
@@ -20675,7 +20650,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA53_transition;
         }
         public String getDescription() {
-            return "668:17: ( '=' e1= expression )?";
+            return "675:17: ( '=' e1= expression )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -20771,7 +20746,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA55_transition;
         }
         public String getDescription() {
-            return "()* loopback of 671:3: ( ',' vx= varStorage ( '=' ex= expression )? )*";
+            return "()* loopback of 678:3: ( ',' vx= varStorage ( '=' ex= expression )? )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -21047,7 +21022,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA54_transition;
         }
         public String getDescription() {
-            return "672:22: ( '=' ex= expression )?";
+            return "679:22: ( '=' ex= expression )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -22081,7 +22056,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA61_transition;
         }
         public String getDescription() {
-            return "714:16: ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' )";
+            return "721:16: ( | '<' (t1= typeRef ( ',' tx= typeRef )* )? '>' )";
         }
     }
     static final String DFA60_eotS =
@@ -22141,7 +22116,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA60_transition;
         }
         public String getDescription() {
-            return "717:7: (t1= typeRef ( ',' tx= typeRef )* )?";
+            return "724:7: (t1= typeRef ( ',' tx= typeRef )* )?";
         }
     }
     static final String DFA66_eotS =
@@ -22201,7 +22176,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA66_transition;
         }
         public String getDescription() {
-            return "735:1: templateDef : ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef | functionDefinition );";
+            return "742:1: templateDef : ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' structDef | functionDefinition );";
         }
     }
     static final String DFA70_eotS =
@@ -22262,25 +22237,25 @@ public class ObjCppParser extends Parser {
             this.transition = DFA70_transition;
         }
         public String getDescription() {
-            return "751:7: (a1= argDef ( ',' ax= argDef )* )?";
+            return "758:7: (a1= argDef ( ',' ax= argDef )* )?";
         }
     }
     static final String DFA72_eotS =
         "\43\uffff";
     static final String DFA72_eofS =
-        "\12\uffff\1\3\30\uffff";
+        "\22\uffff\1\3\20\uffff";
     static final String DFA72_minS =
-        "\2\6\10\uffff\1\6\11\uffff\1\0\5\uffff\1\0\10\uffff";
+        "\2\6\20\uffff\1\6\1\uffff\2\0\15\uffff";
     static final String DFA72_maxS =
-        "\2\113\10\uffff\1\71\11\uffff\1\0\5\uffff\1\0\10\uffff";
+        "\2\113\20\uffff\1\71\1\uffff\2\0\15\uffff";
     static final String DFA72_acceptS =
         "\2\uffff\1\2\1\3\1\1\36\uffff";
     static final String DFA72_specialS =
-        "\24\uffff\1\0\5\uffff\1\1\10\uffff}>";
+        "\24\uffff\1\0\1\1\15\uffff}>";
     static final String[] DFA72_transitionS = {
             "\2\3\27\uffff\1\2\16\uffff\2\1\1\4\3\uffff\2\3\6\uffff\1\3\1"+
             "\uffff\16\3",
-            "\1\12\1\3\20\uffff\1\4\6\uffff\1\3\16\uffff\3\3\3\uffff\2\3"+
+            "\1\22\1\3\20\uffff\1\4\6\uffff\1\3\16\uffff\3\3\3\uffff\2\3"+
             "\6\uffff\1\3\1\uffff\16\3",
             "",
             "",
@@ -22290,24 +22265,24 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\32\21\uffff\1\4\3\uffff\3\3\4\uffff\1\24\3\3\15\uffff\6"+
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\24\21\uffff\1\4\3\uffff\3\3\4\uffff\1\25\3\3\15\uffff\6"+
             "\3",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\1\uffff",
             "\1\uffff",
             "",
             "",
             "",
             "",
             "",
-            "\1\uffff",
             "",
             "",
             "",
@@ -22348,7 +22323,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA72_transition;
         }
         public String getDescription() {
-            return "765:1: plainTypeRef returns [TypeRef type] : ( structCore | enumCore | typeRefCore ( functionSignatureSuffix )? );";
+            return "772:1: plainTypeRef returns [TypeRef type] : ( structCore | enumCore | typeRefCore ( functionSignatureSuffix )? );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -22370,10 +22345,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA72_26 = input.LA(1);
+                        int LA72_21 = input.LA(1);
 
                          
-                        int index72_26 = input.index();
+                        int index72_21 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred102_ObjCpp()) ) {s = 4;}
@@ -22381,7 +22356,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 3;}
 
                          
-                        input.seek(index72_26);
+                        input.seek(index72_21);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -22454,7 +22429,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA71_transition;
         }
         public String getDescription() {
-            return "770:3: ( functionSignatureSuffix )?";
+            return "777:3: ( functionSignatureSuffix )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -22592,7 +22567,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA73_transition;
         }
         public String getDescription() {
-            return "()* loopback of 783:3: ( typeMutator )*";
+            return "()* loopback of 790:3: ( typeMutator )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -22669,18 +22644,18 @@ public class ObjCppParser extends Parser {
     static final String DFA77_eotS =
         "\23\uffff";
     static final String DFA77_eofS =
-        "\1\uffff\1\6\21\uffff";
+        "\1\uffff\1\4\21\uffff";
     static final String DFA77_minS =
         "\1\7\1\6\21\uffff";
     static final String DFA77_maxS =
         "\2\113\21\uffff";
     static final String DFA77_acceptS =
-        "\2\uffff\1\1\3\uffff\1\2\14\uffff";
+        "\2\uffff\1\1\1\uffff\1\2\16\uffff";
     static final String DFA77_specialS =
         "\23\uffff}>";
     static final String[] DFA77_transitionS = {
             "\1\2\66\uffff\4\1\12\2",
-            "\1\6\1\2\24\uffff\3\6\4\uffff\2\6\1\uffff\1\6\15\uffff\6\6"+
+            "\1\4\1\2\24\uffff\3\4\4\uffff\2\4\1\uffff\1\4\15\uffff\6\4"+
             "\10\uffff\12\2",
             "",
             "",
@@ -22731,7 +22706,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA77_transition;
         }
         public String getDescription() {
-            return "813:3: ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier )";
+            return "820:3: ( (mod1= primSignModifier )? (mod2= primSizeModifier (mod3= primSizeModifier )? )? name= primitiveTypeName | mod= primSignModifier )";
         }
     }
     static final String DFA76_eotS =
@@ -22798,7 +22773,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA76_transition;
         }
         public String getDescription() {
-            return "815:4: (mod2= primSizeModifier (mod3= primSizeModifier )? )?";
+            return "822:4: (mod2= primSizeModifier (mod3= primSizeModifier )? )?";
         }
     }
     static final String DFA75_eotS =
@@ -22864,7 +22839,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA75_transition;
         }
         public String getDescription() {
-            return "816:8: (mod3= primSizeModifier )?";
+            return "823:8: (mod3= primSizeModifier )?";
         }
     }
     static final String DFA81_eotS =
@@ -22927,7 +22902,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA81_transition;
         }
         public String getDescription() {
-            return "860:3: (a1= expression ( ',' ax= expression )* )?";
+            return "867:3: (a1= expression ( ',' ax= expression )* )?";
         }
     }
     static final String DFA84_eotS =
@@ -23009,7 +22984,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA84_transition;
         }
         public String getDescription() {
-            return "874:4: (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' )";
+            return "881:4: (id= IDENTIFIER | fc1= functionCall | objCMethodCall | prefixOp= ( '!' | '~' ) opd= expression | '(' (par= expression ')' | typeRef ')' casted= expression ) | constant | '{' expression '}' )";
         }
     }
     static final String DFA83_eotS =
@@ -23018,15 +22993,15 @@ public class ObjCppParser extends Parser {
         "\32\uffff\1\2\146\uffff";
     static final String DFA83_minS =
         "\1\4\1\36\23\uffff\1\4\1\uffff\2\4\1\uffff\2\4\6\uffff\1\0\17\uffff"+
-        "\1\0\21\uffff\1\0\33\uffff\2\0\12\uffff\1\0\24\uffff";
+        "\1\0\17\uffff\1\0\35\uffff\2\0\12\uffff\1\0\24\uffff";
     static final String DFA83_maxS =
         "\1\116\1\134\23\uffff\1\116\1\uffff\2\116\1\uffff\1\134\1\116\6"+
-        "\uffff\1\0\17\uffff\1\0\21\uffff\1\0\33\uffff\2\0\12\uffff\1\0\24"+
+        "\uffff\1\0\17\uffff\1\0\17\uffff\1\0\35\uffff\2\0\12\uffff\1\0\24"+
         "\uffff";
     static final String DFA83_acceptS =
         "\2\uffff\1\1\12\uffff\1\2\163\uffff";
     static final String DFA83_specialS =
-        "\42\uffff\1\0\17\uffff\1\1\21\uffff\1\2\33\uffff\1\3\1\4\12\uffff"+
+        "\42\uffff\1\0\17\uffff\1\1\17\uffff\1\2\35\uffff\1\3\1\4\12\uffff"+
         "\1\5\24\uffff}>";
     static final String[] DFA83_transitionS = {
             "\2\2\1\1\1\15\4\2\14\uffff\1\2\6\uffff\1\15\3\uffff\1\2\12\uffff"+
@@ -23059,7 +23034,7 @@ public class ObjCppParser extends Parser {
             "\3\2\1\uffff\4\2\14\uffff\1\2\12\uffff\1\2\1\15\17\uffff\4"+
             "\15\1\uffff\1\62\22\uffff\3\2",
             "\3\2\1\uffff\4\2\14\uffff\1\2\12\uffff\1\2\1\15\17\uffff\4"+
-            "\15\1\uffff\1\104\22\uffff\3\2",
+            "\15\1\uffff\1\102\22\uffff\3\2",
             "",
             "\2\15\1\140\1\uffff\4\15\14\uffff\1\15\1\2\2\uffff\3\2\3\uffff"+
             "\1\2\1\15\3\2\4\uffff\2\2\7\uffff\5\2\1\141\1\2\21\uffff\3\15"+
@@ -23105,9 +23080,9 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "",
-            "",
             "\1\uffff",
+            "",
+            "",
             "",
             "",
             "",
@@ -23200,7 +23175,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA83_transition;
         }
         public String getDescription() {
-            return "887:8: (par= expression ')' | typeRef ')' casted= expression )";
+            return "894:8: (par= expression ')' | typeRef ')' casted= expression )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -23237,10 +23212,10 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA83_68 = input.LA(1);
+                        int LA83_66 = input.LA(1);
 
                          
-                        int index83_68 = input.index();
+                        int index83_66 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred134_ObjCpp()) ) {s = 2;}
@@ -23248,7 +23223,7 @@ public class ObjCppParser extends Parser {
                         else if ( (true) ) {s = 13;}
 
                          
-                        input.seek(index83_68);
+                        input.seek(index83_66);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
@@ -23519,7 +23494,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA86_transition;
         }
         public String getDescription() {
-            return "()* loopback of 900:3: (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )*";
+            return "()* loopback of 907:3: (bop= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) opd2= expression | '=' val= expression | '.' fieldName= IDENTIFIER | refStyle= ( ':' ':' | '-' '>' | '.' ) fc2= functionCall | '?' xif= expression ':' xelse= expression )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -23752,7 +23727,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA87_transition;
         }
         public String getDescription() {
-            return "()* loopback of 929:8: ( statement )*";
+            return "()* loopback of 936:8: ( statement )*";
         }
     }
     static final String DFA94_eotS =
@@ -23760,48 +23735,50 @@ public class ObjCppParser extends Parser {
     static final String DFA94_eofS =
         "\u018c\uffff";
     static final String DFA94_minS =
-        "\2\4\1\5\35\uffff\1\4\1\5\14\uffff\1\43\3\4\6\31\10\uffff\1\4\16"+
-        "\uffff\1\4\2\uffff\1\4\1\uffff\1\0\2\4\1\uffff\1\4\3\uffff\14\0"+
-        "\24\uffff\1\0\1\uffff\2\0\2\uffff\7\0\2\uffff\1\0\15\uffff\63\0"+
-        "\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff"+
-        "\11\0\1\uffff\1\0\14\uffff\16\0\65\uffff\2\0\31\uffff\1\0\14\uffff"+
-        "\2\0\22\uffff";
+        "\2\4\1\5\35\uffff\1\5\1\43\3\4\6\31\1\4\24\uffff\1\4\2\uffff\2\4"+
+        "\2\uffff\1\4\1\uffff\1\4\2\uffff\1\4\1\uffff\1\0\15\uffff\1\0\1"+
+        "\uffff\3\0\2\uffff\1\0\2\uffff\6\0\15\uffff\63\0\2\uffff\6\0\2\uffff"+
+        "\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\2\0\14\uffff\12"+
+        "\0\10\uffff\1\0\1\uffff\11\0\14\uffff\1\0\1\uffff\1\0\20\uffff\2"+
+        "\0\31\uffff\1\0\14\uffff\15\0\1\uffff\1\0\65\uffff";
     static final String DFA94_maxS =
-        "\2\143\1\134\35\uffff\1\143\1\134\14\uffff\1\43\3\116\6\134\10\uffff"+
-        "\1\116\16\uffff\1\116\2\uffff\1\116\1\uffff\1\0\2\116\1\uffff\1"+
-        "\116\3\uffff\14\0\24\uffff\1\0\1\uffff\2\0\2\uffff\7\0\2\uffff\1"+
-        "\0\15\uffff\63\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0"+
-        "\2\uffff\6\0\2\uffff\11\0\1\uffff\1\0\14\uffff\16\0\65\uffff\2\0"+
-        "\31\uffff\1\0\14\uffff\2\0\22\uffff";
+        "\2\143\1\134\35\uffff\1\134\1\43\3\116\6\134\1\143\24\uffff\1\116"+
+        "\2\uffff\2\116\2\uffff\1\116\1\uffff\1\116\2\uffff\1\116\1\uffff"+
+        "\1\0\15\uffff\1\0\1\uffff\3\0\2\uffff\1\0\2\uffff\6\0\15\uffff\63"+
+        "\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2\uffff\6\0\2"+
+        "\uffff\2\0\14\uffff\12\0\10\uffff\1\0\1\uffff\11\0\14\uffff\1\0"+
+        "\1\uffff\1\0\20\uffff\2\0\31\uffff\1\0\14\uffff\15\0\1\uffff\1\0"+
+        "\65\uffff";
     static final String DFA94_acceptS =
         "\3\uffff\1\2\13\uffff\1\3\11\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\12"+
-        "\2\uffff\1\1\u0168\uffff\1\13";
+        "\14\uffff\1\1\u015e\uffff\1\13";
     static final String DFA94_specialS =
-        "\124\uffff\1\0\7\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12"+
-        "\1\13\1\14\24\uffff\1\15\1\uffff\1\16\1\17\2\uffff\1\20\1\21\1\22"+
-        "\1\23\1\24\1\25\1\26\2\uffff\1\27\15\uffff\1\30\1\31\1\32\1\33\1"+
-        "\34\1\35\1\36\1\37\1\40\1\41\1\42\1\43\1\44\1\45\1\46\1\47\1\50"+
-        "\1\51\1\52\1\53\1\54\1\55\1\56\1\57\1\60\1\61\1\62\1\63\1\64\1\65"+
-        "\1\66\1\67\1\70\1\71\1\72\1\73\1\74\1\75\1\76\1\77\1\100\1\101\1"+
-        "\102\1\103\1\104\1\105\1\106\1\107\1\110\1\111\1\112\2\uffff\1\113"+
-        "\1\114\1\115\1\116\1\117\1\120\2\uffff\1\121\1\122\1\123\1\124\1"+
-        "\125\1\126\2\uffff\1\127\1\130\1\131\1\132\1\133\1\134\2\uffff\1"+
-        "\135\1\136\1\137\1\140\1\141\1\142\2\uffff\1\143\1\144\1\145\1\146"+
-        "\1\147\1\150\2\uffff\1\151\1\152\1\153\1\154\1\155\1\156\1\157\1"+
-        "\160\1\161\1\uffff\1\162\14\uffff\1\163\1\164\1\165\1\166\1\167"+
-        "\1\170\1\171\1\172\1\173\1\174\1\175\1\176\1\177\1\u0080\65\uffff"+
-        "\1\u0081\1\u0082\31\uffff\1\u0083\14\uffff\1\u0084\1\u0085\22\uffff}>";
+        "\116\uffff\1\0\15\uffff\1\1\1\uffff\1\2\1\3\1\4\2\uffff\1\5\2\uffff"+
+        "\1\6\1\7\1\10\1\11\1\12\1\13\15\uffff\1\14\1\15\1\16\1\17\1\20\1"+
+        "\21\1\22\1\23\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33\1\34\1\35"+
+        "\1\36\1\37\1\40\1\41\1\42\1\43\1\44\1\45\1\46\1\47\1\50\1\51\1\52"+
+        "\1\53\1\54\1\55\1\56\1\57\1\60\1\61\1\62\1\63\1\64\1\65\1\66\1\67"+
+        "\1\70\1\71\1\72\1\73\1\74\1\75\1\76\2\uffff\1\77\1\100\1\101\1\102"+
+        "\1\103\1\104\2\uffff\1\105\1\106\1\107\1\110\1\111\1\112\2\uffff"+
+        "\1\113\1\114\1\115\1\116\1\117\1\120\2\uffff\1\121\1\122\1\123\1"+
+        "\124\1\125\1\126\2\uffff\1\127\1\130\1\131\1\132\1\133\1\134\2\uffff"+
+        "\1\135\1\136\14\uffff\1\137\1\140\1\141\1\142\1\143\1\144\1\145"+
+        "\1\146\1\147\1\150\10\uffff\1\151\1\uffff\1\152\1\153\1\154\1\155"+
+        "\1\156\1\157\1\160\1\161\1\162\14\uffff\1\163\1\uffff\1\164\20\uffff"+
+        "\1\165\1\166\31\uffff\1\167\14\uffff\1\170\1\171\1\172\1\173\1\174"+
+        "\1\175\1\176\1\177\1\u0080\1\u0081\1\u0082\1\u0083\1\u0084\1\uffff"+
+        "\1\u0085\65\uffff}>";
     static final String[] DFA94_transitionS = {
             "\2\17\1\2\1\3\4\17\14\uffff\1\1\1\uffff\2\3\1\uffff\1\37\1\uffff"+
             "\3\3\1\uffff\1\17\12\uffff\3\3\3\uffff\2\3\3\uffff\1\17\1\uffff"+
             "\2\3\1\uffff\16\3\3\17\16\uffff\1\31\1\32\1\uffff\1\33\1\34"+
             "\1\35\1\36",
-            "\1\62\1\67\1\41\1\42\1\63\1\64\1\65\1\66\14\uffff\1\40\3\42"+
-            "\1\uffff\1\42\1\uffff\3\42\1\uffff\1\61\12\uffff\3\42\3\uffff"+
-            "\2\42\3\uffff\1\57\1\uffff\2\42\1\uffff\16\42\1\56\2\60\16\uffff"+
-            "\2\42\1\uffff\4\42",
-            "\3\3\22\uffff\3\3\1\124\1\117\3\3\1\17\1\100\1\uffff\1\126"+
-            "\1\17\4\uffff\2\17\1\uffff\3\3\3\uffff\2\3\1\122\1\125\1\130"+
+            "\1\45\1\52\1\40\1\54\1\46\1\47\1\50\1\51\14\uffff\1\53\3\54"+
+            "\1\uffff\1\54\1\uffff\3\54\1\uffff\1\44\12\uffff\3\54\3\uffff"+
+            "\2\54\3\uffff\1\42\1\uffff\2\54\1\uffff\16\54\1\41\2\43\16\uffff"+
+            "\2\54\1\uffff\4\54",
+            "\3\3\22\uffff\3\3\1\116\1\111\3\3\1\17\1\100\1\uffff\1\107"+
+            "\1\17\4\uffff\2\17\1\uffff\3\3\3\uffff\2\3\1\103\1\104\1\114"+
             "\1\3\1\uffff\2\3\1\uffff\16\3\3\uffff\16\17",
             "",
             "",
@@ -23832,67 +23809,43 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\141\1\146\1\134\1\42\1\142\1\143\1\144\1\145\14\uffff\1"+
-            "\147\3\42\1\uffff\1\42\1\uffff\3\42\1\uffff\1\140\12\uffff\3"+
-            "\42\3\uffff\2\42\3\uffff\1\136\1\uffff\2\42\1\uffff\16\42\1"+
-            "\135\2\137\16\uffff\2\42\1\uffff\4\42",
-            "\3\42\21\uffff\1\17\4\42\1\u0084\3\42\1\u0086\1\174\1\uffff"+
-            "\1\u0082\1\u008b\4\uffff\1\u008b\1\u0083\1\uffff\3\42\3\uffff"+
-            "\2\42\1\176\1\177\1\u0087\1\42\1\uffff\2\42\1\uffff\16\42\3"+
-            "\uffff\14\u008b\1\u0085\1\u0088",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\u0099",
-            "\1\u009f\1\u00a4\1\u009a\1\uffff\1\u00a0\1\u00a1\1\u00a2\1"+
-            "\u00a3\14\uffff\1\u00a5\12\uffff\1\u009e\25\uffff\1\u009c\22"+
-            "\uffff\1\u009b\2\u009d",
-            "\1\u00ab\1\u00b0\1\u00a6\1\uffff\1\u00ac\1\u00ad\1\u00ae\1"+
-            "\u00af\14\uffff\1\u00b1\12\uffff\1\u00aa\25\uffff\1\u00a8\22"+
-            "\uffff\1\u00a7\2\u00a9",
-            "\1\u00b7\1\u00bc\1\u00b2\1\u00c4\1\u00b8\1\u00b9\1\u00ba\1"+
-            "\u00bb\14\uffff\1\u00bd\6\uffff\1\u00bf\3\uffff\1\u00b6\12\uffff"+
-            "\2\u00be\1\u00c1\3\uffff\2\u00c0\3\uffff\1\u00b4\2\uffff\1\u00c2"+
-            "\1\uffff\4\u00c3\1\u00c4\11\u00c5\1\u00b3\2\u00b5",
-            "\1\17\3\uffff\1\42\1\u00c7\3\uffff\1\u00c9\2\uffff\2\u00ca"+
+            "\3\54\21\uffff\1\17\4\54\1\143\3\54\1\151\1\134\1\uffff\1\146"+
+            "\1\152\4\uffff\1\152\1\147\1\uffff\3\54\3\uffff\2\54\1\136\1"+
+            "\137\1\140\1\54\1\uffff\2\54\1\uffff\16\54\3\uffff\14\152\1"+
+            "\150\1\153",
+            "\1\171",
+            "\1\177\1\u0084\1\172\1\uffff\1\u0080\1\u0081\1\u0082\1\u0083"+
+            "\14\uffff\1\u0085\12\uffff\1\176\25\uffff\1\174\22\uffff\1\173"+
+            "\2\175",
+            "\1\u008b\1\u0090\1\u0086\1\uffff\1\u008c\1\u008d\1\u008e\1"+
+            "\u008f\14\uffff\1\u0091\12\uffff\1\u008a\25\uffff\1\u0088\22"+
+            "\uffff\1\u0087\2\u0089",
+            "\1\u0097\1\u009c\1\u0092\1\u00a4\1\u0098\1\u0099\1\u009a\1"+
+            "\u009b\14\uffff\1\u009d\6\uffff\1\u009f\3\uffff\1\u0096\12\uffff"+
+            "\2\u009e\1\u00a1\3\uffff\2\u00a0\3\uffff\1\u0094\2\uffff\1\u00a2"+
+            "\1\uffff\4\u00a3\1\u00a4\11\u00a5\1\u0093\2\u0095",
+            "\1\17\3\uffff\1\54\1\u00a7\3\uffff\1\u00a9\2\uffff\2\u00aa"+
+            "\4\uffff\1\u00aa\1\u00a6\11\uffff\3\u00aa\26\uffff\14\u00aa"+
+            "\1\u00a8\1\u00ab",
+            "\1\17\3\uffff\1\54\1\u00af\3\uffff\1\u00b1\2\uffff\2\u00b2"+
+            "\4\uffff\1\u00b2\1\u00ae\11\uffff\3\u00b2\26\uffff\14\u00b2"+
+            "\1\u00b0\1\u00b3",
+            "\1\17\3\uffff\1\54\1\u00b7\3\uffff\1\u00b9\2\uffff\2\u00ba"+
+            "\4\uffff\1\u00ba\1\u00b6\11\uffff\3\u00ba\26\uffff\14\u00ba"+
+            "\1\u00b8\1\u00bb",
+            "\1\17\3\uffff\1\54\1\u00bf\3\uffff\1\u00c1\2\uffff\2\u00c2"+
+            "\4\uffff\1\u00c2\1\u00be\11\uffff\3\u00c2\26\uffff\14\u00c2"+
+            "\1\u00c0\1\u00c3",
+            "\1\17\3\uffff\1\54\1\u00c7\3\uffff\1\u00c9\2\uffff\2\u00ca"+
             "\4\uffff\1\u00ca\1\u00c6\11\uffff\3\u00ca\26\uffff\14\u00ca"+
             "\1\u00c8\1\u00cb",
-            "\1\17\3\uffff\1\42\1\u00cf\3\uffff\1\u00d1\2\uffff\2\u00d2"+
+            "\1\17\3\uffff\1\54\1\u00cf\3\uffff\1\u00d1\2\uffff\2\u00d2"+
             "\4\uffff\1\u00d2\1\u00ce\11\uffff\3\u00d2\26\uffff\14\u00d2"+
             "\1\u00d0\1\u00d3",
-            "\1\17\3\uffff\1\42\1\u00d7\3\uffff\1\u00d9\2\uffff\2\u00da"+
-            "\4\uffff\1\u00da\1\u00d6\11\uffff\3\u00da\26\uffff\14\u00da"+
-            "\1\u00d8\1\u00db",
-            "\1\17\3\uffff\1\42\1\u00df\3\uffff\1\u00e1\2\uffff\2\u00e2"+
-            "\4\uffff\1\u00e2\1\u00de\11\uffff\3\u00e2\26\uffff\14\u00e2"+
-            "\1\u00e0\1\u00e3",
-            "\1\17\3\uffff\1\42\1\u00e7\3\uffff\1\u00e9\2\uffff\2\u00ea"+
-            "\4\uffff\1\u00ea\1\u00e6\11\uffff\3\u00ea\26\uffff\14\u00ea"+
-            "\1\u00e8\1\u00eb",
-            "\1\17\3\uffff\1\42\1\u00ef\3\uffff\1\u00f1\2\uffff\2\u00f2"+
-            "\4\uffff\1\u00f2\1\u00ee\11\uffff\3\u00f2\26\uffff\14\u00f2"+
-            "\1\u00f0\1\u00f3",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\2\17\1\u00fe\1\u00fc\4\17\14\uffff\1\17\6\uffff\1\u00f7\3"+
-            "\uffff\1\17\1\u0100\10\uffff\1\3\2\u00f6\1\u00f9\3\uffff\2\u00f8"+
-            "\1\3\2\uffff\1\17\2\uffff\1\u00fa\1\uffff\4\u00fb\1\u00fc\11"+
-            "\u00fd\3\17",
+            "\1\u00e8\1\u00ed\1\u00d7\1\54\1\u00e9\1\u00ea\1\u00eb\1\u00ec"+
+            "\14\uffff\1\u00d6\3\54\1\uffff\1\54\1\uffff\3\54\1\uffff\1\u00e7"+
+            "\12\uffff\3\54\3\uffff\2\54\3\uffff\1\u00e5\1\uffff\2\54\1\uffff"+
+            "\16\54\1\u00e4\2\u00e6\16\uffff\2\54\1\uffff\4\54",
             "",
             "",
             "",
@@ -23907,41 +23860,37 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\u0112\1\u0117\1\u010d\1\uffff\1\u0113\1\u0114\1\u0115\1"+
-            "\u0116\14\uffff\1\u0118\12\uffff\1\u0111\25\uffff\1\u010f\22"+
-            "\uffff\1\u010e\2\u0110",
             "",
             "",
-            "\2\17\1\u0119\1\uffff\4\17\14\uffff\1\17\3\uffff\3\3\4\uffff"+
-            "\1\17\20\uffff\5\3\1\u011a\22\uffff\3\17",
             "",
-            "\1\uffff",
-            "\2\17\1\u0150\1\uffff\4\17\14\uffff\1\17\3\uffff\3\3\4\uffff"+
-            "\1\17\20\uffff\5\3\1\u0151\22\uffff\3\17",
-            "\2\17\1\u016b\1\3\4\17\14\uffff\1\17\6\uffff\1\3\3\uffff\1"+
+            "",
+            "",
+            "",
+            "\2\17\1\u00f6\1\u00ff\4\17\14\uffff\1\17\6\uffff\1\u00fa\3"+
+            "\uffff\1\17\1\u00f8\10\uffff\1\3\2\u00f9\1\u00fc\3\uffff\2\u00fb"+
+            "\1\3\2\uffff\1\17\2\uffff\1\u00fd\1\uffff\4\u00fe\1\u00ff\11"+
+            "\u0100\3\17",
+            "",
+            "",
+            "\2\17\1\u010d\1\uffff\4\17\14\uffff\1\17\3\uffff\3\3\4\uffff"+
+            "\1\17\20\uffff\5\3\1\u010f\22\uffff\3\17",
+            "\2\17\1\u0120\1\uffff\4\17\14\uffff\1\17\3\uffff\3\3\4\uffff"+
+            "\1\17\20\uffff\5\3\1\u0121\22\uffff\3\17",
+            "",
+            "",
+            "\2\17\1\u013b\1\3\4\17\14\uffff\1\17\6\uffff\1\3\3\uffff\1"+
             "\17\2\uffff\1\3\7\uffff\3\3\3\uffff\2\3\3\uffff\1\17\2\uffff"+
             "\1\3\1\uffff\16\3\3\17",
             "",
-            "\2\17\1\u0178\1\uffff\4\17\14\uffff\1\17\3\uffff\3\3\4\uffff"+
-            "\1\17\20\uffff\5\3\1\u0179\22\uffff\3\17",
+            "\1\u014d\1\u0152\1\u0148\1\uffff\1\u014e\1\u014f\1\u0150\1"+
+            "\u0151\14\uffff\1\u0153\12\uffff\1\u014c\25\uffff\1\u014a\22"+
+            "\uffff\1\u0149\2\u014b",
             "",
             "",
+            "\2\17\1\u0154\1\uffff\4\17\14\uffff\1\17\3\uffff\3\3\4\uffff"+
+            "\1\17\20\uffff\5\3\1\u0156\22\uffff\3\17",
             "",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "",
-            "",
-            "",
             "",
             "",
             "",
@@ -23955,25 +23904,21 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "",
-            "",
-            "",
-            "",
             "\1\uffff",
             "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "",
             "",
             "\1\uffff",
-            "\1\uffff",
+            "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
             "\1\uffff",
             "",
             "",
@@ -24083,6 +24028,18 @@ public class ObjCppParser extends Parser {
             "",
             "\1\uffff",
             "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -24090,12 +24047,9 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -24105,8 +24059,7 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -24116,7 +24069,20 @@ public class ObjCppParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "\1\uffff",
+            "",
             "\1\uffff",
             "",
             "",
@@ -24134,6 +24100,8 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "",
             "",
@@ -24159,6 +24127,7 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "\1\uffff",
             "",
             "",
             "",
@@ -24173,8 +24142,19 @@ public class ObjCppParser extends Parser {
             "",
             "\1\uffff",
             "\1\uffff",
-            "",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
+            "\1\uffff",
             "",
             "",
             "",
@@ -24198,7 +24178,6 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
             "",
             "",
             "",
@@ -24211,8 +24190,6 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
             "",
@@ -24263,17 +24240,17 @@ public class ObjCppParser extends Parser {
             this.transition = DFA94_transition;
         }
         public String getDescription() {
-            return "931:1: statement : ( statementsBlock | declaration | expression ( '=' expression )? ';' | 'return' expression ';' | 'if' '(' expression ')' statement ( 'else' statement )? | 'while' '(' expression ')' statement | 'do' statement 'while' '(' expression ')' ';' | 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}' | ';' | IDENTIFIER {...}? '(' varDecl ':' expression ')' statement );";
+            return "938:1: statement : ( statementsBlock | declaration | expression ( '=' expression )? ';' | 'return' expression ';' | 'if' '(' expression ')' statement ( 'else' statement )? | 'while' '(' expression ')' statement | 'do' statement 'while' '(' expression ')' ';' | 'for' '(' ( statement )? ';' ( expression )? ';' ( statement )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' expression ':' | statement )* '}' | ';' | IDENTIFIER {...}? '(' varDecl ':' expression ')' statement );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA94_84 = input.LA(1);
+                        int LA94_78 = input.LA(1);
 
                          
-                        int index94_84 = input.index();
+                        int index94_78 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -24281,7 +24258,7 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_84);
+                        input.seek(index94_78);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
@@ -24291,7 +24268,7 @@ public class ObjCppParser extends Parser {
                         int index94_92 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24300,28 +24277,13 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA94_93 = input.LA(1);
-
-                         
-                        int index94_93 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_93);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
                         int LA94_94 = input.LA(1);
 
                          
                         int index94_94 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24329,14 +24291,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_94);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
+                    case 3 : 
                         int LA94_95 = input.LA(1);
 
                          
                         int index94_95 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24344,14 +24306,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_95);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
+                    case 4 : 
                         int LA94_96 = input.LA(1);
 
                          
                         int index94_96 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24359,44 +24321,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_96);
                         if ( s>=0 ) return s;
                         break;
-                    case 6 : 
-                        int LA94_97 = input.LA(1);
-
-                         
-                        int index94_97 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_97);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA94_98 = input.LA(1);
-
-                         
-                        int index94_98 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_98);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
+                    case 5 : 
                         int LA94_99 = input.LA(1);
 
                          
                         int index94_99 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24404,44 +24336,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_99);
                         if ( s>=0 ) return s;
                         break;
-                    case 9 : 
-                        int LA94_100 = input.LA(1);
-
-                         
-                        int index94_100 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_100);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA94_101 = input.LA(1);
-
-                         
-                        int index94_101 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_101);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
+                    case 6 : 
                         int LA94_102 = input.LA(1);
 
                          
                         int index94_102 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24449,14 +24351,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_102);
                         if ( s>=0 ) return s;
                         break;
-                    case 12 : 
+                    case 7 : 
                         int LA94_103 = input.LA(1);
 
                          
                         int index94_103 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24464,14 +24366,119 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_103);
                         if ( s>=0 ) return s;
                         break;
+                    case 8 : 
+                        int LA94_104 = input.LA(1);
+
+                         
+                        int index94_104 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_104);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA94_105 = input.LA(1);
+
+                         
+                        int index94_105 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_105);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA94_106 = input.LA(1);
+
+                         
+                        int index94_106 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_106);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA94_107 = input.LA(1);
+
+                         
+                        int index94_107 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_107);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA94_121 = input.LA(1);
+
+                         
+                        int index94_121 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_121);
+                        if ( s>=0 ) return s;
+                        break;
                     case 13 : 
+                        int LA94_122 = input.LA(1);
+
+                         
+                        int index94_122 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_122);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 14 : 
+                        int LA94_123 = input.LA(1);
+
+                         
+                        int index94_123 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_123);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
                         int LA94_124 = input.LA(1);
 
                          
                         int index94_124 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24479,14 +24486,29 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_124);
                         if ( s>=0 ) return s;
                         break;
-                    case 14 : 
+                    case 16 : 
+                        int LA94_125 = input.LA(1);
+
+                         
+                        int index94_125 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_125);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
                         int LA94_126 = input.LA(1);
 
                          
                         int index94_126 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24494,14 +24516,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_126);
                         if ( s>=0 ) return s;
                         break;
-                    case 15 : 
+                    case 18 : 
                         int LA94_127 = input.LA(1);
 
                          
                         int index94_127 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24509,14 +24531,44 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_127);
                         if ( s>=0 ) return s;
                         break;
-                    case 16 : 
+                    case 19 : 
+                        int LA94_128 = input.LA(1);
+
+                         
+                        int index94_128 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_128);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
+                        int LA94_129 = input.LA(1);
+
+                         
+                        int index94_129 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_129);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 21 : 
                         int LA94_130 = input.LA(1);
 
                          
                         int index94_130 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24524,14 +24576,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_130);
                         if ( s>=0 ) return s;
                         break;
-                    case 17 : 
+                    case 22 : 
                         int LA94_131 = input.LA(1);
 
                          
                         int index94_131 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24539,14 +24591,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_131);
                         if ( s>=0 ) return s;
                         break;
-                    case 18 : 
+                    case 23 : 
                         int LA94_132 = input.LA(1);
 
                          
                         int index94_132 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24554,14 +24606,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_132);
                         if ( s>=0 ) return s;
                         break;
-                    case 19 : 
+                    case 24 : 
                         int LA94_133 = input.LA(1);
 
                          
                         int index94_133 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24569,14 +24621,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_133);
                         if ( s>=0 ) return s;
                         break;
-                    case 20 : 
+                    case 25 : 
                         int LA94_134 = input.LA(1);
 
                          
                         int index94_134 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24584,14 +24636,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_134);
                         if ( s>=0 ) return s;
                         break;
-                    case 21 : 
+                    case 26 : 
                         int LA94_135 = input.LA(1);
 
                          
                         int index94_135 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24599,14 +24651,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_135);
                         if ( s>=0 ) return s;
                         break;
-                    case 22 : 
+                    case 27 : 
                         int LA94_136 = input.LA(1);
 
                          
                         int index94_136 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24614,14 +24666,44 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_136);
                         if ( s>=0 ) return s;
                         break;
-                    case 23 : 
+                    case 28 : 
+                        int LA94_137 = input.LA(1);
+
+                         
+                        int index94_137 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_137);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 29 : 
+                        int LA94_138 = input.LA(1);
+
+                         
+                        int index94_138 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_138);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 30 : 
                         int LA94_139 = input.LA(1);
 
                          
                         int index94_139 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24629,14 +24711,209 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_139);
                         if ( s>=0 ) return s;
                         break;
-                    case 24 : 
+                    case 31 : 
+                        int LA94_140 = input.LA(1);
+
+                         
+                        int index94_140 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_140);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 32 : 
+                        int LA94_141 = input.LA(1);
+
+                         
+                        int index94_141 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_141);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 33 : 
+                        int LA94_142 = input.LA(1);
+
+                         
+                        int index94_142 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_142);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 34 : 
+                        int LA94_143 = input.LA(1);
+
+                         
+                        int index94_143 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_143);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 35 : 
+                        int LA94_144 = input.LA(1);
+
+                         
+                        int index94_144 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_144);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 36 : 
+                        int LA94_145 = input.LA(1);
+
+                         
+                        int index94_145 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_145);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 37 : 
+                        int LA94_146 = input.LA(1);
+
+                         
+                        int index94_146 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_146);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 38 : 
+                        int LA94_147 = input.LA(1);
+
+                         
+                        int index94_147 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_147);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 39 : 
+                        int LA94_148 = input.LA(1);
+
+                         
+                        int index94_148 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_148);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 40 : 
+                        int LA94_149 = input.LA(1);
+
+                         
+                        int index94_149 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_149);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 41 : 
+                        int LA94_150 = input.LA(1);
+
+                         
+                        int index94_150 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_150);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 42 : 
+                        int LA94_151 = input.LA(1);
+
+                         
+                        int index94_151 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_151);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 43 : 
+                        int LA94_152 = input.LA(1);
+
+                         
+                        int index94_152 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_152);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 44 : 
                         int LA94_153 = input.LA(1);
 
                          
                         int index94_153 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24644,14 +24921,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_153);
                         if ( s>=0 ) return s;
                         break;
-                    case 25 : 
+                    case 45 : 
                         int LA94_154 = input.LA(1);
 
                          
                         int index94_154 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24659,14 +24936,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_154);
                         if ( s>=0 ) return s;
                         break;
-                    case 26 : 
+                    case 46 : 
                         int LA94_155 = input.LA(1);
 
                          
                         int index94_155 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24674,14 +24951,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_155);
                         if ( s>=0 ) return s;
                         break;
-                    case 27 : 
+                    case 47 : 
                         int LA94_156 = input.LA(1);
 
                          
                         int index94_156 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24689,14 +24966,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_156);
                         if ( s>=0 ) return s;
                         break;
-                    case 28 : 
+                    case 48 : 
                         int LA94_157 = input.LA(1);
 
                          
                         int index94_157 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24704,14 +24981,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_157);
                         if ( s>=0 ) return s;
                         break;
-                    case 29 : 
+                    case 49 : 
                         int LA94_158 = input.LA(1);
 
                          
                         int index94_158 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24719,14 +24996,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_158);
                         if ( s>=0 ) return s;
                         break;
-                    case 30 : 
+                    case 50 : 
                         int LA94_159 = input.LA(1);
 
                          
                         int index94_159 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24734,14 +25011,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_159);
                         if ( s>=0 ) return s;
                         break;
-                    case 31 : 
+                    case 51 : 
                         int LA94_160 = input.LA(1);
 
                          
                         int index94_160 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24749,14 +25026,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_160);
                         if ( s>=0 ) return s;
                         break;
-                    case 32 : 
+                    case 52 : 
                         int LA94_161 = input.LA(1);
 
                          
                         int index94_161 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24764,14 +25041,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_161);
                         if ( s>=0 ) return s;
                         break;
-                    case 33 : 
+                    case 53 : 
                         int LA94_162 = input.LA(1);
 
                          
                         int index94_162 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24779,14 +25056,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_162);
                         if ( s>=0 ) return s;
                         break;
-                    case 34 : 
+                    case 54 : 
                         int LA94_163 = input.LA(1);
 
                          
                         int index94_163 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24794,14 +25071,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_163);
                         if ( s>=0 ) return s;
                         break;
-                    case 35 : 
+                    case 55 : 
                         int LA94_164 = input.LA(1);
 
                          
                         int index94_164 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24809,14 +25086,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_164);
                         if ( s>=0 ) return s;
                         break;
-                    case 36 : 
+                    case 56 : 
                         int LA94_165 = input.LA(1);
 
                          
                         int index94_165 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24824,14 +25101,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_165);
                         if ( s>=0 ) return s;
                         break;
-                    case 37 : 
+                    case 57 : 
                         int LA94_166 = input.LA(1);
 
                          
                         int index94_166 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24839,14 +25116,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_166);
                         if ( s>=0 ) return s;
                         break;
-                    case 38 : 
+                    case 58 : 
                         int LA94_167 = input.LA(1);
 
                          
                         int index94_167 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24854,14 +25131,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_167);
                         if ( s>=0 ) return s;
                         break;
-                    case 39 : 
+                    case 59 : 
                         int LA94_168 = input.LA(1);
 
                          
                         int index94_168 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24869,14 +25146,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_168);
                         if ( s>=0 ) return s;
                         break;
-                    case 40 : 
+                    case 60 : 
                         int LA94_169 = input.LA(1);
 
                          
                         int index94_169 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24884,14 +25161,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_169);
                         if ( s>=0 ) return s;
                         break;
-                    case 41 : 
+                    case 61 : 
                         int LA94_170 = input.LA(1);
 
                          
                         int index94_170 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24899,14 +25176,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_170);
                         if ( s>=0 ) return s;
                         break;
-                    case 42 : 
+                    case 62 : 
                         int LA94_171 = input.LA(1);
 
                          
                         int index94_171 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24914,44 +25191,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_171);
                         if ( s>=0 ) return s;
                         break;
-                    case 43 : 
-                        int LA94_172 = input.LA(1);
-
-                         
-                        int index94_172 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_172);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 44 : 
-                        int LA94_173 = input.LA(1);
-
-                         
-                        int index94_173 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_173);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 45 : 
+                    case 63 : 
                         int LA94_174 = input.LA(1);
 
                          
                         int index94_174 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24959,14 +25206,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_174);
                         if ( s>=0 ) return s;
                         break;
-                    case 46 : 
+                    case 64 : 
                         int LA94_175 = input.LA(1);
 
                          
                         int index94_175 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24974,14 +25221,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_175);
                         if ( s>=0 ) return s;
                         break;
-                    case 47 : 
+                    case 65 : 
                         int LA94_176 = input.LA(1);
 
                          
                         int index94_176 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -24989,14 +25236,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_176);
                         if ( s>=0 ) return s;
                         break;
-                    case 48 : 
+                    case 66 : 
                         int LA94_177 = input.LA(1);
 
                          
                         int index94_177 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25004,14 +25251,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_177);
                         if ( s>=0 ) return s;
                         break;
-                    case 49 : 
+                    case 67 : 
                         int LA94_178 = input.LA(1);
 
                          
                         int index94_178 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25019,14 +25266,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_178);
                         if ( s>=0 ) return s;
                         break;
-                    case 50 : 
+                    case 68 : 
                         int LA94_179 = input.LA(1);
 
                          
                         int index94_179 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25034,44 +25281,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_179);
                         if ( s>=0 ) return s;
                         break;
-                    case 51 : 
-                        int LA94_180 = input.LA(1);
-
-                         
-                        int index94_180 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_180);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 52 : 
-                        int LA94_181 = input.LA(1);
-
-                         
-                        int index94_181 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_181);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 53 : 
+                    case 69 : 
                         int LA94_182 = input.LA(1);
 
                          
                         int index94_182 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25079,14 +25296,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_182);
                         if ( s>=0 ) return s;
                         break;
-                    case 54 : 
+                    case 70 : 
                         int LA94_183 = input.LA(1);
 
                          
                         int index94_183 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25094,14 +25311,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_183);
                         if ( s>=0 ) return s;
                         break;
-                    case 55 : 
+                    case 71 : 
                         int LA94_184 = input.LA(1);
 
                          
                         int index94_184 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25109,14 +25326,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_184);
                         if ( s>=0 ) return s;
                         break;
-                    case 56 : 
+                    case 72 : 
                         int LA94_185 = input.LA(1);
 
                          
                         int index94_185 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25124,14 +25341,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_185);
                         if ( s>=0 ) return s;
                         break;
-                    case 57 : 
+                    case 73 : 
                         int LA94_186 = input.LA(1);
 
                          
                         int index94_186 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25139,14 +25356,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_186);
                         if ( s>=0 ) return s;
                         break;
-                    case 58 : 
+                    case 74 : 
                         int LA94_187 = input.LA(1);
 
                          
                         int index94_187 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25154,44 +25371,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_187);
                         if ( s>=0 ) return s;
                         break;
-                    case 59 : 
-                        int LA94_188 = input.LA(1);
-
-                         
-                        int index94_188 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_188);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 60 : 
-                        int LA94_189 = input.LA(1);
-
-                         
-                        int index94_189 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_189);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 61 : 
+                    case 75 : 
                         int LA94_190 = input.LA(1);
 
                          
                         int index94_190 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25199,14 +25386,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_190);
                         if ( s>=0 ) return s;
                         break;
-                    case 62 : 
+                    case 76 : 
                         int LA94_191 = input.LA(1);
 
                          
                         int index94_191 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25214,14 +25401,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_191);
                         if ( s>=0 ) return s;
                         break;
-                    case 63 : 
+                    case 77 : 
                         int LA94_192 = input.LA(1);
 
                          
                         int index94_192 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25229,14 +25416,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_192);
                         if ( s>=0 ) return s;
                         break;
-                    case 64 : 
+                    case 78 : 
                         int LA94_193 = input.LA(1);
 
                          
                         int index94_193 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25244,14 +25431,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_193);
                         if ( s>=0 ) return s;
                         break;
-                    case 65 : 
+                    case 79 : 
                         int LA94_194 = input.LA(1);
 
                          
                         int index94_194 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25259,14 +25446,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_194);
                         if ( s>=0 ) return s;
                         break;
-                    case 66 : 
+                    case 80 : 
                         int LA94_195 = input.LA(1);
 
                          
                         int index94_195 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25274,44 +25461,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_195);
                         if ( s>=0 ) return s;
                         break;
-                    case 67 : 
-                        int LA94_196 = input.LA(1);
-
-                         
-                        int index94_196 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_196);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 68 : 
-                        int LA94_197 = input.LA(1);
-
-                         
-                        int index94_197 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_197);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 69 : 
+                    case 81 : 
                         int LA94_198 = input.LA(1);
 
                          
                         int index94_198 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25319,14 +25476,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_198);
                         if ( s>=0 ) return s;
                         break;
-                    case 70 : 
+                    case 82 : 
                         int LA94_199 = input.LA(1);
 
                          
                         int index94_199 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25334,14 +25491,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_199);
                         if ( s>=0 ) return s;
                         break;
-                    case 71 : 
+                    case 83 : 
                         int LA94_200 = input.LA(1);
 
                          
                         int index94_200 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25349,14 +25506,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_200);
                         if ( s>=0 ) return s;
                         break;
-                    case 72 : 
+                    case 84 : 
                         int LA94_201 = input.LA(1);
 
                          
                         int index94_201 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25364,14 +25521,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_201);
                         if ( s>=0 ) return s;
                         break;
-                    case 73 : 
+                    case 85 : 
                         int LA94_202 = input.LA(1);
 
                          
                         int index94_202 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25379,14 +25536,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_202);
                         if ( s>=0 ) return s;
                         break;
-                    case 74 : 
+                    case 86 : 
                         int LA94_203 = input.LA(1);
 
                          
                         int index94_203 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25394,14 +25551,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_203);
                         if ( s>=0 ) return s;
                         break;
-                    case 75 : 
+                    case 87 : 
                         int LA94_206 = input.LA(1);
 
                          
                         int index94_206 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25409,14 +25566,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_206);
                         if ( s>=0 ) return s;
                         break;
-                    case 76 : 
+                    case 88 : 
                         int LA94_207 = input.LA(1);
 
                          
                         int index94_207 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25424,14 +25581,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_207);
                         if ( s>=0 ) return s;
                         break;
-                    case 77 : 
+                    case 89 : 
                         int LA94_208 = input.LA(1);
 
                          
                         int index94_208 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25439,14 +25596,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_208);
                         if ( s>=0 ) return s;
                         break;
-                    case 78 : 
+                    case 90 : 
                         int LA94_209 = input.LA(1);
 
                          
                         int index94_209 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25454,14 +25611,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_209);
                         if ( s>=0 ) return s;
                         break;
-                    case 79 : 
+                    case 91 : 
                         int LA94_210 = input.LA(1);
 
                          
                         int index94_210 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25469,14 +25626,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_210);
                         if ( s>=0 ) return s;
                         break;
-                    case 80 : 
+                    case 92 : 
                         int LA94_211 = input.LA(1);
 
                          
                         int index94_211 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25484,14 +25641,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_211);
                         if ( s>=0 ) return s;
                         break;
-                    case 81 : 
+                    case 93 : 
                         int LA94_214 = input.LA(1);
 
                          
                         int index94_214 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25499,14 +25656,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_214);
                         if ( s>=0 ) return s;
                         break;
-                    case 82 : 
+                    case 94 : 
                         int LA94_215 = input.LA(1);
 
                          
                         int index94_215 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25514,164 +25671,44 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_215);
                         if ( s>=0 ) return s;
                         break;
-                    case 83 : 
-                        int LA94_216 = input.LA(1);
+                    case 95 : 
+                        int LA94_228 = input.LA(1);
 
                          
-                        int index94_216 = input.index();
+                        int index94_228 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_216);
+                        input.seek(index94_228);
                         if ( s>=0 ) return s;
                         break;
-                    case 84 : 
-                        int LA94_217 = input.LA(1);
+                    case 96 : 
+                        int LA94_229 = input.LA(1);
 
                          
-                        int index94_217 = input.index();
+                        int index94_229 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_217);
+                        input.seek(index94_229);
                         if ( s>=0 ) return s;
                         break;
-                    case 85 : 
-                        int LA94_218 = input.LA(1);
-
-                         
-                        int index94_218 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_218);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 86 : 
-                        int LA94_219 = input.LA(1);
-
-                         
-                        int index94_219 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_219);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 87 : 
-                        int LA94_222 = input.LA(1);
-
-                         
-                        int index94_222 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_222);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 88 : 
-                        int LA94_223 = input.LA(1);
-
-                         
-                        int index94_223 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_223);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 89 : 
-                        int LA94_224 = input.LA(1);
-
-                         
-                        int index94_224 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_224);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 90 : 
-                        int LA94_225 = input.LA(1);
-
-                         
-                        int index94_225 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_225);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 91 : 
-                        int LA94_226 = input.LA(1);
-
-                         
-                        int index94_226 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_226);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 92 : 
-                        int LA94_227 = input.LA(1);
-
-                         
-                        int index94_227 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_227);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 93 : 
+                    case 97 : 
                         int LA94_230 = input.LA(1);
 
                          
                         int index94_230 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25679,14 +25716,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_230);
                         if ( s>=0 ) return s;
                         break;
-                    case 94 : 
+                    case 98 : 
                         int LA94_231 = input.LA(1);
 
                          
                         int index94_231 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25694,14 +25731,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_231);
                         if ( s>=0 ) return s;
                         break;
-                    case 95 : 
+                    case 99 : 
                         int LA94_232 = input.LA(1);
 
                          
                         int index94_232 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25709,14 +25746,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_232);
                         if ( s>=0 ) return s;
                         break;
-                    case 96 : 
+                    case 100 : 
                         int LA94_233 = input.LA(1);
 
                          
                         int index94_233 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25724,14 +25761,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_233);
                         if ( s>=0 ) return s;
                         break;
-                    case 97 : 
+                    case 101 : 
                         int LA94_234 = input.LA(1);
 
                          
                         int index94_234 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25739,14 +25776,14 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_234);
                         if ( s>=0 ) return s;
                         break;
-                    case 98 : 
+                    case 102 : 
                         int LA94_235 = input.LA(1);
 
                          
                         int index94_235 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
@@ -25754,94 +25791,34 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_235);
                         if ( s>=0 ) return s;
                         break;
-                    case 99 : 
-                        int LA94_238 = input.LA(1);
-
-                         
-                        int index94_238 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_238);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 100 : 
-                        int LA94_239 = input.LA(1);
-
-                         
-                        int index94_239 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_239);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 101 : 
-                        int LA94_240 = input.LA(1);
-
-                         
-                        int index94_240 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_240);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 102 : 
-                        int LA94_241 = input.LA(1);
-
-                         
-                        int index94_241 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_241);
-                        if ( s>=0 ) return s;
-                        break;
                     case 103 : 
-                        int LA94_242 = input.LA(1);
+                        int LA94_236 = input.LA(1);
 
                          
-                        int index94_242 = input.index();
+                        int index94_236 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_242);
+                        input.seek(index94_236);
                         if ( s>=0 ) return s;
                         break;
                     case 104 : 
-                        int LA94_243 = input.LA(1);
+                        int LA94_237 = input.LA(1);
 
                          
-                        int index94_243 = input.index();
+                        int index94_237 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred163_ObjCpp()) ) {s = 34;}
+                        if ( (synpred163_ObjCpp()) ) {s = 44;}
 
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_243);
+                        input.seek(index94_237);
                         if ( s>=0 ) return s;
                         break;
                     case 105 : 
@@ -25853,6 +25830,8 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
 
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
                         else if ( (true) ) {s = 395;}
 
                          
@@ -25860,21 +25839,6 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 106 : 
-                        int LA94_247 = input.LA(1);
-
-                         
-                        int index94_247 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred164_ObjCpp()) ) {s = 3;}
-
-                        else if ( (true) ) {s = 395;}
-
-                         
-                        input.seek(index94_247);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 107 : 
                         int LA94_248 = input.LA(1);
 
                          
@@ -25883,13 +25847,13 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
 
-                        else if ( (true) ) {s = 395;}
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
                         input.seek(index94_248);
                         if ( s>=0 ) return s;
                         break;
-                    case 108 : 
+                    case 107 : 
                         int LA94_249 = input.LA(1);
 
                          
@@ -25904,7 +25868,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_249);
                         if ( s>=0 ) return s;
                         break;
-                    case 109 : 
+                    case 108 : 
                         int LA94_250 = input.LA(1);
 
                          
@@ -25919,7 +25883,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_250);
                         if ( s>=0 ) return s;
                         break;
-                    case 110 : 
+                    case 109 : 
                         int LA94_251 = input.LA(1);
 
                          
@@ -25934,7 +25898,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_251);
                         if ( s>=0 ) return s;
                         break;
-                    case 111 : 
+                    case 110 : 
                         int LA94_252 = input.LA(1);
 
                          
@@ -25949,7 +25913,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_252);
                         if ( s>=0 ) return s;
                         break;
-                    case 112 : 
+                    case 111 : 
                         int LA94_253 = input.LA(1);
 
                          
@@ -25964,7 +25928,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_253);
                         if ( s>=0 ) return s;
                         break;
-                    case 113 : 
+                    case 112 : 
                         int LA94_254 = input.LA(1);
 
                          
@@ -25973,12 +25937,25 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
 
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
                         else if ( (true) ) {s = 395;}
 
                          
                         input.seek(index94_254);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 113 : 
+                        int LA94_255 = input.LA(1);
+
+                         
+                        int index94_255 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred164_ObjCpp()) ) {s = 3;}
+
+                        else if ( (true) ) {s = 395;}
+
+                         
+                        input.seek(index94_255);
                         if ( s>=0 ) return s;
                         break;
                     case 114 : 
@@ -25990,7 +25967,7 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
 
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+                        else if ( (true) ) {s = 395;}
 
                          
                         input.seek(index94_256);
@@ -26012,21 +25989,6 @@ public class ObjCppParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 116 : 
-                        int LA94_270 = input.LA(1);
-
-                         
-                        int index94_270 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred164_ObjCpp()) ) {s = 3;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_270);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 117 : 
                         int LA94_271 = input.LA(1);
 
                          
@@ -26041,11 +26003,11 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_271);
                         if ( s>=0 ) return s;
                         break;
-                    case 118 : 
-                        int LA94_272 = input.LA(1);
+                    case 117 : 
+                        int LA94_288 = input.LA(1);
 
                          
-                        int index94_272 = input.index();
+                        int index94_288 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26053,14 +26015,29 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_272);
+                        input.seek(index94_288);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 118 : 
+                        int LA94_289 = input.LA(1);
+
+                         
+                        int index94_289 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred164_ObjCpp()) ) {s = 3;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_289);
                         if ( s>=0 ) return s;
                         break;
                     case 119 : 
-                        int LA94_273 = input.LA(1);
+                        int LA94_315 = input.LA(1);
 
                          
-                        int index94_273 = input.index();
+                        int index94_315 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26068,14 +26045,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_273);
+                        input.seek(index94_315);
                         if ( s>=0 ) return s;
                         break;
                     case 120 : 
-                        int LA94_274 = input.LA(1);
+                        int LA94_328 = input.LA(1);
 
                          
-                        int index94_274 = input.index();
+                        int index94_328 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26083,14 +26060,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_274);
+                        input.seek(index94_328);
                         if ( s>=0 ) return s;
                         break;
                     case 121 : 
-                        int LA94_275 = input.LA(1);
+                        int LA94_329 = input.LA(1);
 
                          
-                        int index94_275 = input.index();
+                        int index94_329 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26098,14 +26075,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_275);
+                        input.seek(index94_329);
                         if ( s>=0 ) return s;
                         break;
                     case 122 : 
-                        int LA94_276 = input.LA(1);
+                        int LA94_330 = input.LA(1);
 
                          
-                        int index94_276 = input.index();
+                        int index94_330 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26113,14 +26090,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_276);
+                        input.seek(index94_330);
                         if ( s>=0 ) return s;
                         break;
                     case 123 : 
-                        int LA94_277 = input.LA(1);
+                        int LA94_331 = input.LA(1);
 
                          
-                        int index94_277 = input.index();
+                        int index94_331 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26128,14 +26105,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_277);
+                        input.seek(index94_331);
                         if ( s>=0 ) return s;
                         break;
                     case 124 : 
-                        int LA94_278 = input.LA(1);
+                        int LA94_332 = input.LA(1);
 
                          
-                        int index94_278 = input.index();
+                        int index94_332 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26143,14 +26120,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_278);
+                        input.seek(index94_332);
                         if ( s>=0 ) return s;
                         break;
                     case 125 : 
-                        int LA94_279 = input.LA(1);
+                        int LA94_333 = input.LA(1);
 
                          
-                        int index94_279 = input.index();
+                        int index94_333 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26158,14 +26135,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_279);
+                        input.seek(index94_333);
                         if ( s>=0 ) return s;
                         break;
                     case 126 : 
-                        int LA94_280 = input.LA(1);
+                        int LA94_334 = input.LA(1);
 
                          
-                        int index94_280 = input.index();
+                        int index94_334 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26173,14 +26150,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_280);
+                        input.seek(index94_334);
                         if ( s>=0 ) return s;
                         break;
                     case 127 : 
-                        int LA94_281 = input.LA(1);
+                        int LA94_335 = input.LA(1);
 
                          
-                        int index94_281 = input.index();
+                        int index94_335 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26188,25 +26165,10 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_281);
+                        input.seek(index94_335);
                         if ( s>=0 ) return s;
                         break;
                     case 128 : 
-                        int LA94_282 = input.LA(1);
-
-                         
-                        int index94_282 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred164_ObjCpp()) ) {s = 3;}
-
-                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
-
-                         
-                        input.seek(index94_282);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 129 : 
                         int LA94_336 = input.LA(1);
 
                          
@@ -26221,7 +26183,7 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_336);
                         if ( s>=0 ) return s;
                         break;
-                    case 130 : 
+                    case 129 : 
                         int LA94_337 = input.LA(1);
 
                          
@@ -26236,11 +26198,11 @@ public class ObjCppParser extends Parser {
                         input.seek(index94_337);
                         if ( s>=0 ) return s;
                         break;
-                    case 131 : 
-                        int LA94_363 = input.LA(1);
+                    case 130 : 
+                        int LA94_338 = input.LA(1);
 
                          
-                        int index94_363 = input.index();
+                        int index94_338 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26248,14 +26210,29 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_363);
+                        input.seek(index94_338);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 131 : 
+                        int LA94_339 = input.LA(1);
+
+                         
+                        int index94_339 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred164_ObjCpp()) ) {s = 3;}
+
+                        else if ( (synpred166_ObjCpp()) ) {s = 15;}
+
+                         
+                        input.seek(index94_339);
                         if ( s>=0 ) return s;
                         break;
                     case 132 : 
-                        int LA94_376 = input.LA(1);
+                        int LA94_340 = input.LA(1);
 
                          
-                        int index94_376 = input.index();
+                        int index94_340 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26263,14 +26240,14 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_376);
+                        input.seek(index94_340);
                         if ( s>=0 ) return s;
                         break;
                     case 133 : 
-                        int LA94_377 = input.LA(1);
+                        int LA94_342 = input.LA(1);
 
                          
-                        int index94_377 = input.index();
+                        int index94_342 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred164_ObjCpp()) ) {s = 3;}
@@ -26278,7 +26255,7 @@ public class ObjCppParser extends Parser {
                         else if ( (synpred166_ObjCpp()) ) {s = 15;}
 
                          
-                        input.seek(index94_377);
+                        input.seek(index94_342);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -26405,7 +26382,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA89_transition;
         }
         public String getDescription() {
-            return "937:37: ( 'else' statement )?";
+            return "944:37: ( 'else' statement )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -26439,15 +26416,14 @@ public class ObjCppParser extends Parser {
     static final String DFA90_eofS =
         "\115\uffff";
     static final String DFA90_minS =
-        "\1\4\36\uffff\2\4\14\uffff\2\0\14\uffff\12\0\6\uffff\1\0\1\uffff";
+        "\1\4\36\uffff\1\4\14\uffff\1\4\15\0\23\uffff";
     static final String DFA90_maxS =
-        "\1\143\36\uffff\1\116\1\143\14\uffff\2\0\14\uffff\12\0\6\uffff\1"+
-        "\0\1\uffff";
+        "\1\143\36\uffff\1\116\14\uffff\1\143\15\0\23\uffff";
     static final String DFA90_acceptS =
-        "\1\uffff\1\1\37\uffff\1\2\53\uffff";
+        "\1\uffff\1\1\36\uffff\1\2\54\uffff";
     static final String DFA90_specialS =
-        "\55\uffff\1\0\1\1\14\uffff\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12"+
-        "\1\13\6\uffff\1\14\1\uffff}>";
+        "\55\uffff\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1"+
+        "\14\23\uffff}>";
     static final String[] DFA90_transitionS = {
             "\10\1\14\uffff\1\1\1\uffff\2\1\1\uffff\1\37\1\uffff\3\1\1\uffff"+
             "\1\1\12\uffff\3\1\3\uffff\2\1\3\uffff\1\1\1\uffff\2\1\1\uffff"+
@@ -26482,12 +26458,8 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\3\41\1\uffff\4\41\14\uffff\1\41\4\uffff\1\40\5\uffff\1\41"+
-            "\25\uffff\1\41\22\uffff\3\41",
-            "\1\77\1\104\1\56\1\41\1\100\1\101\1\102\1\103\14\uffff\1\55"+
-            "\1\uffff\2\41\1\uffff\1\113\1\uffff\3\41\1\uffff\1\76\1\41\11"+
-            "\uffff\3\41\3\uffff\2\41\3\uffff\1\74\1\uffff\2\41\1\uffff\16"+
-            "\41\1\73\2\75\16\uffff\2\41\1\uffff\4\41",
+            "\3\40\1\uffff\4\40\14\uffff\1\40\4\uffff\1\54\5\uffff\1\40"+
+            "\25\uffff\1\40\22\uffff\3\40",
             "",
             "",
             "",
@@ -26500,20 +26472,13 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
+            "\1\62\1\67\1\55\1\40\1\63\1\64\1\65\1\66\14\uffff\1\70\1\uffff"+
+            "\2\40\1\uffff\1\71\1\uffff\3\40\1\uffff\1\61\1\40\11\uffff\3"+
+            "\40\3\uffff\2\40\3\uffff\1\57\1\uffff\2\40\1\uffff\16\40\1\56"+
+            "\2\60\16\uffff\2\40\1\uffff\4\40",
             "\1\uffff",
             "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -26530,7 +26495,18 @@ public class ObjCppParser extends Parser {
             "",
             "",
             "",
-            "\1\uffff",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             ""
     };
 
@@ -26564,7 +26540,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA90_transition;
         }
         public String getDescription() {
-            return "940:13: ( statement )?";
+            return "947:13: ( statement )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -26579,7 +26555,7 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
                         input.seek(index90_45);
@@ -26594,175 +26570,175 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
                         input.seek(index90_46);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA90_59 = input.LA(1);
+                        int LA90_47 = input.LA(1);
 
                          
-                        int index90_59 = input.index();
+                        int index90_47 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_59);
+                        input.seek(index90_47);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA90_60 = input.LA(1);
+                        int LA90_48 = input.LA(1);
 
                          
-                        int index90_60 = input.index();
+                        int index90_48 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_60);
+                        input.seek(index90_48);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA90_61 = input.LA(1);
+                        int LA90_49 = input.LA(1);
 
                          
-                        int index90_61 = input.index();
+                        int index90_49 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_61);
+                        input.seek(index90_49);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA90_62 = input.LA(1);
+                        int LA90_50 = input.LA(1);
 
                          
-                        int index90_62 = input.index();
+                        int index90_50 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_62);
+                        input.seek(index90_50);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
-                        int LA90_63 = input.LA(1);
+                        int LA90_51 = input.LA(1);
 
                          
-                        int index90_63 = input.index();
+                        int index90_51 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_63);
+                        input.seek(index90_51);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
-                        int LA90_64 = input.LA(1);
+                        int LA90_52 = input.LA(1);
 
                          
-                        int index90_64 = input.index();
+                        int index90_52 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_64);
+                        input.seek(index90_52);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA90_65 = input.LA(1);
+                        int LA90_53 = input.LA(1);
 
                          
-                        int index90_65 = input.index();
+                        int index90_53 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_65);
+                        input.seek(index90_53);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
-                        int LA90_66 = input.LA(1);
+                        int LA90_54 = input.LA(1);
 
                          
-                        int index90_66 = input.index();
+                        int index90_54 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_66);
+                        input.seek(index90_54);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA90_67 = input.LA(1);
+                        int LA90_55 = input.LA(1);
 
                          
-                        int index90_67 = input.index();
+                        int index90_55 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_67);
+                        input.seek(index90_55);
                         if ( s>=0 ) return s;
                         break;
                     case 11 : 
-                        int LA90_68 = input.LA(1);
+                        int LA90_56 = input.LA(1);
 
                          
-                        int index90_68 = input.index();
+                        int index90_56 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_68);
+                        input.seek(index90_56);
                         if ( s>=0 ) return s;
                         break;
                     case 12 : 
-                        int LA90_75 = input.LA(1);
+                        int LA90_57 = input.LA(1);
 
                          
-                        int index90_75 = input.index();
+                        int index90_57 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred172_ObjCpp()) ) {s = 1;}
 
-                        else if ( (true) ) {s = 33;}
+                        else if ( (true) ) {s = 32;}
 
                          
-                        input.seek(index90_75);
+                        input.seek(index90_57);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -26833,7 +26809,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA91_transition;
         }
         public String getDescription() {
-            return "940:28: ( expression )?";
+            return "947:28: ( expression )?";
         }
     }
     static final String DFA92_eotS =
@@ -26916,7 +26892,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA92_transition;
         }
         public String getDescription() {
-            return "940:44: ( statement )?";
+            return "947:44: ( statement )?";
         }
     }
     static final String DFA93_eotS =
@@ -27000,109 +26976,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA93_transition;
         }
         public String getDescription() {
-            return "()* loopback of 942:3: ( 'case' expression ':' | statement )*";
-        }
-    }
-    static final String DFA95_eotS =
-        "\34\uffff";
-    static final String DFA95_eofS =
-        "\34\uffff";
-    static final String DFA95_minS =
-        "\1\4\3\uffff\1\0\27\uffff";
-    static final String DFA95_maxS =
-        "\1\13\3\uffff\1\0\27\uffff";
-    static final String DFA95_acceptS =
-        "\1\uffff\1\1\1\2\1\3\1\uffff\1\5\1\7\23\uffff\1\4\1\6";
-    static final String DFA95_specialS =
-        "\4\uffff\1\0\27\uffff}>";
-    static final String[] DFA95_transitionS = {
-            "\1\1\1\6\2\uffff\1\2\1\3\1\4\1\5",
-            "",
-            "",
-            "",
-            "\1\uffff",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
-
-    static final short[] DFA95_eot = DFA.unpackEncodedString(DFA95_eotS);
-    static final short[] DFA95_eof = DFA.unpackEncodedString(DFA95_eofS);
-    static final char[] DFA95_min = DFA.unpackEncodedStringToUnsignedChars(DFA95_minS);
-    static final char[] DFA95_max = DFA.unpackEncodedStringToUnsignedChars(DFA95_maxS);
-    static final short[] DFA95_accept = DFA.unpackEncodedString(DFA95_acceptS);
-    static final short[] DFA95_special = DFA.unpackEncodedString(DFA95_specialS);
-    static final short[][] DFA95_transition;
-
-    static {
-        int numStates = DFA95_transitionS.length;
-        DFA95_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA95_transition[i] = DFA.unpackEncodedString(DFA95_transitionS[i]);
-        }
-    }
-
-    class DFA95 extends DFA {
-
-        public DFA95(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 95;
-            this.eot = DFA95_eot;
-            this.eof = DFA95_eof;
-            this.min = DFA95_min;
-            this.max = DFA95_max;
-            this.accept = DFA95_accept;
-            this.special = DFA95_special;
-            this.transition = DFA95_transition;
-        }
-        public String getDescription() {
-            return "950:1: constant returns [Constant constant] : ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER | CHARACTER | FLOAT_NUMBER | CHARACTER | STRING );";
-        }
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
-            TokenStream input = (TokenStream)_input;
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA95_4 = input.LA(1);
-
-                         
-                        int index95_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred183_ObjCpp()) ) {s = 26;}
-
-                        else if ( (synpred185_ObjCpp()) ) {s = 27;}
-
-                         
-                        input.seek(index95_4);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (state.backtracking>0) {state.failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 95, _s, input);
-            error(nvae);
-            throw nvae;
+            return "()* loopback of 949:3: ( 'case' expression ':' | statement )*";
         }
     }
     static final String DFA114_eotS =
@@ -27165,399 +27039,396 @@ public class ObjCppParser extends Parser {
             this.transition = DFA114_transition;
         }
         public String getDescription() {
-            return "637:8: ( expression )?";
+            return "644:8: ( expression )?";
         }
     }
  
 
-    public static final BitSet FOLLOW_23_in_lineDirective62 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_lineDirective66 = new BitSet(new long[]{0x0000000000000032L});
-    public static final BitSet FOLLOW_STRING_in_lineDirective79 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_lineDirective94 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_declaration_in_sourceFile123 = new BitSet(new long[]{0xD831C0038C8000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_lineDirective_in_sourceFile132 = new BitSet(new long[]{0xD831C0038C8000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_EOF_in_sourceFile142 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_externDeclarations161 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_STRING_in_externDeclarations168 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_externDeclarations173 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_declaration_in_externDeclarations187 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_25_in_externDeclarations200 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_externDeclarations_in_declaration228 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exportationModifiers_in_declaration237 = new BitSet(new long[]{0xD831C0038C0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_functionDeclaration_in_declaration255 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varDecl_in_declaration265 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_objCClassDef_in_declaration275 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeDef_in_declaration285 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_forwardClassDecl_in_declaration295 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_enumDecl_in_declaration305 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_structDef_in_declaration315 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_26_in_declaration325 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_declaration329 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_declaration331 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_declaration_in_declaration349 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_25_in_declaration365 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_27_in_forwardClassDecl405 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_forwardClassDecl412 = new BitSet(new long[]{0x0000000030000000L});
-    public static final BitSet FOLLOW_28_in_forwardClassDecl419 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_forwardClassDecl426 = new BitSet(new long[]{0x0000000030000000L});
-    public static final BitSet FOLLOW_29_in_forwardClassDecl437 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeRef_in_functionPointerVarDecl455 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_functionPointerVarDecl463 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_enumItem481 = new BitSet(new long[]{0x0000000040000002L});
-    public static final BitSet FOLLOW_30_in_enumItem484 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_enumItem488 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_31_in_enumCore512 = new BitSet(new long[]{0x0000000001000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_enumCore523 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_enumCore535 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_enumItem_in_enumCore542 = new BitSet(new long[]{0x0000000012000000L});
-    public static final BitSet FOLLOW_28_in_enumCore555 = new BitSet(new long[]{0x0000000012000040L});
-    public static final BitSet FOLLOW_enumItem_in_enumCore565 = new BitSet(new long[]{0x0000000012000000L});
-    public static final BitSet FOLLOW_25_in_enumCore579 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_31_in_enumDecl600 = new BitSet(new long[]{0x0000000001000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_enumDecl611 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_enumDecl623 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_enumItem_in_enumDecl630 = new BitSet(new long[]{0x0000000012000000L});
-    public static final BitSet FOLLOW_28_in_enumDecl643 = new BitSet(new long[]{0x0000000012000040L});
-    public static final BitSet FOLLOW_enumItem_in_enumDecl653 = new BitSet(new long[]{0x0000000012000000L});
-    public static final BitSet FOLLOW_25_in_enumDecl667 = new BitSet(new long[]{0x0000000020000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_enumDecl678 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_enumDecl689 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_objCClassDef714 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef725 = new BitSet(new long[]{0x08001C2C81000000L});
-    public static final BitSet FOLLOW_34_in_objCClassDef743 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef747 = new BitSet(new long[]{0x08001C2081000000L});
-    public static final BitSet FOLLOW_35_in_objCClassDef762 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef766 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_objCClassDef768 = new BitSet(new long[]{0x08001C2081000000L});
-    public static final BitSet FOLLOW_37_in_objCClassDef784 = new BitSet(new long[]{0x0000004000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef794 = new BitSet(new long[]{0x0000004010000000L});
-    public static final BitSet FOLLOW_28_in_objCClassDef809 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef819 = new BitSet(new long[]{0x0000004010000000L});
-    public static final BitSet FOLLOW_38_in_objCClassDef836 = new BitSet(new long[]{0x08001C0081000000L});
-    public static final BitSet FOLLOW_24_in_objCClassDef850 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_39_in_objCClassDef862 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_40_in_objCClassDef873 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_41_in_objCClassDef884 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_varDecl_in_objCClassDef909 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_functionPointerVarDecl_in_objCClassDef921 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_25_in_objCClassDef948 = new BitSet(new long[]{0x08001C0080000000L});
-    public static final BitSet FOLLOW_objCMethodDecl_in_objCClassDef966 = new BitSet(new long[]{0x08001C0080000000L});
-    public static final BitSet FOLLOW_typeDef_in_objCClassDef975 = new BitSet(new long[]{0x08001C0080000000L});
-    public static final BitSet FOLLOW_enumDecl_in_objCClassDef984 = new BitSet(new long[]{0x08001C0080000000L});
-    public static final BitSet FOLLOW_42_in_objCClassDef995 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_objCMethodDecl1029 = new BitSet(new long[]{0x0000000800000040L});
-    public static final BitSet FOLLOW_44_in_objCMethodDecl1041 = new BitSet(new long[]{0x0000000800000040L});
-    public static final BitSet FOLLOW_35_in_objCMethodDecl1060 = new BitSet(new long[]{0xD031C010800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_objCMethodDecl1068 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_objCMethodDecl1076 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1087 = new BitSet(new long[]{0x0000000420000000L});
-    public static final BitSet FOLLOW_34_in_objCMethodDecl1099 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_objCMethodDecl1101 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_objCMethodDecl1105 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_objCMethodDecl1107 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1111 = new BitSet(new long[]{0x0000000030000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1126 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_objCMethodDecl1128 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_objCMethodDecl1135 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_objCMethodDecl1139 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_objCMethodDecl1141 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1150 = new BitSet(new long[]{0x0000000030000040L});
-    public static final BitSet FOLLOW_28_in_objCMethodDecl1169 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_45_in_objCMethodDecl1171 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_objCMethodDecl1188 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_structCore_in_structDef1206 = new BitSet(new long[]{0x03F0000070000040L});
-    public static final BitSet FOLLOW_varStoragesWithInit_in_structDef1217 = new BitSet(new long[]{0x03F0000070000040L});
-    public static final BitSet FOLLOW_29_in_structDef1228 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_structCore1249 = new BitSet(new long[]{0x0000000001000040L});
-    public static final BitSet FOLLOW_exportationModifiers_in_structCore1273 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_structCore1285 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_structCore1297 = new BitSet(new long[]{0xD83FC0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_49_in_structCore1315 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_50_in_structCore1327 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_51_in_structCore1339 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_structCore1350 = new BitSet(new long[]{0xD83FC0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_declaration_in_structCore1358 = new BitSet(new long[]{0xD83FC0038E0000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_25_in_structCore1370 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeRef_in_functionDeclaration1395 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_exportationModifiers_in_functionDeclaration1404 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_functionDeclaration1410 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_functionDeclaration1417 = new BitSet(new long[]{0xD031E010800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_argDef_in_functionDeclaration1438 = new BitSet(new long[]{0x0000001010000000L});
-    public static final BitSet FOLLOW_28_in_functionDeclaration1455 = new BitSet(new long[]{0xD031E000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_argDef_in_functionDeclaration1466 = new BitSet(new long[]{0x0000001010000000L});
-    public static final BitSet FOLLOW_36_in_functionDeclaration1494 = new BitSet(new long[]{0x0030000021000040L});
-    public static final BitSet FOLLOW_set_in_functionDeclaration1501 = new BitSet(new long[]{0x0030000021000040L});
-    public static final BitSet FOLLOW_exportationModifiers_in_functionDeclaration1517 = new BitSet(new long[]{0x0030000021000040L});
-    public static final BitSet FOLLOW_29_in_functionDeclaration1529 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_statementsBlock_in_functionDeclaration1536 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_functionDeclaration_in_functionDefinition1553 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_functionDefinition1555 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_functionDefinition1557 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exportationModifier_in_exportationModifiers1584 = new BitSet(new long[]{0x0000000000000042L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_exportationModifier1613 = new BitSet(new long[]{0x0000000800000002L});
-    public static final BitSet FOLLOW_35_in_exportationModifier1635 = new BitSet(new long[]{0x0000001000000040L});
-    public static final BitSet FOLLOW_extendedDeclModifiers_in_exportationModifier1637 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_exportationModifier1639 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_extendedDeclModifiers1672 = new BitSet(new long[]{0x0000000000000042L});
-    public static final BitSet FOLLOW_typeRef_in_argDef1711 = new BitSet(new long[]{0x0000000040000042L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_argDef1714 = new BitSet(new long[]{0x0200000040000002L});
-    public static final BitSet FOLLOW_arrayTypeMutator_in_argDef1716 = new BitSet(new long[]{0x0000000040000002L});
-    public static final BitSet FOLLOW_30_in_argDef1727 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_argDef1729 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_argDef1743 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_varStorage1769 = new BitSet(new long[]{0x03F0000000000042L});
-    public static final BitSet FOLLOW_54_in_varStorage1785 = new BitSet(new long[]{0x03F0000000000042L});
-    public static final BitSet FOLLOW_55_in_varStorage1795 = new BitSet(new long[]{0x03F0000000000042L});
-    public static final BitSet FOLLOW_56_in_varStorage1805 = new BitSet(new long[]{0x03F0000000000042L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_varStorage1817 = new BitSet(new long[]{0x0200000000000002L});
-    public static final BitSet FOLLOW_57_in_varStorage1830 = new BitSet(new long[]{0x0600000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_varStorage1832 = new BitSet(new long[]{0x0400000000000000L});
-    public static final BitSet FOLLOW_58_in_varStorage1835 = new BitSet(new long[]{0x0200000000000002L});
-    public static final BitSet FOLLOW_plainTypeRef_in_varDecl1862 = new BitSet(new long[]{0x03F0000050000040L});
-    public static final BitSet FOLLOW_varStoragesWithInit_in_varDecl1868 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_varDecl1874 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varStorage_in_varStoragesWithInit1895 = new BitSet(new long[]{0x0000000050000002L});
-    public static final BitSet FOLLOW_30_in_varStoragesWithInit1898 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_varStoragesWithInit1902 = new BitSet(new long[]{0x0000000010000002L});
-    public static final BitSet FOLLOW_28_in_varStoragesWithInit1917 = new BitSet(new long[]{0x03F0000050000040L});
-    public static final BitSet FOLLOW_varStorage_in_varStoragesWithInit1921 = new BitSet(new long[]{0x0000000050000002L});
-    public static final BitSet FOLLOW_30_in_varStoragesWithInit1924 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_varStoragesWithInit1928 = new BitSet(new long[]{0x0000000010000002L});
-    public static final BitSet FOLLOW_59_in_typeDef1960 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_plainTypeRef_in_typeDef1965 = new BitSet(new long[]{0x03F0000030000040L});
-    public static final BitSet FOLLOW_varStorage_in_typeDef1973 = new BitSet(new long[]{0x0000000030000000L});
-    public static final BitSet FOLLOW_28_in_typeDef1980 = new BitSet(new long[]{0x03F0000030000040L});
-    public static final BitSet FOLLOW_varStorage_in_typeDef1984 = new BitSet(new long[]{0x0000000030000000L});
-    public static final BitSet FOLLOW_29_in_typeDef1992 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_typeMutator2008 = new BitSet(new long[]{0x0040000000000000L});
-    public static final BitSet FOLLOW_54_in_typeMutator2016 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_54_in_typeMutator2024 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_55_in_typeMutator2032 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_57_in_typeMutator2041 = new BitSet(new long[]{0x0400000000000000L});
-    public static final BitSet FOLLOW_58_in_typeMutator2043 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_57_in_arrayTypeMutator2061 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_arrayTypeMutator2067 = new BitSet(new long[]{0x0400000000000000L});
-    public static final BitSet FOLLOW_58_in_arrayTypeMutator2076 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_typeRefCore2095 = new BitSet(new long[]{0xD000C000000000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_set_in_typeRefCore2113 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_typeRefCore2127 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitiveTypeRef_in_typeRefCore2144 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_typeRefCore2155 = new BitSet(new long[]{0x0000002000000002L});
-    public static final BitSet FOLLOW_37_in_typeRefCore2173 = new BitSet(new long[]{0xD031C040800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_typeRefCore2194 = new BitSet(new long[]{0x0000004010000000L});
-    public static final BitSet FOLLOW_28_in_typeRefCore2215 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_typeRefCore2228 = new BitSet(new long[]{0x0000004010000000L});
-    public static final BitSet FOLLOW_38_in_typeRefCore2256 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_61_in_templateDef2288 = new BitSet(new long[]{0x0000002000000000L});
-    public static final BitSet FOLLOW_37_in_templateDef2290 = new BitSet(new long[]{0xD000804000000080L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_templateArgDecl_in_templateDef2293 = new BitSet(new long[]{0x0000004010000000L});
-    public static final BitSet FOLLOW_28_in_templateDef2296 = new BitSet(new long[]{0xD000800000000080L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_templateArgDecl_in_templateDef2298 = new BitSet(new long[]{0x0000004010000000L});
-    public static final BitSet FOLLOW_38_in_templateDef2305 = new BitSet(new long[]{0x0001C00000000000L});
-    public static final BitSet FOLLOW_structDef_in_templateDef2309 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_functionDefinition_in_templateDef2313 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitiveTypeRef_in_templateArgDecl2325 = new BitSet(new long[]{0x0000000040000000L});
-    public static final BitSet FOLLOW_30_in_templateArgDecl2328 = new BitSet(new long[]{0x0000000000000F30L});
-    public static final BitSet FOLLOW_constant_in_templateArgDecl2330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_templateArgDecl2337 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_templateArgDecl2345 = new BitSet(new long[]{0x0000000040000000L});
-    public static final BitSet FOLLOW_30_in_templateArgDecl2348 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_templateArgDecl2350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_35_in_functionSignatureSuffix2369 = new BitSet(new long[]{0x0040000000000040L});
-    public static final BitSet FOLLOW_exportationModifiers_in_functionSignatureSuffix2371 = new BitSet(new long[]{0x0040000000000000L});
-    public static final BitSet FOLLOW_54_in_functionSignatureSuffix2373 = new BitSet(new long[]{0x0000001000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_functionSignatureSuffix2375 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_functionSignatureSuffix2378 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_functionSignatureSuffix2384 = new BitSet(new long[]{0xD031E010800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_argDef_in_functionSignatureSuffix2393 = new BitSet(new long[]{0x0000001010000000L});
-    public static final BitSet FOLLOW_28_in_functionSignatureSuffix2406 = new BitSet(new long[]{0xD031E000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_argDef_in_functionSignatureSuffix2415 = new BitSet(new long[]{0x0000001010000000L});
-    public static final BitSet FOLLOW_36_in_functionSignatureSuffix2430 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_structCore_in_plainTypeRef2448 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_enumCore_in_plainTypeRef2456 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeRefCore_in_plainTypeRef2464 = new BitSet(new long[]{0x0000000800000002L});
-    public static final BitSet FOLLOW_functionSignatureSuffix_in_plainTypeRef2475 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_plainTypeRef_in_typeRef2501 = new BitSet(new long[]{0x02F0000000000002L});
-    public static final BitSet FOLLOW_typeMutator_in_typeRef2512 = new BitSet(new long[]{0x02F0000000000002L});
+    public static final BitSet FOLLOW_23_in_lineDirective65 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_lineDirective69 = new BitSet(new long[]{0x0000000000000032L});
+    public static final BitSet FOLLOW_STRING_in_lineDirective82 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_lineDirective97 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_declaration_in_sourceFile126 = new BitSet(new long[]{0xD831C0038C8000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_lineDirective_in_sourceFile135 = new BitSet(new long[]{0xD831C0038C8000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_EOF_in_sourceFile145 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_externDeclarations164 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_STRING_in_externDeclarations171 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_externDeclarations176 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_declaration_in_externDeclarations190 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_25_in_externDeclarations203 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_externDeclarations_in_declaration231 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exportationModifiers_in_declaration240 = new BitSet(new long[]{0xD831C0038C0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_functionDeclaration_in_declaration258 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varDecl_in_declaration268 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_objCClassDef_in_declaration278 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeDef_in_declaration288 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_forwardClassDecl_in_declaration298 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_enumDecl_in_declaration308 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_structDef_in_declaration318 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_26_in_declaration328 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_declaration332 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_declaration334 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_declaration_in_declaration352 = new BitSet(new long[]{0xD831C0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_25_in_declaration368 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_27_in_forwardClassDecl408 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_forwardClassDecl415 = new BitSet(new long[]{0x0000000030000000L});
+    public static final BitSet FOLLOW_28_in_forwardClassDecl422 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_forwardClassDecl429 = new BitSet(new long[]{0x0000000030000000L});
+    public static final BitSet FOLLOW_29_in_forwardClassDecl440 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeRef_in_functionPointerVarDecl458 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_functionPointerVarDecl466 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_enumItem484 = new BitSet(new long[]{0x0000000040000002L});
+    public static final BitSet FOLLOW_30_in_enumItem487 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_enumItem491 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_enumCore515 = new BitSet(new long[]{0x0000000001000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_enumCore526 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_enumCore538 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_enumItem_in_enumCore545 = new BitSet(new long[]{0x0000000012000000L});
+    public static final BitSet FOLLOW_28_in_enumCore558 = new BitSet(new long[]{0x0000000012000040L});
+    public static final BitSet FOLLOW_enumItem_in_enumCore568 = new BitSet(new long[]{0x0000000012000000L});
+    public static final BitSet FOLLOW_25_in_enumCore582 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_enumDecl603 = new BitSet(new long[]{0x0000000001000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_enumDecl614 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_enumDecl626 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_enumItem_in_enumDecl633 = new BitSet(new long[]{0x0000000012000000L});
+    public static final BitSet FOLLOW_28_in_enumDecl646 = new BitSet(new long[]{0x0000000012000040L});
+    public static final BitSet FOLLOW_enumItem_in_enumDecl656 = new BitSet(new long[]{0x0000000012000000L});
+    public static final BitSet FOLLOW_25_in_enumDecl670 = new BitSet(new long[]{0x0000000020000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_enumDecl681 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_enumDecl692 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_objCClassDef717 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef728 = new BitSet(new long[]{0x08001C2C81000000L});
+    public static final BitSet FOLLOW_34_in_objCClassDef746 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef750 = new BitSet(new long[]{0x08001C2081000000L});
+    public static final BitSet FOLLOW_35_in_objCClassDef765 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef769 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_objCClassDef771 = new BitSet(new long[]{0x08001C2081000000L});
+    public static final BitSet FOLLOW_37_in_objCClassDef787 = new BitSet(new long[]{0x0000004000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef797 = new BitSet(new long[]{0x0000004010000000L});
+    public static final BitSet FOLLOW_28_in_objCClassDef812 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCClassDef822 = new BitSet(new long[]{0x0000004010000000L});
+    public static final BitSet FOLLOW_38_in_objCClassDef839 = new BitSet(new long[]{0x08001C0081000000L});
+    public static final BitSet FOLLOW_24_in_objCClassDef853 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_39_in_objCClassDef865 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_40_in_objCClassDef876 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_41_in_objCClassDef887 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_varDecl_in_objCClassDef912 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_functionPointerVarDecl_in_objCClassDef924 = new BitSet(new long[]{0xD031C380820000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_25_in_objCClassDef951 = new BitSet(new long[]{0x08001C0080000000L});
+    public static final BitSet FOLLOW_objCMethodDecl_in_objCClassDef969 = new BitSet(new long[]{0x08001C0080000000L});
+    public static final BitSet FOLLOW_typeDef_in_objCClassDef978 = new BitSet(new long[]{0x08001C0080000000L});
+    public static final BitSet FOLLOW_enumDecl_in_objCClassDef987 = new BitSet(new long[]{0x08001C0080000000L});
+    public static final BitSet FOLLOW_42_in_objCClassDef998 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_objCMethodDecl1032 = new BitSet(new long[]{0x0000000800000040L});
+    public static final BitSet FOLLOW_44_in_objCMethodDecl1044 = new BitSet(new long[]{0x0000000800000040L});
+    public static final BitSet FOLLOW_35_in_objCMethodDecl1063 = new BitSet(new long[]{0xD031C010800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_objCMethodDecl1071 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_objCMethodDecl1079 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1090 = new BitSet(new long[]{0x0000000420000000L});
+    public static final BitSet FOLLOW_34_in_objCMethodDecl1102 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_objCMethodDecl1104 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_objCMethodDecl1108 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_objCMethodDecl1110 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1114 = new BitSet(new long[]{0x0000000030000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1129 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_objCMethodDecl1131 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_objCMethodDecl1138 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_objCMethodDecl1142 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_objCMethodDecl1144 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodDecl1153 = new BitSet(new long[]{0x0000000030000040L});
+    public static final BitSet FOLLOW_28_in_objCMethodDecl1172 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_45_in_objCMethodDecl1174 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_objCMethodDecl1191 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_structCore_in_structDef1209 = new BitSet(new long[]{0x03F0000070000040L});
+    public static final BitSet FOLLOW_varStoragesWithInit_in_structDef1220 = new BitSet(new long[]{0x03F0000070000040L});
+    public static final BitSet FOLLOW_29_in_structDef1231 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_structCore1252 = new BitSet(new long[]{0x0000000001000040L});
+    public static final BitSet FOLLOW_exportationModifiers_in_structCore1276 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_structCore1288 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_structCore1300 = new BitSet(new long[]{0xD83FC0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_49_in_structCore1318 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_50_in_structCore1330 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_51_in_structCore1342 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_structCore1353 = new BitSet(new long[]{0xD83FC0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_declaration_in_structCore1361 = new BitSet(new long[]{0xD83FC0038E0000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_25_in_structCore1373 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeRef_in_functionDeclaration1398 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_exportationModifiers_in_functionDeclaration1407 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_functionDeclaration1413 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_functionDeclaration1420 = new BitSet(new long[]{0xD031E010800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_argDef_in_functionDeclaration1441 = new BitSet(new long[]{0x0000001010000000L});
+    public static final BitSet FOLLOW_28_in_functionDeclaration1458 = new BitSet(new long[]{0xD031E000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_argDef_in_functionDeclaration1469 = new BitSet(new long[]{0x0000001010000000L});
+    public static final BitSet FOLLOW_36_in_functionDeclaration1497 = new BitSet(new long[]{0x0030000021000040L});
+    public static final BitSet FOLLOW_set_in_functionDeclaration1504 = new BitSet(new long[]{0x0030000021000040L});
+    public static final BitSet FOLLOW_exportationModifiers_in_functionDeclaration1520 = new BitSet(new long[]{0x0030000021000040L});
+    public static final BitSet FOLLOW_29_in_functionDeclaration1532 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statementsBlock_in_functionDeclaration1539 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_functionDeclaration_in_functionDefinition1556 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_functionDefinition1558 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_functionDefinition1560 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exportationModifier_in_exportationModifiers1587 = new BitSet(new long[]{0x0000000000000042L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_exportationModifier1616 = new BitSet(new long[]{0x0000000800000002L});
+    public static final BitSet FOLLOW_35_in_exportationModifier1638 = new BitSet(new long[]{0x0000001000000040L});
+    public static final BitSet FOLLOW_extendedDeclModifiers_in_exportationModifier1640 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_exportationModifier1642 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_extendedDeclModifiers1675 = new BitSet(new long[]{0x0000000000000042L});
+    public static final BitSet FOLLOW_typeRef_in_argDef1714 = new BitSet(new long[]{0x0000000040000042L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_argDef1717 = new BitSet(new long[]{0x0200000040000002L});
+    public static final BitSet FOLLOW_arrayTypeMutator_in_argDef1719 = new BitSet(new long[]{0x0000000040000002L});
+    public static final BitSet FOLLOW_30_in_argDef1730 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_argDef1732 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_45_in_argDef1746 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_varStorage1772 = new BitSet(new long[]{0x03F0000000000042L});
+    public static final BitSet FOLLOW_54_in_varStorage1788 = new BitSet(new long[]{0x03F0000000000042L});
+    public static final BitSet FOLLOW_55_in_varStorage1798 = new BitSet(new long[]{0x03F0000000000042L});
+    public static final BitSet FOLLOW_56_in_varStorage1808 = new BitSet(new long[]{0x03F0000000000042L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_varStorage1820 = new BitSet(new long[]{0x0200000000000002L});
+    public static final BitSet FOLLOW_57_in_varStorage1833 = new BitSet(new long[]{0x0600000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_varStorage1835 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_58_in_varStorage1838 = new BitSet(new long[]{0x0200000000000002L});
+    public static final BitSet FOLLOW_plainTypeRef_in_varDecl1865 = new BitSet(new long[]{0x03F0000050000040L});
+    public static final BitSet FOLLOW_varStoragesWithInit_in_varDecl1871 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_varDecl1877 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varStorage_in_varStoragesWithInit1898 = new BitSet(new long[]{0x0000000050000002L});
+    public static final BitSet FOLLOW_30_in_varStoragesWithInit1901 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_varStoragesWithInit1905 = new BitSet(new long[]{0x0000000010000002L});
+    public static final BitSet FOLLOW_28_in_varStoragesWithInit1920 = new BitSet(new long[]{0x03F0000050000040L});
+    public static final BitSet FOLLOW_varStorage_in_varStoragesWithInit1924 = new BitSet(new long[]{0x0000000050000002L});
+    public static final BitSet FOLLOW_30_in_varStoragesWithInit1927 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_varStoragesWithInit1931 = new BitSet(new long[]{0x0000000010000002L});
+    public static final BitSet FOLLOW_59_in_typeDef1963 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_plainTypeRef_in_typeDef1968 = new BitSet(new long[]{0x03F0000030000040L});
+    public static final BitSet FOLLOW_varStorage_in_typeDef1976 = new BitSet(new long[]{0x0000000030000000L});
+    public static final BitSet FOLLOW_28_in_typeDef1983 = new BitSet(new long[]{0x03F0000030000040L});
+    public static final BitSet FOLLOW_varStorage_in_typeDef1987 = new BitSet(new long[]{0x0000000030000000L});
+    public static final BitSet FOLLOW_29_in_typeDef1995 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_typeMutator2011 = new BitSet(new long[]{0x0040000000000000L});
+    public static final BitSet FOLLOW_54_in_typeMutator2019 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_54_in_typeMutator2027 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_55_in_typeMutator2035 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_57_in_typeMutator2044 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_58_in_typeMutator2046 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_57_in_arrayTypeMutator2064 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_arrayTypeMutator2070 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_58_in_arrayTypeMutator2079 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_typeRefCore2098 = new BitSet(new long[]{0xD000C000000000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_set_in_typeRefCore2116 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_typeRefCore2130 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primitiveTypeRef_in_typeRefCore2147 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_typeRefCore2158 = new BitSet(new long[]{0x0000002000000002L});
+    public static final BitSet FOLLOW_37_in_typeRefCore2176 = new BitSet(new long[]{0xD031C040800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_typeRefCore2197 = new BitSet(new long[]{0x0000004010000000L});
+    public static final BitSet FOLLOW_28_in_typeRefCore2218 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_typeRefCore2231 = new BitSet(new long[]{0x0000004010000000L});
+    public static final BitSet FOLLOW_38_in_typeRefCore2259 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_templateDef2291 = new BitSet(new long[]{0x0000002000000000L});
+    public static final BitSet FOLLOW_37_in_templateDef2293 = new BitSet(new long[]{0xD000804000000080L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_templateArgDecl_in_templateDef2296 = new BitSet(new long[]{0x0000004010000000L});
+    public static final BitSet FOLLOW_28_in_templateDef2299 = new BitSet(new long[]{0xD000800000000080L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_templateArgDecl_in_templateDef2301 = new BitSet(new long[]{0x0000004010000000L});
+    public static final BitSet FOLLOW_38_in_templateDef2308 = new BitSet(new long[]{0x0001C00000000000L});
+    public static final BitSet FOLLOW_structDef_in_templateDef2312 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_functionDefinition_in_templateDef2316 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primitiveTypeRef_in_templateArgDecl2328 = new BitSet(new long[]{0x0000000040000000L});
+    public static final BitSet FOLLOW_30_in_templateArgDecl2331 = new BitSet(new long[]{0x0000000000000F30L});
+    public static final BitSet FOLLOW_constant_in_templateArgDecl2333 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_templateArgDecl2340 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_templateArgDecl2348 = new BitSet(new long[]{0x0000000040000000L});
+    public static final BitSet FOLLOW_30_in_templateArgDecl2351 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_templateArgDecl2353 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_35_in_functionSignatureSuffix2372 = new BitSet(new long[]{0x0040000000000040L});
+    public static final BitSet FOLLOW_exportationModifiers_in_functionSignatureSuffix2374 = new BitSet(new long[]{0x0040000000000000L});
+    public static final BitSet FOLLOW_54_in_functionSignatureSuffix2376 = new BitSet(new long[]{0x0000001000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_functionSignatureSuffix2378 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_functionSignatureSuffix2381 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_functionSignatureSuffix2387 = new BitSet(new long[]{0xD031E010800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_argDef_in_functionSignatureSuffix2396 = new BitSet(new long[]{0x0000001010000000L});
+    public static final BitSet FOLLOW_28_in_functionSignatureSuffix2409 = new BitSet(new long[]{0xD031E000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_argDef_in_functionSignatureSuffix2418 = new BitSet(new long[]{0x0000001010000000L});
+    public static final BitSet FOLLOW_36_in_functionSignatureSuffix2433 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_structCore_in_plainTypeRef2451 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_enumCore_in_plainTypeRef2459 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeRefCore_in_plainTypeRef2467 = new BitSet(new long[]{0x0000000800000002L});
+    public static final BitSet FOLLOW_functionSignatureSuffix_in_plainTypeRef2478 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_plainTypeRef_in_typeRef2504 = new BitSet(new long[]{0x02F0000000000002L});
+    public static final BitSet FOLLOW_typeMutator_in_typeRef2515 = new BitSet(new long[]{0x02F0000000000002L});
     public static final BitSet FOLLOW_set_in_primSignModifier0 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_primSizeModifier0 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_primitiveTypeName0 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primSignModifier_in_primitiveTypeRef2656 = new BitSet(new long[]{0xC000000000000080L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_primSizeModifier_in_primitiveTypeRef2669 = new BitSet(new long[]{0xC000000000000080L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_primSizeModifier_in_primitiveTypeRef2676 = new BitSet(new long[]{0xC000000000000080L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_primitiveTypeName_in_primitiveTypeRef2686 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primSignModifier_in_primitiveTypeRef2700 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_57_in_objCMethodCall2723 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_objCMethodCall2727 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodCall2731 = new BitSet(new long[]{0x0400000400000000L});
-    public static final BitSet FOLLOW_34_in_objCMethodCall2742 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_objCMethodCall2746 = new BitSet(new long[]{0x0400000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodCall2761 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_objCMethodCall2763 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_objCMethodCall2767 = new BitSet(new long[]{0x0400000000000040L});
-    public static final BitSet FOLLOW_58_in_objCMethodCall2784 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_functionCall2804 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_functionCall2806 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_typeRef_in_functionCall2808 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_functionCall2810 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_functionCall2818 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_functionCall2820 = new BitSet(new long[]{0x0200001801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_functionCall2833 = new BitSet(new long[]{0x0000001010000000L});
-    public static final BitSet FOLLOW_28_in_functionCall2842 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_functionCall2851 = new BitSet(new long[]{0x0000001010000000L});
-    public static final BitSet FOLLOW_36_in_functionCall2869 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_expression2891 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_functionCall_in_expression2902 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_objCMethodCall_in_expression2911 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_set_in_expression2922 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression2932 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_35_in_expression2941 = new BitSet(new long[]{0xD231C00881000FF0L,0x0000000000007FFFL});
-    public static final BitSet FOLLOW_expression_in_expression2951 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_expression2953 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_typeRef_in_expression2963 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_expression2965 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression2969 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_constant_in_expression2984 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_24_in_expression2993 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression2995 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_expression2997 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_set_in_expression3013 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression3107 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_30_in_expression3116 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression3120 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_91_in_expression3129 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_expression3133 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_34_in_expression3145 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_expression3147 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
-    public static final BitSet FOLLOW_44_in_expression3151 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_38_in_expression3153 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
-    public static final BitSet FOLLOW_91_in_expression3157 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
-    public static final BitSet FOLLOW_functionCall_in_expression3162 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_92_in_expression3171 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression3175 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_expression3177 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_expression3181 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
-    public static final BitSet FOLLOW_24_in_statementsBlock3202 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statementsBlock3204 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_25_in_statementsBlock3207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_statementsBlock_in_statement3220 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_declaration_in_statement3226 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_statement3232 = new BitSet(new long[]{0x0000000060000000L});
-    public static final BitSet FOLLOW_30_in_statement3235 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3237 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_statement3242 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_93_in_statement3248 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3250 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_statement3252 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_94_in_statement3258 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_statement3260 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3262 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_statement3264 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3266 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
-    public static final BitSet FOLLOW_95_in_statement3269 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3271 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_96_in_statement3279 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_statement3281 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3283 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_statement3285 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3287 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_97_in_statement3293 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3295 = new BitSet(new long[]{0x0000000000000000L,0x0000000100000000L});
-    public static final BitSet FOLLOW_96_in_statement3297 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_statement3299 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3301 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_statement3303 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_statement3305 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_98_in_statement3311 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_statement3313 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3315 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_statement3318 = new BitSet(new long[]{0x0200000821000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3320 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_statement3323 = new BitSet(new long[]{0xDA31C01BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3325 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_statement3328 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_99_in_statement3336 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_statement3338 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3340 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_statement3342 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_statement3344 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000001F60007FFFL});
-    public static final BitSet FOLLOW_100_in_statement3350 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3352 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_statement3354 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000001F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3361 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000001F60007FFFL});
-    public static final BitSet FOLLOW_25_in_statement3370 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_statement3376 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_statement3382 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_statement3386 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
-    public static final BitSet FOLLOW_varDecl_in_statement3388 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_statement3390 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_statement3392 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_statement3394 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_statement3396 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_constant3412 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_HEXADECIMAL_NUMBER_in_constant3420 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_OCTAL_NUMBER_in_constant3428 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CHARACTER_in_constant3436 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_NUMBER_in_constant3444 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CHARACTER_in_constant3452 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_constant3460 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_functionDeclaration_in_synpred7_ObjCpp255 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varDecl_in_synpred8_ObjCpp265 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_enumDecl_in_synpred12_ObjCpp305 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_structDef_in_synpred13_ObjCpp315 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varDecl_in_synpred33_ObjCpp909 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_varStoragesWithInit_in_synpred45_ObjCpp1217 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exportationModifiers_in_synpred48_ObjCpp1273 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeRef_in_synpred54_ObjCpp1395 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exportationModifier_in_synpred61_ObjCpp1584 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_synpred69_ObjCpp1769 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_54_in_synpred70_ObjCpp1785 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_55_in_synpred71_ObjCpp1795 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_56_in_synpred72_ObjCpp1805 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_synpred73_ObjCpp1817 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_57_in_synpred75_ObjCpp1830 = new BitSet(new long[]{0x0600000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred75_ObjCpp1832 = new BitSet(new long[]{0x0400000000000000L});
-    public static final BitSet FOLLOW_58_in_synpred75_ObjCpp1835 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_30_in_synpred76_ObjCpp1898 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred76_ObjCpp1902 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_30_in_synpred77_ObjCpp1924 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred77_ObjCpp1928 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_28_in_synpred78_ObjCpp1917 = new BitSet(new long[]{0x03F0000040000040L});
-    public static final BitSet FOLLOW_varStorage_in_synpred78_ObjCpp1921 = new BitSet(new long[]{0x0000000040000002L});
-    public static final BitSet FOLLOW_30_in_synpred78_ObjCpp1924 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred78_ObjCpp1928 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_structCore_in_synpred102_ObjCpp2448 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_functionSignatureSuffix_in_synpred104_ObjCpp2475 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_typeMutator_in_synpred105_ObjCpp2512 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_synpred134_ObjCpp2951 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_synpred134_ObjCpp2953 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_synpred155_ObjCpp3013 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred155_ObjCpp3107 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_30_in_synpred156_ObjCpp3116 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred156_ObjCpp3120 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_91_in_synpred157_ObjCpp3129 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_synpred157_ObjCpp3133 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_34_in_synpred160_ObjCpp3145 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_synpred160_ObjCpp3147 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
-    public static final BitSet FOLLOW_44_in_synpred160_ObjCpp3151 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_38_in_synpred160_ObjCpp3153 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
-    public static final BitSet FOLLOW_91_in_synpred160_ObjCpp3157 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
-    public static final BitSet FOLLOW_functionCall_in_synpred160_ObjCpp3162 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_92_in_synpred161_ObjCpp3171 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred161_ObjCpp3175 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_synpred161_ObjCpp3177 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred161_ObjCpp3181 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_statementsBlock_in_synpred163_ObjCpp3220 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_declaration_in_synpred164_ObjCpp3226 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_synpred166_ObjCpp3232 = new BitSet(new long[]{0x0000000060000000L});
-    public static final BitSet FOLLOW_30_in_synpred166_ObjCpp3235 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
-    public static final BitSet FOLLOW_expression_in_synpred166_ObjCpp3237 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_synpred166_ObjCpp3242 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_95_in_synpred168_ObjCpp3269 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
-    public static final BitSet FOLLOW_statement_in_synpred168_ObjCpp3271 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_statement_in_synpred172_ObjCpp3315 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CHARACTER_in_synpred183_ObjCpp3436 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CHARACTER_in_synpred185_ObjCpp3452 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primSignModifier_in_primitiveTypeRef2659 = new BitSet(new long[]{0xC000000000000080L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_primSizeModifier_in_primitiveTypeRef2672 = new BitSet(new long[]{0xC000000000000080L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_primSizeModifier_in_primitiveTypeRef2679 = new BitSet(new long[]{0xC000000000000080L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_primitiveTypeName_in_primitiveTypeRef2689 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primSignModifier_in_primitiveTypeRef2703 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_57_in_objCMethodCall2726 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_objCMethodCall2730 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodCall2734 = new BitSet(new long[]{0x0400000400000000L});
+    public static final BitSet FOLLOW_34_in_objCMethodCall2745 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_objCMethodCall2749 = new BitSet(new long[]{0x0400000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_objCMethodCall2764 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_objCMethodCall2766 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_objCMethodCall2770 = new BitSet(new long[]{0x0400000000000040L});
+    public static final BitSet FOLLOW_58_in_objCMethodCall2787 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_76_in_functionCall2807 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_functionCall2809 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_typeRef_in_functionCall2811 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_functionCall2813 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_functionCall2821 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_functionCall2823 = new BitSet(new long[]{0x0200001801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_functionCall2836 = new BitSet(new long[]{0x0000001010000000L});
+    public static final BitSet FOLLOW_28_in_functionCall2845 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_functionCall2854 = new BitSet(new long[]{0x0000001010000000L});
+    public static final BitSet FOLLOW_36_in_functionCall2872 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_expression2894 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_functionCall_in_expression2905 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_objCMethodCall_in_expression2914 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_set_in_expression2925 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression2935 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_35_in_expression2944 = new BitSet(new long[]{0xD231C00881000FF0L,0x0000000000007FFFL});
+    public static final BitSet FOLLOW_expression_in_expression2954 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_expression2956 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_typeRef_in_expression2966 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_expression2968 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression2972 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_constant_in_expression2987 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_24_in_expression2996 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression2998 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_expression3000 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_set_in_expression3016 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression3110 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_30_in_expression3119 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression3123 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_91_in_expression3132 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_expression3136 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_34_in_expression3148 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_expression3150 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
+    public static final BitSet FOLLOW_44_in_expression3154 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_38_in_expression3156 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
+    public static final BitSet FOLLOW_91_in_expression3160 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
+    public static final BitSet FOLLOW_functionCall_in_expression3165 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_92_in_expression3174 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression3178 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_expression3180 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_expression3184 = new BitSet(new long[]{0x01C0186440000002L,0x000000001FFF8000L});
+    public static final BitSet FOLLOW_24_in_statementsBlock3205 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statementsBlock3207 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_25_in_statementsBlock3210 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statementsBlock_in_statement3223 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_declaration_in_statement3229 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_statement3235 = new BitSet(new long[]{0x0000000060000000L});
+    public static final BitSet FOLLOW_30_in_statement3238 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3240 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_statement3245 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_93_in_statement3251 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3253 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_statement3255 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_94_in_statement3261 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_statement3263 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3265 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_statement3267 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3269 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
+    public static final BitSet FOLLOW_95_in_statement3272 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_96_in_statement3282 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_statement3284 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3286 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_statement3288 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3290 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_97_in_statement3296 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3298 = new BitSet(new long[]{0x0000000000000000L,0x0000000100000000L});
+    public static final BitSet FOLLOW_96_in_statement3300 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_statement3302 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3304 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_statement3306 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_statement3308 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_98_in_statement3314 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_statement3316 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3318 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_statement3321 = new BitSet(new long[]{0x0200000821000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3323 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_statement3326 = new BitSet(new long[]{0xDA31C01BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3328 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_statement3331 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3333 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_99_in_statement3339 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_statement3341 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3343 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_statement3345 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_statement3347 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000001F60007FFFL});
+    public static final BitSet FOLLOW_100_in_statement3353 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3355 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_statement3357 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000001F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3364 = new BitSet(new long[]{0xDA31C00BAF000FF0L,0x0000001F60007FFFL});
+    public static final BitSet FOLLOW_25_in_statement3373 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_29_in_statement3379 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_statement3385 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_statement3389 = new BitSet(new long[]{0xD031C000800000C0L,0x0000000000000FFFL});
+    public static final BitSet FOLLOW_varDecl_in_statement3391 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_statement3393 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_statement3395 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_statement3397 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_statement3399 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_constant3415 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_HEXADECIMAL_NUMBER_in_constant3423 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_OCTAL_NUMBER_in_constant3431 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CHARACTER_in_constant3439 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_NUMBER_in_constant3447 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_constant3458 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_functionDeclaration_in_synpred7_ObjCpp258 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varDecl_in_synpred8_ObjCpp268 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_enumDecl_in_synpred12_ObjCpp308 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_structDef_in_synpred13_ObjCpp318 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varDecl_in_synpred33_ObjCpp912 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_varStoragesWithInit_in_synpred45_ObjCpp1220 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exportationModifiers_in_synpred48_ObjCpp1276 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeRef_in_synpred54_ObjCpp1398 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exportationModifier_in_synpred61_ObjCpp1587 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_synpred69_ObjCpp1772 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_54_in_synpred70_ObjCpp1788 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_55_in_synpred71_ObjCpp1798 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_56_in_synpred72_ObjCpp1808 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_synpred73_ObjCpp1820 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_57_in_synpred75_ObjCpp1833 = new BitSet(new long[]{0x0600000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred75_ObjCpp1835 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_58_in_synpred75_ObjCpp1838 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_30_in_synpred76_ObjCpp1901 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred76_ObjCpp1905 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_30_in_synpred77_ObjCpp1927 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred77_ObjCpp1931 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_28_in_synpred78_ObjCpp1920 = new BitSet(new long[]{0x03F0000040000040L});
+    public static final BitSet FOLLOW_varStorage_in_synpred78_ObjCpp1924 = new BitSet(new long[]{0x0000000040000002L});
+    public static final BitSet FOLLOW_30_in_synpred78_ObjCpp1927 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred78_ObjCpp1931 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_structCore_in_synpred102_ObjCpp2451 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_functionSignatureSuffix_in_synpred104_ObjCpp2478 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_typeMutator_in_synpred105_ObjCpp2515 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_synpred134_ObjCpp2954 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_synpred134_ObjCpp2956 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_synpred155_ObjCpp3016 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred155_ObjCpp3110 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_30_in_synpred156_ObjCpp3119 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred156_ObjCpp3123 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_91_in_synpred157_ObjCpp3132 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_synpred157_ObjCpp3136 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_34_in_synpred160_ObjCpp3148 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_synpred160_ObjCpp3150 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
+    public static final BitSet FOLLOW_44_in_synpred160_ObjCpp3154 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_38_in_synpred160_ObjCpp3156 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
+    public static final BitSet FOLLOW_91_in_synpred160_ObjCpp3160 = new BitSet(new long[]{0x0000000000000040L,0x0000000000001000L});
+    public static final BitSet FOLLOW_functionCall_in_synpred160_ObjCpp3165 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_92_in_synpred161_ObjCpp3174 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred161_ObjCpp3178 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_synpred161_ObjCpp3180 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred161_ObjCpp3184 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statementsBlock_in_synpred163_ObjCpp3223 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_declaration_in_synpred164_ObjCpp3229 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_synpred166_ObjCpp3235 = new BitSet(new long[]{0x0000000060000000L});
+    public static final BitSet FOLLOW_30_in_synpred166_ObjCpp3238 = new BitSet(new long[]{0x0200000801000F70L,0x0000000000007000L});
+    public static final BitSet FOLLOW_expression_in_synpred166_ObjCpp3240 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_synpred166_ObjCpp3245 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_95_in_synpred168_ObjCpp3272 = new BitSet(new long[]{0xDA31C00BAD000FF0L,0x0000000F60007FFFL});
+    public static final BitSet FOLLOW_statement_in_synpred168_ObjCpp3274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statement_in_synpred172_ObjCpp3318 = new BitSet(new long[]{0x0000000000000002L});
 
 }
