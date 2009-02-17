@@ -55,10 +55,12 @@ public class PreprocessorUtils {
 			preProcessor.addInput(file);
 		
 		for (String content : config.preprocessorConfig.includeStrings)
-			preProcessor.addInput(new StringLexerSource(content));
+			preProcessor.addInput(new StringLexerSource(content, true));
 		
 		String sourceContent = ReadText.readText(new CppReader(preProcessor));
+		preProcessor.close();
 		
+		Map<String, Macro> macros = preProcessor.getMacros();
 		if (config.preprocessorConfig.WORKAROUND_PP_BUGS) {
 			//WriteText.writeText(sourceContent, new File("_jnaerator_debug.raw.c"));
 			
@@ -79,12 +81,15 @@ public class PreprocessorUtils {
 			//WriteText.writeText(sourceContent, cleanedFile);
 			
 			Preprocessor preProcessor2 = PreprocessorUtils.createPreProcessor(new JNAeratorConfig.PreprocessorConfig());
-			preProcessor2.getMacros().putAll(preProcessor.getMacros());
+			preProcessor2.getMacros().putAll(macros);
 			//File temp = File.createTempFile("temp", ".h");
 			
 			//preProcessor2.addInput(new FileLexerSource(cleanedFile));
-			preProcessor2.addInput(new StringLexerSource(sourceContent));
+			preProcessor2.addInput(new StringLexerSource(sourceContent, true));
 			sourceContent = ReadText.readText(new CppReader(preProcessor2));
+			preProcessor2.close();
+			
+			macros = preProcessor2.getMacros();
 			sourceContent = "\n" + sourceContent;
 			sourceContent = sourceContent.replaceAll("(?s)\n#line.*?\n", "\n");
 			sourceContent = sourceContent.replaceAll("(?s)\n//##line", "\n#line").trim();
@@ -93,7 +98,11 @@ public class PreprocessorUtils {
 			WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
 		}
 		
-		PreprocessorUtils.addDefines(preProcessor, defines);
+		for (String k : config.preprocessorConfig.macros.keySet())
+			macros.remove(k);
+		
+		//PreprocessorUtils.addDefines(preProcessor, defines);
+		PreprocessorUtils.addDefines(macros, defines);
 		
 		return sourceContent;
 	}
@@ -227,8 +236,10 @@ public class PreprocessorUtils {
 		return s;
 	}
 
-	static void addDefines(Preprocessor preProcessor, List<Define> defines) {
-		for (Map.Entry<String, Macro> e : preProcessor.getMacros().entrySet()) {
+	//static void addDefines(Preprocessor preProcessor, List<Define> defines) {
+	//	for (Map.Entry<String, Macro> e : preProcessor.getMacros().entrySet()) {
+	static void addDefines(Map<String, Macro> macros, List<Define> defines) {
+		for (Map.Entry<String, Macro> e : macros.entrySet()) {
 			Macro macro = e.getValue();
 			if (macro.getText() == null)
 				continue;
@@ -236,8 +247,8 @@ public class PreprocessorUtils {
 			if (macro.isFunctionLike() && macro.getArgs() > 0)
 				continue;
 			
-			if (macro.getFile() == null)
-				continue;
+			//if (macro.getFile() == null)
+			//	continue;
 			
 			try {
 				Expression expression = JNAerator.newObjCppParser(macro.getText()).expression().expr;
@@ -248,7 +259,7 @@ public class PreprocessorUtils {
 				define.setElementFile(macro.getFile());
 				defines.add(define);
 			} catch (Exception ex) {
-				
+				ex.printStackTrace();
 			}
 		}
 	}

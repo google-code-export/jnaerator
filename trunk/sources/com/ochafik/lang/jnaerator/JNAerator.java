@@ -82,6 +82,7 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
+import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
 import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
@@ -111,7 +112,8 @@ public class JNAerator {
 	
 	static final Class<?>[] includeClassesHack = new Class<?>[] {
 		ObjCppParsingTests.class,
-		ObjCppElementsTests.class
+		ObjCppElementsTests.class,
+		JNAeratorStudio.class
 	};
 
 	public JNAerator(JNAeratorConfig config) {
@@ -178,16 +180,17 @@ public class JNAerator {
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
 //						"/Users/ochafik/Prog/Java/testxp/test.h",
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
-						"-framework", "Foundation", 
+//						"-framework", "Foundation", 
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
-						"-framework", "CoreFoundation",
-						"-framework", "CoreGraphics", 
-						"-framework", "CarbonCore", 
+//						"-framework", "CoreFoundation",
+//						"-framework", "CoreGraphics", 
+//						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
-						"-o", "/Users/ochafik/Prog/Java/test/objc",
+//						"-o", "/Users/ochafik/Prog/Java/test/objc",
 //						"-o", "/Users/ochafik/Prog/Java/testxp",
-//						"/Users/ochafik/Prog/Java/test/Test.h",
-//						"-o", "/Users/ochafik/Prog/Java",
+						"/Users/ochafik/Prog/Java/test/Test.h",
+//						"/Users/ochafik/Prog/Java/test/JNATest.h",
+						"-o", "/Users/ochafik/Prog/Java",
 						"-v"
 				};
 			} else {
@@ -331,9 +334,11 @@ public class JNAerator {
 			String javaPackage = result.javaPackageByLibrary.get(library);
 			String libraryClassName = result.getLibraryClassSimpleName(library);
 			
-			final PrintWriter out = getClassSourceWriter(javaPackage + "." + libraryClassName);
+			final PrintWriter out = getClassSourceWriter((javaPackage == null ? "" : javaPackage + ".") + libraryClassName);
 			
-			out.println("package " + javaPackage + ";");
+			if (javaPackage != null)
+				out.println("package " + javaPackage + ";");
+			
 			for (String pn : result.javaPackages) {
 				if (pn.equals(""))
 					continue;
@@ -1097,7 +1102,7 @@ public class JNAerator {
 			@Override
 			public void visitFunctionSignature(FunctionSignature functionSignature) {
 				super.visitFunctionSignature(functionSignature);
-				
+				/*
 				String name = functionSignature.getFunction().getName();
 				//if (name !)
 				String ownerName = guessOwnerName(functionSignature);
@@ -1132,7 +1137,7 @@ public class JNAerator {
 					functionSignature.replaceBy(typeRef);
 //					separateTypeDef.accept(definitions);
 					super.visitFunctionSignature(functionSignature);
-				}
+				}*/
 				//
 			}
 			@Override
@@ -1203,6 +1208,14 @@ public class JNAerator {
 		
 		if (config.verbose)
 			originalOut.println("Generating libraries");
+		
+		if (result.libraries.size() == 1) {
+			List<Define> list = result.definesByLibrary.get(null);
+			if (list != null) {
+				String lib = result.libraries.iterator().next();
+				Result.getList(result.definesByLibrary, lib).addAll(list);
+			}
+		}
 		generateLibraryFiles(result);
 
 		//if (config.verbose)
