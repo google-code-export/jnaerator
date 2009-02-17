@@ -38,6 +38,7 @@ class ElementNode extends AbstractNode {
 	}
 	final Element element;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void buildChildren() {
 		if (children != null)

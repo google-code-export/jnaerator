@@ -203,7 +203,7 @@ public class JNAerator {
 			
 			List<String> frameworks = new ArrayList<String>();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
-			boolean autoconf = false;
+			//boolean autoconf = false;
 			for (int iArg = 0, len = args.length; iArg < len; iArg++) {
 				String arg = args[iArg];
 				if (arg.startsWith("-I")) {
@@ -451,6 +451,7 @@ public class JNAerator {
 		
 	}
 
+	@SuppressWarnings("static-access")
 	private void outputConstant(String name, Expression x, Result result, PrintWriter out, Set<String> signatures, Element element, String elementTypeDescription, String indent) throws UnsupportedTypeConversion {
 		//out.println();
 		//String comments = element.formatComments(indent, true);
@@ -831,7 +832,7 @@ public class JNAerator {
 		Function convertedNat = new Function();
 		convertedNat.setType(Function.Type.JavaMethod);
 		try {
-			StringBuilder outPrefix = new StringBuilder();
+			//StringBuilder outPrefix = new StringBuilder();
 			TypeRef returnType = null;
 			
 			boolean isObjectiveC = function.getType() == Type.ObjCMethod;

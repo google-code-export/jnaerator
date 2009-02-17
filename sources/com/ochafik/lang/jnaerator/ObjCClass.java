@@ -18,25 +18,18 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import static com.ochafik.util.string.StringUtils.*;
-import static com.ochafik.lang.SyntaxUtils.*;
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.PrintScanner;
-import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
@@ -47,7 +40,6 @@ import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.util.CompoundCollection;
-import com.ochafik.util.string.StringUtils;
 
 class ObjCClass {
 	/**

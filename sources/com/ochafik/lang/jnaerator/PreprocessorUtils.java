@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.anarres.cpp.CppReader;
@@ -44,7 +43,6 @@ import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
-import com.ochafik.util.string.StringUtils;
 
 public class PreprocessorUtils {
 	

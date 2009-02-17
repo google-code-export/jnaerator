@@ -25,9 +25,7 @@ import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Visitor;
-import com.ochafik.util.string.StringUtils;
 
-@SuppressWarnings("serial")
 public class SourceFiles extends Element {
 	public List<Define> defines = new ArrayList<Define>();
 	public List<SourceFile> sourceFiles = new ArrayList<SourceFile>();

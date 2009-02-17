@@ -38,7 +38,6 @@ import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
 import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
-import com.ochafik.util.string.StringUtils;
 
 public class JNAeratorConfigUtils {
 

@@ -18,18 +18,14 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-import static org.junit.Assert.assertNull;
 import static com.ochafik.util.string.StringUtils.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -41,10 +37,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
-import com.ochafik.io.FileUtils;
 import com.ochafik.lang.reflect.GettersAndSettersHelper;
 import com.ochafik.lang.reflect.GettersAndSettersHelper.GetterAndSetterInfo;
-import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 
@@ -62,7 +56,7 @@ public abstract class Element {
 	}
 	
 	protected <T> List<T> unmodifiableList(List<T> list) {
-		return new SemiUnmodifiableList(list);
+		return new SemiUnmodifiableList<T>(list);
 	}
 
 	public static String getFileOfAscendency(Element decl) {
@@ -220,6 +214,7 @@ public abstract class Element {
 		
 		return helper;
 	}
+	@SuppressWarnings("unchecked")
 	public static <T extends Element> List<T> deepClone(List<T> list) {
 		List<T> clone = new ArrayList<T>(list.size());
 		for (T e : list)
@@ -337,6 +332,7 @@ public abstract class Element {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T extends Element> boolean replaceChild(List<T> list, Class<T> type, Element parent, Element child, Element by) {
 		int i = list.indexOf(child);
 		if (i >= 0) {
@@ -408,6 +404,7 @@ public abstract class Element {
 		
 		return parent.insertChild(this, siblingToInsert, before);
 	}
+	@SuppressWarnings("unchecked")
 	public boolean insertChild(Element existingChild, Element childToInsert, boolean before) {
 		if (elementListGettersAndSetters == null) {
 			elementListGettersAndSetters = new ArrayList<GetterAndSetterInfo>();

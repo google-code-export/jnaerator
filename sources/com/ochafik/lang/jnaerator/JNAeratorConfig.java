@@ -22,16 +22,13 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
-import com.ochafik.util.listenable.AdaptedCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
 

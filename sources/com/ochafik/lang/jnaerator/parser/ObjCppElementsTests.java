@@ -148,6 +148,7 @@ public class ObjCppElementsTests {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void testSetNewInstanceOf(Class<?> fieldTypeImplClass,
 			Element element, String fieldName, Method setter, Method getter, Collection<Element> container) {
 		

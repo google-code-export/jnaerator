@@ -37,6 +37,7 @@ abstract class AbstractNode implements TreeNode {
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Enumeration children() {
 		buildChildren();

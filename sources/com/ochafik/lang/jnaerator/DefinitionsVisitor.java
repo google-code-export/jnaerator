@@ -32,7 +32,6 @@ import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
-import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.VariableStorage;

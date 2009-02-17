@@ -18,8 +18,6 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
-
 /// TODO implement me better !
 public class Annotation extends Element {
 
