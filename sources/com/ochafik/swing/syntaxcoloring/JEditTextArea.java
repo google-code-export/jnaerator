@@ -41,6 +41,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
@@ -1958,7 +1959,7 @@ public class JEditTextArea extends JComponent
 
 		public void changedUpdate(DocumentEvent evt)
 		{
-			com.ochafik.swing.JDialogs.alert(null,evt.getType()+"");
+			JOptionPane.showMessageDialog(null, evt.getType()+ "");
 		}
 	}
 
