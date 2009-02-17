@@ -9,7 +9,7 @@ JNAerator ships with the following libraries :
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : slightly patched
  * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license, Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others) : unmodified
  * [http://www.antlr.org/ ANTLR's runtime] (BSD license, Copyright (c) 2003-2008, Terence Parr) : unmodified
- * jEdit 2.2.1 syntax highlighting package, [http://www.arachnoid.com/arachnophilia/Documentation/README.txt released to the public domain by Slava Pestov]
+ * [http://jedit.org/ jEdit] 2.2.1 syntax highlighting package, [http://www.arachnoid.com/arachnophilia/Documentation/README.txt released to the public domain by Slava Pestov]
  * [http://jalico.googlecode.com/ JaLiCo], also written by Olivier Chafik (Apache 2.0 license).
 
 Please read the following sections for licensing details related to the aforementioned libraries.
@@ -18,9 +18,13 @@ Note that in accordance with the LGPL library, you should be able to use another
 
 = Anarres JCPP =
 
+Copyright (c) 2007-2008, Shevek
+
 [http://www.anarres.org/projects/jcpp/ Anarres JCPP] is a Java C PreProcessor licensed under the [https://svn.anarres.org/svn/repos/code/java/cpp/trunk/LICENSE Apache 2.0 license]
 
 = JNA =
+
+Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others
 
 The [http://jna.dev.java.net/ Java Native Access (JNA)] library is distributed under the terms of the [http://www.gnu.org/copyleft/lesser.html LGPL license].
 
