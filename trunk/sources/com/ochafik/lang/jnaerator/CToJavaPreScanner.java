@@ -25,7 +25,6 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariableStorage;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
-import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 
 public class CToJavaPreScanner extends Scanner {
 	@Override

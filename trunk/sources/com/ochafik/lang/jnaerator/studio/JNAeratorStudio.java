@@ -21,14 +21,11 @@ package com.ochafik.lang.jnaerator.studio;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
@@ -36,22 +33,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.Box;
-import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -61,39 +52,30 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-
-import org.anarres.cpp.LexerException;
-import org.antlr.runtime.RecognitionException;
 
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
-import com.ochafik.io.TextAreaOutputStream;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
-import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
 import com.ochafik.swing.syntaxcoloring.JavaTokenMarker;
-import com.ochafik.swing.syntaxcoloring.SyntaxUtilities;
 import com.ochafik.swing.syntaxcoloring.TokenMarker;
-import com.ochafik.swing.tree.DefaultTreeNode;
 import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.ListenableCollections;
 import com.ochafik.util.listenable.ListenableComboModel;
 import com.ochafik.util.listenable.ListenableList;
-import com.ochafik.util.listenable.ListenableListModel;
 
 /// https://jna.dev.java.net/servlets/ReadMsg?list=users&msgNo=1988
+@SuppressWarnings("serial")
 public class JNAeratorStudio extends JPanel {
+	private static final long serialVersionUID = -6061806156049213635L;
 	JEditTextArea sourceArea = textArea(new JavaTokenMarker());
 	JEditTextArea resultArea = textArea(new CCTokenMarker());
 	JTextField libraryName = new JTextField("test");
@@ -138,6 +120,7 @@ public class JNAeratorStudio extends JPanel {
 	}
 	static JEditTextArea textArea(TokenMarker marker) {
 		JEditTextArea ta = new JEditTextArea() {
+			private static final long serialVersionUID = 1L;
 			@Override
 			public void processKeyEvent(KeyEvent evt) {
 				if (SystemUtils.isMacOSX()) {
@@ -157,8 +140,6 @@ public class JNAeratorStudio extends JPanel {
 			}
 		};
 		ta.setFocusTraversalKeysEnabled(false);
-		ActionMap actionMap2 = ta.getActionMap();
-		InputMap inputMap = ta.getInputMap();
 		
 //		
 //		for (KeyStroke ks : inputMap.keys()) {
@@ -212,6 +193,11 @@ public class JNAeratorStudio extends JPanel {
 			}
 		},
 		aboutJNAAction = new AbstractAction("About JNA") {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {

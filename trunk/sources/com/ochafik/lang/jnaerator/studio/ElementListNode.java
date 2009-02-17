@@ -20,8 +20,6 @@ package com.ochafik.lang.jnaerator.studio;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
 import javax.swing.tree.TreeNode;
 
 import com.ochafik.lang.jnaerator.parser.Element;

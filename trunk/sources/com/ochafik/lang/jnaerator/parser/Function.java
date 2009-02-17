@@ -19,7 +19,6 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
