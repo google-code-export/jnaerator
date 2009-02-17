@@ -170,7 +170,11 @@ public class JNAeratorStudio extends JPanel {
 		switchOrientationAction = new AbstractAction("Switch Orientation") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				sp.setOrientation(sp.getOrientation() == JSplitPane.HORIZONTAL_SPLIT ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
+				boolean hor = sp.getOrientation() == JSplitPane.HORIZONTAL_SPLIT;
+				int l = sp.getDividerLocation(), d = hor ? sp.getWidth() : sp.getHeight();
+				sp.setOrientation(hor ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
+				if (d != 0)
+					sp.setDividerLocation(l / (double)d);
 			}
 		},
 		generateAction = new AbstractAction("JNAerate !") {
@@ -332,7 +336,7 @@ public class JNAeratorStudio extends JPanel {
 						System.setOut(out);
 						System.setErr(err);
 						
-						setTabTitle(resultTabs, errorsPane, "Errors (" + errorsArea.getLineCount() + ")");
+						setTabTitle(resultTabs, errorsPane, "Errors (" + (errorsArea.getLineCount() - 1) + ")");
 					}});
 					
 				}
@@ -346,7 +350,8 @@ public class JNAeratorStudio extends JPanel {
 	}
 	private static void setTabTitle(JTabbedPane tabs, Component c, String string) {
 		for (int i = tabs.getTabCount(); i-- != 0;) {
-			if (tabs.getTabComponentAt(i) == c) {
+			Component tc = tabs.getComponent(i);//tabs.getTabComponentAt(i); 
+			if (tc == c) {
 				tabs.setTitleAt(i, string);
 				return;
 			}

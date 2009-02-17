@@ -93,7 +93,10 @@ class ElementNode extends AbstractNode {
 		if (s == null) {
 			if (element instanceof Declaration) {
 				s = ((Declaration)element).getName();
-				s += " (" + element.getClass().getSimpleName() + ")";
+				if (s == null)
+					s = element.getClass().getSimpleName();
+				else
+					s += " (" + element.getClass().getSimpleName() + ")";
 			} else
 				s = element.getClass().getSimpleName();
 		} else
