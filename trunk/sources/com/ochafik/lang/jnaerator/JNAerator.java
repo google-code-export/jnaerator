@@ -235,6 +235,15 @@ public class JNAerator {
 						System.exit(1);
 					}
 				}
+				else if (arg.equals("-studio")) {
+					try {
+						JNAeratorStudio.main(new String[0]);
+						return;
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						System.exit(1);
+					}
+				}
 				else if (arg.equals("-project")) {
 					File projectFile = new File(args[++iArg]);
 					String configName = null;
