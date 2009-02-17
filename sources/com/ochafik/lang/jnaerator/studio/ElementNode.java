@@ -68,7 +68,9 @@ class ElementNode extends AbstractNode {
 						if (pt.getActualTypeArguments().length == 1) {
 							Type ptt = pt.getActualTypeArguments()[0];
 							if (ptt instanceof Class && Element.class.isAssignableFrom((Class<?>)ptt)) {
-								children.add(new ElementListNode(this, fieldName, (Collection<Element>)beanValue));
+								Collection<Element> list = (Collection<Element>)beanValue;
+								if (!list.isEmpty())
+									children.add(new ElementListNode(this, fieldName, list));
 							}
 						}
 					}

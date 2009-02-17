@@ -88,23 +88,15 @@ public abstract class Declaration extends Element {
 		return extMods.get(name);
 	}
 	public static Modifier getModifier(String name) {
+		//Modifier m = Modifier.valueOf(name);
+		//if (m == null)
 		return mods.get(name);
 	}
 	static Map<String, Modifier> mods = new HashMap<String, Modifier>();
 	static Map<String, Modifier> extMods = new HashMap<String, Modifier>();
 	static {
-		//extMods.put("align", Modifier.Align);
-//		extMods.put("allocate", Modifier.Allocate);
-		mods.put("__cdecl", Modifier.__cdecl); 
-		mods.put("public", Modifier.Public);
-		mods.put("private", Modifier.Private);
-		mods.put("protected", Modifier.Protected);
-		mods.put("const", Modifier.Const);
-		mods.put("extern", Modifier.Extern);
-		mods.put("static", Modifier.Static);
-		mods.put("volatile", Modifier.Volatile);
-		mods.put("inline", Modifier.Inline);
-		mods.put("__inline__", Modifier.Inline);
+		for (Modifier m : Modifier.values())
+			mods.put(m.toString(), m);
 		
 		extMods.put("appdomain", Modifier.AppDomain);
 		extMods.put("deprecated", Modifier.Deprecated);

@@ -36,22 +36,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
+import javax.swing.Box;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -89,6 +96,7 @@ import com.ochafik.util.listenable.ListenableListModel;
 public class JNAeratorStudio extends JPanel {
 	JEditTextArea sourceArea = textArea(new JavaTokenMarker());
 	JEditTextArea resultArea = textArea(new CCTokenMarker());
+	JTextField libraryName = new JTextField("test");
 //	JList resultsList = new JList();
 	JComboBox resultsListCombo = new JComboBox();
 	JTextArea errorsArea = new JTextArea();
@@ -112,12 +120,22 @@ public class JNAeratorStudio extends JPanel {
 					line = ta.getLineCount() - 1;
 				
 				ta.setFirstLine(line);
-			} 
-			//ta.scrollRectToVisible(rect);
+			}
 		}
 		
 	};
 	
+	public File getFile() {
+		File dir = new File(System.getProperty("user.home"));
+		dir = new File(dir, ".jnaeratorStudio");
+		dir = new File(dir, "pad");
+		if (!dir.exists())
+			dir.mkdirs();
+		return new File(dir, "input.h");
+	}
+	void save() throws IOException {
+		WriteText.writeText(sourceArea.getText(), getFile());
+	}
 	static JEditTextArea textArea(TokenMarker marker) {
 		JEditTextArea ta = new JEditTextArea() {
 			@Override
@@ -132,6 +150,10 @@ public class JNAeratorStudio extends JPanel {
 					}
 				}
 				super.processKeyEvent(evt);
+			}
+			@Override
+			public Dimension getMinimumSize() {
+				return new Dimension(100, 100);
 			}
 		};
 		ta.setFocusTraversalKeysEnabled(false);
@@ -153,11 +175,11 @@ public class JNAeratorStudio extends JPanel {
 		ta.setTokenMarker(marker);
 		return ta;
 	}
-	static final File FILE = new File(".jnaeratorStudio.cpp");
+	//static final File FILE = new File(".jnaeratorStudio.cpp");
 	
 	public void close() {
 		try {
-			WriteText.writeText(sourceArea.getText(), FILE);
+			save();
 		} catch (Exception ex) {}
 	}
 	JTabbedPane sourceTabs = new JTabbedPane(JTabbedPane.TOP), resultTabs = new JTabbedPane(JTabbedPane.TOP);
@@ -175,6 +197,32 @@ public class JNAeratorStudio extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				generate();
 			}
+		},
+		aboutJNAeratorAction = new AbstractAction("About JNAerator") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					URL url = new URL("http://code.google.com/p/jnaerator/wiki/CreditsAndLicense");
+					System.out.println("About JNAerator: " + url);
+					SystemUtils.runSystemOpenURL(url);
+				} catch (Exception ex) {
+					
+					displayError(ex);
+				}
+			}
+		},
+		aboutJNAAction = new AbstractAction("About JNA") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					URL url = new URL("http://jna.dev.java.net/");
+					System.out.println("About JNA: " + url);
+					SystemUtils.runSystemOpenURL(url);
+				} catch (Exception ex) {
+					
+					displayError(ex);
+				}
+			}
 		}
 	;
 	
@@ -186,19 +234,26 @@ public class JNAeratorStudio extends JPanel {
 		JToolBar tb = new JToolBar();
 		tb.add(generateAction);
 		tb.add(switchOrientationAction);
+		tb.add(aboutJNAeratorAction);
+		tb.add(aboutJNAAction);
 		//tb.setOrientation(JToolBar.VERTICAL);
 		add("North", tb);
 		
 		JComponent sourcePane = new JPanel(new BorderLayout()), resultPane = new JPanel(new BorderLayout());
+		Box libBox = Box.createHorizontalBox();
+		libBox.add(new JLabel("Library Name :", JLabel.RIGHT));
+		libBox.add(libraryName);
+		sourcePane.add("North", libBox);//raryName);
 		sourcePane.add("Center", sourceArea);
-		//sourcePane.add("South", actButton);
 		sourceTabs.addTab("Source", sourcePane);
 		
 		
 		resultPane.add("North", resultsListCombo);
 		resultPane.add("Center", resultArea);
-		sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, sourceTabs, resultTabs);
+		sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sourceTabs, resultTabs);
 		sp.setOneTouchExpandable(true);
+		sp.setResizeWeight(0.5);
+		sp.setDividerLocation(0.5);
 		
 		errorsPane.add("Center", new JScrollPane(errorsArea));
 		
@@ -214,13 +269,19 @@ public class JNAeratorStudio extends JPanel {
 		}});
 		
 		try {
-			sourceArea.setText(ReadText.readText(FILE));
+			sourceArea.setText(ReadText.readText(getFile()));
 			sourceArea.scrollTo(0, 0);
 		} catch (Exception ex) {}
 	}
 	
 	protected void generate() {
 
+		try {
+			save();
+		} catch (IOException e1) {
+			displayError(e1);
+			return;
+		}
 		JNAeratorStudio.this.setEnabled(false);
 		errorsArea.setText("");
 		results.clear();
@@ -238,7 +299,8 @@ public class JNAeratorStudio extends JPanel {
 				try {
 					
 					JNAeratorConfig config = new JNAeratorConfig();
-					config.defaultLibrary = "studio";
+					config.defaultLibrary = libraryName.getText();
+//					config.addFile(getFile(), "");
 					config.preprocessorConfig.includeStrings.add(sourceArea.getText());
 					final JNAerator jnaerator = new JNAerator(config) {
 						@Override
@@ -293,6 +355,9 @@ public class JNAeratorStudio extends JPanel {
 	}
 
 
+	private void displayError(Exception e) {
+		JOptionPane.showMessageDialog(this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+	}
 	private static void setTabTitle(JTabbedPane tabs, Component c, String string) {
 		for (int i = tabs.getTabCount(); i-- != 0;) {
 			if (tabs.getTabComponentAt(i) == c) {
@@ -304,9 +369,15 @@ public class JNAeratorStudio extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		JFrame f = new JFrame(JNAeratorStudio.class.getSimpleName());
+		String ver = "";
+		try {
+			ver = " " + ReadText.readText(JNAeratorStudio.class.getClassLoader().getResourceAsStream("VERSION"));
+		} catch (Exception ex) {}
+		
+		JFrame f = new JFrame(JNAeratorStudio.class.getSimpleName() + ver);
 		final JNAeratorStudio js = new JNAeratorStudio();
 		f.getContentPane().add("Center", js);
+		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setSize(800, 800);
 		f.setVisible(true);
