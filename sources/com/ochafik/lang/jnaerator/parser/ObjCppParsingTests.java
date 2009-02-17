@@ -41,6 +41,9 @@ import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
 import com.ochafik.lang.grammar.DummyDebugEventListener;
 
+/*
+include com/ochafik/lang/jnaerator/parser/ObjCppTest.mm
+ */
 @SuppressWarnings("unused")
 @RunWith(ParameterizedWithDescription.class)
 //@RunWith(Parameterized.class)

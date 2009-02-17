@@ -49,6 +49,7 @@ import org.anarres.cpp.LexerException;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.junit.runner.JUnitCore;
 
 import com.ochafik.io.WriteText;
 import static com.ochafik.lang.SyntaxUtils.*;
@@ -67,6 +68,7 @@ import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
 import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
 import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
+import com.ochafik.lang.jnaerator.parser.ObjCppTests;
 import com.ochafik.lang.jnaerator.parser.PrintScanner;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
@@ -97,8 +99,8 @@ import com.sun.jna.Structure;
 import com.sun.jna.Union;
 
 /*
-include com/ochafik/lang/grammar/objcpp/*.mm
-include com/ochafik/lang/grammar/objcpp/ObjCpp.g
+//include com/ochafik/lang/jnaerator/parser/*.mm
+//include com/ochafik/lang/jnaerator/parser/ObjCpp.g
  */
 
 public class JNAerator {
@@ -224,6 +226,15 @@ public class JNAerator {
 					config.verbose = true;
 				else if (arg.equals("-package"))
 					config.packageName = args[++iArg];
+				else if (arg.equals("-test")) {
+					try {
+						JUnitCore.main(ObjCppTests.class.getName());
+						System.exit(0);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						System.exit(1);
+					}
+				}
 				else if (arg.equals("-project")) {
 					File projectFile = new File(args[++iArg]);
 					String configName = null;
