@@ -55,7 +55,9 @@ All of these variables may be overridden by setting the environment variable ({{
    * Mac OS X : {{{ /Developer/SDKs/MacOSX10.4u.sdk/usr/include:. }}}
    * Current dir on any other platform
 
- * JNAERATOR_FRAMEWORKS_PATH is only set on Mac OS X : {{{ /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks:
+ * JNAERATOR_FRAMEWORKS_PATH is only set on Mac OS X : 
+   {{{ /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks:
 /System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks:
 /System/Library/Frameworks:/Library/Frameworks:
-~/Library/Frameworks }}}
+~/Library/Frameworks 
+   }}}
