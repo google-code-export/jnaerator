@@ -8,13 +8,13 @@ cd trunk
 }}}
 
 Run the compilation script :
-* On Windows :
+ * On Windows :
   {{{ script/compile }}}
-* On Mac OS X, Linux and other Unices :
+ * On Mac OS X, Linux and other Unices :
   {{{ sh scripts/compile }}}
 
 That should be it, you'll be able to run JNAerator with the following command :
-* On Windows :
+ * On Windows :
   {{{ java -cp libraries\anarres-cpp.jar;libraries\antlr-runtime-3.1.jar;libraries\jna.jar;libraries\junit-4.4.jar;classes com.ochafik.lang.jnaerator.JNAerator.java }}}
-* On Mac OS X, Linux and other Unices :
+ * On Mac OS X, Linux and other Unices :
   {{{ java -cp ..\libraries\anarres-cpp.jar | tr "\n" ":"`:classes com.ochafik.lang.jnaerator.JNAerator.java }}}
