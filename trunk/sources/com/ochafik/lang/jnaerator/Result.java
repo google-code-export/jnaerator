@@ -225,8 +225,22 @@ public class Result extends Scanner {
 	public void visitFunction(Function function) {
 		super.visitFunction(function);
 		Element parent = function.getParentElement();
-		if (parent != null && parent instanceof FunctionSignature)
-			return;
+		if (parent != null) {
+			if (parent instanceof FunctionSignature)
+				return;
+			if (parent instanceof Struct) {
+				Struct parentStruct = (Struct)parent;
+				switch (parentStruct.getType()) {
+					case CPPClass:
+					case JavaClass:
+					case JavaInterface:
+					case ObjCClass:
+					case ObjCProtocol:
+					case CStruct:
+						return;
+				}
+			}
+		}
 		
 		getList(functionsByLibrary, getLibrary(function)).add(function);
 	}
