@@ -1,4 +1,4 @@
-#summary Instructions on how to compile JNAerator
+#summary Instructions on how to compile and JNAerator from sources
 
 Checkout the latest sources (you'll need SVN installed) : 
 {{{ 
