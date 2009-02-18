@@ -976,6 +976,7 @@ public class JNAerator {
 				out.println(indent + struct.formatComments(indent, true, getFileCommentContent(struct)));
 				out.println("\tpublic static class " + struct.getName() + " extends " + baseClass + "\n\t{");
 				out.println("\t\tpublic static class " + "ByReference extends " + struct.getName() + " implements " + Structure.class.getName() + ".ByReference {}");
+				out.println("\t\tpublic static class " + "ByValue extends " + struct.getName() + " implements " + Structure.class.getName() + ".ByValue {}");
 				//out.println("\t\t");
 				final int iChild[] = new int[] {0};
 				
