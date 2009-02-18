@@ -38,6 +38,7 @@ import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -58,7 +59,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import com.ochafik.io.FileSizeUtils;
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
@@ -81,6 +81,7 @@ public class JNAeratorStudio extends JPanel {
 	JEditTextArea sourceArea = textArea(new JavaTokenMarker());
 	JEditTextArea resultArea = textArea(new CCTokenMarker());
 	JTextField libraryName = new JTextField("test");
+	JLabel classCountLabel = new JLabel("JNAerated class :");
 //	JList resultsList = new JList();
 	JComboBox resultsListCombo = new JComboBox();
 	JTextArea errorsArea = new JTextArea();
@@ -141,6 +142,7 @@ public class JNAeratorStudio extends JPanel {
 				return new Dimension(100, 100);
 			}
 		};
+		ta.setBorder(BorderFactory.createLoweredBevelBorder());
 		ta.setFocusTraversalKeysEnabled(false);
 		
 //		
@@ -168,15 +170,19 @@ public class JNAeratorStudio extends JPanel {
 	JTabbedPane sourceTabs = new JTabbedPane(JTabbedPane.TOP), resultTabs = new JTabbedPane(JTabbedPane.TOP);
 	//JButton actButton = new JButton("JNAerate !");
 	
+	void switchOrientation() {
+		boolean hor = sp.getOrientation() == JSplitPane.HORIZONTAL_SPLIT;
+		int l = sp.getDividerLocation(), d = hor ? sp.getWidth() : sp.getHeight();
+		sp.setOrientation(hor ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
+		if (d != 0)
+			sp.setDividerLocation(l / (double)d);
+	}
+	
 	Action 
 		switchOrientationAction = new AbstractAction("Switch Orientation") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean hor = sp.getOrientation() == JSplitPane.HORIZONTAL_SPLIT;
-				int l = sp.getDividerLocation(), d = hor ? sp.getWidth() : sp.getHeight();
-				sp.setOrientation(hor ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
-				if (d != 0)
-					sp.setDividerLocation(l / (double)d);
+				switchOrientation();
 			}
 		},
 		generateAction = new AbstractAction("JNAerate !") {
@@ -199,11 +205,6 @@ public class JNAeratorStudio extends JPanel {
 			}
 		},
 		aboutJNAAction = new AbstractAction("About JNA") {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -223,6 +224,9 @@ public class JNAeratorStudio extends JPanel {
 		super(new BorderLayout());
 		resultsListCombo.setModel(new ListenableComboModel<ResultContent>(results));
 		
+		//animator.setAcceleration(.2f); 
+		//animator.setDeceleration(.2f);
+		
 		JToolBar tb = new JToolBar();
 		tb.add(generateAction);
 		tb.add(switchOrientationAction);
@@ -240,7 +244,10 @@ public class JNAeratorStudio extends JPanel {
 		sourceTabs.addTab("Source", sourcePane);
 		
 		
-		resultPane.add("North", resultsListCombo);
+		Box resChoiceBox = Box.createHorizontalBox();
+		resChoiceBox.add(classCountLabel);
+		resChoiceBox.add(resultsListCombo);
+		resultPane.add("North", resChoiceBox);
 		resultPane.add("Center", resultArea);
 		sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sourceTabs, resultTabs);
 		sp.setOneTouchExpandable(true);
@@ -337,7 +344,7 @@ public class JNAeratorStudio extends JPanel {
 						JNAeratorStudio.this.setEnabled(true);
 						System.setOut(out);
 						System.setErr(err);
-						
+						classCountLabel.setText("JNAerated classes (" + results.size() + ") :");
 						setTabTitle(resultTabs, errorsPane, "Errors (" + (errorsArea.getLineCount() - 1) + ")");
 					}});
 					
@@ -369,8 +376,6 @@ public class JNAeratorStudio extends JPanel {
 			System.out.println("Error setting native LAF: " + e);
 		}
 		
-		System.out.println("JVM's Max Memory = " + FileSizeUtils.addByteUnit(Runtime.getRuntime().maxMemory()));
-
 		String ver = "";
 		try {
 			ver = " " + ReadText.readText(JNAeratorStudio.class.getClassLoader().getResourceAsStream("VERSION"));

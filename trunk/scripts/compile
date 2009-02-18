@@ -1,6 +1,7 @@
 #!/bin/bash
 # TO LAUNCH FROM THE trunk DIRECTORY
 
+rm -fR classes 2> /dev/null
 mkdir classes 2> /dev/null
 
-javac -cp ..\libraries\anarres-cpp.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
+javac -cp `ls libraries/*.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
