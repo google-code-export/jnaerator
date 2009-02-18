@@ -1,1 +1,6 @@
-javac -cp `ls libraries/*.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
+#!/bin/bash
+# TO LAUNCH FROM THE trunk DIRECTORY
+
+mkdir classes 2> /dev/null
+
+javac -cp ..\libraries\anarres-cpp.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
