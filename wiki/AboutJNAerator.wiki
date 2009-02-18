@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary General information about JNAerator
 #labels Manual
 
 = Credits & License =
@@ -7,12 +7,16 @@ Please read [CreditsAndLicense]
 
 = JNAerator =
 
-JNAerator is a limited GUI front-end for JNAerator.
-
 JNAerator is a tool that aims at industrializing the use of JNA and Rococoa.
 
 JNA & Rococoa open wide the doors of C & Objective-C libraries to the Java world.
 
-= Manual =
+JNAerator comes as a command-line tool with a limited GUI front-end.
 
-TODO
+= Syntax =
+
+java -jar jnaerator.jar
+
+* *-studio* : launch JNAeratorStudio
+* *-help* : show help usage
+* *-o dir* : set output directory
