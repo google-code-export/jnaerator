@@ -8,5 +8,5 @@ if [[ "$FORCE" == "" ]] ; then
 	fi ;
 fi
 
-find sources/com -exec cp '/Users/ochafik/Prog/Java/{}' '{}' ';'
+	find sources/com -exec cp '/Users/ochafik/Prog/Java/{}' '{}' ';' 2>&1 | grep -v "is a directory (not copied)" | grep -v "Permission denied" | grep -v "No such file or directory"
 svn status
