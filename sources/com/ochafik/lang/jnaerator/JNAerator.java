@@ -18,6 +18,8 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import static com.ochafik.lang.SyntaxUtils.as;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,9 +54,9 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 
 import com.ochafik.io.WriteText;
-import static com.ochafik.lang.SyntaxUtils.*;
-import static com.ochafik.util.string.StringUtils.*;
-
+import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
+import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
+import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.lang.jnaerator.parser.Annotation;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
@@ -85,9 +87,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
-import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
-import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
-import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.lang.reflect.DebugUtils;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.RegexUtils;
