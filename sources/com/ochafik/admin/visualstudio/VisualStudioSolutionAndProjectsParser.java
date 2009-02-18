@@ -19,15 +19,6 @@
 package com.ochafik.admin.visualstudio;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Node;
-
-import com.ochafik.xml.XPathUtils;
 
 /*
 java -cp ../classes com.ochafik.admin.visualstudio.VisualStudioSolutionAndProjectsParser "C:\Documents and Settings\Administrator\My Documents\Visual Studio 2008\Projects\VSTest\VSTest.sln"

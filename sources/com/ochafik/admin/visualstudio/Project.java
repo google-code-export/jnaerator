@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.TreeSet;
 import static com.ochafik.admin.visualstudio.VisualStudioUtils.*;
 
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
@@ -68,12 +67,12 @@ public class Project implements Comparable<Project> {
 	public String resolveStringByXPath(String xPathString, Object source, Configuration configuration) throws XPathExpressionException {
 		return resolve(XPathUtils.findStringByXPath(xPathString, source), configuration);
 	}
+	@SuppressWarnings("unchecked")
 	public List<String> resolveListByXPath(String xPathString, Object source, String separatorPattern, Configuration configuration) throws XPathExpressionException {
 		String s = resolve(XPathUtils.findStringByXPath(xPathString, source), configuration);
 		return s == null ? Collections.EMPTY_LIST : Arrays.asList(s.split(separatorPattern));
 	}
 	public TreeSet<String> resolveSetByXPath(String xPathString, Object source, String separatorPattern, Configuration configuration) throws XPathExpressionException {
-		String s = resolve(XPathUtils.findStringByXPath(xPathString, source), configuration);
 		return new TreeSet<String>(resolveListByXPath(xPathString, source, separatorPattern, configuration));
 	}
 	
