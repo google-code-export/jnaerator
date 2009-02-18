@@ -57,8 +57,9 @@ All of these variables may be overridden by setting the environment variable ({{
 
  * JNAERATOR_FRAMEWORKS_PATH is only set on Mac OS X : 
    {{{
-/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks:
-/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks:
-/System/Library/Frameworks:/Library/Frameworks:
+/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks:\
+/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks:\
+/System/Library/Frameworks:\
+/Library/Frameworks:\
 ~/Library/Frameworks 
    }}}
