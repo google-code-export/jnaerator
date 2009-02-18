@@ -1,0 +1,12 @@
+#summary Links to pages that highlight interesting syntax features of the languages handled by JNAerator
+
+[http://delicious.com/zolive/syntax]
+
+= Objective-C =
+
+[http://theocacao.com/document.page/510]
+
+[]
+[]
+[]
+[]
