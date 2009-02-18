@@ -2,7 +2,7 @@
 
 Checkout the latest sources (you'll need SVN installed) : 
 {{{ 
-svn co https://jnaerator.googlecode.com/svn/ jnaerator
+svn co http://jnaerator.googlecode.com/svn/ jnaerator
 cd jnaerator
 cd trunk
 }}}
