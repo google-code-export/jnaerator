@@ -9,7 +9,7 @@ Please read [CreditsAndLicense]
 
 JNAerator is a tool that aims at industrializing the use of JNA and Rococoa.
 
-JNA & Rococoa open wide the doors of C & Objective-C libraries to the Java world.
+[http://jna.dev.java.net/ JNA] & [https://rococoa.dev.java.net/ Rococoa] open wide the doors of C & Objective-C libraries to the Java world.
 
 JNAerator comes as a command-line tool with a limited GUI front-end.
 
