@@ -2,9 +2,8 @@
 
 Checkout the latest sources (you'll need SVN installed) : 
 {{{ 
-svn co http://jnaerator.googlecode.com/svn/ jnaerator
+svn co http://jnaerator.googlecode.com/svn/trunk jnaerator
 cd jnaerator
-cd trunk
 }}}
 
 Run the compilation script :
