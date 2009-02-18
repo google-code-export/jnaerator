@@ -53,10 +53,12 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import com.ochafik.io.FileSizeUtils;
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
@@ -360,12 +362,21 @@ public class JNAeratorStudio extends JPanel {
 	}
 
 	public static void main(String[] args) {
+		try {
+			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch(Exception e) {
+			System.out.println("Error setting native LAF: " + e);
+		}
+		
+		System.out.println("JVM's Max Memory = " + FileSizeUtils.addByteUnit(Runtime.getRuntime().maxMemory()));
+
 		String ver = "";
 		try {
 			ver = " " + ReadText.readText(JNAeratorStudio.class.getClassLoader().getResourceAsStream("VERSION"));
 		} catch (Exception ex) {}
 		
-		JFrame f = new JFrame(JNAeratorStudio.class.getSimpleName() + ver);
+		JFrame f = new JFrame((JNAeratorStudio.class.getSimpleName() + ver).trim());
 		final JNAeratorStudio js = new JNAeratorStudio();
 		f.getContentPane().add("Center", js);
 		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
