@@ -466,7 +466,7 @@ public class TypeConversion {
 		if (valueType instanceof StructTypeRef) {
 			String name = ((StructTypeRef) valueType).getStruct().getName();
 			if (name != null)
-				return findStruct(name);
+				return findStruct(name) + ".ByValue";
 		}
 		
 		if (valueType instanceof FunctionSignature) {
@@ -512,8 +512,9 @@ public class TypeConversion {
 					return com.sun.jna.Pointer.class.getName();
 				
 				switch (conversionMode) {
-					case PrimitiveParameter:
 					case StaticallySizedArrayField:
+						return toString(prim) + "[]";
+					case PrimitiveParameter:
 						List<String> modifiers = target.getModifiers();
 						if (modifiers.contains(Modifier.Const) || modifiers.contains(Modifier.Const.toString()))
 							return toString(prim) + "[]";
@@ -536,7 +537,7 @@ public class TypeConversion {
 			String name = ((SimpleTypeRef) valueType).getName();
 			String structQualifiedName = findStruct(name);
 			if (structQualifiedName != null)
-				return structQualifiedName;
+				return structQualifiedName + ".ByValue";
 			
 			String callbackQualifiedName = findCallback(name);
 			if (callbackQualifiedName != null)
