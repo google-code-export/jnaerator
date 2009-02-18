@@ -44,10 +44,16 @@ JNAerator comes as a command-line tool with a limited GUI front-end.
 
 == Environment Variables ==
 
+All of these variables may be overridden by setting the environment variable ({{{ set VAR=value }}} on Windows, {{{ export VAR=value }}} on most unices) or through Java properties ({{{ java -DVAR=value -jar jnaerator.jar ... }}}).
+
+ * VISUAL_STUDIO_HOME = {{{ C:\Program Files\Microsoft Visual Studio 9.0 }}}
+ * WINDOWS_SDK_HOME = {{{ C:\Program Files\Microsoft SDKs\Windows\v6.0A }}}
+ * VISUAL_STUDIO_INCLUDES = {{{ C:\Program Files\Microsoft Visual Studio 9.0\VC\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include }}}
+
  * JNAERATOR_INCLUDE_PATH : has the following platform-dependent default values :
-   * Microsof Visual Studio C++ Express 2008's headers + current dir on Windows 
-   * Apple's core BSD headers + current dir on Mac OS X 
+   * Windows : uses VISUAL_STUDIO_INCLUDES
+   * Mac OS X : {{{ /Developer/SDKs/MacOSX10.4u.sdk/usr/include:. }}}
    * Current dir on any other platform
 
- * JNAERATOR_FRAMEWORKS_PATH is only set on Mac OS X
+ * JNAERATOR_FRAMEWORKS_PATH is only set on Mac OS X : {{{ /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks:/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks:/System/Library/Frameworks:/Library/Frameworks:/Users/ochafik/Library/Frameworks }}}
    
