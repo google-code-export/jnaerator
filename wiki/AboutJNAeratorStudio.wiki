@@ -7,9 +7,9 @@ Please read [CreditsAndLicense]
 
 = JNAeratorStudio =
 
-JNAeratorStudio is a limited GUI front-end for JNAerator.
+JNAeratorStudio is a limited GUI front-end for [AboutJNAerator JNAerator].
 
-JNAerator is a tool that aims at industrializing the use of JNA and Rococoa.
+[AboutJNAerator JNAerator] is a tool that aims at industrializing the use of JNA and Rococoa.
 
 JNA & Rococoa open wide the doors of C & Objective-C libraries to the Java world.
 
