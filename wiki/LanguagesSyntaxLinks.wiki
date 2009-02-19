@@ -1,4 +1,4 @@
-#summary Links to pages that highlight interesting syntax features of the languages handled by JNAerator
+#summary Technical links on parsing, complex computer language features and runtime internals
 
 = Parsing = 
 
