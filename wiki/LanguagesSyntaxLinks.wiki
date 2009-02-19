@@ -1,10 +1,12 @@
 #summary Links to pages that highlight interesting syntax features of the languages handled by JNAerator
 
-[http://delicious.com/zolive/syntax]
+[http://delicious.com/zolive/syntax Olivier Chafik's syntax bookmarks]
 
 = Objective-C =
 
-[http://theocacao.com/document.page/510]
+[http://theocacao.com/document.page/510  
+
+A Quick Objective-C 2.0 Tutorial]
 
 []
 []
