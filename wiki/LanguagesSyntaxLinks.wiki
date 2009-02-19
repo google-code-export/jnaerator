@@ -1,18 +1,33 @@
 #summary Links to pages that highlight interesting syntax features of the languages handled by JNAerator
 
-= Miscellaneous
+= Parsing = 
 
  * [http://www.cs.bris.ac.uk/Teaching/Resources/General/antlr/doc/lexer.html Lexical Analysis with ANTLR (tons of tricks !)]
- * [http://www.scs.cs.nyu.edu/~dm/c++-new.html C++'s operator new]
  * [https://rails.wincent.com/wiki/ANTLR_predicates ANTLR predicates]
+
+= C / C++ = 
+
+ * [http://www.scs.cs.nyu.edu/~dm/c++-new.html C++'s operator new]
  * [http://msdn.microsoft.com/en-us/library/1x82y1z4(VS.80).aspx Interpreting More Complex Declarators (MSDN)]
  * [http://www.georgehernandez.com/h/xComputers/Cs/ReservedKeywords.asp Reserved Keywords]
+ * [http://root.cern.ch/drupal/content/cint Cint : A C/C++ Interpreter]
+ * [http://www.clarionmag.com/cmag/v1/v1n8olepart2.html]
+
+= Calling Conventions = 
+
+ * [http://en.wikibooks.org/wiki/Reverse_Engineering/Calling_Conventions#THISCALL]
+ * [http://en.wikipedia.org/wiki/X86_calling_conventions#optlink]
+
+= Name Mangling
+
+ * [http://en.wikipedia.org/wiki/Name_mangling#How_different_compilers_mangle_the_same_functions]
 
 = Objective-C =
 
  * [http://theocacao.com/document.page/510 A Quick Objective-C 2.0 Tutorial]
+ * [http://www.mactech.com/articles/mactech/Vol.13/13.03/CandObjectiveCCompared/ C++ Versus Objective-C]
+ * [http://pierre-chatelier.developpez.com/tutoriels/mac/objectivec/migration/ De C++ à Objective-C]
 
-[]
-[]
-[]
-[]
+= Java =
+
+ * [http://www.md.pp.ru/~eu/jdk6options.html The most complete list of -XX options for Java 6 JVM]
