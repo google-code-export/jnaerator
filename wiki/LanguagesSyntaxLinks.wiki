@@ -8,7 +8,7 @@
 = C / C++ = 
 
  * [http://www.scs.cs.nyu.edu/~dm/c++-new.html C++'s operator new]
- * [http://msdn.microsoft.com/en-us/library/1x82y1z4(VS.80).aspx Interpreting More Complex Declarators (MSDN)] (that one gives me nightmares !!!)
+ * [http://msdn.microsoft.com/en-us/library/1x82y1z4(VS.80).aspx Interpreting More Complex Declarators (MSDN)] (that one gives me nightmares and tears the compiler apart !!!)
  * [http://www.georgehernandez.com/h/xComputers/Cs/ReservedKeywords.asp Reserved Keywords]
  * [http://root.cern.ch/drupal/content/cint Cint : A C/C++ Interpreter]
  * [http://www.clarionmag.com/cmag/v1/v1n8olepart2.html]
