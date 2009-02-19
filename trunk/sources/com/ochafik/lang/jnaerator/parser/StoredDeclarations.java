@@ -61,8 +61,9 @@ public abstract class StoredDeclarations extends Declaration {
 	}
 	@Override
 	public String toString(CharSequence indent) {
-		return (commentBefore == null ? "" : commentBefore + "\n" + indent) +
-			getModifiersStringPrefix() + getValueTypeAndStorageSuffix();
+		return (commentBefore == null || commentBefore.length() == 0 ? "" : formatComments(indent, false) + "\n" + indent) +
+			getModifiersStringPrefix() + getValueTypeAndStorageSuffix() +
+			(commentAfter == null ? "" : " " + commentAfter.trim());
 	}
 	
 	public List<VariableStorage> getVariableStorages() {

@@ -438,10 +438,10 @@ public class JNAerator {
 		return null;
 	}
 	
-	Struct convertCallback(FunctionSignature functionSignature, Set<String> signatures, String callerLibraryName) {
+	void convertCallback(FunctionSignature functionSignature, Set<String> signatures, List<Declaration> out, String callerLibraryName) {
 		String name = result.typeConverter.inferCallBackName(functionSignature, false);
 		if (name == null)
-			return null;
+			return;
 		
 		name = result.typeConverter.getValidJavaArgumentName(name);
 		
@@ -456,23 +456,26 @@ public class JNAerator {
 		Element parent = functionSignature.getParentElement();
 		Element comel = parent != null && parent instanceof TypeDef ? parent : functionSignature;
 		
-		Struct out = new Struct();
-		out.setType(Struct.Type.JavaInterface);
-		out.addModifiers(Modifier.Public);
-		out.setParents(Arrays.asList(Callback.class.getName()));
-		out.setName(chosenName);
-		out.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
+		Struct callbackStruct = new Struct();
+		callbackStruct.setType(Struct.Type.JavaInterface);
+		callbackStruct.addModifiers(Modifier.Public);
+		callbackStruct.setParents(Arrays.asList(Callback.class.getName()));
+		callbackStruct.setName(chosenName);
+		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
 		//out.setCommentBefore(Element.formatComments(chosenName, name, chosenName, fullFilePathInComments, null))
 		List<Declaration> children = new ArrayList<Declaration>();
 		convertFunction(function, new TreeSet<String>(), true, children, callerLibraryName);
-		out.addDeclarations(children);
-		return out;
+		callbackStruct.addDeclarations(children);
+		out.add(callbackStruct);
 	}
 	
 	private void convertCallbacks(List<FunctionSignature> functionSignatures, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
 		if (functionSignatures != null) {
 			for (FunctionSignature functionSignature : functionSignatures) {
-				out.add(convertCallback(functionSignature, signatures, callerLibraryClass));
+				if (functionSignature.findParentOfType(Struct.class) != null)
+					continue;
+					
+				convertCallback(functionSignature, signatures, out, callerLibraryClass);
 			}
 		}
 		
@@ -542,7 +545,13 @@ public class JNAerator {
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
 						
 						TypeRef tr = new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass));
-						out.add(new VariablesDeclaration(tr, new VariableStorage(vs.getName(), val)));
+						VariablesDeclaration vd = new VariablesDeclaration(tr, new VariableStorage(vs.getName(), val));
+						vd.setCommentBefore(v.getCommentBefore());
+						vd.addToCommentBefore(vs.getCommentBefore());
+						vd.addToCommentBefore(vs.getCommentAfter());
+						vd.addToCommentBefore(v.getCommentAfter());
+						
+						out.add(vd);
 						
 						//if (vs.getStorageModifiers().isEmpty() && prim != null && !vs.getDimensions().isEmpty())
 						//	print("[(" + StringUtils.implode(vs.getDimensions(), ") * (") + ")]");
@@ -1004,6 +1013,14 @@ public class JNAerator {
 				convertVariablesDeclaration((VariablesDeclaration)d, children, iChild, callerLibraryClass);
 			} else if (d instanceof Struct) {
 				convertStruct((Struct)d, childSignatures, children, callerLibraryClass);
+			} else if (d instanceof TypeDef) {
+				TypeDef td = (TypeDef)d;
+				TypeRef tr = td.getValueType();
+				if (tr instanceof StructTypeRef) {
+					convertStruct(((StructTypeRef)tr).getStruct(), childSignatures, children, callerLibraryClass);
+				} else if (tr instanceof FunctionSignature) {
+					convertCallback((FunctionSignature)tr, childSignatures, children, callerLibraryClass);
+				}
 			}
 		}
 		structJavaClass.addDeclarations(children);
@@ -1158,6 +1175,26 @@ public class JNAerator {
 			@Override
 			public void visitFunctionSignature(FunctionSignature functionSignature) {
 				super.visitFunctionSignature(functionSignature);
+				
+				//Struct s = structTypeRef.getStruct();
+				DeclarationsHolder holder = functionSignature.findParentOfType(DeclarationsHolder.class);
+				Function f = functionSignature.getFunction();
+				if (holder != null && f != null && f.getName() != null) {
+					//if (s.getName() != null) {
+					/*VariablesDeclaration pd = as(functionSignature.getParentElement(), VariablesDeclaration.class);
+					if (pd != null && pd.getVariableStorages().isEmpty())
+						pd.replaceBy(null); // special case of C++-like struct sub-type definition 
+					else
+						structTypeRef.replaceBy(new TypeRef.SimpleTypeRef(s.getName()));
+					*/
+					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
+					TypeDef td = new TypeDef();
+					td.setValueType(functionSignature);
+					td.addVariableStorage(new VariableStorage(f.getName()));
+					holder.addDeclaration(td);
+					
+				}
+				
 				/*
 				String name = functionSignature.getFunction().getName();
 				//if (name !)
@@ -1201,8 +1238,28 @@ public class JNAerator {
 				super.visitFunction(function);
 				FunctionSignature signature = as(function.getParentElement(), FunctionSignature.class);
 				if (signature != null) {
+					if (function.getName() == null) {
+						TypeDef td = as(function.getParentElement(), TypeDef.class);
+						String bestName = findBestPlainStorageName(td);
+						if (bestName != null)
+							function.setName(bestName);
+					}
 					
+					Element parent = signature.getParentElement();
+					if (function.getName() == null || parent instanceof VariablesDeclaration) {
+						List<String> ownerNames = guessOwnerName(function);
+						
+						List<String> names = new ArrayList<String>();
+						if (ownerNames != null)
+							names.addAll(ownerNames);
+						
+						names.add("callback");
+						function.setName(StringUtils.implode(names, "_"));
+						//ownerName = StringUtils.capitalize(ownerNames, "_");
+						
+					}
 				}
+				
 			}
 			@Override
 			public void visitStructTypeRef(StructTypeRef structTypeRef) {
@@ -1238,10 +1295,6 @@ public class JNAerator {
 					List<String> names = new ArrayList<String>();
 					if (ownerNames != null)
 						names.addAll(ownerNames);
-					//String ownerName = null;
-					//if (ownerNames != null)
-						//ownerName = StringUtils.capitalize(ownerNames, "_");
-						//ownerName = StringUtils.implode(ownerNames, "_");
 					
 					if (struct.getType() == Struct.Type.CStruct) {
 						names.add("struct");
@@ -1255,6 +1308,7 @@ public class JNAerator {
 					
 					if (changed)
 						struct.setName(StringUtils.implode(names, "_"));
+					//ownerName = StringUtils.capitalize(ownerNames, "_");
 					
 				}
 

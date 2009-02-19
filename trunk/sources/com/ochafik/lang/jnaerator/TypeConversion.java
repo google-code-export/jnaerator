@@ -149,7 +149,6 @@ public class TypeConversion {
 		prim("uint32", JavaPrim.Int);
 		prim("int32", JavaPrim.Int);
 		prim("int", JavaPrim.Int);
-		prim("long", JavaPrim.Int);
 		prim("NSUInteger", JavaPrim.Int);
 		prim("NSInteger", JavaPrim.Int);
 		prim("SInt32", JavaPrim.Int);
@@ -160,14 +159,10 @@ public class TypeConversion {
 		prim("__darwin_size_t", JavaPrim.Int);
 		
 		prim("DWORD", JavaPrim.Int);
-		prim("LONG", JavaPrim.Int);
 		prim("__int32", JavaPrim.Int);
 		
-		prim("LONG_PTR", JavaPrim.NativeLong);
-		prim("ULONG_PTR", JavaPrim.NativeLong);
-		
-		prim("DWORD_PTR", JavaPrim.NativeLong);
-		
+		prim("long", JavaPrim.NativeLong);
+		prim("LONG", JavaPrim.NativeLong);
 		prim("size_t", JavaPrim.NativeLong);
 		prim("ptrdiff_t", JavaPrim.NativeLong);
 		
@@ -181,6 +176,7 @@ public class TypeConversion {
 		prim("SInt16", JavaPrim.Short);
 		prim("UInt16", JavaPrim.Short);
 		prim("short", JavaPrim.Short);
+		prim("wchar_t", JavaPrim.Short);
 		
 		prim("WORD", JavaPrim.Short);
 		prim("__int16", JavaPrim.Short);
@@ -233,9 +229,15 @@ public class TypeConversion {
 	static Map<String, TypeRef> manualTypeDefs = new HashMap<String, TypeRef>();
 	static {
 		
+		manualTypeDefs.put("DWORD_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), StorageModifier.Pointer));
 		manualTypeDefs.put("intptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int"), StorageModifier.Pointer));
 		manualTypeDefs.put("uintptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int", "unsigned"), StorageModifier.Pointer));
 		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), StorageModifier.Pointer));
+		manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long"), StorageModifier.Pointer));
+		manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "unsigned"), StorageModifier.Pointer));
+//		prim("LONG_PTR", JavaPrim.NativeLong);
+//		prim("ULONG_PTR", JavaPrim.NativeLong);
+//		
 		
 		
 		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifier(Modifier.Const.toString()), StorageModifier.Pointer));
@@ -456,9 +458,9 @@ public class TypeConversion {
 		String valueTypeString = String.valueOf(valueType);
 		if (valueTypeString.equals("void*"))
 			valueType = (TypeRef)valueType;
-		else if (valueTypeString.matches("(__)?const char\\*") && conversionMode == TypeConversionMode.PrimitiveParameter)
+		else if (valueTypeString.matches("(__)?const char\\*"))// && conversionMode == TypeConversionMode.PrimitiveParameter)
 			return String.class.getName();
-		else if (valueTypeString.matches("(__)?const wchar_t\\*") && conversionMode == TypeConversionMode.PrimitiveParameter)
+		else if (valueTypeString.matches("(__)?const wchar_t\\*"))// && conversionMode == TypeConversionMode.PrimitiveParameter)
 			return WString.class.getName();
 		
 		if (valueType instanceof Primitive) {
