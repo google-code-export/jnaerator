@@ -1,12 +1,16 @@
 #summary Links to pages that highlight interesting syntax features of the languages handled by JNAerator
 
-[http://delicious.com/zolive/syntax Olivier Chafik's syntax bookmarks]
+= Miscellaneous
+
+ * [http://www.cs.bris.ac.uk/Teaching/Resources/General/antlr/doc/lexer.html Lexical Analysis with ANTLR (tons of tricks !)]
+ * [http://www.scs.cs.nyu.edu/~dm/c++-new.html C++'s operator new]
+ * [https://rails.wincent.com/wiki/ANTLR_predicates ANTLR predicates]
+ * [http://msdn.microsoft.com/en-us/library/1x82y1z4(VS.80).aspx Interpreting More Complex Declarators (MSDN)]
+ * [http://www.georgehernandez.com/h/xComputers/Cs/ReservedKeywords.asp Reserved Keywords]
 
 = Objective-C =
 
-[http://theocacao.com/document.page/510  
-
-A Quick Objective-C 2.0 Tutorial]
+ * [http://theocacao.com/document.page/510 A Quick Objective-C 2.0 Tutorial]
 
 []
 []
