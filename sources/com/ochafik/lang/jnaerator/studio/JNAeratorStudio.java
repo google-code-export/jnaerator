@@ -77,6 +77,9 @@ import com.ochafik.util.listenable.ListenableCollections;
 import com.ochafik.util.listenable.ListenableComboModel;
 import com.ochafik.util.listenable.ListenableList;
 
+/*
+include com/ochafik/lang/jnaerator/examples/*.h
+ */
 /// https://jna.dev.java.net/servlets/ReadMsg?list=users&msgNo=1988
 @SuppressWarnings("serial")
 public class JNAeratorStudio extends JPanel {
@@ -209,6 +212,17 @@ public class JNAeratorStudio extends JPanel {
 					displayError(ex);
 				}
 			}
+		},
+		showExampleAction = new AbstractAction("Open Example") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (sourceArea.getText().trim().length() > 0) {
+					if (JOptionPane.showConfirmDialog(JNAeratorStudio.this, "This is going to overwrite the contents of your source text area.\nProceed ?", "Open Example", JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
+						return;
+					}
+					doShowExample();
+				}
+			}
 		}
 	;
 	
@@ -222,6 +236,7 @@ public class JNAeratorStudio extends JPanel {
 		
 		JToolBar tb = new JToolBar();
 		tb.add(generateAction);
+		tb.add(showExampleAction);
 		tb.add(switchOrientationAction);
 		tb.add(aboutJNAeratorAction);
 		tb.add(aboutJNAAction);
@@ -264,8 +279,21 @@ public class JNAeratorStudio extends JPanel {
 			sourceArea.setText(ReadText.readText(getFile()));
 			sourceArea.scrollTo(0, 0);
 		} catch (Exception ex) {}
+		
+		if (sourceArea.getText().trim().length() == 0)
+			doShowExample();
 	}
 	
+	private void doShowExample() {
+
+		try {
+			sourceArea.setText(ReadText.readText(getClass().getClassLoader().getResourceAsStream("com/ochafik/lang/jnaerator/examples/example.h")));
+			sourceArea.scrollTo(0, 0);
+			generate();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
 	protected void generate() {
 
 		try {

@@ -248,7 +248,9 @@ class ObjCClass {
 			@Override
 			public void visitFunctionSignature(FunctionSignature functionSignature) {
 				super.visitFunctionSignature(functionSignature);
-				instanceStruct.addDeclaration(result.jnaerator.convertCallback(functionSignature, signatures, callerLibraryClass));
+				List<Declaration> decls = new ArrayList<Declaration>();
+				result.jnaerator.convertCallback(functionSignature, signatures, decls, callerLibraryClass);
+				instanceStruct.addDeclarations(decls);
 			}
 		};
 		for (Struct c : categories)
