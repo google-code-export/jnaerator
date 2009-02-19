@@ -23,7 +23,9 @@ if [[ $? == 0 ]] ; then
 	cd classes
 	echo Merging thirdparty libraries
 	for l in `ls ../libraries/*.jar` ; do
-		jar xf "$l" ;
+		if [[ "$l" != "../libraries/trove.jar" ]] ; then
+			jar xf "$l" ;
+		fi ;
 	done
 	cd ..
 	
