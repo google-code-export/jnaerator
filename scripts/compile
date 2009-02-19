@@ -4,4 +4,33 @@
 rm -fR classes 2> /dev/null
 mkdir classes 2> /dev/null
 
+echo Compiling
 javac -cp `ls libraries/*.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
+
+if [[ $? == 0 ]] ; then
+	echo Main-Class: com.ochafik.lang.jnaerator.JNAerator> classes/mf
+
+	cd sources
+	RESOURCES=`find com ! -iname '*.g' ! -ipath '*/.svn/*' ! -iname '*.java' -type f -print`
+	
+	echo Copying resources
+	for f in $RESOURCES ; do 
+		mkdir -p "../classes/`echo $f| sed -E 's/\/[^\/]+$//g'`" 
+		cp "$f" "../classes/$f" ; 
+	done
+	cd ..
+	
+	cd classes
+	echo Merging thirdparty libraries
+	for l in `ls ../libraries/*.jar` ; do
+		jar xf "$l" ;
+	done
+	cd ..
+	
+	#find com ! -ipath '*/.svn/*' ! -iname '*.java' -type f -exec cp '{}' '../classes/{}' ';'
+	echo Creating JAR
+	pwd
+	jar cfm bin/jnaerator.jar classes/mf -C classes .
+	
+	ls -l bin/jnaerator.jar
+fi
