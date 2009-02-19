@@ -220,7 +220,7 @@ public class JNAeratorStudio extends JPanel {
 					if (JOptionPane.showConfirmDialog(JNAeratorStudio.this, "This is going to overwrite the contents of your source text area.\nProceed ?", "Open Example", JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
 						return;
 					}
-					doShowExample();
+					doShowExample(true);
 				}
 			}
 		}
@@ -281,16 +281,17 @@ public class JNAeratorStudio extends JPanel {
 		} catch (Exception ex) {}
 		
 		if (sourceArea.getText().trim().length() == 0)
-			doShowExample();
+			doShowExample(false);
 	}
 	
-	private void doShowExample() {
+	private void doShowExample(boolean generate) {
 
 		try {
 			sourceArea.setText(ReadText.readText(getClass().getClassLoader().getResourceAsStream("com/ochafik/lang/jnaerator/examples/example.h")));
 			sourceArea.scrollTo(0, 0);
-			generate();
-		} catch (IOException e1) {
+			if (generate)
+				generate();
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	}
