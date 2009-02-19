@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 
 public abstract class Expression extends Element {
+	
 	boolean parenthesis;
 	public void setParenthesis(boolean parenthesis) {
 		this.parenthesis = parenthesis;
@@ -180,7 +182,59 @@ public abstract class Expression extends Element {
 		}
 		
 	}
-	
+	public static class NewArray extends Expression {
+		TypeRef type;
+		List<Expression> dimensions = new ArrayList<Expression>();
+		
+		public NewArray() {}
+		
+		public NewArray(TypeRef type, Expression... dimensions) {
+			setType(type);
+			setDimensions(Arrays.asList(dimensions));
+		}
+		public List<Expression> getDimensions() {
+			return unmodifiableList(dimensions);
+		}
+		public void setDimensions(List<Expression> dimensions) {
+			changeValue(this, this.dimensions, dimensions);
+		}
+		public TypeRef getType() {
+			return type;
+		}
+		public void setType(TypeRef type) {
+			this.type = changeValue(this, this.type, type);
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitNewArray(this);
+		}
+
+		@Override
+		public Element getNextChild(Element child) {
+			return getNextSibling(dimensions, child);
+		}
+
+		@Override
+		public Element getPreviousChild(Element child) {
+			return getPreviousSibling(dimensions, child);
+		}
+
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getType()) {
+				setType((TypeRef)by);
+				return true;
+			}
+			return replaceChild(dimensions, Expression.class, this, child, by);
+		}
+
+		@Override
+		public String toString(CharSequence indent) {
+			return "new " + getType() + "[" + implode(getDimensions(), "][", indent) + "]";
+		}
+
+	}
+
 	public static class New extends Expression {
 		TypeRef type;
 		FunctionCall construction;

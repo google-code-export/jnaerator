@@ -26,6 +26,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
 import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
+import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
@@ -102,5 +103,7 @@ public interface Visitor {
 	void visitAnnotation(Annotation annotation);
 
 	void visitEmptyDeclaration(EmptyDeclaration emptyDeclaration);
+
+	void visitNewArray(NewArray newArray);
 	
 }

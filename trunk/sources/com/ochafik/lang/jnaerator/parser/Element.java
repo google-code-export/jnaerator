@@ -81,10 +81,10 @@ public abstract class Element {
 	public void addToCommentBefore(List<String> s) {
 		String b = getCommentBefore();
 		List<String> ss = new ArrayList<String>();
-		if (b != null && (b = b.trim()).length() > 0)
+		if (b != null && (b = cleanComment(b)).length() > 0)
 			ss.add(b);
 		for (String a : s)
-			if (a != null && (a = a.trim()).length() > 0)
+			if (a != null && (a = cleanComment(a)).length() > 0)
 				ss.add(a);
 		//s);
 		//if (b != null && b.trim().length() > 0)

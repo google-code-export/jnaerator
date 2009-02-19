@@ -50,6 +50,13 @@ public class GettersAndSettersHelper {
 			//this.field = field;
 		}
 		public GetterAndSetterInfo() {}
+		public boolean isConsistent() {
+			if (getter == null || setter == null)
+				return true;
+			
+			Class<?>[] pts = setter.getParameterTypes();
+			return pts.length == 1 && pts[0].isAssignableFrom(getter.getReturnType());
+		}
 	}
 	
 	public final Map<String, GetterAndSetterInfo> gettersAndSetters = new HashMap<String, GetterAndSetterInfo>();
@@ -80,6 +87,10 @@ public class GettersAndSettersHelper {
 						} else {
 							getterAndSetter.getter = method;
 						}
+
+						if (!getterAndSetter.isConsistent())
+							getterAndSetter.setter = null;
+						
 					}
 					//assertNull("Already found getter " + getterAndSetter.getter, getterAndSetter.getter);
 					//getterAndSetter.setFirst(method);
@@ -88,6 +99,8 @@ public class GettersAndSettersHelper {
 					//assertNull("Already found setter " + getterAndSetter.setter, getterAndSetter.setter);
 					assert getterAndSetter.setter == null;
 					getterAndSetter.setter = method;
+					if (!getterAndSetter.isConsistent())
+						getterAndSetter.setter = null;
 				}
 			}
 		}
