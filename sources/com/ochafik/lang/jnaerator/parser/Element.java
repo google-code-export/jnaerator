@@ -465,12 +465,12 @@ public abstract class Element {
 	public <T> T findParentOfType(Class<T> type) {
 		Element e = this;
 		for (;;) {
-			if (type.isAssignableFrom(e.getClass()))
-				return type.cast(e);
-		
 			e = e.getParentElement();
 			if (e == null)
 				return null;
+
+			if (type.isAssignableFrom(e.getClass()))
+				return type.cast(e);
 		}
 	}
 	
