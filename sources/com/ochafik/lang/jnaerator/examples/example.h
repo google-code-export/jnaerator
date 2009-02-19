@@ -1,4 +1,9 @@
-/// This example file 
+// 
+// This example file shows a few basic language 
+// features that are handled by JNAerator.
+//
+// Click on "JNAerate !" to see the JNAerated output.
+// 
 
 extern "C" {
 
