@@ -1,0 +1,3 @@
+#summary JNAerator's command-line options & environment variables
+
+See [AboutJNAerator the About JNAerator page]
