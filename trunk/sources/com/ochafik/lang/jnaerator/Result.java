@@ -248,6 +248,7 @@ public class Result extends Scanner {
 	@Override
 	public void visitStruct(Struct struct) {
 		super.visitStruct(struct);
+		
 		String name = struct.getName();
 		if (name != null) {
 			switch (struct.getType()) {

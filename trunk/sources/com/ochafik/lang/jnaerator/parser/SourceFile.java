@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SourceFile extends Element {
+public class SourceFile extends Element implements DeclarationsHolder {
 	final List<Declaration> declarations = new ArrayList<Declaration>();
 	//URL file;
 	String framework, library;

@@ -28,6 +28,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,6 +37,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -78,6 +81,7 @@ import com.ochafik.util.listenable.ListenableList;
 @SuppressWarnings("serial")
 public class JNAeratorStudio extends JPanel {
 	private static final long serialVersionUID = -6061806156049213635L;
+	private static final String PREF_RADIX = "JNAeratorStudio.";
 	JEditTextArea sourceArea = textArea(new JavaTokenMarker());
 	JEditTextArea resultArea = textArea(new CCTokenMarker());
 	JTextField libraryName = new JTextField("test");
@@ -144,17 +148,6 @@ public class JNAeratorStudio extends JPanel {
 		};
 		ta.setBorder(BorderFactory.createLoweredBevelBorder());
 		ta.setFocusTraversalKeysEnabled(false);
-		
-//		
-//		for (KeyStroke ks : inputMap.keys()) {
-//			int m = ks.getModifiers();
-//			if ((m & InputEvent.CTRL_MASK) != 0) {
-//				m = (m & ~InputEvent.CTRL_MASK) | InputEvent.META_MASK;
-//				Object object = inputMap.get(ks);
-//				inputMap.remove(ks);
-//				inputMap.put(KeyStroke.getKeyStroke(ks.getKeyChar(), m), object);
-//			}
-//		}
 		ta.addMouseWheelListener(mouseWheelListener);
 		ta.setPreferredSize(new Dimension(200, 300));
 		ta.setTokenMarker(marker);
@@ -195,7 +188,7 @@ public class JNAeratorStudio extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					URL url = new URL("http://code.google.com/p/jnaerator/wiki/CreditsAndLicense");
+					URL url = new URL("http://code.google.com/p/jnaerator/wiki/AboutJNAeratorStudio");
 					System.out.println("About JNAerator: " + url);
 					SystemUtils.runSystemOpenURL(url);
 				} catch (Exception ex) {
@@ -252,7 +245,7 @@ public class JNAeratorStudio extends JPanel {
 		sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sourceTabs, resultTabs);
 		sp.setOneTouchExpandable(true);
 		sp.setResizeWeight(0.5);
-		sp.setDividerLocation(0.5);
+		//sp.setDividerLocation(0.5);
 		
 		errorsPane.add("Center", new JScrollPane(errorsArea));
 		
@@ -368,6 +361,34 @@ public class JNAeratorStudio extends JPanel {
 		}
 	}
 
+	static Preferences prefNode() {
+		return Preferences.userNodeForPackage(JNAeratorStudio.class);
+	}
+	public static String getPref(String name, String defaultValue) {
+		return prefNode().get(JNAeratorStudio.PREF_RADIX + name, defaultValue);
+	}	
+	public static void setPref(String name, String value) {
+		prefNode().put(JNAeratorStudio.PREF_RADIX + name, value);
+	}
+	public static void setPref(String name, boolean value) {
+		prefNode().putBoolean(JNAeratorStudio.PREF_RADIX + name, value);
+	}
+	public static boolean getPref(String name, boolean defaultValue) {
+		return prefNode().getBoolean(JNAeratorStudio.PREF_RADIX + name, defaultValue);
+	}
+	public static void setPref(String name, double value) {
+		prefNode().putDouble(JNAeratorStudio.PREF_RADIX + name, value);
+	}
+	public static double getPref(String name, double defaultValue) {
+		return prefNode().getDouble(JNAeratorStudio.PREF_RADIX + name, defaultValue);
+	}
+	public static void setPref(String name, int value) {
+		prefNode().putInt(JNAeratorStudio.PREF_RADIX + name, value);
+	}
+	public static int getPref(String name, int defaultValue) {
+		return prefNode().getInt(JNAeratorStudio.PREF_RADIX + name, defaultValue);
+	}
+	
 	public static void main(String[] args) {
 		try {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -381,15 +402,49 @@ public class JNAeratorStudio extends JPanel {
 			ver = " " + ReadText.readText(JNAeratorStudio.class.getClassLoader().getResourceAsStream("VERSION"));
 		} catch (Exception ex) {}
 		
-		JFrame f = new JFrame((JNAeratorStudio.class.getSimpleName() + ver).trim());
+		final JFrame f = new JFrame((JNAeratorStudio.class.getSimpleName() + ver).trim());
 		final JNAeratorStudio js = new JNAeratorStudio();
 		f.getContentPane().add("Center", js);
-		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setSize(800, 800);
-		f.setVisible(true);
+		//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		try {
+			js.sp.setOrientation(getPref("splitPane.orientation", JSplitPane.HORIZONTAL_SPLIT));
+			js.sp.setDividerLocation(getPref("splitPane.dividedLocation", 0.5));
+			f.setSize(getPref("window.width", 800), getPref("height", 600));
+			f.setExtendedState(getPref("window.extendedState", JFrame.NORMAL));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			f.setSize(800, 800);
+		}
+		
+		f.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				try {
+					setPref("window.width", f.getWidth());
+					setPref("window.height", f.getHeight());
+					setPref("window.extendedState", f.getExtendedState());
+					setPref("splitPane.orientation", js.sp.getOrientation());
+					setPref("splitPane.dividedLocation", getProportionalDividerLocation(js.sp));
+					prefNode().flush();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				System.exit(0);
+			}
+		});
 		Runtime.getRuntime().addShutdownHook(new Thread() { public void run() {
-			js.close();
+			js.close();	
 		}});
+		
+		f.setVisible(true);
+		
+	}
+	protected static double getProportionalDividerLocation(JSplitPane sp) {
+		boolean hor = sp.getOrientation() == JSplitPane.HORIZONTAL_SPLIT;
+		int l = sp.getDividerLocation(), d = hor ? sp.getWidth() : sp.getHeight();
+		sp.setOrientation(hor ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
+		return d != 0 ? l / (double)d : 0.5;
 	}
 }

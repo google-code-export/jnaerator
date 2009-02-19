@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.ochafik.util.string.StringUtils;
 
-public class Struct extends StoredDeclarations {
+public class Struct extends StoredDeclarations implements DeclarationsHolder {
 	boolean forwardDeclaration = false;
 	Type type;
 	MemberVisibility nextMemberVisibility = MemberVisibility.Public;
@@ -176,6 +176,10 @@ public class Struct extends StoredDeclarations {
 		String javaPublicity = getModifiers().contains(Modifier.Public) ? "public " :
 			getModifiers().contains(Modifier.Protected) ? "protected " :
 			"";
+		if (getModifiers().contains(Modifier.Static))
+			javaPublicity += "static ";
+		if (getModifiers().contains(Modifier.Final))
+			javaPublicity += "final ";
 		
 		String javaExtension = getParents().isEmpty() ? "" : "extends " + StringUtils.implode(getParents(), ", ") + " ";
 		String javaImplements = getProtocols().isEmpty() ? "" : "implements " + StringUtils.implode(getProtocols(), ", ") + " ";

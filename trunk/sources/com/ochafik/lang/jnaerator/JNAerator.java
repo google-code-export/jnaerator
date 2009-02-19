@@ -60,6 +60,7 @@ import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.lang.jnaerator.parser.Annotation;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
+import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.EmptyDeclaration;
@@ -950,6 +951,10 @@ public class JNAerator {
 		cl.setType(type);
 		cl.setName(name);
 		cl.setParents(parentName);
+		if (type == Struct.Type.JavaInterface)
+			for (String inter : interfaces)
+				cl.addParent(inter);
+		else
 		cl.setProtocols(Arrays.asList(interfaces));
 		if (toCloneCommentsFrom != null ) {
 			cl.setCommentBefore(toCloneCommentsFrom.getCommentBefore());
@@ -963,6 +968,9 @@ public class JNAerator {
 		if (structs != null) {
 			List<Declaration> children = new ArrayList<Declaration>();
 			for (Struct struct : structs) {
+				if (struct.findParentOfType(Struct.class) != null)
+					continue;
+					
 				convertStruct(struct, signatures, out, libraryClassName);
 			}
 		}
@@ -983,8 +991,8 @@ public class JNAerator {
 		String indent = "\t";
 		
 		final Struct structJavaClass = publicStaticClass(struct.getName(), baseClass, Struct.Type.JavaClass, struct);
-		structJavaClass.addDeclaration(publicStaticClass("ByReference", struct.getName(), Struct.Type.JavaInterface, null, Structure.class.getName() + ".ByReference"));
-		structJavaClass.addDeclaration(publicStaticClass("ByValue", struct.getName(), Struct.Type.JavaInterface, null, Structure.class.getName() + ".ByValue"));
+		structJavaClass.addDeclaration(publicStaticClass("ByReference", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByReference").addModifier(Modifier.Final));
+		structJavaClass.addDeclaration(publicStaticClass("ByValue", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByValue").addModifier(Modifier.Final));
 		
 		final int iChild[] = new int[] {0};
 		
@@ -1009,7 +1017,8 @@ public class JNAerator {
 			for (VariableStorage vs : v.getVariableStorages()) {
 				String name = vs.getName();
 				if (name == null || name.length() == 0)
-					name = "u" + (iChild[0] + 1);
+					continue;
+					//name = "u" + (iChild[0] + 1);
 				name = result.typeConverter.getValidJavaArgumentName(name);
 				
 				String javaTypeStr = result.typeConverter.typeToJNA(v.getValueType(), vs, 
@@ -1196,6 +1205,23 @@ public class JNAerator {
 				}
 			}
 			@Override
+			public void visitStructTypeRef(StructTypeRef structTypeRef) {
+				// TODO Auto-generated method stub
+				super.visitStructTypeRef(structTypeRef);
+				
+				Struct s = structTypeRef.getStruct();
+				DeclarationsHolder holder = structTypeRef.findParentOfType(DeclarationsHolder.class);
+				if (holder != null && s != null) {
+					//if (s.getName() != null) {
+					holder.addDeclaration(s);
+					VariablesDeclaration pd = as(structTypeRef.getParentElement(), VariablesDeclaration.class);
+					if (pd != null && pd.getVariableStorages().isEmpty())
+						pd.replaceBy(null); // special case of C++-like struct sub-type definition 
+					else
+						structTypeRef.replaceBy(new TypeRef.SimpleTypeRef(s.getName()));
+				}
+			}
+			@Override
 			public void visitStruct(Struct struct) {
 				boolean changed = false;
 				if (struct.getName() == null) {
@@ -1299,6 +1325,35 @@ public class JNAerator {
 		if (parent == null)
 			return null;
 		
+		List<String> ns = new ArrayList<String>();
+		while (parent != null) {
+			if (parent instanceof Arg) {
+				Arg arg = (Arg)parent;
+				
+				Function f = as(arg.getParentElement(), Function.class);
+				if (f != null && f.getName() != null)
+					ns.add(f.getName());
+				ns.add(arg.getName());
+				return ns;
+			} else if (parent instanceof StoredDeclarations) {
+				StoredDeclarations sd = (StoredDeclarations)parent;
+				String bestName = findBestPlainStorageName(sd);
+				if (bestName != null) {
+					ns.add(0, bestName);
+					//return ns;
+				}
+			} else if (parent instanceof Declaration) {
+				Declaration d = (Declaration)parent;
+				if (d.getName() != null) {
+					ns.add(0, d.getName());
+					//return ns;
+				}
+			}
+			parent = parent.getParentElement();
+		}
+		return ns;
+		/*
+		
 		Arg arg = e.findParentOfType(Arg.class);
 		if (arg != null) {
 			Function f = as(arg.getParentElement(), Function.class);
@@ -1313,7 +1368,7 @@ public class JNAerator {
 		if (bestName != null)
 				return Arrays.asList(bestName);
 		
-		return null;
+		return null;*/
 	}
 	
 	public static String findBestPlainStorageName(StoredDeclarations sd) {
