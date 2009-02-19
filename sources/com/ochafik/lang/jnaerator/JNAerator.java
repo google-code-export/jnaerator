@@ -991,7 +991,7 @@ public class JNAerator {
 		String indent = "\t";
 		
 		final Struct structJavaClass = publicStaticClass(struct.getName(), baseClass, Struct.Type.JavaClass, struct);
-		structJavaClass.addDeclaration(publicStaticClass("ByReference", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByReference").addModifier(Modifier.Final));
+		structJavaClass.addDeclaration(publicStaticClass("ByReference", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByReference"));
 		structJavaClass.addDeclaration(publicStaticClass("ByValue", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByValue").addModifier(Modifier.Final));
 		
 		final int iChild[] = new int[] {0};
