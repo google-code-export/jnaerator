@@ -31,6 +31,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
+import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
@@ -344,6 +345,15 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitEmptyDeclaration(EmptyDeclaration emptyDeclaration) {
 		visitDeclaration(emptyDeclaration);
+	}
+
+	@Override
+	public void visitNewArray(NewArray newArray) {
+		visitExpression(newArray);
+		if (newArray.getType() != null)
+			newArray.getType().accept(this);
+		for (Expression x : newArray.getDimensions())
+			x.accept(this);
 	}
 
 }

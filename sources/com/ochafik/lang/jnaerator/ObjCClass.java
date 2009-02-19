@@ -72,14 +72,19 @@ class ObjCClass {
 		PrintWriter out = this.result.jnaerator.getClassSourceWriter(javaPackage + "." + type.getName());
 		//this.result.javaPackages.add(javaPackage);
 		
-		out.println("package " + javaPackage + ";");
+		String fullClassName = type.getName();
+		if (javaPackage != null && javaPackage.length() > 0) {
+			out.println("package " + javaPackage + ";");
+			//fullClassName = javaPackage + "." + type.getName();
+		}
+		
 		for (String pn : this.result.javaPackages) {
 			if (this.result.javaPackages.equals(javaPackage))
 				continue;
 			out.println("import " + pn + ".*;");
 		}
 		out.println("import org.rococoa.ID;");
-		out.println(toRococoaHeaderDOMWithCategories());
+		out.println(toRococoaHeaderDOMWithCategories(fullClassName));
 		//out.println(toRococoaHeaderWithCategories());
 		out.close();
 	}
@@ -182,7 +187,7 @@ class ObjCClass {
 	}*/
 	
 	
-	private Struct toRococoaHeaderDOMWithCategories() {
+	private Struct toRococoaHeaderDOMWithCategories(final String callerLibraryClass) {
 //		StringBuilder s = new StringBuilder();
 //		if (type.getCategoryName() != null)
 //			s.append("/// @Protocol");
@@ -243,7 +248,7 @@ class ObjCClass {
 			@Override
 			public void visitFunctionSignature(FunctionSignature functionSignature) {
 				super.visitFunctionSignature(functionSignature);
-				instanceStruct.addDeclaration(result.jnaerator.convertCallback(result, functionSignature, signatures));
+				instanceStruct.addDeclaration(result.jnaerator.convertCallback(functionSignature, signatures, callerLibraryClass));
 			}
 		};
 		for (Struct c : categories)
@@ -287,7 +292,8 @@ class ObjCClass {
 		for (Declaration d : declarations) {
 			if (d instanceof Function) {
 				Function f = (Function)d;//as(d, Function.class);
-				List<Declaration> conv = result.jnaerator.convertFunction(result, f, signatures, false);
+				List<Declaration> conv = new ArrayList<Declaration>();
+				result.jnaerator.convertFunction(f, signatures, false, conv, callerLibraryClass);
 				if (f.getModifiers().contains(Modifier.Static)) {
 					classStruct.addDeclarations(conv);
 				} else {

@@ -257,7 +257,13 @@ public class StringUtils {
 	}
 
 	public static String capitalize(String string) {
-		return string.length() == 0 ? "" : Character.toUpperCase(string.charAt(0)) + string.substring(1);
+		return string == null ? null : string.length() == 0 ? "" : Character.toUpperCase(string.charAt(0)) + string.substring(1);
+	}
+	public static String capitalize(List<String> strings, String separator) {
+		List<String> cap = new ArrayList<String>(strings.size());
+		for (String s : strings)
+			cap.add(capitalize(s));
+		return implode(cap, separator);
 	}
 	
 	public static String uncapitalize(String string) {

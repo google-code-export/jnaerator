@@ -20,6 +20,12 @@ package com.ochafik.lang.jnaerator.parser;
 
 public class VariablesDeclaration extends StoredDeclarations {
 
+	public VariablesDeclaration() {}
+	public VariablesDeclaration(TypeRef valueType, VariableStorage...storages) {
+		setValueType(valueType);
+		for (VariableStorage st : storages)
+			addVariableStorage(st);
+	}
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visitVariablesDeclaration(this);

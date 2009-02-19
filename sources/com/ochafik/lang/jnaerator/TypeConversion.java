@@ -309,14 +309,17 @@ public class TypeConversion {
 		return type;
 	}
 	
-	public String findStruct(String name) {
-		Struct s = result.structsByName.get(name);
-		if (s == null)
+	public String findStruct(String name, String callerLibraryClass) {
+		return find(name, result.structsByName.get(name), callerLibraryClass);
+	}
+	public String find(String name, Element e, String callerLibraryClass) {
+		if (e == null)
 			return null;
-		String library = result.getLibrary(s);
+		String library = result.getLibrary(e);
 		if (library == null)
 			return null;
-		return result.getLibraryClassSimpleName(library) + "." + name;
+		String libClass = result.getLibraryClassSimpleName(library);
+		return SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name;
 	}
 	public FieldRef findEnum(String name) {
 		Enum s = result.enumsByName.get(name);
@@ -400,7 +403,7 @@ public class TypeConversion {
 		}
 	}
 	
-	public String findCallback(String name) {
+	public String findCallback(String name, String callerLibraryClass) {
 		FunctionSignature s = result.callbacksByName.get(name);
 		if (s == null)
 			return null;
@@ -414,10 +417,11 @@ public class TypeConversion {
 			return //result.result.getObjCClass(parentStruct.getName()).
 				parentStruct.getName() + "." + inferCallBackName(s, true);
 		}
-		return result.getLibraryClassSimpleName(library) + "." + inferCallBackName(s, true);
+		String libClass = result.getLibraryClassSimpleName(library);
+		return (SyntaxUtils.equal(libClass, callerLibraryClass) ? "" : libClass + ".") + inferCallBackName(s, true);
 	}
 	
-	public String findCallback(FunctionSignature s) {
+	public String findCallback(FunctionSignature s, String callerLibraryClass) {
 		String library = result.getLibrary(s);
 		if (library == null)
 			return null;
@@ -427,20 +431,22 @@ public class TypeConversion {
 			return //result.result.getObjCClass(parentStruct.getName()).
 				parentStruct.getName() + "." + inferCallBackName(s, true);
 		}
-		return result.getLibraryClassSimpleName(library) + "." + inferCallBackName(s, true);
+
+		String libClass = result.getLibraryClassSimpleName(library);
+		return (SyntaxUtils.equal(libClass, callerLibraryClass) ? "" : libClass + ".") + inferCallBackName(s, true);
 	}
 	
-	public String typeToJNA(TypeRef valueType, VariableStorage vs, TypeConversionMode fieldType) throws UnsupportedTypeConversion {
+	public String typeToJNA(TypeRef valueType, VariableStorage vs, TypeConversionMode fieldType, String callerLibraryClass) throws UnsupportedTypeConversion {
 //		Element valueTypeParent = valueType.getParentElement();
 //		try {
 			TypeRef mutatedType = vs.mutateType(valueType);
 			//mutatedType.accept(result);
-			return typeToJNA(mutatedType, fieldType);
+			return typeToJNA(mutatedType, fieldType, callerLibraryClass);
 //		} finally {
 //			valueType.setParentElement(valueTypeParent);
 //		}
 	}
-	String typeToJNA(TypeRef valueType, TypeConversionMode conversionMode) throws UnsupportedTypeConversion {
+	String typeToJNA(TypeRef valueType, TypeConversionMode conversionMode, String callerLibraryClass) throws UnsupportedTypeConversion {
 //		if (valueType == null) 
 //			return null;
 		
@@ -466,11 +472,11 @@ public class TypeConversion {
 		if (valueType instanceof StructTypeRef) {
 			String name = ((StructTypeRef) valueType).getStruct().getName();
 			if (name != null)
-				return findStruct(name) + ".ByValue";
+				return findStruct(name, callerLibraryClass) + ".ByValue";
 		}
 		
 		if (valueType instanceof FunctionSignature) {
-			String name = findCallback((FunctionSignature)valueType);
+			String name = findCallback((FunctionSignature)valueType, callerLibraryClass);
 			if (name != null)
 				return name;
 		}
@@ -495,7 +501,7 @@ public class TypeConversion {
 					return name;
 				
 				/// Pointer to C structure
-				String structQualifiedName = findStruct(name);
+				String structQualifiedName = findStruct(name, callerLibraryClass);
 				if (structQualifiedName != null) {//result.cStructNames.contains(name)) {
 	 				switch (conversionMode) {
 						case NativeParameter:
@@ -535,11 +541,11 @@ public class TypeConversion {
 		}
 		if (valueType instanceof SimpleTypeRef) {
 			String name = ((SimpleTypeRef) valueType).getName();
-			String structQualifiedName = findStruct(name);
+			String structQualifiedName = findStruct(name, callerLibraryClass);
 			if (structQualifiedName != null)
 				return structQualifiedName + ".ByValue";
 			
-			String callbackQualifiedName = findCallback(name);
+			String callbackQualifiedName = findCallback(name, callerLibraryClass);
 			if (callbackQualifiedName != null)
 				return callbackQualifiedName;
 			
@@ -712,24 +718,24 @@ public class TypeConversion {
 		return null;
 	}
 	
-	public Expression convertExpressionToJava(Expression x) throws UnsupportedTypeConversion {
+	public Expression convertExpressionToJava(Expression x, String callerLibraryClass) throws UnsupportedTypeConversion {
 		Expression res = null;
 		if (x instanceof Assignment)
-			res = new Assignment(convertExpressionToJava(((Assignment) x).getTarget()), ((Assignment) x).getValue());
+			res = new Assignment(convertExpressionToJava(((Assignment) x).getTarget(), callerLibraryClass), ((Assignment) x).getValue());
 		else if (x instanceof BinaryOp) {
 			res = new Expression.BinaryOp(((BinaryOp) x).getOperator(), 
-				convertExpressionToJava(((BinaryOp) x).getFirstOperand()),
-				convertExpressionToJava(((BinaryOp) x).getSecondOperand())
+				convertExpressionToJava(((BinaryOp) x).getFirstOperand(), callerLibraryClass),
+				convertExpressionToJava(((BinaryOp) x).getSecondOperand(), callerLibraryClass)
 			);
 		} else if (x instanceof UnaryOp) {
 			res = new Expression.UnaryOp(((UnaryOp) x).getOperator(), 
-				convertExpressionToJava(((UnaryOp) x).getOperand())
+				convertExpressionToJava(((UnaryOp) x).getOperand(), callerLibraryClass)
 			);
 		} else if (x instanceof Cast) {
-			String jnaType = typeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType);
+			String jnaType = typeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType, callerLibraryClass);
 			TypeRef tr = new SimpleTypeRef(jnaType);
 			JavaPrim prim = getPrimitive(tr);
-			Expression casted = convertExpressionToJava(((Cast) x).getTarget());
+			Expression casted = convertExpressionToJava(((Cast) x).getTarget(), callerLibraryClass);
 			if (prim == JavaPrim.NativeLong) {
 				/*Element parent = x.getParentElement();
 				if (parent != null && !(parent instanceof Expression)) {
@@ -763,7 +769,7 @@ public class TypeConversion {
 							res = findDefine(name);
 						
 						if (res == null)
-							res = convertExpressionToJava(defineValue);
+							res = convertExpressionToJava(defineValue, callerLibraryClass);
 					}
 				} else {
 					
@@ -776,7 +782,7 @@ public class TypeConversion {
 				if ("sizeof".equals(fc.getFunctionName()) && fc.getArguments().size() == 1) {
 					TypeRefExpression typeEx =  SyntaxUtils.as(fc.getArguments().get(0).getValue(), TypeRefExpression.class);
 					if (typeEx != null) {
-						res = sizeofToJava(typeEx.getType());
+						res = sizeofToJava(typeEx.getType(), callerLibraryClass);
 					}
 				}
 			}
@@ -791,7 +797,7 @@ public class TypeConversion {
 		return res;
 	}
 
-	private Expression sizeofToJava(TypeRef type) {
+	private Expression sizeofToJava(TypeRef type, String callerLibraryClass) {
 		type = resolveTypeDef(type);
 //		type = type;
 		
@@ -799,13 +805,13 @@ public class TypeConversion {
 		if (type instanceof Pointer) 
 			res = new Expression.FieldRef(com.sun.jna.Pointer.class.getName() + ".SIZE");
 		else if (type instanceof ArrayRef) {
-			res = sizeofToJava(((ArrayRef) type).getTarget());
+			res = sizeofToJava(((ArrayRef) type).getTarget(), callerLibraryClass);
 			if (res == null)
 				return null;
 			
 			ArrayRef ar = (ArrayRef) type;
 			for (Expression x : ar.getDimensions()) {
-				Expression c = convertExpressionToJava(x);
+				Expression c = convertExpressionToJava(x, callerLibraryClass);
 				res = new Expression.BinaryOp(Expression.BinaryOperator.Multiply, res, c);
 			}
 		} else if (type instanceof SimpleTypeRef || type instanceof Primitive) {
@@ -813,14 +819,14 @@ public class TypeConversion {
 			if (prim != null) {
 				res = sizeof(prim);
 			} else {
-				String structRef = findStruct(((SimpleTypeRef) type).getName());
+				String structRef = findStruct(((SimpleTypeRef) type).getName(), callerLibraryClass);
 				if (structRef != null)
 					return new Expression.FunctionCall(new New(new SimpleTypeRef(structRef)), "size", MemberRefStyle.Dot);
 			}
 		} else if (type instanceof StructTypeRef) {
 			Struct s = ((StructTypeRef) type).getStruct();
 			if (s != null) {
-				String structRef = findStruct(s.getName());
+				String structRef = findStruct(s.getName(), callerLibraryClass);
 				if (structRef != null)
 					return new Expression.FunctionCall(new New(new SimpleTypeRef(structRef)), "size", MemberRefStyle.Dot);
 				else
@@ -828,7 +834,7 @@ public class TypeConversion {
 						if (d instanceof VariablesDeclaration) {
 							TypeRef varsType = d.getValueType();
 							for (VariableStorage sto : ((VariablesDeclaration) d).getVariableStorages()) {
-								Expression so = sizeofToJava(sto.mutateType(varsType));
+								Expression so = sizeofToJava(sto.mutateType(varsType), callerLibraryClass);
 								if (so == null)
 									return null;
 									

@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -48,7 +49,8 @@ public abstract class Declaration extends Element {
 		__refparam,
 		__exceptthat,
 		
-		Public, 
+		Public,
+		Final,
 		Private, 
 		Protected, 
 		Const, 
@@ -117,15 +119,22 @@ public abstract class Declaration extends Element {
 		extMods.put("uuid", Modifier.UUID);
 	}
 	
-	public void addModifier(Modifier mod) {
+	public Declaration addModifier(Modifier mod) {
 		if (mod != null)
 			modifiers.add(mod);
+		return this;
 	}
-	public void addModifiers(List<Modifier> mods) {
+	public Declaration addModifiers(List<Modifier> mods) {
 		if (mods != null)
 			for (Modifier mod : mods)
 				addModifier(mod);
+		return this;
 	}
+
+	public Declaration addModifiers(Modifier... mds) {
+		return addModifiers(Arrays.asList(mds));
+	}
+
 	@Override
 	public Element getNextChild(Element child) {
 		return getNextSibling(annotations, child);

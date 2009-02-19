@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -161,7 +162,7 @@ public class Struct extends StoredDeclarations {
 		
 		String lnind = "\n" + indent + "\t";
 		String body = isForwardDeclaration() ? "" :
-			" {" +
+			"{" +
 			(declarations.isEmpty() ? 
 				"" :
 				lnind + implode(declarations, "\n" + lnind, indent + "\t") + "\n" + indent  
@@ -176,22 +177,25 @@ public class Struct extends StoredDeclarations {
 			getModifiers().contains(Modifier.Protected) ? "protected " :
 			"";
 		
+		String javaExtension = getParents().isEmpty() ? "" : "extends " + StringUtils.implode(getParents(), ", ") + " ";
+		String javaImplements = getProtocols().isEmpty() ? "" : "implements " + StringUtils.implode(getProtocols(), ", ") + " ";
+		
 		switch (getType()) {
 			case CPPClass:
-				return pre + "class" + nameStr + body;
+				return pre + "class" + nameStr + " " + body;
 			case CUnion:
-				return pre + "union" + nameStr + body;
+				return pre + "union" + nameStr + " " + body;
 			case JavaClass:
-				return pre + javaPublicity + "class" + nameStr + body;
+				return pre + javaPublicity + "class" + nameStr + " " + javaExtension + javaImplements + body;
 			case JavaInterface:
-				return pre + javaPublicity + "interface" + nameStr + body;
+				return pre + javaPublicity + "interface" + nameStr + " " + javaExtension + javaImplements + body;
 			case ObjCClass:
-				return pre + "@class" + nameStr + body;
+				return pre + "@class" + nameStr + " " + body;
 			case ObjCProtocol:
-				return pre + "@protocol" + nameStr + body; // TODO check this ???
+				return pre + "@protocol" + nameStr + " " + body; // TODO check this ???
 			case CStruct:
 			default:
-				return pre + "struct" + nameStr + body;
+				return pre + "struct" + nameStr + " " + body;
 		}
 		
 	}
@@ -206,5 +210,9 @@ public class Struct extends StoredDeclarations {
 	}
 	public void accept(Visitor visitor) {
 		visitor.visitStruct(this);
+	}
+
+	public void setParents(String... ns) {
+		setParents(Arrays.asList(ns));
 	}
 }

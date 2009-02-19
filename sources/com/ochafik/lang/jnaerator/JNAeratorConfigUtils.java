@@ -23,10 +23,13 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import com.ochafik.admin.visualstudio.Configuration;
@@ -38,9 +41,12 @@ import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
 import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
+import com.ochafik.util.string.StringUtils;
 
 public class JNAeratorConfigUtils {
 
+	private static Logger logger = Logger.getLogger(JNAeratorConfigUtils.class.getName());
+	
 	public static final class MSC_VER {
 		public final int 
 			VC4 = 1000,
@@ -50,6 +56,14 @@ public class JNAeratorConfigUtils {
 			VC71 = 1310;
 	}
 
+	
+	static String getProp(String name, String defVal) {
+		String v = System.getenv(name);
+		v = v == null ? System.getProperty(name, defVal) : v;
+		logger.log(Level.INFO, "[environment] " + name + "=" + v);
+		return v;
+	}
+
 	static List<String> DEFAULT_FRAMEWORKS_PATH = Arrays.asList( 
 		"/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks",
 		"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks", 
@@ -57,6 +71,7 @@ public class JNAeratorConfigUtils {
 		"/Library/Frameworks",
 		System.getProperty("user.home") + "/Library/Frameworks"
 	);
+
 	static List<String> DEFAULT_INCLUDE_PATH;
 	static {
 		if (SystemUtils.isMacOSX()) {
@@ -211,8 +226,8 @@ public class JNAeratorConfigUtils {
 	 * TODO move this to a .h resource file
 	 */
 	public static void autoConfigure(final JNAeratorConfig config) {
-		config.preprocessorConfig.includes.addAll(JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
-		config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
+		config.preprocessorConfig.includes.addAll(getDefaultIncludePath());//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
+		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath());//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
 			//http://support.microsoft.com/kb/65472
 			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);;
@@ -252,6 +267,15 @@ public class JNAeratorConfigUtils {
 		}
 		
 		JNAeratorConfigUtils.autoConfigureArchitecture(config);
+	}
+
+	private static Collection<? extends String> getDefaultFrameworkPath() {
+		return Arrays.asList(getProp("JNAERATOR_INCLUDE_PATH", StringUtils.implode(DEFAULT_FRAMEWORKS_PATH, File.pathSeparator)).split(File.pathSeparator));
+	}
+
+	private static Collection<? extends String> getDefaultIncludePath() {
+		return Arrays.asList(getProp("JNAERATOR_FRAMEWORKS_PATH", StringUtils.implode(DEFAULT_INCLUDE_PATH, File.pathSeparator)).split(File.pathSeparator));
+		
 	}
 
 	/**

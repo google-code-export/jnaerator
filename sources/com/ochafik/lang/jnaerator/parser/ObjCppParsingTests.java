@@ -109,6 +109,7 @@ public class ObjCppParsingTests {
 				assertNotNull("Null clone !", clo);
 				String cloStr = clo.toString();
 				if (!declStr.equals(cloStr)) {
+					// go here again to debug
 					clo = decl.clone();
 				}
 				assertEquals("Clone failed !", declStr, cloStr);
