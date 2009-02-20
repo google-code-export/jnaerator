@@ -5,7 +5,7 @@ rm -fR classes 2> /dev/null
 mkdir classes 2> /dev/null
 
 echo Compiling
-javac -cp `ls libraries/*.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
+javac -target 1.5 -cp `ls libraries/*.jar | tr "\n" ":"`:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
 
 if [[ $? == 0 ]] ; then
 	echo Main-Class: com.ochafik.lang.jnaerator.JNAerator> classes/mf
