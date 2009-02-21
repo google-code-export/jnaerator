@@ -103,7 +103,7 @@ public class TypeConversion {
 		}
 	}
 	enum TypeConversionMode {
-		PrimitiveParameter, NativeParameter, FieldType, ReturnType, ExpressionType, StaticallySizedArrayField
+		PrimitiveParameter, NativeParameter, FieldType, ReturnType, ExpressionType, StaticallySizedArrayField, PrimitiveReturnType
 	}
 	static Map<JavaPrim, Class<? extends ByReference>> primToByReference = new HashMap<JavaPrim, Class<? extends ByReference>>();
 	
@@ -458,9 +458,9 @@ public class TypeConversion {
 		String valueTypeString = String.valueOf(valueType);
 		if (valueTypeString.equals("void*"))
 			valueType = (TypeRef)valueType;
-		else if (valueTypeString.matches("(__)?const char\\*"))// && conversionMode == TypeConversionMode.PrimitiveParameter)
+		else if (valueTypeString.matches("(__)?const char\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
 			return String.class.getName();
-		else if (valueTypeString.matches("(__)?const wchar_t\\*"))// && conversionMode == TypeConversionMode.PrimitiveParameter)
+		else if (valueTypeString.matches("(__)?const wchar_t\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
 			return WString.class.getName();
 		
 		if (valueType instanceof Primitive) {
