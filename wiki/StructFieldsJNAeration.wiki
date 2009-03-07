@@ -5,12 +5,12 @@
 
 == Arrays with initializers ==
 Arrays with initializers are converted to Java arrays :
-{{{
+ {{{
 int iarr[4]; 
 char* csarr[3][4]; 
 }}}
 becomes
-{{{
+ {{{
 public final int[] iarr = new int[(4)];
 public final com.sun.jna.ptr.ByteByReference[] csarr = new com.sun.jna.ptr.ByteByReference[3 * 4];
 }}}
@@ -18,9 +18,10 @@ public final com.sun.jna.ptr.ByteByReference[] csarr = new com.sun.jna.ptr.ByteB
 == Arrays with partial initializers ==
 
 When an array has partial size initializers, JNAerator initializes the known part and switches to Pointer for the rest of the type :
-{{{
+ {{{
 char *(*(**foo[][8])())[];
 }}}
-{{{
+becomes
+ {{{
 public final com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
 }}}
