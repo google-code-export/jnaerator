@@ -24,6 +24,8 @@ long value = (int)(__u.__u >> 31);
 --
 void f(struct s i);
 --
+void f(void (*g)());
+--
 extern long long int i;
 --
 extern long int llrint(double);

@@ -104,8 +104,9 @@ public class CToJavaPreScanner extends Scanner {
 		Element toAddAfter = v;
 		
 		/// Explode comma-separated variables declarations
+		int nDecl = v.getDeclarators().size();
 		for (Declarator vs : v.getDeclarators()) {
-			if (vs instanceof DirectDeclarator)
+			if (vs instanceof DirectDeclarator && nDecl == 1)
 				continue;
 			
 			Declaration decl = null;
