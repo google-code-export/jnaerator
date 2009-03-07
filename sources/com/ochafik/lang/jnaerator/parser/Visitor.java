@@ -41,6 +41,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SubTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 
 public interface Visitor {
@@ -123,5 +124,7 @@ public interface Visitor {
 	void visitBlock(Block block);
 
 	void visitExpressionStatement(ExpressionStatement expressionStatement);
+
+	void visitSubTypeRef(SubTypeRef subTypeRef);
 	
 }

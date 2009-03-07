@@ -29,6 +29,7 @@ import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
@@ -51,18 +52,19 @@ public class MissingNamesChooser extends Scanner {
 		Function f = functionSignature.getFunction();
 		if (holder != null && f != null && f.getName() != null) {
 			//if (s.getName() != null) {
-			/*VariablesDeclaration pd = as(functionSignature.getParentElement(), VariablesDeclaration.class);
-				if (pd != null && pd.getVariableStorages().isEmpty())
-					pd.replaceBy(null); // special case of C++-like struct sub-type definition 
-				else
-					structTypeRef.replaceBy(new TypeRef.SimpleTypeRef(s.getName()));
-			 */
-			functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
+			StoredDeclarations d = as(functionSignature.getParentElement(), StoredDeclarations.class);
+			if (d instanceof TypeDef)
+				return;
+			
+			if (d != null && d.getDeclarators().isEmpty())
+				d.replaceBy(null); // special case of C++-like struct sub-type definition 
+			else
+				//structTypeRef.replaceBy(new TypeRef.SimpleTypeRef(s.getName()));
+				functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
 			TypeDef td = new TypeDef();
 			td.setValueType(functionSignature);
 			td.addDeclarator(new DirectDeclarator(f.getName()));
 			holder.addDeclaration(td);
-
 		}
 
 		/*
@@ -120,6 +122,8 @@ public class MissingNamesChooser extends Scanner {
 				List<String> ownerNames = JNAeratorUtils.guessOwnerName(function);
 
 				List<String> names = new ArrayList<String>();
+				if (function.getName() != null)
+					names.add(function.getName());
 				if (ownerNames != null)
 					names.addAll(ownerNames);
 
@@ -164,6 +168,13 @@ public class MissingNamesChooser extends Scanner {
 				String bestName = JNAeratorUtils.findBestPlainStorageName(td);
 				if (bestName != null)
 					taggedTypeRef.setTag(bestName);
+			
+			} else {
+				TypeDef td = as(taggedTypeRef.getParentElement(), TypeDef.class);
+				String bestName = JNAeratorUtils.findBestPlainStorageName(td);
+				if (bestName != null)
+					taggedTypeRef.setTag(bestName);
+			
 			}
 		}
 		if (taggedTypeRef.getTag() == null) {
@@ -196,8 +207,10 @@ public class MissingNamesChooser extends Scanner {
 
 		}
 
-		if (changed)
+		if (changed) {
 			taggedTypeRef.accept(this);//super.visitStruct(struct);
+			return;
+		}
 		//			if (changed)
 		//				struct.accept(definitions);
 
@@ -205,18 +218,23 @@ public class MissingNamesChooser extends Scanner {
 			DeclarationsHolder holder = taggedTypeRef.findParentOfType(DeclarationsHolder.class);
 			if (holder != null && holder != taggedTypeRef.getParentElement()) {
 				//if (s.getName() != null) {
-				if (taggedTypeRef instanceof Enum)
-					taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef("int"));//taggedTypeRef.getTag()));
-				else
+//				if (taggedTypeRef instanceof Enum)
+//					taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef("int"));//taggedTypeRef.getTag()));
+//				else
 					taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef(taggedTypeRef.getTag()));
-				holder.addDeclaration(new TaggedTypeRefDeclaration(taggedTypeRef));
+				
+				TaggedTypeRefDeclaration td = new TaggedTypeRefDeclaration(taggedTypeRef);
+				holder.addDeclaration(td);
+				td.accept(this);
 				//VariablesDeclaration pd = as(taggedTypeRef.getParentElement(), VariablesDeclaration.class);
 				//if (pd != null && pd.getDeclarators().isEmpty())
-				//	pd.replaceBy(null); // special case of C++-like struct sub-type definition 
-
+				//	pd.replaceBy(null); // special case of C++-like struct sub-type definition
 			}
 		}
 	}
-	
+	static <T extends Element> T importDetails(T t, Element e) {
+		t.importDetails(e);
+		return t;
+	}
 	
 }

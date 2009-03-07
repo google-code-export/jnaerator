@@ -48,6 +48,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SubTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.util.listenable.Pair;
@@ -410,6 +411,11 @@ public class Scanner implements Visitor {
 
 	public void visitStatement(Statement statement) {
 		visitElement(statement);
+	}
+
+	@Override
+	public void visitSubTypeRef(SubTypeRef subTypeRef) {
+		visitTargettedTypeRef(subTypeRef);
 	}
 
 }

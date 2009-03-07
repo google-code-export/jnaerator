@@ -705,11 +705,34 @@ functionSignatureSuffix returns [FunctionSignature signature]
 		)? ')'
 	;
 
-plainTypeRef returns [TypeRef type]
+functionSignatureSuffixNoName returns [FunctionSignature signature]
+	:	tk='(' exportationModifiers '*' ')' { 
+			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, null, null)), getLine($tk));
+			$signature.getFunction().setType(Function.Type.CFunction);
+			$signature.getFunction().addModifiers($exportationModifiers.modifiers);
+		}
+		'(' (
+			a1=argDef { 
+				if (!$a1.text.equals("void"))
+					((FunctionSignature)$signature).getFunction().addArg($a1.arg); 
+			}
+			(
+				',' 
+				ax=argDef { 
+					((FunctionSignature)$signature).getFunction().addArg($ax.arg); 
+				}
+			)*
+		)? ')'
+	;
+
+structOrEnum returns [TypeRef type]
 	:	
 		structCore { $type = $structCore.struct; } |
-		enumCore { $type = $enumCore.e; } |
-		typeRefCore { $type = $typeRefCore.type; }
+		enumCore { $type = $enumCore.e; }
+	;
+	
+typeRefCoreOrFuncSig returns [TypeRef type]
+	:	typeRefCore { $type = $typeRefCore.type; }
 		(
 			(
 				typeMutator {
@@ -721,6 +744,27 @@ plainTypeRef returns [TypeRef type]
 				$type = $functionSignatureSuffix.signature;
 			}
 		)?
+	;
+		
+typeRefCoreOrAnonymousFuncSig returns [TypeRef type]
+	:	typeRefCore { $type = $typeRefCore.type; }
+		(
+			(
+				typeMutator {
+					$type = $typeMutator.mutator.mutateType($type);
+				}
+			)*
+			functionSignatureSuffixNoName { 
+				$functionSignatureSuffixNoName.signature.getFunction().setValueType($type); 
+				$type = $functionSignatureSuffixNoName.signature;
+			}
+		)?
+	;
+		
+plainTypeRef returns [TypeRef type]
+	:	
+		structOrEnum { $type = $structOrEnum.type; } |
+		typeRefCoreOrFuncSig { $type = $typeRefCoreOrFuncSig.type; }
 	;
 
 declarator  returns [Declarator declarator, List<Modifier> modifiers]
@@ -797,7 +841,24 @@ varDecl returns [Declaration decl, TypeRef type]
 				$decl = new TaggedTypeRefDeclaration($namedTypeRef.type);
 			} |*/
 			(
-				plainTypeRef { $type = $plainTypeRef.type; }
+				structOrEnum { 
+					$type = $structOrEnum.type;
+					//$decl = new VariablesDeclaration($type);
+				}
+				(
+					d1=declaratorsList? {
+						if ($d1.declarators != null)
+							$decl = new VariablesDeclaration($type, $d1.declarators);
+						else
+							$decl = new VariablesDeclaration($type); //new TaggedTypeRefDeclaration((TaggedTypeRef)$type);
+					}	
+				) |
+				tcfs=typeRefCoreOrAnonymousFuncSig { $type = $tcfs.type; }
+				d2=declaratorsList {
+					$decl = new VariablesDeclaration($type, $d2.declarators);
+				}
+				
+				//plainTypeRef { $type = $plainTypeRef.type; }
 				/*(
 					structCore { 
 						$type = $structCore.struct; 
@@ -809,9 +870,9 @@ varDecl returns [Declaration decl, TypeRef type]
 						$type = $typeRefCore.type; 
 					}
 				)*/
-				declaratorsList {
+				/*declaratorsList { 
 					$decl = new VariablesDeclaration($type, $declaratorsList.declarators);
-				}
+				}*/
 			)
 		)
 		';' { 
@@ -845,7 +906,7 @@ declaratorsList returns [List<Declarator> declarators]
 				',' 
 				x=declarator { $declarators.add($x.declarator); }
 			)*
-		)?
+		)
 	;
 
 directDeclarator  returns [Declarator declarator]

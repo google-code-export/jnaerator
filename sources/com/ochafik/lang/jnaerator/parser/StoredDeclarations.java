@@ -41,9 +41,7 @@ public abstract class StoredDeclarations extends Declaration {
 		
 		@Override
 		public String toString(CharSequence indent) {
-			String p = formatComments(indent, false) + getModifiersStringPrefix();
-			if (p.length() > 0)
-				p += "\n" + indent;
+			String p = formatComments(indent, false, true, true) + getModifiersStringPrefix();
 			return p + "typedef " + getValueTypeAndStorageSuffix();
 		}
 	}
@@ -68,7 +66,7 @@ public abstract class StoredDeclarations extends Declaration {
 	}
 	@Override
 	public String toString(CharSequence indent) {
-		return (commentBefore == null || commentBefore.length() == 0 ? "" : formatComments(indent, false) + "\n" + indent) +
+		return formatComments(indent, false, true, true) +
 			getModifiersStringPrefix() + getValueTypeAndStorageSuffix()
 			//+ (commentAfter == null ? "" : " " + commentAfter.trim())
 			;

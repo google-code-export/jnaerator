@@ -36,6 +36,10 @@ public abstract class Declarator extends ModifiableElement {
 	protected Expression defaultValue;
 	boolean parenthesized = false;
 	
+	public static interface MutableByDeclarator {
+		MutableByDeclarator clone();
+	}
+	
 	public enum PointerStyle
 	{
 		Pointer { @Override public String toString() { return "*"; } }, 
@@ -56,7 +60,7 @@ public abstract class Declarator extends ModifiableElement {
 	public Declarator addModifiers(Modifier... mds) {
 		return (Declarator)super.addModifiers(mds);
 	}
-	public abstract Element mutateType(TypeRef t);
+	public abstract MutableByDeclarator mutateType(MutableByDeclarator t);
 	
 	public static class DirectDeclarator extends Declarator {
 		public DirectDeclarator(String name) {
@@ -80,7 +84,7 @@ public abstract class Declarator extends ModifiableElement {
 		public String resolveName() {
 			return getName();
 		}
-		public TypeRef mutateType(TypeRef type) {
+		public MutableByDeclarator mutateType(MutableByDeclarator type) {
 			return type.clone();
 		}
 		@Override
@@ -144,13 +148,16 @@ public abstract class Declarator extends ModifiableElement {
 			visitor.visitPointerDeclarator(this);
 		}
 		@Override
-		public Element mutateType(TypeRef type) {
-			if (target instanceof FunctionDeclarator) {
-				Function f = ((FunctionDeclarator)target).mutateType(type);
-				return new TypeRef.FunctionSignature(f);
-			}
-			TypeRef t = new TypeRef.Pointer(type, getPointerStyle());
-			return target.mutateType(t);
+		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			type = type.clone();
+			if (type instanceof Function) {
+				type = new TypeRef.FunctionSignature((Function)type);
+			} else if (type instanceof TypeRef) {
+				type = new TypeRef.Pointer((TypeRef)type, getPointerStyle());
+			} else
+				throw new IllegalArgumentException(type.getClass().getName() + " cannot be mutated by pointer");
+			
+			return getTarget().mutateType(type);
 		}
 		public Declarator.PointerStyle getPointerStyle() {
 			return pointerStyle;
@@ -180,14 +187,18 @@ public abstract class Declarator extends ModifiableElement {
 		}
 		
 		@Override
-		public Function mutateType(TypeRef t) {
-			//return null;
-			Function f = new Function(Type.CFunction, getTarget().resolveName(), (TypeRef)getTarget().mutateType(t));
+		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			type = type.clone();
+			
+			if (!(type instanceof TypeRef))
+				throw new IllegalArgumentException("Function declarator can only mutate type references !");
+			
+			Function f = new Function();
+			f.setValueType((TypeRef)type);
+			f.setType(Type.CFunction);
 			f.setArgs(getArgs());
-			return f;
-			//if (t instanceof )
-			//return getTarget().mutateType(new TypeRef.FunctionSignature(new Function(null, null, getArgs())));
-			//return getTarget().mutateType(new TypeRef.FunctionSignature());
+			
+			return getTarget().mutateType(f);
 		}
 		public List<Arg> getArgs() {
 			return unmodifiableList(args);
@@ -265,9 +276,17 @@ public abstract class Declarator extends ModifiableElement {
 			ex.setParentElement(this);
 		}
 		
-		public Element mutateType(TypeRef type) {
-			TypeRef t = new TypeRef.ArrayRef(type, deepClone(getDimensions()));
-			return target.mutateType(t);
+		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			type = type.clone();
+			if (type instanceof TypeRef)
+				type = new TypeRef.ArrayRef((TypeRef)type, deepClone(getDimensions()));
+			else if (type instanceof Function)
+			{
+				Function f = (Function)type;
+				f.setValueType(new TypeRef.ArrayRef(f.getValueType(), deepClone(getDimensions())));
+				type = f;
+			}
+			return target.mutateType(type);
 		}
 		
 		@Override
