@@ -131,6 +131,9 @@ public class JNAeratorStudio extends JPanel {
 	static JEditTextArea textArea(TokenMarker marker) {
 		JEditTextArea ta = new JEditTextArea() {
 			private static final long serialVersionUID = 1L;
+//			int lastCode, lastLocation;
+//			char lastChar = 0;
+			
 			@Override
 			public void processKeyEvent(KeyEvent evt) {
 				if (SystemUtils.isMacOSX()) {
@@ -142,6 +145,7 @@ public class JNAeratorStudio extends JPanel {
 							return;
 					}
 				}
+				
 				super.processKeyEvent(evt);
 			}
 			@Override
