@@ -458,12 +458,9 @@ public class TypeConversion {
 			return
 				typeRef(typeRef(parentStruct.getTag()), inferCallBackName(s, true));
 		}
-		return typeRef(libTypeRef(result.getLibraryClassSimpleName(library), callerLibraryClass), inferCallBackName(s, true));	}
-	
-	public String typeToJNA(TypeRef valueType, Declarator vs, TypeConversionMode fieldType, String callerLibraryClass) throws UnsupportedTypeConversion {
-			TypeRef mutatedType = as(vs.mutateType(valueType), TypeRef.class);
-			return convertTypeToJNA(mutatedType, fieldType, callerLibraryClass).toString();
+		return typeRef(libTypeRef(result.getLibraryClassSimpleName(library), callerLibraryClass), inferCallBackName(s, true));	
 	}
+	
 	public TypeRef convertTypeToJNA(TypeRef valueType, Declarator vs, TypeConversionMode fieldType, String callerLibraryClass) throws UnsupportedTypeConversion {
 		TypeRef mutatedType = as(vs.mutateType(valueType), TypeRef.class);
 		return convertTypeToJNA(mutatedType, fieldType, callerLibraryClass);
@@ -550,25 +547,35 @@ public class TypeConversion {
 					}
 				}
 			}
+			boolean staticallySized = valueType instanceof ArrayRef && !((ArrayRef)valueType).getDimensions().isEmpty();
+			
+			TypeRef convTargType;
 			JavaPrim prim = getPrimitive(target);
 			if (prim != null) {
 				if (prim == JavaPrim.Void)
 					return typeRef(com.sun.jna.Pointer.class);
-				
-				switch (conversionMode) {
-					case StaticallySizedArrayField:
-						return new ArrayRef(typeRef(prim));// + "[]";
-					case PrimitiveParameter:
-						List<Modifier> modifiers = target.getModifiers();
-						if (modifiers.contains(Modifier.Const))
-							return new ArrayRef(typeRef(prim));// + "[]";
-					case FieldType:
-					default:
+				else
+					convTargType = typeRef(prim);
+			} else 
+				convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+			
+			switch (conversionMode) {
+				case StaticallySizedArrayField:
+					return new ArrayRef(convTargType);
+				case PrimitiveParameter:
+					List<Modifier> modifiers = target.getModifiers();
+					if (modifiers.contains(Modifier.Const))
+						return new ArrayRef(convTargType);
+				case FieldType:
+					if (staticallySized)
+						return new ArrayRef(convTargType);
+				default:
+					if (prim != null) {
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
 						if (byRefClass != null)
 							return typeRef(byRefClass);
-						
-				}
+					}
+					
 			}
 			if (target instanceof Pointer) {
 				return typeRef(PointerByReference.class);

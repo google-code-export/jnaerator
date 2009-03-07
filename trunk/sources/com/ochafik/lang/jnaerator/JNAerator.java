@@ -86,6 +86,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
@@ -548,7 +549,7 @@ public class JNAerator {
 						DirectDeclarator dd = (DirectDeclarator)vs;
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
 						
-						TypeRef tr = new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass));
+						TypeRef tr = result.typeConverter.convertTypeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(dd.getName(), val));
 						vd.setCommentBefore(v.getCommentBefore());
 						vd.addToCommentBefore(vs.getCommentBefore());
@@ -885,6 +886,7 @@ public class JNAerator {
 		structJavaClass.addDeclaration(publicStaticClassDecl("ByValue", struct.getTag(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByValue").addModifiers(Modifier.Final));
 		
 		Function constructor = new Function(Function.Type.JavaMethod, struct.getTag(), null);
+		constructor.setCommentBefore("Allocate a new " + struct.getTag() + " struct on the heap");
 		constructor.setBody(new Statement.Block());
 		structJavaClass.addDeclaration(constructor);
 		
@@ -894,6 +896,7 @@ public class JNAerator {
 				new Arg("offset", new TypeRef.Primitive("int"))
 			)
 		);
+		constructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + struct.getTag() + " struct");
 		constructor.setBody(new Statement.Block(
 				new Statement.ExpressionStatement(new Expression.FunctionCall("super")),
 				new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset"))),
@@ -939,59 +942,55 @@ public class JNAerator {
 				String name = vs.resolveName();
 				if (name == null || name.length() == 0)
 					continue;
-					//name = "u" + (iChild[0] + 1);
+
+				TypeRef mutatedType = valueType;
+				if (!(vs instanceof DirectDeclarator))
+				{
+					mutatedType = (TypeRef)vs.mutateType(valueType);
+					vs = new DirectDeclarator(vs.resolveName());
+				}
 				name = result.typeConverter.getValidJavaArgumentName(name);
 				
 				Expression initVal = null;
 				boolean hasFixedSizeStorage = false;
-				String javaTypeStr = null;
-				if (vs instanceof ArrayDeclarator) {
-					ArrayDeclarator ad = (ArrayDeclarator) vs;
-					if (!ad.getDimensions().isEmpty()) {
-						javaTypeStr = result.typeConverter.typeToJNA(valueType, vs, 
-							TypeConversion.TypeConversionMode.StaticallySizedArrayField, 
-							callerLibraryName
-						);
-							
-						//if (prim != null) {
-							hasFixedSizeStorage = true;
-							TypeRef arrayType = new TypeRef.SimpleTypeRef(result.typeConverter.toString(prim));
-							Expression mul = null;
-							List<Expression> dims = ad.getDimensions();
-							for (Expression x : dims) {
-								Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
-								c.setParenthesis(dims.size() == 1);
-								if (mul == null)
-									mul = c;
-								else
-									mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
-							}
-							initVal = new Expression.NewArray(arrayType, mul);
-						//}
-					}
-				}
-				if (javaTypeStr == null) {
-					javaTypeStr = result.typeConverter.typeToJNA((TypeRef)vs.mutateType(valueType), vs, 
-						TypeConversion.TypeConversionMode.FieldType,
-						callerLibraryName
-					);
-				}
-				if (javaTypeStr == null || javaTypeStr.equals("void")) {
-					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
-					//println(indent + v.formatComments(indent, true));
-					//print("//SKIPPED: ");
-				}
-				
-				//boolean hasFixedSizeStorage = vs.getStorageModifiers().isEmpty() && prim != null && !vs.getDimensions().isEmpty();
+				TypeRef javaType = result.typeConverter.convertTypeToJNA(
+					mutatedType, vs, 
+					TypeConversion.TypeConversionMode.FieldType,
+					callerLibraryName
+				);
 				
 				VariablesDeclaration convDecl = new VariablesDeclaration();
+				convDecl.addModifiers(Modifier.Public);
+				
+				if (javaType instanceof ArrayRef && mutatedType instanceof ArrayRef) {
+					ArrayRef mr = (ArrayRef)mutatedType;
+					ArrayRef jr = (ArrayRef)javaType;
+					convDecl.addModifiers(Modifier.Final);
+					//if (ar.getDimensions().isEmpty()) {
+						Expression mul = null;
+						List<Expression> dims = mr.getDimensions();
+						for (Expression x : dims) {
+							Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
+							c.setParenthesis(dims.size() == 1);
+							if (mul == null)
+								mul = c;
+							else
+								mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
+						}
+						initVal = new Expression.NewArray(jr.getTarget(), mul);
+					//}
+				}
+				if (javaType == null || javaType.toString().equals("void")) {
+					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
+				}
+				
 				convDecl.importDetails(v);
+				convDecl.importDetails(vs);
 				convDecl.importDetails(valueType);
 				valueType.stripDetails();
 				convDecl.moveAllCommentsBefore();
-				convDecl.setValueType(new TypeRef.SimpleTypeRef(javaTypeStr));
+				convDecl.setValueType(javaType);
 				convDecl.addDeclarator(new DirectDeclarator(name, initVal));
-				convDecl.addModifiers(Modifier.Public);
 				if (hasFixedSizeStorage)
 					convDecl.addModifiers(Modifier.Final);
 				

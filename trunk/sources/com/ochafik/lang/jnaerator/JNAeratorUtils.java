@@ -21,12 +21,15 @@ package com.ochafik.lang.jnaerator;
 import static com.ochafik.lang.SyntaxUtils.as;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
+import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
@@ -37,23 +40,31 @@ public class JNAeratorUtils {
 		if (parent == null)
 			return null;
 		
+//		StoredDeclarations td = as(parent, StoredDeclarations.class);
+//		String bestName = JNAeratorUtils.findBestPlainStorageName(td);
+//		if (bestName != null)
+//			return Arrays.asList(bestName);
+		
 		List<String> ns = new ArrayList<String>();
-		while (parent != null) {
+		
+		while (parent != null && !(parent instanceof DeclarationsHolder)) {
 			if (parent instanceof Arg) {
 				Arg arg = (Arg)parent;
-				
-				Function f = as(arg.getParentElement(), Function.class);
-				if (f != null && f.getName() != null)
-					ns.add(f.getName());
 				ns.add(arg.getName());
+			} else if (parent instanceof Function) {
+				Function f = (Function)parent;
+				if (f.getName() != null)
+					ns.add(0, f.getName());
 				return ns;
 			} else if (parent instanceof StoredDeclarations) {
 				StoredDeclarations sd = (StoredDeclarations)parent;
 				String bestName = findBestPlainStorageName(sd);
 				if (bestName != null) {
 					ns.add(0, bestName);
-					//return ns;
 				}
+			} else if (parent instanceof Expression) {
+				if (!ns.contains("expression"))
+					ns.add("expression");
 			} else if (parent instanceof Declaration) {
 				Declaration d = (Declaration)parent;
 				if (d.getName() != null) {

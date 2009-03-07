@@ -20,6 +20,7 @@ package com.ochafik.lang.jnaerator;
 
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
@@ -64,6 +65,10 @@ public class CToJavaPreScanner extends Scanner {
 				decl.importDetails(v);
 				//TODO vs.setDimensions(null);
 				//TODO vs.setStorageModifiers(null);
+			} else if (type instanceof Function) {
+				Function f = (Function)type;
+				f.setName(vs.resolveName());
+				decl = (Function)type;
 			} else if (type instanceof Declaration) {
 				decl = (Declaration)type;
 			} else {

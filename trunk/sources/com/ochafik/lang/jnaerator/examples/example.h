@@ -38,4 +38,6 @@ struct TestStruct {
 
 void Test(const char* name, TestStruct& values, RandIntFunc func);
 
+void ComplexAnonymous(struct { union { enum { A, B } e; float f; } u; long v; void (*fptr)(); }*);
+
 }
