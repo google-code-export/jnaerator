@@ -321,6 +321,7 @@ public class JNAeratorStudio extends JPanel {
 					
 					JNAeratorConfig config = new JNAeratorConfig();
 					config.defaultLibrary = libraryName.getText();
+					config.libraryForElementsInNullFile = config.defaultLibrary;
 //					config.addFile(getFile(), "");
 					config.preprocessorConfig.includeStrings.add(sourceArea.getText());
 					final JNAerator jnaerator = new JNAerator(config) {

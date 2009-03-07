@@ -25,7 +25,7 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
@@ -95,17 +95,19 @@ public class ObjCppToJavaScanner extends Scanner {
 		}*/
 
 		Element element = originalDefinitions.resolveElement(simpleTypeRef, name, null);
-		if (element instanceof VariableStorage) {
-			VariableStorage vs = (VariableStorage)element;
+		if (element instanceof Declarator) {
+			Declarator vs = (Declarator)element;
 			Element parent = vs.getParentElement();
 			if (parent != null) {
 				if (parent instanceof TypeDef) {
-					TypeRef tr = vs.mutateType(((TypeDef) parent).getValueType());
-					simpleTypeRef.replaceBy(tr);
-					tr.accept(this);
+					Element mut = vs.mutateType(((TypeDef) parent).getValueType());
+					if (mut instanceof TypeRef) {
+						simpleTypeRef.replaceBy(mut);
+						mut.accept(this);
+					}
 				} else if (parent instanceof Struct) {
 					Struct s = (Struct) parent;
-					String structName = s.getName();
+					String structName = s.getTag();
 					// TODO ensure all structs have names !
 					String library = getLibrary(s);
 					if (library == null)

@@ -27,7 +27,7 @@ import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage.StorageModifier;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.util.string.StringUtils;
 
 public class RococoaUtils {
@@ -37,7 +37,7 @@ public class RococoaUtils {
 	static Pattern shortNamesPattern = Pattern.compile("([A-Z]+?[a-z]*)(?:[A-Z][a-z]|$)");
 	
 	public static List<String> getShortNames(Struct type) {
-		String name = type.getName();
+		String name = type.getTag();
 		List<String> shortNames = new ArrayList<String>();
 		String base = name.startsWith("NS") ? name.substring(2) : name;
 	
@@ -87,12 +87,12 @@ public class RococoaUtils {
 		if (returnType.toString().equals("id")) {
 			String pointedClassName;
 			if (function.getName().matches("^(alloc|(init|copy|mutableCopy)([A-Z].*)?)$") || RococoaUtils.methodNameMatchesObjcStaticConstructor(declaringClass, function.getName()))
-				pointedClassName = declaringClass.getName();
+				pointedClassName = declaringClass.getTag();
 			else
 				/// Lets subclasses redefine method return type when parent method return type is ID
 				pointedClassName = "NSObject";
 				
-			returnType = new TypeRef.Pointer(new TypeRef.SimpleTypeRef(pointedClassName), StorageModifier.Pointer);
+			returnType = new TypeRef.Pointer(new TypeRef.SimpleTypeRef(pointedClassName), PointerStyle.Pointer);
 		}
 		return returnType;
 	}

@@ -23,7 +23,7 @@ import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 
 /**
@@ -43,7 +43,7 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 	}
 	@Override
 	public void visitEnum(Enum e) {
-		if (e.getName() == null) {
+		if (e.getTag() == null) {
 			// Hack to infer the enum name from the next typedef NSUInteger NSSomethingThatLooksLikeTheEnumsIdentifiers
 			Element nextDeclaration = e.getNextSibling();
 			if (nextDeclaration != null && (nextDeclaration instanceof TypeDef)) {
@@ -55,10 +55,10 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 							simpleType.equals("NSInteger") ||
 							simpleType.equals("CFIndex")) 
 					{
-						VariableStorage bestPlainStorage = null;
-						for (VariableStorage st : typeDef.getVariableStorages()) {
-							if (st.isPlainStorage()) {
-								boolean niceName = !st.getName().startsWith("_");
+						Declarator bestPlainStorage = null;
+						for (Declarator st : typeDef.getDeclarators()) {
+							if (st instanceof Declarator.DirectDeclarator) {
+								boolean niceName = !st.resolveName().startsWith("_");
 								if (bestPlainStorage == null || niceName) {
 									bestPlainStorage = st;
 									if (niceName)
@@ -67,11 +67,11 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 							}
 						}
 						if (bestPlainStorage != null) {
-							String name = bestPlainStorage.getName();
+							String name = bestPlainStorage.resolveName();
 							System.err.println("Automatic struct name matching : " + name);
-							e.setName(name);
+							e.setTag(name);
 							bestPlainStorage.replaceBy(null);
-							if (typeDef.getVariableStorages().isEmpty())
+							if (typeDef.getDeclarators().isEmpty())
 								typeDef.replaceBy(null);
 						}
 					}

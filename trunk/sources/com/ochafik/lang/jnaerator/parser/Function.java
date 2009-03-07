@@ -21,7 +21,6 @@ package com.ochafik.lang.jnaerator.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import com.ochafik.util.string.StringUtils;
 
@@ -29,13 +28,12 @@ public class Function extends Declaration {
 	//private Struct owner;
 
 	final List<Arg> args = new ArrayList<Arg>();
-	Element body;
+	Statement.Block body;
 	Type type;
 
 	public enum Type {
 		CFunction, ObjCMethod, CppMethod, JavaMethod
 	}
-	
 
 	@Override
 	public Element getNextChild(Element child) {
@@ -61,7 +59,7 @@ public class Function extends Declaration {
 	@Override
 	public boolean replaceChild(Element child, Element by) {
 		if (child == getBody()) {
-			setBody(by);
+			setBody((Statement.Block)by);
 			return true;
 		}
 		
@@ -93,16 +91,23 @@ public class Function extends Declaration {
 		changeValue(this, this.args, args);
 	}
 	
-	public void setBody(Element body) {
+	public void setBody(Statement.Block body) {
 		this.body = changeValue(this, this.body, body);
 	}
 
 	//public static class CFunction extends Function {
 	public Function() {}
 
-	public Function(String name, TypeRef returnType) {
+	public Function(Type type, String name, TypeRef returnType) {
+		setType(type);
 		setName(name);
 		setValueType(returnType);
+	}
+	public Function(Type type, String name, TypeRef returnType, List<Arg> args) {
+		setType(type);
+		setName(name);
+		setValueType(returnType);
+		setArgs(args);
 	}
 
 
@@ -111,7 +116,7 @@ public class Function extends Declaration {
 		String s = "";
 		TypeRef valueType = getValueType();
 		String name = getName();
-		Set<Modifier> modifiers = getModifiers();
+		List<Modifier> modifiers = getModifiers();
 		
 		if (type == null)
 			return "<no function type>";
@@ -136,7 +141,7 @@ public class Function extends Declaration {
 				StringUtils.implode(args, ", ") +
 				")";
 
-			return pre + s + (body == null ? ";" : " {\n" + body +"\n}") + post;
+			return pre + s + (body == null ? ";" : " " + body.toString(indent)) + post;
 		case ObjCMethod:
 			s = modifiers.contains(Modifier.Static) ? "+" : "-";
 			StringBuilder argsStr = new StringBuilder();
@@ -166,7 +171,7 @@ public class Function extends Declaration {
 	public void accept(Visitor visitor) {
 		visitor.visitFunction(this);
 	}
-	public Element getBody() {
+	public Statement.Block getBody() {
 		return body;
 	}
 

@@ -133,9 +133,11 @@ public class JNAeratorConfig {
 		}
 	};
 	
+	public String libraryForElementsInNullFile;
+	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)
-			return null;
+			return libraryForElementsInNullFile;
 		
 		return fileToLibrary == null ? 
 				defaultLibrary : 

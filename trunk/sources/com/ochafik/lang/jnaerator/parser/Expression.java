@@ -31,6 +31,8 @@ import com.ochafik.util.string.StringUtils;
 
 public abstract class Expression extends Element {
 	
+	
+
 	boolean parenthesis;
 	public void setParenthesis(boolean parenthesis) {
 		this.parenthesis = parenthesis;
@@ -305,6 +307,12 @@ public abstract class Expression extends Element {
 			this();
 			setFunctionName(functionName);
 		}
+		public FunctionCall(String functionName, Expression... unnamedArgs) {
+			this();
+			setFunctionName(functionName);
+			for (Expression x : unnamedArgs)
+				addArgument(x);
+		}
 		
 		public FunctionCall(Expression target, String functionName, MemberRefStyle memberRefStyle) {
 			this();
@@ -312,7 +320,6 @@ public abstract class Expression extends Element {
 			setFunctionName(functionName);
 			setMemberRefStyle(memberRefStyle);
 		}
-		
 		public FunctionCall() {
 		}
 

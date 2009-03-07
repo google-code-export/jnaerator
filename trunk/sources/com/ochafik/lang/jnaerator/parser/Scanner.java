@@ -21,6 +21,11 @@ package com.ochafik.lang.jnaerator.parser;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.FunctionDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.TargettedDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
@@ -35,14 +40,15 @@ import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.ochafik.lang.jnaerator.parser.Statement.Block;
+import com.ochafik.lang.jnaerator.parser.Statement.ExpressionStatement;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.EnumTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.util.listenable.Pair;
 
@@ -64,7 +70,7 @@ public class Scanner implements Visitor {
 	}
 
 	public void visitEnum(Enum enum1) {
-		visitDeclaration(enum1);
+		visitTaggedTypeRef(enum1);
 		for (EnumItem item : copy(enum1.getItems())) {
 			item.accept(this);
 		}
@@ -149,7 +155,7 @@ public class Scanner implements Visitor {
 
 	protected void visitStoredDeclarations(StoredDeclarations d) {
 		visitDeclaration(d);
-		for (VariableStorage s : copy(d.getVariableStorages()))
+		for (Declarator s : copy(d.getDeclarators()))
 			s.accept(this);
 	}
 
@@ -158,7 +164,7 @@ public class Scanner implements Visitor {
 	}
 
 	protected void doVisitStruct(Struct struct) {
-		visitStoredDeclarations(struct);
+		visitTaggedTypeRef(struct);
 		for (Declaration m : copy(struct.getDeclarations()))
 			m.accept(this);
 	}
@@ -284,26 +290,23 @@ public class Scanner implements Visitor {
 			cast.getTarget().accept(this);
 	}
 	
-	public void visitVariableStorage(VariableStorage variableStorage) {
-		visitElement(variableStorage);
+	public void visitDeclarator(Declarator declarator) {
+		visitModifiableElement(declarator);
 		
-		if (variableStorage.getDefaultValue() != null)
-			variableStorage.getDefaultValue().accept(this);
-		
-		for (Expression x : copy(variableStorage.getDimensions()))
-			x.accept(this);
+		if (declarator.getDefaultValue() != null)
+			declarator.getDefaultValue().accept(this);
 	}
 
 	public void visitVariablesDeclaration(VariablesDeclaration v) {
 		visitDeclaration(v);
-		for (VariableStorage vs : copy(v.getVariableStorages()))
+		for (Declarator vs : copy(v.getDeclarators()))
 			vs.accept(this);
 	}
 
-	public void visitStructTypeRef(StructTypeRef structTypeRef) {
-		visitTypeRef(structTypeRef);
-		if (structTypeRef.getStruct() != null)
-			structTypeRef.getStruct().accept(this);
+	public void visitTaggedTypeRefDeclaration(TaggedTypeRefDeclaration taggedTypeRefDeclaration) {
+		visitDeclaration(taggedTypeRefDeclaration);
+		if (taggedTypeRefDeclaration.getTaggedTypeRef() != null)
+			taggedTypeRefDeclaration.getTaggedTypeRef().accept(this);
 	}
 
 	public void visitEmptyArraySize(EmptyArraySize emptyArraySize) {
@@ -331,12 +334,6 @@ public class Scanner implements Visitor {
 			new1.getConstruction().accept(this);
 	}
 
-	public void visitEnumTypeRef(EnumTypeRef enumTypeRef) {
-		visitTypeRef(enumTypeRef);
-		if (enumTypeRef.getEnumeration() != null)
-			enumTypeRef.getEnumeration().accept(this);
-	}
-
 	@Override
 	public void visitAnnotation(Annotation annotation) {
 		visitElement(annotation);
@@ -354,6 +351,65 @@ public class Scanner implements Visitor {
 			newArray.getType().accept(this);
 		for (Expression x : newArray.getDimensions())
 			x.accept(this);
+	}
+
+	@Override
+	public void visitArrayDeclarator(ArrayDeclarator arrayDeclarator) {
+		visitTargettedDeclarator(arrayDeclarator);
+		for (Expression x : arrayDeclarator.getDimensions())
+			x.accept(this);
+	}
+
+	@Override
+	public void visitDirectDeclarator(DirectDeclarator directDeclarator) {
+		visitDeclarator(directDeclarator);
+	}
+
+	@Override
+	public void visitFunctionDeclarator(FunctionDeclarator functionDeclarator) {
+		visitTargettedDeclarator(functionDeclarator);
+		for (Arg arg : functionDeclarator.getArgs())
+			arg.accept(this);
+	}
+
+	@Override
+	public void visitPointerDeclarator(PointerDeclarator pointerDeclarator) {
+		visitTargettedDeclarator(pointerDeclarator);
+	}
+
+	private void visitTargettedDeclarator(TargettedDeclarator targettedDeclarator) {
+		visitDeclarator(targettedDeclarator);
+		if (targettedDeclarator.getTarget() != null) {
+			targettedDeclarator.getTarget().accept(this);
+		}
+	}
+
+	@Override
+	public void visitModifiableElement(ModifiableElement modifiableElement) {
+		visitElement(modifiableElement);
+	}
+
+	@Override
+	public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
+		visitTypeRef(taggedTypeRef);
+	}
+
+	@Override
+	public void visitBlock(Block block) {
+		visitStatement(block);
+		for (Statement x : copy(block.getStatements()))
+			x.accept(this);
+	}
+
+	@Override
+	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
+		visitStatement(expressionStatement);
+		if (expressionStatement.getExpression() != null)
+			expressionStatement.getExpression().accept(this);
+	}
+
+	public void visitStatement(Statement statement) {
+		visitElement(statement);
 	}
 
 }

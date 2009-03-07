@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.ochafik.lang.SyntaxUtils;
+import static com.ochafik.lang.SyntaxUtils.*;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -35,11 +36,11 @@ import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.FunctionPointerDeclaration;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
-import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
@@ -59,9 +60,9 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage.StorageModifier;
+import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.NativeLong;
@@ -229,20 +230,20 @@ public class TypeConversion {
 	static Map<String, TypeRef> manualTypeDefs = new HashMap<String, TypeRef>();
 	static {
 		
-		manualTypeDefs.put("DWORD_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), StorageModifier.Pointer));
-		manualTypeDefs.put("intptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int"), StorageModifier.Pointer));
-		manualTypeDefs.put("uintptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int", "unsigned"), StorageModifier.Pointer));
-		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), StorageModifier.Pointer));
-		manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long"), StorageModifier.Pointer));
-		manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "unsigned"), StorageModifier.Pointer));
+		manualTypeDefs.put("DWORD_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
+		manualTypeDefs.put("intptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
+		manualTypeDefs.put("uintptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
+		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
+		manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
+		manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
 //		prim("LONG_PTR", JavaPrim.NativeLong);
 //		prim("ULONG_PTR", JavaPrim.NativeLong);
 //		
 		
 		
-		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifier(Modifier.Const.toString()), StorageModifier.Pointer));
-		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), StorageModifier.Pointer));
-		manualTypeDefs.put("PBYTE", new TypeRef.Pointer(new TypeRef.Primitive("char"), StorageModifier.Pointer));
+		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifiers(Modifier.Const), PointerStyle.Pointer));
+		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
+		manualTypeDefs.put("PBYTE", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
 		//manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long"), StorageModifier.Pointer));
 		//manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long", "unsigned"), StorageModifier.Pointer));
 		
@@ -255,10 +256,10 @@ public class TypeConversion {
 		if (valueType instanceof SimpleTypeRef) {
 			String name = ((SimpleTypeRef) valueType).getName();
 			
-			Pair<TypeDef,VariableStorage> p = result.typeDefs.get(name);
+			Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
 			if (p != null) {
-				TypeRef tr = p.getSecond().mutateType(p.getFirst().getValueType());
-				if (tr instanceof StructTypeRef && ((StructTypeRef)tr).getStruct().isForwardDeclaration())
+				TypeRef tr = as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
+				if (tr instanceof Struct && ((Struct)tr).isForwardDeclaration())
 					return valueType;
 				else 
 					return tr;
@@ -355,20 +356,21 @@ public class TypeConversion {
 		boolean firstParent = true;
 		while (parent != null) {
 			if (parent instanceof Struct) {
-				String structName = ((Struct) parent).getName();
+				String structName = ((Struct) parent).getTag();
 				if (structName != null)
 					nameElements.add(0, structName);
 			} else if (firstParent) {
 				if (name == null && parent instanceof TypeDef) {
-					VariableStorage simpleSto = null;
-					for (VariableStorage sto : ((TypeDef)parent).getVariableStorages()) {
-						String stoName = sto.getName();
+					Declarator simpleSto = null;
+					for (Declarator sto : ((TypeDef)parent).getDeclarators()) {
+						String stoName = sto.resolveName();
 						if (stoName == null)
 							continue;
 						
-						if (sto.getDimensions().isEmpty() && sto.getStorageModifiers().isEmpty()) {
+						if (!(sto instanceof ArrayDeclarator)) {
+						//TODO check if properly refactored : if (sto.getDimensions().isEmpty() && sto.getStorageModifiers().isEmpty()) {
 							boolean weirdName = stoName.startsWith("_");
-							if (simpleSto == null || simpleSto.getName().startsWith("_") && !weirdName)
+							if (simpleSto == null || simpleSto.resolveName().startsWith("_") && !weirdName)
 								simpleSto = sto;
 							
 							if (!weirdName)
@@ -417,7 +419,7 @@ public class TypeConversion {
 		Struct parentStruct = s.findParentOfType(Struct.class);
 		if (parentStruct != null && (parentStruct.getType() == Struct.Type.ObjCClass || parentStruct.getType() == Struct.Type.ObjCProtocol)) {
 			return //result.result.getObjCClass(parentStruct.getName()).
-				parentStruct.getName() + "." + inferCallBackName(s, true);
+				parentStruct.getTag() + "." + inferCallBackName(s, true);
 		}
 		String libClass = result.getLibraryClassSimpleName(library);
 		return (SyntaxUtils.equal(libClass, callerLibraryClass) ? "" : libClass + ".") + inferCallBackName(s, true);
@@ -431,17 +433,18 @@ public class TypeConversion {
 		Struct parentStruct = s.findParentOfType(Struct.class);
 		if (parentStruct != null && (parentStruct.getType() == Struct.Type.ObjCClass || parentStruct.getType() == Struct.Type.ObjCProtocol)) {
 			return //result.result.getObjCClass(parentStruct.getName()).
-				parentStruct.getName() + "." + inferCallBackName(s, true);
+				parentStruct.getTag() + "." + inferCallBackName(s, true);
 		}
 
 		String libClass = result.getLibraryClassSimpleName(library);
 		return (SyntaxUtils.equal(libClass, callerLibraryClass) ? "" : libClass + ".") + inferCallBackName(s, true);
 	}
 	
-	public String typeToJNA(TypeRef valueType, VariableStorage vs, TypeConversionMode fieldType, String callerLibraryClass) throws UnsupportedTypeConversion {
+	public String typeToJNA(TypeRef valueType, Declarator vs, TypeConversionMode fieldType, String callerLibraryClass) throws UnsupportedTypeConversion {
 //		Element valueTypeParent = valueType.getParentElement();
 //		try {
-			TypeRef mutatedType = vs.mutateType(valueType);
+			TypeRef mutatedType = as(vs.mutateType(valueType), TypeRef.class);
+			
 			//mutatedType.accept(result);
 			return typeToJNA(mutatedType, fieldType, callerLibraryClass);
 //		} finally {
@@ -471,8 +474,8 @@ public class TypeConversion {
 //			if (!valueType.getModifiers().contains("long"))
 //				return valueType.toString();
 		} 
-		if (valueType instanceof StructTypeRef) {
-			String name = ((StructTypeRef) valueType).getStruct().getName();
+		if (valueType instanceof Struct) {
+			String name = ((Struct) valueType).getTag();
 			if (name != null)
 				return findStruct(name, callerLibraryClass) + ".ByValue";
 		}
@@ -487,14 +490,14 @@ public class TypeConversion {
 			String name = null;
 			if (target instanceof SimpleTypeRef)
 				name = ((SimpleTypeRef) target).getName();
-			else if (target instanceof StructTypeRef) {
-				Struct struct = ((StructTypeRef) target).getStruct();
+			else if (target instanceof Struct) {
+				Struct struct = (Struct)target;
 				if (struct == null) {
 					valueType =  resolveTypeDef(original);
 					struct = null;
 				} else
 //				if (struct != null)
-					name = struct.getName();
+					name = struct.getTag();
 			}
 			
 			if (name != null) {
@@ -523,8 +526,8 @@ public class TypeConversion {
 					case StaticallySizedArrayField:
 						return toString(prim) + "[]";
 					case PrimitiveParameter:
-						List<String> modifiers = target.getModifiers();
-						if (modifiers.contains(Modifier.Const) || modifiers.contains(Modifier.Const.toString()))
+						List<Modifier> modifiers = target.getModifiers();
+						if (modifiers.contains(Modifier.Const))
 							return toString(prim) + "[]";
 					case FieldType:
 					default:
@@ -825,18 +828,18 @@ public class TypeConversion {
 				if (structRef != null)
 					return new Expression.FunctionCall(new New(new SimpleTypeRef(structRef)), "size", MemberRefStyle.Dot);
 			}
-		} else if (type instanceof StructTypeRef) {
-			Struct s = ((StructTypeRef) type).getStruct();
+		} else if (type instanceof Struct) {
+			Struct s = (Struct)type;
 			if (s != null) {
-				String structRef = findStruct(s.getName(), callerLibraryClass);
+				String structRef = findStruct(s.getTag(), callerLibraryClass);
 				if (structRef != null)
 					return new Expression.FunctionCall(new New(new SimpleTypeRef(structRef)), "size", MemberRefStyle.Dot);
 				else
 					for (Declaration d : s.getDeclarations()) {
 						if (d instanceof VariablesDeclaration) {
 							TypeRef varsType = d.getValueType();
-							for (VariableStorage sto : ((VariablesDeclaration) d).getVariableStorages()) {
-								Expression so = sizeofToJava(sto.mutateType(varsType), callerLibraryClass);
+							for (Declarator sto : ((VariablesDeclaration) d).getDeclarators()) {
+								Expression so = sizeofToJava(as(sto.mutateType(varsType), TypeRef.class), callerLibraryClass);
 								if (so == null)
 									return null;
 									
@@ -883,7 +886,7 @@ public class TypeConversion {
 		
 		Enum e = (Enum)parent;
 		return new Expression.FieldRef(result.getLibraryClassSimpleName(library) + "." +
-			(e.getName() == null ? "" : e.getName() + ".") +
+			(e.getTag() == null ? "" : e.getTag() + ".") +
 			enumItem.getName()
 		);
 	}

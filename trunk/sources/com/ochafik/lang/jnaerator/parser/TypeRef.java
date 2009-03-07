@@ -20,30 +20,39 @@ package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
+import com.ochafik.lang.jnaerator.parser.Modifier.Kind;
 import com.ochafik.util.string.StringUtils;
 
-public abstract class TypeRef extends Element {
-	protected final List<String> modifiers = new ArrayList<String>();
+public abstract class TypeRef extends ModifiableElement {
 	
-	static Set<String> MODIFIERS = new TreeSet<String>();
-	static {
-		MODIFIERS.add("const");
-		MODIFIERS.add("mutable");
-		MODIFIERS.add("unsigned");
+	public static abstract class TaggedTypeRef extends TypeRef {
+		String tag;
+		public String getTag() {
+			return tag;
+		}
+		public void setTag(String tag) {
+			this.tag = tag;
+		}
+		
+		public boolean isForwardDeclaration() {
+			return forwardDeclaration;
+		}
+		public void setForwardDeclaration(boolean forwardDeclaration) {
+			this.forwardDeclaration = forwardDeclaration;
+		}
+		
+		boolean forwardDeclaration = false;
+		
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitTaggedTypeRef(this);
+		}
 	}
-	
-	public List<String> getModifiers() {
-		return unmodifiableList(modifiers);
-	}
-	
-	public void setModifiers(List<String> modifiers) {
-		this.modifiers.clear();
-		this.modifiers.addAll(modifiers);
-	}
+	//protected final List<String> modifiers = new ArrayList<String>();
 	
 	@Override
 	public TypeRef clone() {
@@ -98,10 +107,10 @@ public abstract class TypeRef extends Element {
 	public String variableDeclarationToString(String varName, boolean isVarArg) {
 		return toString() + (isVarArg ? "... " : " ") + varName;
 	}
-	public boolean acceptsModifier(String modifier) {
-		return MODIFIERS.contains(modifier);
+	public boolean acceptsModifier(Modifier modifier) {
+		return modifier.isAnyOf(Kind.NumericTypeQualifier, Kind.TypeQualifier);
 	}
-	
+	/*
 	public TypeRef addModifier(String modifier) {
 		if (modifier != null)
 			modifiers.add(modifier);
@@ -110,7 +119,7 @@ public abstract class TypeRef extends Element {
 	public void addModifier(String modifier, int i) {
 		if (modifier != null)
 			modifiers.add(i, modifier);
-	}
+	}*/
 	
 	public String getModifiersStringPrefix() {
 		return StringUtils.implode(modifiers, " ") + (modifiers.isEmpty() ? "" : " ");
@@ -181,21 +190,45 @@ public abstract class TypeRef extends Element {
 	public static class Primitive extends TypeRef {
 		protected String name;
 		
-		public Primitive(String name, String... modifiers) {
-			this();
+		static Set<String> cPrimitiveTypes = new HashSet<String>();
+		static {
+			cPrimitiveTypes.add("long");
+			cPrimitiveTypes.add("int");
+			cPrimitiveTypes.add("short");
+			cPrimitiveTypes.add("char");
+			cPrimitiveTypes.add("void");
+			cPrimitiveTypes.add("double");
+			cPrimitiveTypes.add("float");
+			cPrimitiveTypes.add("size_t");
+			cPrimitiveTypes.add("__int8");
+			cPrimitiveTypes.add("__int16");
+			cPrimitiveTypes.add("__int32");
+			cPrimitiveTypes.add("__int64");
+			cPrimitiveTypes.add("__uint8");
+			cPrimitiveTypes.add("__uint16");
+			cPrimitiveTypes.add("__uint32");
+			cPrimitiveTypes.add("__uint64");
+			
+		}
+		
+		public static boolean isACPrimitive(String s) {
+			return cPrimitiveTypes.contains(s);
+		}
+		public Primitive(String name) {//, String... modifiers) {
+			//this();
 			setName(name);
-			for (String modifier : modifiers)
-				addModifier(modifier);
+//			for (String modifier : modifiers)
+//				addModifier(modifier);
 		}
 
 		public Primitive() {
 		}
-
-		@Override
-		public boolean acceptsModifier(String modifier) {
-			return super.acceptsModifier(modifier) || modifier.equals("signed") || modifier.equals("unsigned");
-		}
 		
+		@Override
+		public Primitive addModifiers(Modifier... mds) {
+			return (Primitive)super.addModifiers(mds);
+		}
+
 		public String getName() {
 			return name;
 		}
@@ -213,7 +246,7 @@ public abstract class TypeRef extends Element {
 		}
 	}
 	
-	public static class StructTypeRef extends TypeRef {
+	/*public static class StructTypeRef extends TypeRef {
 		protected Struct struct;
 		
 		public StructTypeRef(Struct struct) {
@@ -244,8 +277,8 @@ public abstract class TypeRef extends Element {
 		public void accept(Visitor visitor) {
 			visitor.visitStructTypeRef(this);
 		}
-	}
-	public static class EnumTypeRef extends TypeRef {
+	}*/
+	/*public static class EnumTypeRef extends TypeRef {
 		protected Enum enumeration;
 		
 		
@@ -277,28 +310,28 @@ public abstract class TypeRef extends Element {
 		public void accept(Visitor visitor) {
 			visitor.visitEnumTypeRef(this);
 		}
-	}
+	}*/
 	public static class Pointer extends TargettedTypeRef {
-		VariableStorage.StorageModifier pointerStyle;
+		Declarator.PointerStyle pointerStyle;
 		
-		public Pointer(TypeRef target, VariableStorage.StorageModifier pointerStyle) {
+		public Pointer(TypeRef target, Declarator.PointerStyle pointerStyle) {
 			this();
 			setTarget(target);
 			setPointerStyle(pointerStyle);
 		}
 		public Pointer() {
 		}
-		public void setPointerStyle(VariableStorage.StorageModifier pointerStyle) {
+		public void setPointerStyle(Declarator.PointerStyle pointerStyle) {
 			this.pointerStyle = pointerStyle;
 		}
-		public VariableStorage.StorageModifier getPointerStyle() {
+		public Declarator.PointerStyle getPointerStyle() {
 			return pointerStyle;
 		}
 		@Override
 		public String toString(CharSequence indent) {
 			String s = getModifiersStringPrefix();
 			//return getTarget() + (s.length() == 0 ? "" : " " + s.trim()) + VariableStorage.toString(getPointerStyle());
-			return s + getTarget() + VariableStorage.toString(getPointerStyle());
+			return s + getTarget() + getPointerStyle();
 		}
 		@Override
 		public void accept(Visitor visitor) {
@@ -377,8 +410,11 @@ public abstract class TypeRef extends Element {
 		final List<Expression> dimensions = new ArrayList<Expression>();
 		
 		public ArrayRef(TypeRef target, Expression... dimensions) {
+			this(target, Arrays.asList(dimensions));
+		}
+		public ArrayRef(TypeRef target, List<Expression> dimensions) {
 			this();
-			setDimensions(Arrays.asList(dimensions));
+			setDimensions(dimensions);
 			setTarget(target);
 		}
 		

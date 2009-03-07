@@ -35,7 +35,8 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -78,7 +79,7 @@ public class Result extends Scanner {
 	//Map<String, Expression> defines = new LinkedHashMap<String, Expression>();
 	Map<String, Set<String>> signaturesByOutputClass = new HashMap<String, Set<String>>();
 	
-	Map<String, Pair<TypeDef, VariableStorage>> typeDefs = new HashMap<String, Pair<TypeDef, VariableStorage>>();
+	Map<String, Pair<TypeDef, Declarator>> typeDefs = new HashMap<String, Pair<TypeDef, Declarator>>();
 	
 	static <T> List<T> getList(Map<String, List<T>> m, String key) {
 		List<T> list = m.get(key);
@@ -120,7 +121,7 @@ public class Result extends Scanner {
 		if (c.isForwardDeclaration())
 			return;
 		
-		ObjCClass cc = getObjCClass(c.getName());
+		ObjCClass cc = getObjCClass(c.getTag());
 		if (c.getCategoryName() != null)
 			cc.categories.add(c);
 //		else if (!c.getProtocols().isEmpty())
@@ -133,9 +134,9 @@ public class Result extends Scanner {
 					String fileName = new File(f).getName();
 					SourceFile sourceFile2 = cc.type.findParentOfType(SourceFile.class);
 					String fileName2 = new File(sourceFile2.getElementFile()).getName();
-					System.err.println("Class " + c.getName() + " defined more than once (in " + fileName + " and " + fileName2 +")");
+					System.err.println("Class " + c.getTag() + " defined more than once (in " + fileName + " and " + fileName2 +")");
 				} else {
-					System.err.println("Class " + c.getName() + " defined more than once");
+					System.err.println("Class " + c.getTag() + " defined more than once");
 				}
 			} else {
 				//cc.javaPackage = aerator.getOutputJavaPackage(c);
@@ -147,7 +148,7 @@ public class Result extends Scanner {
 	@Override
 	public void visitEnum(Enum e) {
 		super.visitEnum(e);
-		if (e.getName() == null) {
+		if (e.getTag() == null) {
 			// Hack to infer the enum name from the next typedef NSUInteger NSSomethingThatLooksLikeTheEnumsIdentifiers
 			Element nextDeclaration = e.getNextSibling();
 			if (nextDeclaration != null && (nextDeclaration instanceof TypeDef)) {
@@ -159,10 +160,10 @@ public class Result extends Scanner {
 							simpleType.equals("NSInteger") ||
 							simpleType.equals("CFIndex")) 
 					{
-						VariableStorage bestPlainStorage = null;
-						for (VariableStorage st : typeDef.getVariableStorages()) {
-							if (st.isPlainStorage()) {
-								boolean niceName = !st.getName().startsWith("_");
+						Declarator bestPlainStorage = null;
+						for (Declarator st : typeDef.getDeclarators()) {
+							if (st instanceof DirectDeclarator) {
+								boolean niceName = !st.resolveName().startsWith("_");
 								if (bestPlainStorage == null || niceName) {
 									bestPlainStorage = st;
 									if (niceName)
@@ -171,17 +172,17 @@ public class Result extends Scanner {
 							}
 						}
 						if (bestPlainStorage != null) {
-							String name = bestPlainStorage.getName();
+							String name = bestPlainStorage.resolveName();
 							System.err.println("Automatic struct name matching : " + name);
-							e.setName(name);
+							e.setTag(name);
 						}
 					}
 				}
 			}
 		}
 		
-		if (e.getName() != null) {
-			enumsByName.put(e.getName(), e);
+		if (e.getTag() != null) {
+			enumsByName.put(e.getTag(), e);
 		}
 		
 		getList(enumsByLibrary, getLibrary(e)).add(e);
@@ -195,8 +196,8 @@ public class Result extends Scanner {
 	@Override
 	public void visitTypeDef(TypeDef typeDef) {
 		super.visitTypeDef(typeDef);
-		for (VariableStorage vs : typeDef.getVariableStorages())
-			typeDefs.put(vs.getName(), new Pair<TypeDef, VariableStorage>(typeDef, vs));
+		for (Declarator vs : typeDef.getDeclarators())
+			typeDefs.put(vs.resolveName(), new Pair<TypeDef, Declarator>(typeDef, vs));
 	}
 	
 	String getLibrary(Element decl) {
@@ -249,7 +250,7 @@ public class Result extends Scanner {
 	public void visitStruct(Struct struct) {
 		super.visitStruct(struct);
 		
-		String name = struct.getName();
+		String name = struct.getTag();
 		if (name != null) {
 			switch (struct.getType()) {
 			case CStruct:

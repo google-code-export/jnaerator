@@ -77,10 +77,20 @@ public class ObjCppElementsTests {
 		fieldsExcludedFromGetterSetterChecks.add("modifiersStringPrefix");
 		fieldsExcludedFromGetterSetterChecks.add("id");
 		fieldsExcludedFromGetterSetterChecks.add("varArgs");
+		fieldsExcludedFromGetterSetterChecks.add("parents");
 		fieldsExcludedFromGetterSetterChecks.add("pathInFramework");
 		fieldsExcludedFromGetterSetterChecks.add("plainStorage");
 	}
 	
+//	@Test
+//	public void checkDerivedClone() {
+//		try {
+//			Method m = type.getMethod("clone");
+//			assertEquals(m + " must have a return type of " + type.getSimpleName(), m.getReturnType(), type);
+//		} catch (Exception e) {
+//			assertTrue("Failed to get clone method (bad visibility ?)", false);
+//		}
+//	}
 	@Test
 	public void checkGettersAndSetters() {
 		Element element = newElement();
@@ -100,7 +110,7 @@ public class ObjCppElementsTests {
 			
 			helper.assertConsistentPair(p);
 			
-			System.err.println("Testing field " + type.getSimpleName() + "." + fieldName);// + ": ");
+//			System.err.println("Testing field " + type.getSimpleName() + "." + fieldName);// + ": ");
 			
 			if (fieldType instanceof Class && Element.class.isAssignableFrom((Class<?>) fieldType)) {
 				testSetNewInstancesOf(fieldType, implementations, element, fieldName, p.setter, p.getter, null);
@@ -130,7 +140,7 @@ public class ObjCppElementsTests {
 				Element instance = newElement();
 				BeansUtils.set(instance, fieldName, String.class, "");
 				Object v = BeansUtils.get(instance, fieldName);
-				assertEquals(v, "");
+				assertEquals("Testing " + fieldName + " :get(set(\"\"))", v, "");
 				BeansUtils.set(instance, fieldName, String.class, null);
 				v = BeansUtils.get(instance, fieldName);
 				assertEquals(v, null);
@@ -288,29 +298,29 @@ public class ObjCppElementsTests {
 		@Test
 		public void addSibling() {
 			VariablesDeclaration d = new VariablesDeclaration();
-			VariableStorage s1 = new VariableStorage(), s2 = new VariableStorage();
+			Declarator s1 = new Declarator.DirectDeclarator(), s2 = new Declarator.DirectDeclarator();
 			
-			d.setVariableStorages(Arrays.asList(s1));
+			d.setDeclarators(Arrays.asList(s1));
 			s1.insertSibling(s2, false);
-			List<VariableStorage> list = d.getVariableStorages();
+			List<Declarator> list = d.getDeclarators();
 			assertEquals("Failed to add after", 2, list.size());
 			assertSame("Added, but not after", s1, list.get(0));
 			assertSame(s2, list.get(1));
 			
 			s2.replaceBy(null);
-			list = d.getVariableStorages();
+			list = d.getDeclarators();
 			assertEquals("Failed to remove added element", 1, list.size());
 			assertSame("Removed bad element", s1, list.get(0));
 			
-			d.setVariableStorages(Arrays.asList(s1));
+			d.setDeclarators(Arrays.asList(s1));
 			s1.insertSibling(s2, true);
-			list = d.getVariableStorages();
+			list = d.getDeclarators();
 			assertEquals("Failed to add before", 2, list.size());
 			assertSame("Added, but not before", s2, list.get(0));
 	 		assertSame(s1, list.get(1));
 	 		
 	 		s2.replaceBy(null);
-			list = d.getVariableStorages();
+			list = d.getDeclarators();
 			assertEquals("Failed to remove added element", 1, list.size());
 			assertSame("Removed bad element", s1, list.get(0));			
 		}

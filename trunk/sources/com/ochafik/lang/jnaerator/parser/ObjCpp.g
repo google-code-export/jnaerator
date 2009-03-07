@@ -56,7 +56,7 @@ import java.util.Arrays;
 import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
 import static com.ochafik.lang.jnaerator.parser.Declaration.*;
-import static com.ochafik.lang.jnaerator.parser.VariableStorage.*;
+import static com.ochafik.lang.jnaerator.parser.Declarator.*;
 import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 }
 
@@ -127,6 +127,24 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 		}
 		return null;
 	}
+	protected Declaration decl(TaggedTypeRef type) {
+		return mark(new TaggedTypeRefDeclaration(type), type.getElementLine());
+	} 
+	
+	protected String next() {
+		return input.LT(1).getText();
+	}
+	protected boolean next(Modifier.Kind... anyModKind) {
+		return Modifier.parseModifier(next(), anyModKind) != null;
+	} 
+	protected boolean next(String... ss) {
+		String n = next();
+		for (String s : ss)
+			if (s.equals(n))
+				return true;
+				
+		return false;
+	}
 }
 
 @lexer::header { 
@@ -186,12 +204,12 @@ sourceFile returns [SourceFile sourceFile]
 			} |
 			lineDirective
 		)* 
-		EOF
+	 	EOF
 	;
 
 externDeclarations returns [List<Declaration> declarations]
 	:	{ $declarations = new ArrayList<Declaration>(); }
-		IDENTIFIER { $IDENTIFIER.text.equals("extern") }? 
+		{ next("extern") }? IDENTIFIER
 		STRING 
 		'{' 
 			(
@@ -202,20 +220,20 @@ externDeclarations returns [List<Declaration> declarations]
 		'}' 
 	;
 
-declaration returns [List<Declaration> declarations, List<Declaration.Modifier> modifiers, String preComment, int startTokenIndex]
+declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex]
 	:	
 		{ $declarations = new ArrayList<Declaration>(); 
-		  $modifiers = new ArrayList<Declaration.Modifier>();
+		  $modifiers = new ArrayList<Modifier>();
 		  $startTokenIndex = getTokenStream().index();
 		  $preComment = getCommentBefore($startTokenIndex);
 		}
 		(
-			externDeclarations {
+			/*externDeclarations {
 				$declarations.addAll($externDeclarations.declarations); 
 			} |
 			exportationModifiers {
 				$modifiers.addAll($exportationModifiers.modifiers); 
-			}
+			}*/
 			(
 				//'#import' '<' 
 				functionDeclaration {
@@ -225,19 +243,13 @@ declaration returns [List<Declaration> declarations, List<Declaration.Modifier> 
 					$declarations.add($varDecl.decl); 
 				} |
 				objCClassDef { 
-					$declarations.add($objCClassDef.struct); 
+					$declarations.add(decl($objCClassDef.struct)); 
 				} |
 				typeDef {
-					$declarations.add($typeDef.declarations); 
+					$declarations.add($typeDef.typeDef); 
 				} |
 				forwardClassDecl {
 					$declarations.addAll($forwardClassDecl.declarations); 
-				} |
-				enumDecl {
-					$declarations.add($enumDecl.e); 
-				} |
-				structDef { 
-					$declarations.add($structDef.struct); 
 				} |
 				'namespace' ns=IDENTIFIER '{' 
 					(
@@ -254,10 +266,12 @@ declaration returns [List<Declaration> declarations, List<Declaration.Modifier> 
 			{
 				String commentAfter = getCommentAfterOnSameLine($startTokenIndex);
 				for (Declaration d  : $declarations) {
+					if (d == null)
+						continue;
 					d.setCommentBefore($preComment);
 					d.setCommentAfter(commentAfter);
-					for (Declaration.Modifier modifier : $modifiers)
-						d.addModifier(modifier);
+					for (Modifier modifier : $modifiers)
+						d.addModifiers(modifier);
 				}
 				
 			}
@@ -267,9 +281,9 @@ declaration returns [List<Declaration> declarations, List<Declaration.Modifier> 
 forwardClassDecl returns [List<Declaration> declarations]
 	: 	{ $declarations = new ArrayList<Declaration>(); }
 		'@class' 
-		n1=IDENTIFIER { $declarations.add(Struct.forwardDecl($n1.text, Struct.Type.ObjCClass)); }
+		n1=IDENTIFIER { $declarations.add(decl(Struct.forwardDecl($n1.text, Struct.Type.ObjCClass))); }
 		(',' 
-		nx=IDENTIFIER { $declarations.add(Struct.forwardDecl($nx.text, Struct.Type.ObjCClass)); }
+		nx=IDENTIFIER { $declarations.add(decl(Struct.forwardDecl($nx.text, Struct.Type.ObjCClass))); }
 		)*
 		';' 
 	;
@@ -298,7 +312,7 @@ enumCore returns [Enum e]
 			$e.setCommentBefore(getCommentBefore($t.getTokenIndex()));
 		} (
 			n1=IDENTIFIER {
-				$e.setName($n1.text);
+				$e.setTag($n1.text);
 			}
 		)? 
 		'{'
@@ -315,36 +329,6 @@ enumCore returns [Enum e]
 		'}'
 	;
 		
-enumDecl returns [Enum e]
-	:
-		t='enum' { 
-			$e = mark(new Enum(), getLine($t));
-			$e.setCommentBefore(getCommentBefore($t.getTokenIndex()));
-		} (
-			n1=IDENTIFIER {
-				$e.setName($n1.text);
-			}
-		)? 
-		'{'
-			i1=enumItem { 
-				$e.addItem($i1.item); 
-			}
-			(
-				',' 
-				(ix=enumItem { 
-					if ($ix.text != null)
-						$e.addItem($ix.item); 
-				})?
-			)*
-		'}'
-		(
-			n2=IDENTIFIER {
-				$e.setName($n2.text);
-			}
-		)?
-		';'
-	;
-
 /*
 BINARY_OPERATOR
 	:	'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' |
@@ -362,7 +346,7 @@ objCClassDef returns [Struct struct]
 				Struct.Type.ObjCClass :
 				Struct.Type.ObjCProtocol
 			);
-			$struct.setName($className.text);
+			$struct.setTag($className.text);
 		}
 		(
 			(	
@@ -392,8 +376,8 @@ objCClassDef returns [Struct struct]
 				'@protected' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Protected); } |
 				(
 					(
-						varDecl { 
-							$struct.addDeclaration($varDecl.decl); 
+						fv=varDecl { 
+							$struct.addDeclaration($fv.decl); 
 						} |
 						functionPointerVarDecl { 
 							$struct.addDeclarations($functionPointerVarDecl.declarations); 
@@ -409,10 +393,10 @@ objCClassDef returns [Struct struct]
 				$struct.addDeclaration($objCMethodDecl.function); 
 			} |
 			typeDef {
-				$struct.addDeclaration($typeDef.declarations); 
+				$struct.addDeclaration($typeDef.typeDef); 
 			} |
-			enumDecl {
-				$struct.addDeclaration($enumDecl.e); 
+			vd=varDecl { !($vd.decl instanceof VariablesDeclaration) }? {
+				$struct.addDeclaration($vd.decl);
 			}
 		)*
 		'@end'
@@ -425,7 +409,7 @@ objCMethodDecl returns [Function function]
 		}
 		tk=(
 			tp='+' { 
-				$function.addModifier(Declaration.Modifier.Static); 
+				$function.addModifiers(Modifier.Static); 
 				$function = mark($function, getLine($tp)); 
 				$function.setCommentBefore(getCommentBefore($tp.getTokenIndex()));
 			} | 
@@ -470,20 +454,22 @@ objCMethodDecl returns [Function function]
 		';'
 	;
 
+/*
 structDef	returns [Struct struct]
 	:	
 		structCore { $struct = $structCore.struct; }
 		(
 			varStoragesWithInit {
-				for (VariableStorage s : $varStoragesWithInit.storages)
-					$struct.addVariableStorage(s);
+				for (Declarator s : $varStoragesWithInit.storages)
+					$struct.addDeclarator(s);
 			}
 		)*
 		';'
 	;
-	
-structCore	returns [Struct struct]
+*/	
+structCore	returns [Struct struct, List<Modifier> modifiers]
 	:	
+		//(rc=IDENTIFIER { $rc.text.equals("ref") }?)? // TODO: managed c++ ref class
 		t=('struct' | 'class' | 'union') { 
 			$struct = mark(new Struct(), getLine($t)); 
 			$struct.setType(
@@ -492,69 +478,67 @@ structCore	returns [Struct struct]
 							Struct.Type.CPPClass
 			);
 		}
-		( 
-			( exportationModifiers {
-				for (Modifier m : $exportationModifiers.modifiers)
-					$struct.addModifier(m);
-			} )?
-			n1=IDENTIFIER { $struct.setName($n1.text); } 
-		)?
-		'{'
+		(
 			(
-				(
-					'public' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Public); } | 
-					'private' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Private); } | 
-					'protected' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Protected); } 
-				) ':' |
-				declaration {
-					$struct.addDeclarations($declaration.declarations);
+				n0=IDENTIFIER {
+					$struct.setTag($n0.text);
+					$struct.setForwardDeclaration(true);
 				}
-			)*
-		'}'
+			) |
+			( 
+				( exportationModifiers {
+					for (Modifier m : $exportationModifiers.modifiers)
+						$struct.addModifiers(m);
+				} )?
+				n1=IDENTIFIER { $struct.setTag($n1.text); } 
+			)?
+			'{'
+				(
+					(
+						'public' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Public); } | 
+						'private' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Private); } | 
+						'protected' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Protected); } 
+					) ':' |
+					declaration {
+						$struct.addDeclarations($declaration.declarations);
+					}
+				)*
+			'}'
+		)
 	;
 
+//structInsides returns [List<Declaration> declarations, Struct.MemberVisibility
 functionDeclaration returns [Function function]
 	:	{ 	
 			$function = new Function();
 			$function.setType(Function.Type.CFunction);
 		}
-		/*functionPreModifier? { 
-			$function.addModifier($functionPreModifier.modifier); 
+		/* functionPreModifier? { 
+			$function.addModifiers($functionPreModifier.modifier); 
 		}*/
 		returnTypeRef=typeRef? { 
 			$function.setValueType($typeRef.type); 
 		}
 		preMods=exportationModifiers {
 			for (Modifier m : $preMods.modifiers)
-				$function.addModifier(m);
+				$function.addModifiers(m);
 		}
-		IDENTIFIER { 
-			$function.setName($IDENTIFIER.text); 
-			$function = mark($function, getLine($IDENTIFIER));
+		n=IDENTIFIER { 
+			$function.setName($n.text); 
+			$function = mark($function, getLine($n));
 		} 
 		'(' 
-			(
-				(
-					a1=argDef {
-						if (!$a1.text.equals("void"))
-							$function.addArg($a1.arg);
-					}
-					(
-						',' 
-						ax=argDef {
-							$function.addArg($ax.arg);
-						}
-					)* 
-				)
-			)? 
+			argList {
+				$function.setArgs($argList.args);
+			}
 		')' 
-		ct=('const' | '__const')? {
+		{ next("const", "__const") }? ct=IDENTIFIER?{
 			if ($ct.text != null)
-				$function.addModifier(Declaration.Modifier.Const);
+				$function.addModifiers(Modifier.Const);
 		} 
 		postMods=exportationModifiers {
 			for (Modifier m : $postMods.modifiers)
-				$function.addModifier(m);
+				$function.addModifiers(m);
 		}
 		(	
 			';' |
@@ -569,40 +553,49 @@ functionDefinition
 	;
 	
 exportationModifiers returns [List<Modifier> modifiers]
-	: 	{ $modifiers = new ArrayList<Declaration.Modifier>(); }
+	: 	{ $modifiers = new ArrayList<Modifier>(); }
 		( 
 			exportationModifier { 
 				$modifiers.addAll($exportationModifier.modifiers); 
 			} 
 		)*
 	;
-	
+
+modifier returns [Modifier modifier]
+	:	{ Modifier.parseModifier(next()) != null }?
+		IDENTIFIER {
+			$modifier = Modifier.parseModifier($IDENTIFIER.text);
+		}
+	;
+	/*
+plainModifier returns [Modifier modifier]
+	:	IDENTIFIER
+		{ 	Modifier.parseModifier($IDENTIFIER.text, Modifier.Kind.Plain) != null }? {
+			$modifier = Modifier.parseModifier($IDENTIFIER.text, Modifier.Kind.Plain);
+		}
+	;
+	*/	
 exportationModifier returns [List<Modifier> modifiers]
-	: 	{ $modifiers = new ArrayList<Declaration.Modifier>(); }
-		IDENTIFIER (
-			{ 	Declaration.getModifier($IDENTIFIER.text) != null ||
-				Declaration.getExportationModifier($IDENTIFIER.text) != null
-			}? {
-				Modifier mod = Declaration.getModifier($IDENTIFIER.text);
-				if (mod == null)
-					mod = Declaration.getExportationModifier($IDENTIFIER.text);
-				$modifiers.add(mod);
+	: 	{ $modifiers = new ArrayList<Modifier>(); }
+		(
+			{ next(Modifier.Kind.Plain) }? modifier {
+				$modifiers.add($modifier.modifier);
 			} |
-			{ $IDENTIFIER.text.equals("__declspec") || $IDENTIFIER.text.equals("__attribute__") }? 
-			'(' extendedDeclModifiers ')' {
-				$modifiers.addAll($extendedDeclModifiers.modifiers);
+			IDENTIFIER { $IDENTIFIER.text.equals("__declspec") || $IDENTIFIER.text.equals("__attribute__") }? 
+			'(' extendedModifiers ')' {
+					$modifiers.addAll($extendedModifiers.modifiers);
 			}
 		)
 	;
 
 //http://msdn.microsoft.com/en-us/library/dabb5z75.aspx
-extendedDeclModifiers returns [List<Function.Modifier> modifiers]
-	:	{ $modifiers = new ArrayList<Declaration.Modifier>(); }
+extendedModifiers returns [List<Modifier> modifiers]
+	:	{ $modifiers = new ArrayList<Modifier>(); }
 		(
-			i=IDENTIFIER 
+			{ next(Modifier.Kind.Extended) }? m=modifier
 			(
-				{ Declaration.getExtendedModifier($IDENTIFIER.text) != null }? {
-					$modifiers.add(Declaration.getExtendedModifier($IDENTIFIER.text));
+				{
+					$modifiers.add($m.modifier);
 				}/* |
 				{ $IDENTIFIER.text.equals("align") }? DECIMAL_NUMBER |
 				{ $IDENTIFIER.text.equals("allocate") }?  '(' STRING ')' |
@@ -626,62 +619,7 @@ argDef	returns [Arg arg]
 			$arg = Arg.createVarArgs(); 
 		}
 	;
-
-varStorage returns [VariableStorage storage]
-	:	{
-			$storage = new VariableStorage();
-		}
-		(
-			('const' | '__const') { $storage.addStorageModifier(StorageModifier.Const); } | 
-			'*' { $storage.addStorageModifier(StorageModifier.Pointer); } | 
-			'&' { $storage.addStorageModifier(StorageModifier.Reference); } | 
-			'^' { $storage.addStorageModifier(StorageModifier.DotNetPointer); } 
-		)*
-		IDENTIFIER? {
-			$storage.setName($IDENTIFIER.text); 
-		}
-		(	
-			'[' expression? ']' {
-				if ($expression.text == null)
-					$storage.addDimension(new EmptyArraySize());//storage.addStorageModifier(StorageModifier.Pointer);
-				else 
-					$storage.addDimension($expression.expr);//$expression.text != null ? $expression.expr : null);
-			}
-		)*
-	;
-
-varDecl 	returns [StoredDeclarations decl]
-	:
-		tr=plainTypeRef {
-			$decl = mark(new VariablesDeclaration(), $tr.type.getElementLine());
-			$decl.setValueType($tr.type);
-		}
-		varStoragesWithInit {
-			if ($varStoragesWithInit.storages.size() == 1) {
-				VariableStorage first = $varStoragesWithInit.storages.get(0);
-				if (first.toString().length() == 0 && ($tr.type instanceof FunctionSignature)) {
-					FunctionSignature fs = (FunctionSignature)$tr.type;
-					first.setName(fs.getFunction().getName());
-				}
-			}
-			for (VariableStorage s : $varStoragesWithInit.storages)
-				$decl.addVariableStorage(s);
-		}
-		';'
-	;
-
-varStoragesWithInit returns [List<VariableStorage> storages]
-	:	{ $storages = new ArrayList<VariableStorage>(); }
-		v1=varStorage ('=' e1=expression { $v1.storage.setDefaultValue($e1.expr); })? {
-			$storages.add($v1.storage);
-		}
-		(
-			',' vx=varStorage ('=' ex=expression { $vx.storage.setDefaultValue($ex.expr); })? {
-				$storages.add($vx.storage);
-			}
-		)*
-	;
-	
+/*	
 typeDef 	returns [TypeDef declarations]
 	:
 		t='typedef' 
@@ -690,13 +628,13 @@ typeDef 	returns [TypeDef declarations]
 			$declarations.setCommentBefore(getCommentBefore($t.getTokenIndex()));
 			$declarations.setValueType($plainTypeRef.type);
 		}
-		v1=varStorage { $declarations.addVariableStorage($v1.storage); }
-		(',' vx=varStorage { $declarations.addVariableStorage($vx.storage); })*
+		v1=varStorage { $declarations.addDeclarator($v1.storage); }
+		(',' vx=varStorage { $declarations.addDeclarator($vx.storage); })*
 		';'
 	;
-	
+*/
 typeMutator returns [TypeMutator mutator]
-	:	('const' | '__const') '*' { $mutator = TypeMutator.CONST_STAR; } |
+	:	{ next("const", "__const") }? IDENTIFIER '*' { $mutator = TypeMutator.CONST_STAR; } |
 		'*' { $mutator = TypeMutator.STAR; } |
 		'&' { $mutator = TypeMutator.AMPERSTAND; }  |
 		'[' ']'  { $mutator = TypeMutator.BRACKETS; }
@@ -711,16 +649,17 @@ arrayTypeMutator returns [TypeMutator mutator]
 	;
 	
 typeRefCore returns [TypeRef type]
-	:	ct=('const' | '__const')?
+@init { List<Modifier> mods = new ArrayList<Modifier>(); }
+	:	({ next(Modifier.Kind.TypeQualifier) }? m=modifier { mods.add($m.modifier); })?
 		(
-			mod=('typename' | 'struct' | 'class') tr=typeRef { 
-				($type = $tr.type).addModifier($mod.text); 
-			} | 
-			 (
+			{ next(Modifier.Kind.ReferenceQualifier) }? m1=modifier { mods.add($m1.modifier); }
+			tr=typeRef { $type = $tr.type; } | 
+			//({ next(Modifier.Kind.ReferenceQualifier, Modifier.Kind.StorageClassSpecifier) }? m2=modifier { mods.add($m2.modifier); })*
+			(
 				primitiveTypeRef { $type = $primitiveTypeRef.type; } | 
-				IDENTIFIER (
-					{ $type = new SimpleTypeRef($IDENTIFIER.text); } |
-					'<' { $type = new TemplateRef($IDENTIFIER.text); }
+				{ Modifier.parseModifier(next()) == null }? ref=IDENTIFIER (
+					{ $type = new SimpleTypeRef($ref.text); } |
+					'<' { $type = new TemplateRef($ref.text); }
 						(
 							t1=typeRef { ((TemplateRef)$type).addParameter($t1.type); }
 							(
@@ -730,18 +669,15 @@ typeRefCore returns [TypeRef type]
 						)?
 					'>'
 				) {
-					$type = mark($type, getLine($IDENTIFIER));
+					$type = mark($type, getLine($ref));
 				}
 			) 
-		) { 
-			if ($ct.text != null) 
-				$type.addModifier("const", 0); 
-		}	
+		) { $type.addModifiers(mods); }	
 	;
 
 templateDef
 	:	'template' '<' (templateArgDecl (',' templateArgDecl)* )? '>'
-		structDef | functionDefinition
+		structCore | functionDefinition
 	;
 	
 templateArgDecl
@@ -751,7 +687,7 @@ templateArgDecl
 	
 functionSignatureSuffix returns [FunctionSignature signature]
 	:	tk='(' exportationModifiers '*' IDENTIFIER? ')' { 
-			$signature = mark(new FunctionSignature(new Function($IDENTIFIER.text, null)), getLine($tk));
+			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, $IDENTIFIER.text, null)), getLine($tk));
 			$signature.getFunction().setType(Function.Type.CFunction);
 			$signature.getFunction().addModifiers($exportationModifiers.modifiers);
 		}
@@ -771,17 +707,210 @@ functionSignatureSuffix returns [FunctionSignature signature]
 
 plainTypeRef returns [TypeRef type]
 	:	
-		structCore { $type = mark(new StructTypeRef($structCore.struct), $structCore.struct.getElementLine()); } |
-		enumCore { $type = mark(new EnumTypeRef($enumCore.e), $enumCore.e.getElementLine()); } |
+		structCore { $type = $structCore.struct; } |
+		enumCore { $type = $enumCore.e; } |
 		typeRefCore { $type = $typeRefCore.type; }
 		(
+			(
+				typeMutator {
+					$type = $typeMutator.mutator.mutateType($type);
+				}
+			)*
 			functionSignatureSuffix { 
 				$functionSignatureSuffix.signature.getFunction().setValueType($type); 
 				$type = $functionSignatureSuffix.signature;
 			}
 		)?
 	;
+
+declarator  returns [Declarator declarator, List<Modifier> modifiers]
+	:	{ $modifiers = new ArrayList<Modifier>(); }
+		(
+			{ next(Modifier.Kind.TypeQualifier) }? modifier {
+				$modifiers.add($modifier.modifier);
+			}
+			/* | protocolQualifier {
+			
+			}*/
+		)*
+		(
+			(
+				(	
+					pt=('*' | '&' | '^')
+					inner=declarator {
+						$declarator = new PointerDeclarator($inner.declarator, PointerStyle.parsePointerStyle($pt.text));
+					}
+				) |
+				directDeclarator { 
+					$declarator = $directDeclarator.declarator; 
+				}
+			)
+			(	
+				'=' 
+				expression {
+					$declarator.setDefaultValue($expression.expr);
+				}
+			)?
+		) {
+			$declarator.setModifiers($modifiers);
+		}
+	;
+
+//varDecl:	declarationSpecifiers declaratorsList*;
+
+namedTypeRef returns [TaggedTypeRef type]
+	:	
+		structCore { $structCore.struct.getTag() != null }? {
+			$type = $structCore.struct;
+		} |
+		enumCore { $enumCore.e.getTag() != null }? {
+			$type = $enumCore.e;
+		}
+	;
+
+typeDef returns [TypeDef typeDef]
+	:	'typedef' 
+	 	varDecl { 
+			($varDecl.decl instanceof VariablesDeclaration) 
+		}? {
+			VariablesDeclaration vd = (VariablesDeclaration)$varDecl.decl;
+			$typeDef = new TypeDef(vd.getValueType(), vd.getDeclarators());
+		}
+	;
 	
+varDeclEOF returns [Declaration decl]
+	: varDecl EOF { $decl = $varDecl.decl; }
+	;
+	
+varDecl returns [Declaration decl, TypeRef type]
+@init {
+	List<Modifier> stoMods = new ArrayList<Modifier>(), typMods = new ArrayList<Modifier>();
+}	
+	:	(
+			{ next(Modifier.Kind.StorageClassSpecifier) }? 
+			sm=modifier { stoMods.add($sm.modifier); } |
+			{ next(Modifier.Kind.TypeQualifier) }? 
+			tm=modifier { typMods.add($tm.modifier); }
+		)*
+		(
+			/*namedTypeRef {
+				$decl = new TaggedTypeRefDeclaration($namedTypeRef.type);
+			} |*/
+			(
+				plainTypeRef { $type = $plainTypeRef.type; }
+				/*(
+					structCore { 
+						$type = $structCore.struct; 
+					} |
+					enumCore { 
+						$type = $enumCore.e; 
+					} |
+					typeRefCore { 
+						$type = $typeRefCore.type; 
+					}
+				)*/
+				declaratorsList {
+					$decl = new VariablesDeclaration($type, $declaratorsList.declarators);
+				}
+			)
+		)
+		';' { 
+			$decl.addModifiers(stoMods);
+			$type.addModifiers(typMods); 
+		}
+	;
+	
+objCProtocolRefList
+	:	'<' 
+		IDENTIFIER 
+		(
+			',' 
+			IDENTIFIER
+		)* 
+		'>'
+	;
+/*
+type_specifier:
+'void' | 'char' | 'short' | 'int' | 'long' | 'float' | 'double' | 'signed' | 'unsigned' 
+	|	IDENTIFIER objCProtocolRefList?
+	|	struct_or_union_specifier
+	|	enum_specifier 
+	|	IDENTIFIER;
+*/
+declaratorsList returns [List<Declarator> declarators]
+	:	{ $declarators = new ArrayList<Declarator>(); }
+		(
+			d=declarator { $declarators.add($d.declarator); }
+			(
+				',' 
+				x=declarator { $declarators.add($x.declarator); }
+			)*
+		)?
+	;
+
+directDeclarator  returns [Declarator declarator]
+@init {
+	List<Modifier> modifiers = new ArrayList<Modifier>();
+} 
+	:	(
+			//primitiveTypeRef |
+			IDENTIFIER {
+				$declarator = new DirectDeclarator($IDENTIFIER.text);
+			} | 
+			'(' 
+			(im=modifier { modifiers.add($im.modifier); })*
+			inner=declarator 
+			')' {
+				$declarator = $inner.declarator;
+				$declarator.setParenthesized(true);
+				$declarator.addModifiers(modifiers);
+			}
+		)
+		(
+			'[' 
+			(
+				expression {
+					if ($declarator instanceof ArrayDeclarator)
+						((ArrayDeclarator)$declarator).addDimension($expression.expr);
+					else
+						$declarator = new ArrayDeclarator($declarator, $expression.expr);
+				} | {
+					$declarator = new ArrayDeclarator($declarator, new Expression.EmptyArraySize());
+				}
+			)
+			']' | 
+			'(' argList ')' {
+				$declarator = new FunctionDeclarator($declarator, $argList.args);
+			}
+		)*
+	;
+
+argList returns [List<Arg> args, boolean isObjC]
+	:	{ 
+			$isObjC = false; 
+			$args = new ArrayList<Arg>();
+		}
+		(
+			a1=argDef {
+				if (!$a1.text.equals("void"))
+					$args.add($a1.arg);
+			}
+			(
+				',' 
+				ax=argDef {
+					$args.add($ax.arg);
+				}
+			)*
+			( 
+				',' '...' {
+					$isObjC = true;
+					$args.add(Arg.createVarArgs());
+				}
+			)?
+		)?
+		
+	;
+
 typeRef	returns [TypeRef type]
 	:	
 		plainTypeRef {
@@ -793,7 +922,7 @@ typeRef	returns [TypeRef type]
 			}
 		)*
 	;
-	
+
 primSignModifier
 	:	'signed' | 'unsigned' | '__signed' | '__unsigned';
 	
@@ -813,25 +942,51 @@ primitiveTypeName
 		'size_t'*/
 	;
 
-LONG	:	'long';
-
-primitiveTypeRef returns [TypeRef type, int line]
-	:	{ $line = getLine(); }
-		(	mod1=primSignModifier?
-			
+primitiveTypeRef returns [TypeRef type, int line, List<Modifier> modifiers]
+	:	{ 
+			$line = getLine(); 
+			$modifiers = new ArrayList<Modifier>();
+		}
+		(	
+			mod1=primSignModifier?		
 			(mod2=primSizeModifier
 			mod3=primSizeModifier?)?
-			name=primitiveTypeName
-			{
-				$type = mark(new Primitive($name.text), $line);
-				$type.addModifier($mod1.text);
-				$type.addModifier($mod2.text);
-				$type.addModifier($mod3.text);
-			} |
-			mod=primSignModifier {
+			//({ next(Modifier.Kind.SignModifier) }? m1=modifier { $modifiers.add($m1.modifier); })?				
+			//(({ next(Modifier.Kind.SizeModifier) }? m2=modifier { $modifiers.add($m2.modifier); })
+			// ({ next(Modifier.Kind.SizeModifier) }? m3=modifier { $modifiers.add($m3.modifier); })?)?
+			/*(
+				{ next(Modifier.Kind.SizeModifier, Modifier.Kind.SignModifier) }? 
+				m=modifier { $modifiers.add($m.modifier); }
+			)**/
+			(
+				//{ TypeRef.Primitive.isACPrimitive(next()) }?
+				//name=IDENTIFIER
+				name=primitiveTypeName
+				{
+					$type = mark(new Primitive($name.text), $line);
+					//$type.addModifiers($modifiers);
+					$type.addModifiers(Modifier.parseModifier($mod1.text));
+					$type.addModifiers(Modifier.parseModifier($mod2.text));
+					$type.addModifiers(Modifier.parseModifier($mod3.text));
+
+				}/* |
+				//{ !$modifiers.isEmpty() }? 
+				{
+					if (!$modifiers.isEmpty() && ($modifiers.get($modifiers.size() - 1).isA(Modifier.Kind.SizeModifier))) {
+						$type = mark(new Primitive($modifiers.get($modifiers.size() - 1).toString()), $line);
+						$modifiers.remove($modifiers.size() - 1);
+					} else
+						$type = mark(new Primitive("int"), $line);
+					$type.addModifiers($modifiers);
+				}*/
+			)
+				/*
+			{ next(Modifier.Kind.SignModifier) }? 
+			//{ next("long", "short", "signed", "unsigned", "__signed", "__unsigned") }? 
+			mod=modifier {
 				$type = mark(new Primitive("int"), $line);
-				$type.addModifier($mod.text);
-			}
+				$type.addModifiers($mod.modifier);
+			}*/
 		)
 	;
 
@@ -887,7 +1042,7 @@ expression returns [Expression expr]
 			} |
 			objCMethodCall { 
 				$expr = $objCMethodCall.expr; 
-			} |
+							} |
 			prefixOp=('!' | '~') opd=expression {
 				$expr = new UnaryOp(Expression.getUnaryOperator($prefixOp.text), $opd.expr);
 			} |
@@ -951,7 +1106,7 @@ statement
 		)*
 		'}' |
 		';' |
-		IDENTIFIER { $IDENTIFIER.text.equals("foreach") }? '(' varDecl ':' expression ')' statement
+		{ next("foreach") }? IDENTIFIER '(' varDecl ':' expression ')' statement
 	;
 	
 constant returns [Constant constant]
@@ -1125,8 +1280,7 @@ LINE_COMMENT
 	:	(
 			'//'
 			~('\n'|'\r')*
-			'\r'?
-			'\n'
+			('\r'? '\n' | { input.LT(1) == EOF }? )
 		) { 
 			$channel=HIDDEN;
 		}

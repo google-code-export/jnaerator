@@ -1,6 +1,6 @@
 /*
-	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
 	
+	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
 	This file is part of JNAerator (http://jnaerator.googlecode.com/).
 	
 	JNAerator is free software: you can redistribute it and/or modify
@@ -22,11 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import com.ochafik.util.string.StringUtils;
 
-public class Struct extends StoredDeclarations implements DeclarationsHolder {
-	boolean forwardDeclaration = false;
+public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder {//extends StoredDeclarations  {
 	Type type;
 	MemberVisibility nextMemberVisibility = MemberVisibility.Public;
 	final List<String> parents = new ArrayList<String>();
@@ -69,16 +67,9 @@ public class Struct extends StoredDeclarations implements DeclarationsHolder {
 	public static Struct forwardDecl(String name, Type type) {
 		Struct s = new Struct();
 		s.setForwardDeclaration(true);
-		s.setName(name);
+		s.setTag(name);
 		s.setType(type);
 		return s;
-	}
-	
-	public boolean isForwardDeclaration() {
-		return forwardDeclaration;
-	}
-	public void setForwardDeclaration(boolean forwardDeclaration) {
-		this.forwardDeclaration = forwardDeclaration;
 	}
 	
 	public void setCategoryName(String categoryName) {
@@ -159,20 +150,20 @@ public class Struct extends StoredDeclarations implements DeclarationsHolder {
 	}
 	
 	public String toCoreString(CharSequence indent) {
-		
 		String lnind = "\n" + indent + "\t";
 		String body = isForwardDeclaration() ? "" :
-			"{" +
+			" {" +
 			(declarations.isEmpty() ? 
 				"" :
-				lnind + implode(declarations, "\n" + lnind, indent + "\t") + "\n" + indent  
+				lnind + implode(declarations, lnind, indent + "\t") + "\n" + indent  
 			) + "}"
 		;
-		String pre = commentBefore == null ? "" : 
-			formatComments(indent, false) + "\n" + indent;
+		
+		String pre = (commentBefore == null ? "" : formatComments(indent, false) + "\n" + indent) + 
+			getModifiersStringPrefix();
 			//commentBefore + "\n" + indent;//(indent, mergeCommentsBeforeAndAfter);
 		
-		String nameStr = (getName() == null ? "" : " " + getName());
+		String nameStr = (getTag() == null ? "" : " " + getTag());
 		String javaPublicity = getModifiers().contains(Modifier.Public) ? "public " :
 			getModifiers().contains(Modifier.Protected) ? "protected " :
 			"";
@@ -181,36 +172,36 @@ public class Struct extends StoredDeclarations implements DeclarationsHolder {
 		if (getModifiers().contains(Modifier.Final))
 			javaPublicity += "final ";
 		
-		String javaExtension = getParents().isEmpty() ? "" : "extends " + StringUtils.implode(getParents(), ", ") + " ";
-		String javaImplements = getProtocols().isEmpty() ? "" : "implements " + StringUtils.implode(getProtocols(), ", ") + " ";
+		String javaExtension = getParents().isEmpty() ? "" : " extends " + StringUtils.implode(getParents(), ", ");
+		String javaImplements = getProtocols().isEmpty() ? "" : " implements " + StringUtils.implode(getProtocols(), ", ");
 		
 		switch (getType()) {
 			case CPPClass:
-				return pre + "class" + nameStr + " " + body;
+				return pre + "class" + nameStr + body;
 			case CUnion:
-				return pre + "union" + nameStr + " " + body;
+				return pre + "union" + nameStr + body;
 			case JavaClass:
-				return pre + javaPublicity + "class" + nameStr + " " + javaExtension + javaImplements + body;
+				return pre + javaPublicity + "class" + nameStr + javaExtension + javaImplements + body;
 			case JavaInterface:
-				return pre + javaPublicity + "interface" + nameStr + " " + javaExtension + javaImplements + body;
+				return pre + javaPublicity + "interface" + nameStr + javaExtension + javaImplements + body;
 			case ObjCClass:
-				return pre + "@class" + nameStr + " " + body;
+				return pre + "@class" + nameStr + body;
 			case ObjCProtocol:
-				return pre + "@protocol" + nameStr + " " + body; // TODO check this ???
+				return pre + "@protocol" + nameStr + body; // TODO check this ???
 			case CStruct:
 			default:
-				return pre + "struct" + nameStr + " " + body;
+				return pre + "struct" + nameStr + body;
 		}
 		
 	}
 	@Override
 	public String toString(CharSequence indent) {
 		String coreStr = toCoreString(indent);
-		String varststr = StringUtils.implode(variableStorages, ", ");
+		//String varststr = StringUtils.implode(declarators, ", ");
 		return 
-			coreStr + 
-			(varststr.length() == 0 ? "" : " " + varststr) + 
-		";" + (commentAfter == null ? "" : " " + commentAfter.trim());
+			coreStr;// + 
+			//(varststr.length() == 0 ? "" : " " + varststr) + 
+		//";" + (commentAfter == null ? "" : " " + commentAfter.trim());
 	}
 	public void accept(Visitor visitor) {
 		visitor.visitStruct(this);

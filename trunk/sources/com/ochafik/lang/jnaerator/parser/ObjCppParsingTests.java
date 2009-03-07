@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
@@ -39,6 +40,7 @@ import static org.junit.Assert.*;
 
 import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
+import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.grammar.DummyDebugEventListener;
 
 /*
@@ -48,7 +50,7 @@ include com/ochafik/lang/jnaerator/parser/ObjCppTest.mm
 @RunWith(ParameterizedWithDescription.class)
 //@RunWith(Parameterized.class)
 public class ObjCppParsingTests {
-	static final String TEST_FILE = "com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
+	static final String TEST_FILE = "/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
 	
 	Class<?> elementsTests = ObjCppElementsTests.class;
 	
@@ -94,7 +96,10 @@ public class ObjCppParsingTests {
 					assertEquals(string, 1, decls.size());
 					Declaration firstDecl = decls.get(0);
 					assertNotNull(string, firstDecl);
-					assertEquals(string, string.trim(), firstDecl.toString().trim());
+					if (!SyntaxUtils.equal(string, firstDecl == null ? null : firstDecl.toString()))
+						decls = newParser(string).declaration().declarations;
+					
+					assertEquals(string, string.trim(), firstDecl == null ? null : firstDecl.toString().trim());
 				}
 				ok = true;
 				break;
@@ -108,7 +113,7 @@ public class ObjCppParsingTests {
 				Declaration clo = decl.clone();
 				assertNotNull("Null clone !", clo);
 				String cloStr = clo.toString();
-				if (!declStr.equals(cloStr)) {
+				if (!SyntaxUtils.equal(declStr, cloStr)) {
 					// go here again to debug
 					clo = decl.clone();
 				}
@@ -134,7 +139,8 @@ public class ObjCppParsingTests {
 	
 	@Parameters
 	public static List<Object[]> readDataFromFile() throws IOException {
-		List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource(TEST_FILE));
+		//List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource(TEST_FILE));
+		List<String> lines = ReadText.readLines(TEST_FILE);
 		TestOption testOption = TestOption.ParseAndPrettyPrint;
 		List<Object[]> data = new ArrayList<Object[]>();
 		
@@ -169,7 +175,7 @@ public class ObjCppParsingTests {
 		return data;
 	}
 
-	static ObjCppParser newParser(String s) throws IOException {
+	public static ObjCppParser newParser(String s) throws IOException {
 		return new ObjCppParser(
 			new CommonTokenStream(
 				new ObjCppLexer(
