@@ -1,4 +1,5 @@
 #summary Description of what JNAerator does with anonymous enums, structs, unions and function signatures
+#labels Manual
 
 = Introduction =
 
@@ -31,9 +32,11 @@ struct S {
 void ComplexArgFunction(S* pArg);
 }}}
 
-= JNAerator =
+= JNAerator's approach =
 
-As Java does not support such inline definition of anonymous types, JNA requires us to provide it with something that looks like the "deanonymized" version of the code.
+As Java does not support such inline definition of anonymous types, JNA requires us to provide it with something that looks like the "deanonymized" version of the code, that is : choose arbitrary names for anonymous types.
+
+Another option would be to simply skip everything anonymous, but this would exclude way too much code.
 
 In the deanonymizing process, JNAerator tries its best to choose names that make sense (instead of S, U, V).
 
