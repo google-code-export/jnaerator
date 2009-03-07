@@ -155,7 +155,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 						argsStr.append(arg.getSelector());
 					}
 					argsStr.append(":(");
-					argsStr.append(arg.getValueType());
+					argsStr.append(arg.createMutatedType());
 					argsStr.append(')');
 					argsStr.append(arg.getName());
 				}
@@ -183,7 +183,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 				first = false;
 			} else 
 				b.append(", ");
-			b.append(arg.getValueType());
+			b.append(arg.createMutatedType());
 		}
 		b.append(')');
 		return b.toString();

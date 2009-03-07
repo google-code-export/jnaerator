@@ -60,6 +60,9 @@ public class Scanner implements Visitor {
 		
 		if (arg.getDefaultValue() != null)
 			arg.getDefaultValue().accept(this);
+		
+		if (arg.getDeclarator() != null)
+			arg.getDeclarator().accept(this);
 	}
 
 	public void visitConstant(Constant constant) {
