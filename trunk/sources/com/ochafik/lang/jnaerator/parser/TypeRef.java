@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
 import com.ochafik.lang.jnaerator.parser.Modifier.Kind;
 import com.ochafik.util.string.StringUtils;
 
@@ -453,6 +454,14 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			this();
 			setDimensions(dimensions);
 			setTarget(target);
+		}
+		
+		public boolean hasStaticStorageSize() {
+			if (dimensions.isEmpty())
+				return false;
+			
+			Expression x = dimensions.get(dimensions.size() - 1);
+			return x != null && !(x instanceof EmptyArraySize);
 		}
 		
 		public ArrayRef() {

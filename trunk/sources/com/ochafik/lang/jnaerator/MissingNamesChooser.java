@@ -22,7 +22,10 @@ import static com.ochafik.lang.SyntaxUtils.as;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
@@ -36,6 +39,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
+import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 
 public class MissingNamesChooser extends Scanner {
@@ -47,13 +51,45 @@ public class MissingNamesChooser extends Scanner {
 	public void setNameGenerationStyle(NameGenerationStyle nameGenerationStyle) {
 		this.nameGenerationStyle = nameGenerationStyle;
 	}
+	
+	
+	@Override
+	public void visitFunction(Function function) {
+		switch (function.getType()) {
+			case CFunction:
+			case CppMethod:
+				Set<String> names = new TreeSet<String>();
+				List<Pair<Arg, Integer>> missing = new ArrayList<Pair<Arg,Integer>>();
+				int i = 0, n = function.getArgs().size();
+				
+				for (Arg arg : function.getArgs()) {
+					if (arg.getName() == null) {
+						missing.add(new Pair<Arg, Integer>(arg, i));
+					} else
+						names.add(arg.getName());
+					i++;
+				}
+				for (Pair<Arg, Integer> p : missing) {
+					i = 0;
+					String name, base = "arg" + (n == 1 ? "" : p.getValue());
+					while (names.contains(name = base + (i == 0 ? "" : "_" + i)))
+						i++;
+					names.add(name);
+					p.getFirst().setName(name);
+				}
+				break;
+		}
+		
+		super.visitFunction(function);
+	}
+	
 	@Override
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
-		super.visitFunctionSignature(functionSignature);
-		
 		if (chooseNameIfMissing(functionSignature))
 			return;
 
+		super.visitFunctionSignature(functionSignature);
+		
 		DeclarationsHolder holder = functionSignature.findParentOfType(DeclarationsHolder.class);
 		Function f = functionSignature.getFunction();
 		if (holder != null && f != null && f.getName() != null) {
@@ -70,6 +106,7 @@ public class MissingNamesChooser extends Scanner {
 			td.setValueType(functionSignature);
 			td.addDeclarator(new DirectDeclarator(f.getName()));
 			holder.addDeclaration(td);
+			td.accept(this);
 		}
 	}
 	

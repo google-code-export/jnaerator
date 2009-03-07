@@ -219,11 +219,13 @@ public abstract class Element {
 	public int getElementLine() {
 		return elementLine;
 	}
-	
-	public Element getParentElement() {
+
+	/// final so that it is easier to implement listeners
+	public final Element getParentElement() {
 		return parentElement;
 	}
-	public void setParentElement(Element parentElement) {
+	/// final so that it is easier to implement listeners
+	public final void setParentElement(Element parentElement) {
 		if (this.parentElement != null)
 			this.parentElement = null;
 		

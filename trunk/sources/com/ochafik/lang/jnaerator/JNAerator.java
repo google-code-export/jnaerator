@@ -81,8 +81,10 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
+import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
@@ -952,13 +954,21 @@ public class JNAerator {
 					convDecl.addModifiers(Modifier.Final);
 					Expression mul = null;
 					List<Expression> dims = mr.getDimensions();
-					for (Expression x : dims) {
-						Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
-						c.setParenthesis(dims.size() == 1);
-						if (mul == null)
-							mul = c;
-						else
-							mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
+					for (int i = dims.size(); i-- != 0;) {
+						Expression x = dims.get(i);
+					//}
+					//for (Expression x : dims) {
+						if (x == null || x instanceof EmptyArraySize) {
+							javaType = jr = new ArrayRef(result.typeConverter.typeRef(Pointer.class));
+							break;
+						} else {
+							Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
+							c.setParenthesis(dims.size() == 1);
+							if (mul == null)
+								mul = c;
+							else
+								mul = new Expression.BinaryOp(BinaryOperator.Multiply, c, mul);
+						}
 					}
 					initVal = new Expression.NewArray(jr.getTarget(), mul);
 				}

@@ -26,10 +26,12 @@ import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
+import com.ochafik.lang.jnaerator.DefinitionsVisitor.Environment;
 import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.util.string.StringUtils;
 
@@ -94,9 +96,9 @@ public class ObjCppToJavaScanner extends Scanner {
 				return resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName));
 		}*/
 
-		Element element = originalDefinitions.resolveElement(simpleTypeRef, name, null);
-		if (element instanceof Declarator) {
-			Declarator vs = (Declarator)element;
+		Element element = originalDefinitions.resolveElement(simpleTypeRef, name, null, Environment.Space.Types, Environment.Space.Enums, Environment.Space.Structs);
+		if (element instanceof DirectDeclarator) {
+			DirectDeclarator vs = (DirectDeclarator)element;
 			Element parent = vs.getParentElement();
 			if (parent != null) {
 				if (parent instanceof TypeDef) {
@@ -111,7 +113,7 @@ public class ObjCppToJavaScanner extends Scanner {
 					// TODO ensure all structs have names !
 					String library = getLibrary(s);
 					if (library == null)
-						throw new UnsupportedTypeConversion(simpleTypeRef);
+						throw new UnsupportedTypeConversion(simpleTypeRef, "struct " + structName + " is not bound to a library");
 					
 					TypeRef tr = new SimpleTypeRef(getLibraryClassSimpleName(library) + "." + structName);
 					simpleTypeRef.replaceBy(tr);
@@ -127,10 +129,10 @@ public class ObjCppToJavaScanner extends Scanner {
 					TypeRef tr = new SimpleTypeRef(fr.getName());
 					simpleTypeRef.replaceBy(tr);
 				} else
-					throw new UnsupportedTypeConversion(simpleTypeRef);
+					throw new UnsupportedTypeConversion(simpleTypeRef, "no support for complex define expressions as of yet");
 			}
 		}
-		throw new UnsupportedTypeConversion(simpleTypeRef);
+		throw new UnsupportedTypeConversion(simpleTypeRef, null);
 	}
 	
 	
@@ -140,6 +142,6 @@ public class ObjCppToJavaScanner extends Scanner {
 		
 		String v  = ((Constant) constant).getValue().toString();
 		if (v.endsWith("U"))
-			throw new UnsupportedTypeConversion(constant);
+			throw new UnsupportedTypeConversion(constant, "no support for unsigned constants");
 	}
 }

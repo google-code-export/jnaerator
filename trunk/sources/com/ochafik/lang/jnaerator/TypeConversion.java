@@ -101,6 +101,10 @@ public class TypeConversion {
 			super("Conversion Error : " + String.valueOf(x) + (reason == null ? "" : " (" + reason + ")"));
 			this.element = x;
 		}
+		@Override
+		public String toString() {
+			return getMessage();
+		}
 	}
 	enum TypeConversionMode {
 		PrimitiveParameter, NativeParameter, FieldType, ReturnType, ExpressionType, StaticallySizedArrayField, PrimitiveReturnType
@@ -542,7 +546,7 @@ public class TypeConversion {
 					}
 				}
 			}
-			boolean staticallySized = valueType instanceof ArrayRef && !((ArrayRef)valueType).getDimensions().isEmpty();
+			boolean staticallySized = valueType instanceof ArrayRef && ((ArrayRef)valueType).hasStaticStorageSize();
 			
 			TypeRef convTargType;
 			JavaPrim prim = getPrimitive(target);
@@ -581,6 +585,9 @@ public class TypeConversion {
 		}
 		if (valueType instanceof SimpleTypeRef) {
 			String name = ((SimpleTypeRef) valueType).getName();
+			if (name == null)
+				throw new UnsupportedTypeConversion(valueType, null);
+			
 			TypeRef structRef = findStructRef(name, callerLibraryClass);
 			if (structRef != null)
 				return typeRef(structRef, SubTypeRef.Style.Dot, "ByValue");
@@ -750,11 +757,15 @@ public class TypeConversion {
 				return new SimpleTypeRef(c.getName());
 		}
 		if (x instanceof MemberRef) {
-			if (x instanceof FieldRef) {
-				return new SimpleTypeRef(Integer.TYPE.getName());
-			}
+			return null;
+			//if (x instanceof FieldRef) {
+			//	return new SimpleTypeRef(Integer.TYPE.getName());
+			//}	
 		} else if (x instanceof VariableRef) {
-			
+			String name = ((VariableRef)x).getName();
+			EnumItem enumItem = result.enumItems.get(name);
+			if (enumItem != null)
+				return typeRef(Integer.TYPE);
 		}
 		return null;
 	}

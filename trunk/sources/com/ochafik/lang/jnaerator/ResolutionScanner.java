@@ -45,7 +45,7 @@ public class ResolutionScanner extends Scanner {
 		super.visitFieldRef(element);
 		Environment env = definitions.getEnvironment(element);
 		if (element.getTarget() == null) {
-			Element resolved = env.get(element.getName());
+			Element resolved = env.get(element.getName(), DefinitionsVisitor.Environment.Space.Variables, DefinitionsVisitor.Environment.Space.Constants);
 			if (resolved != null)
 				resolutions.put(element.getId(), resolved);
 			else
