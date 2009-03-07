@@ -80,7 +80,6 @@ import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
-import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
@@ -286,11 +285,6 @@ public class JNAerator {
 					break;
 				}
 			}
-//			config.symbolsAccepter = null;
-			
-			//System.out.println("FILES:\n" + StringUtils.implode(config.libraryByFile.keySet(), "\n"));
-			
-			
 			for (String framework : frameworks)
 				JNAeratorConfigUtils.addFramework(config, framework);
 			
@@ -486,14 +480,9 @@ public class JNAerator {
 	
 	@SuppressWarnings("static-access")
 	private Declaration outputConstant(String name, Expression x, Set<String> signatures, Element element, String elementTypeDescription, String callerLibraryClass, boolean addFileComment) throws UnsupportedTypeConversion {
-		//out.println();
-		//String comments = element.formatComments(indent, true);
-		//if (comments.length() > 0)
-		//	out.println(indent + comments);
-		boolean done = false;
 		try {
 			if (!result.typeConverter.isValidJavaIdentifier(name))
-				throw new UnsupportedTypeConversion(element);//"Name of constant " + name + " is invalid in Java.");
+				throw new UnsupportedTypeConversion(element, "The name '" + name + "' is invalid for a Java field.");
 			
 			Expression converted = result.typeConverter.convertExpressionToJava(x, callerLibraryClass);
 			TypeRef tr = result.typeConverter.inferJavaType(converted);
@@ -558,13 +547,8 @@ public class JNAerator {
 						vd.addToCommentBefore(v.getCommentAfter());
 						
 						out.add(vd);
-						
-						//if (vs.getStorageModifiers().isEmpty() && prim != null && !vs.getDimensions().isEmpty())
-						//	print("[(" + StringUtils.implode(vs.getDimensions(), ") * (") + ")]");
-						
 					} catch (UnsupportedTypeConversion e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						out.add(new EmptyDeclaration(getFileCommentContent(v), e.toString()));
 					}
 					
 				}
@@ -822,7 +806,7 @@ public class JNAerator {
 				}
 			}
 		} catch (TypeConversion.UnsupportedTypeConversion ex) {
-			out.add(new EmptyDeclaration(getFileCommentContent(function), ex.toString().replace('\n', ' ')));
+			out.add(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
 		}
 	}
 
@@ -997,7 +981,6 @@ public class JNAerator {
 				iChild[0]++;
 			}
 		} catch (UnsupportedTypeConversion e) {
-		//	addException(e);
 			out.add(new EmptyDeclaration(e.toString()));
 		}
 	}

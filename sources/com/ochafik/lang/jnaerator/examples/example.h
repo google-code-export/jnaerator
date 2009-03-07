@@ -7,20 +7,21 @@
 
 extern "C" {
 
-enum TestEnum {
+enum SimpleEnum {
 	First, // first comments
-	Second,  // comments on second
+	Second = 10,  // comments on second
 	Last // not a real value
 };
 
-typedef int (__cdecl *RandIntFunc)(void);
+typedef int (__cdecl *DummyCallback)(void);
 
 struct TestStruct {
 	TestEnum	 enumValue;
 	char		 charValue;
-	short	 shortValue;
+	short	 shortValue; // comment on shortValue
 	wchar_t	 wcharValue;	
 	int		 intValue;
+	// comment on boolValue
 	bool		 boolValue;
 	long		 longValue;
 	size_t	 sizeValue;
@@ -30,13 +31,14 @@ struct TestStruct {
 	char*	 cstringValue;
 	char		 charArrayValue[255];
 	void*	 voidPointerValue;
-	int		 (*functionValue)(TestEnum e);
-	
+	// first comment on functionValue
+	int		 (*functionValue)(TestEnum e); // second comment on functionValue
 	struct { int first, second; } structValue;
 	TestStruct *structPointerValue;
 };
 
 void Test(const char* name, TestStruct& values, RandIntFunc func);
+void TestByValue(TestStruct valuesByValue);
 
 void ComplexAnonymous(struct { union { enum { A, B } e; float f; } u; long v; void (*fptr)(); }*);
 

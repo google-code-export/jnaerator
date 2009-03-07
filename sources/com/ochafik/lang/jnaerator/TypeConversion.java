@@ -97,14 +97,9 @@ public class TypeConversion {
 		 */
 		private static final long serialVersionUID = 1L;
 		Element element;
-
-		public UnsupportedTypeConversion(Element x) {
-			super(String.valueOf(x));
+		public UnsupportedTypeConversion(Element x, Object reason) {
+			super("Conversion Error : " + String.valueOf(x) + (reason == null ? "" : " (" + reason + ")"));
 			this.element = x;
-		}
-		@Override
-		public String toString() {
-			return "Conversion Error : " + getMessage();
 		}
 	}
 	enum TypeConversionMode {
@@ -617,7 +612,7 @@ public class TypeConversion {
 			return typeRef(prim);
 		
 		unknownTypes.add(String.valueOf(valueType));
-		throw new UnsupportedTypeConversion(valueType);
+		throw new UnsupportedTypeConversion(valueType, null);
 	}
 	Set<String> unknownTypes = new HashSet<String>();
 
@@ -836,7 +831,7 @@ public class TypeConversion {
 		}
 		if (res == null) {
 //			return convertExpressionToJava(x);
-			throw new UnsupportedTypeConversion(x);
+			throw new UnsupportedTypeConversion(x, null);
 		}
 
 		return res;
