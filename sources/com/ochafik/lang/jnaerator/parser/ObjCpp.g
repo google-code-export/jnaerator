@@ -301,6 +301,7 @@ functionPointerVarDecl  returns [List<? extends Declaration> declarations]
 enumItem returns [Enum.EnumItem item]
 	:	n=IDENTIFIER ('=' v=expression)? {
 			$item = new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr);
+			$item.setCommentBefore(getCommentBefore($n.getTokenIndex()));
 			$item.setCommentAfter(getCommentAfterOnSameLine($n.getTokenIndex() - 1));
 		}
 	;

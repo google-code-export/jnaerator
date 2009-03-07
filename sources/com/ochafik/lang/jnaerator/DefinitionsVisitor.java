@@ -22,9 +22,12 @@ import gnu.trove.TIntObjectHashMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -35,7 +38,9 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.math.graph.BinaryEdgeSet;
 import com.ochafik.math.graph.impl.FastSparseBinaryEdgeSet;
 import com.ochafik.util.SortedIntArray;
@@ -47,21 +52,43 @@ public class DefinitionsVisitor extends Scanner {
 	TIntObjectHashMap<Environment> environmentById = new TIntObjectHashMap<Environment>();
 	//Map<Integer, Environment> environmentById = new HashMap<Integer, Environment>();
 	
-	class Environment {
+	public static class Environment {
 		Environment parent;
-
+		public enum Space {
+			Structs, Enums, Types, Variables, Constants, Functions
+		}
 		public Environment(Environment parent) {
 			super();
 			this.parent = parent;
 		}
-		Map<String, Element> elements = new HashMap<String, Element>();
-		public Element get(String name) {
+		Map<Space, Map<String, Element>> elementsBySpace = new TreeMap<Space, Map<String, Element>>();
+		//Map<String, Element> elements = new HashMap<String, Element>();
+		public Element get(String name, Space namespace) {
+			Map<String, Element> elements = elementsBySpace == null ? null : elementsBySpace.get(namespace);
+			if (elements == null)
+				return parent == null ? null : parent.get(name, namespace);
+			
 			Element element = elements.get(name);
 			if (element == null && parent != null)
-				element = parent.get(name);
+				element = parent.get(name, namespace);
 			return element;
 		}
-		public void set(String name, Element element) {
+		public Element get(String name, Space... namespaces) {
+			for (Environment.Space s : namespaces) {
+				Element element = get(name, s);
+				if (element != null)
+					return element;
+			}
+			return null;
+		}
+		
+		public void set(String name, Element element, Space namespace) {
+			if (elementsBySpace == null)
+				elementsBySpace = new TreeMap<Space, Map<String, Element>>();
+			Map<String, Element> elements = elementsBySpace.get(namespace);
+			if (elements == null)
+				elements = new HashMap<String, Element>();
+			
 			elements.put(name, element);
 		}
 	}
@@ -88,16 +115,23 @@ public class DefinitionsVisitor extends Scanner {
 		}
 		return env;
 	}
-	
-	public Element resolveElement(Element context, String name, Set<String> namespacePrefixesUsedAndImported) {
+	public Element resolveElement(Element context, String name, Set<String> namespacePrefixesUsedAndImported, Environment.Space... namespaces) {
+		for (Environment.Space s : namespaces) {
+			Element element = resolveElement(context, name, namespacePrefixesUsedAndImported, s);
+			if (element != null)
+				return element;
+		}
+		return null;
+	}
+	public Element resolveElement(Element context, String name, Set<String> namespacePrefixesUsedAndImported, Environment.Space namespace) {
 		Environment env = getEnvironment(context);
-		Element e = env.get(name);
+		Element e = env.get(name, namespace);
 		if (e != null)
 			return e;
 		
 		if (namespacePrefixesUsedAndImported != null)
 			for (String prefix : namespacePrefixesUsedAndImported) {
-				e = env.get(prefix + name);
+				e = env.get(prefix + name, namespace);
 				if (e != null)
 					return e;
 			}
@@ -108,7 +142,7 @@ public class DefinitionsVisitor extends Scanner {
 	public void visitArg(Arg arg) {
 		Environment env = getEnvironment(arg.getParentElement());
 		if (env != null && arg.getName() != null)
-			env.set(arg.getName(), arg);
+			env.set(arg.getName(), arg, Environment.Space.Variables);
 		
 		super.visitArg(arg);
 	}
@@ -116,7 +150,7 @@ public class DefinitionsVisitor extends Scanner {
 	public void visitDefine(Define define) {
 		Environment env = getEnvironment(define.getParentElement());
 		if (env != null && define.getName() != null)
-			env.set(define.getName(), define);
+			env.set(define.getName(), define, Environment.Space.Constants);
 		
 		super.visitDefine(define);
 	}
@@ -125,19 +159,28 @@ public class DefinitionsVisitor extends Scanner {
 	public void visitFunction(Function function) {
 		Environment env = getEnvironment(function.getParentElement());
 		if (env != null && function.getName() != null)
-			env.set(function.getName(), function);
+			env.set(function.getName(), function, Environment.Space.Functions);
 		
 		super.visitFunction(function);
 	}
 	
 	@Override
-	protected void visitStoredDeclarations(StoredDeclarations d) {
+	public void visitTypeDef(TypeDef d) {
 		Environment env = getEnvironment(d.getParentElement());
 		if (env != null)
 			for (Declarator sto : d.getDeclarators())
-				env.set(sto.resolveName(), sto);
+				env.set(sto.resolveName(), sto, Environment.Space.Types);
 		
-		super.visitStoredDeclarations(d);
+		super.visitTypeDef(d);
+	}
+	@Override
+	public void visitVariablesDeclaration(VariablesDeclaration d) {
+		Environment env = getEnvironment(d.getParentElement());
+		if (env != null)
+			for (Declarator sto : d.getDeclarators())
+				env.set(sto.resolveName(), sto, Environment.Space.Variables);
+		
+		super.visitVariablesDeclaration(d);
 	}
 	
 	@Override
@@ -145,10 +188,10 @@ public class DefinitionsVisitor extends Scanner {
 		Environment env = getEnvironment(e.getParentElement());
 		if (env != null) {
 			if (e.getTag() != null)
-				env.set(e.getTag(), e);
+				env.set(e.getTag(), e, Environment.Space.Enums);
 		
 			for (EnumItem ei : e.getItems())
-				env.set(ei.getName(), ei);
+				env.set(ei.getName(), ei, Environment.Space.Constants);
 		}
 		
 		super.visitEnum(e);

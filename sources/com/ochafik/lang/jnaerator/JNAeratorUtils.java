@@ -21,7 +21,6 @@ package com.ochafik.lang.jnaerator;
 import static com.ochafik.lang.SyntaxUtils.as;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
@@ -50,7 +49,8 @@ public class JNAeratorUtils {
 		while (parent != null && !(parent instanceof DeclarationsHolder)) {
 			if (parent instanceof Arg) {
 				Arg arg = (Arg)parent;
-				ns.add(arg.getName());
+				if (arg.getName() != null)
+					ns.add(arg.getName());
 			} else if (parent instanceof Function) {
 				Function f = (Function)parent;
 				if (f.getName() != null)
@@ -69,7 +69,6 @@ public class JNAeratorUtils {
 				Declaration d = (Declaration)parent;
 				if (d.getName() != null) {
 					ns.add(0, d.getName());
-					//return ns;
 				}
 			}
 			parent = parent.getParentElement();
