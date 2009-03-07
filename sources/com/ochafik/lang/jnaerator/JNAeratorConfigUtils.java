@@ -37,7 +37,7 @@ import com.ochafik.admin.visualstudio.Project;
 import com.ochafik.admin.visualstudio.Solution;
 import com.ochafik.admin.visualstudio.VisualStudioUtils;
 import com.ochafik.lang.jnaerator.parser.Function;
-import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
@@ -260,7 +260,7 @@ public class JNAeratorConfigUtils {
 			config.functionsAccepter = new Adapter<Function, Boolean>() {
 	
 				public Boolean adapt(Function value) {
-					Set<Modifier> mods = value.getModifiers();
+					List<Modifier> mods = value.getModifiers();
 					return !mods.contains(Modifier.Inline) && !mods.contains(Modifier.__inline__);
 				}
 			};

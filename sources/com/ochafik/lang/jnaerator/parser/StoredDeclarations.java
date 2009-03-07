@@ -25,10 +25,15 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.util.string.StringUtils;
 
 public abstract class StoredDeclarations extends Declaration {
-	final List<VariableStorage> variableStorages = new ArrayList<VariableStorage>();
+	final List<Declarator> declarators = new ArrayList<Declarator>();
 
 	public static class TypeDef extends StoredDeclarations {
 
+		public TypeDef() {}
+		public TypeDef(TypeRef valueType, List<Declarator> declarators) {
+			setValueType(valueType);
+			setDeclarators(declarators);
+		}
 		@Override
 		public void accept(Visitor visitor) {
 			visitor.visitTypeDef(this);
@@ -36,8 +41,10 @@ public abstract class StoredDeclarations extends Declaration {
 		
 		@Override
 		public String toString(CharSequence indent) {
-			return formatComments(indent, false) + getModifiersStringPrefix() +
-				"typedef " + getValueTypeAndStorageSuffix();
+			String p = formatComments(indent, false) + getModifiersStringPrefix();
+			if (p.length() > 0)
+				p += "\n" + indent;
+			return p + "typedef " + getValueTypeAndStorageSuffix();
 		}
 	}
 	
@@ -46,14 +53,14 @@ public abstract class StoredDeclarations extends Declaration {
 			FunctionSignature sig = (FunctionSignature) getValueType();
 			if (sig.getFunction() != null) {
 				String name = sig.getFunction().getName();
-				if (name != null && variableStorages.size() == 1) {
-					String stoName = variableStorages.get(0).getName();
+				if (name != null && declarators.size() == 1) {
+					String stoName = declarators.get(0).resolveName();
 					if (name.equals(stoName) || stoName == null)
 						return sig.toString() + ";";
 				}
 			}
 		}
-		String stoStr = StringUtils.implode(variableStorages, ", ").trim();
+		String stoStr = StringUtils.implode(declarators, ", ").trim();
 		return 
 			getValueType() + 
 			(stoStr.length() == 0 ? "" : " " + stoStr) + 
@@ -62,30 +69,31 @@ public abstract class StoredDeclarations extends Declaration {
 	@Override
 	public String toString(CharSequence indent) {
 		return (commentBefore == null || commentBefore.length() == 0 ? "" : formatComments(indent, false) + "\n" + indent) +
-			getModifiersStringPrefix() + getValueTypeAndStorageSuffix() +
-			(commentAfter == null ? "" : " " + commentAfter.trim());
+			getModifiersStringPrefix() + getValueTypeAndStorageSuffix()
+			//+ (commentAfter == null ? "" : " " + commentAfter.trim())
+			;
 	}
 	
-	public List<VariableStorage> getVariableStorages() {
-		return unmodifiableList(variableStorages);
+	public List<Declarator> getDeclarators() {
+		return unmodifiableList(declarators);
 	}
 	
-	public void setVariableStorages(List<VariableStorage> variableStorages) {
-		changeValue(this, this.variableStorages, variableStorages);
+	public void setDeclarators(List<Declarator> declarator) {
+		changeValue(this, this.declarators, declarator);
 	}
 	
-	public void addVariableStorage(VariableStorage variableStorage) {
-		if (variableStorage == null)
+	public void addDeclarator(Declarator declarator) {
+		if (declarator == null)
 			return;
-		variableStorages.add(variableStorage);
-		variableStorage.setParentElement(this);
+		declarators.add(declarator);
+		declarator.setParentElement(this);
 	}
 	@Override
 	public Element getNextChild(Element child) {
 		Element e = super.getNextChild(child);
 		if (e != null)
 			return e;
-		return getNextSibling(variableStorages, child);
+		return getNextSibling(declarators, child);
 	}
 
 	@Override
@@ -93,7 +101,7 @@ public abstract class StoredDeclarations extends Declaration {
 		Element e = super.getPreviousChild(child);
 		if (e != null)
 			return e;
-		return getPreviousSibling(variableStorages, child);
+		return getPreviousSibling(declarators, child);
 	}
 	
 	
@@ -102,6 +110,6 @@ public abstract class StoredDeclarations extends Declaration {
 		if (super.replaceChild(child, by))
 			return true;
 		
-		return replaceChild(variableStorages, VariableStorage.class, this, child, by);
+		return replaceChild(declarators, Declarator.class, this, child, by);
 	}
 }

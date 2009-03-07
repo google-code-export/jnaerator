@@ -19,122 +19,18 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.ochafik.lang.jnaerator.parser.Struct.MemberVisibility;
 import com.ochafik.util.string.StringUtils;
 
-public abstract class Declaration extends Element {
+public abstract class Declaration extends ModifiableElement {
 	protected List<String> nameSpace = new ArrayList<String>();
 	protected String name;
 	protected TypeRef valueType;
 	public MemberVisibility visibility;
-	protected Set<Modifier> modifiers = new LinkedHashSet<Modifier>();
+	
 	final List<Annotation> annotations = new ArrayList<Annotation>();
 	
-	public enum Modifier {
-		__cdecl,
-		__stdcall,
-		__pre,
-		__valid,
-		__deref,
-		__readonly,
-		__null,
-		__refparam,
-		__exceptthat,
-		
-		Public,
-		Final,
-		Private, 
-		Protected, 
-		Const, 
-		Extern, 
-		Static, 
-		Volatile, 
-		Inline,
-		__inline__,
-	
-		// declspec
-		//Align { @Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		//Allocate { @Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		AppDomain { 	@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		Deprecated { 	@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		DllExport { 	@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		DllImport { 	@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		JITIntrinsic { 	@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		Naked { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		NoAlias { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		NoInline { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		NoReturn { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		NoThrow { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		NoVTable { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		Process { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		Property { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		Restrict { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		SelectAny { 	@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		Thread { 		@Override public String toString() { return "__declspec(" + super.toString() + ")"; } },
-		UUID { 			@Override public String toString() { return "__declspec(" + super.toString() + ")"; } };
-		
-		@Override
-		public String toString() {
-			return super.toString().toLowerCase();
-		}
-	}
-	public static Modifier getExtendedModifier(String name) {
-		return extMods.get(name);
-	}
-	public static Modifier getModifier(String name) {
-		//Modifier m = Modifier.valueOf(name);
-		//if (m == null)
-		return mods.get(name);
-	}
-	static Map<String, Modifier> mods = new HashMap<String, Modifier>();
-	static Map<String, Modifier> extMods = new HashMap<String, Modifier>();
-	static {
-		for (Modifier m : Modifier.values())
-			mods.put(m.toString(), m);
-		
-		extMods.put("appdomain", Modifier.AppDomain);
-		extMods.put("deprecated", Modifier.Deprecated);
-		extMods.put("dllimport", Modifier.DllExport);
-		extMods.put("dllexport", Modifier.DllImport);
-		extMods.put("jitintrinsic", Modifier.JITIntrinsic);
-		extMods.put("naked", Modifier.Naked);
-		extMods.put("noalias", Modifier.NoAlias);
-		extMods.put("noinline", Modifier.NoInline);
-		extMods.put("noreturn", Modifier.NoReturn);
-		extMods.put("nothrow", Modifier.NoThrow);
-		extMods.put("novtable", Modifier.NoVTable);
-		extMods.put("process", Modifier.Process);
-		extMods.put("property", Modifier.Property);
-		extMods.put("restrict", Modifier.Restrict);
-		extMods.put("selectany", Modifier.SelectAny);
-		extMods.put("thread", Modifier.Thread);
-		extMods.put("uuid", Modifier.UUID);
-	}
-	
-	public Declaration addModifier(Modifier mod) {
-		if (mod != null)
-			modifiers.add(mod);
-		return this;
-	}
-	public Declaration addModifiers(List<Modifier> mods) {
-		if (mods != null)
-			for (Modifier mod : mods)
-				addModifier(mod);
-		return this;
-	}
-
-	public Declaration addModifiers(Modifier... mds) {
-		return addModifiers(Arrays.asList(mds));
-	}
-
 	@Override
 	public Element getNextChild(Element child) {
 		return getNextSibling(annotations, child);
@@ -147,22 +43,6 @@ public abstract class Declaration extends Element {
 	@Override
 	public Declaration clone() {
 		return (Declaration) super.clone();
-	}
-	public Set<Modifier> getModifiers() {
-		return Collections.unmodifiableSet(modifiers);
-	}
-	public void setModifiers(Set<Modifier> modifiers) {
-		this.modifiers.clear();
-		if (modifiers != null)
-			this.modifiers.addAll(modifiers);
-	}
-	
-	public static Modifier getExportationModifier(String identifier) {
-		if (identifier.matches("^[A-Z_]+_EXPORTS?$"))
-			return Modifier.DllExport;
-		if (identifier.equals("extern"))
-			return Modifier.Extern;
-		return null;
 	}
 	
 	public TypeRef getValueType() {
@@ -200,7 +80,8 @@ public abstract class Declaration extends Element {
 
 	
 	public String getModifiersStringPrefix() {
-		return StringUtils.implode(modifiers, " ") + (modifiers.isEmpty() ? "" : " ");
+		List<Modifier> mods = getModifiers();
+		return StringUtils.implode(mods, " ") + (mods.isEmpty() ? "" : " ");
 	}
 	
 	public String getName() {

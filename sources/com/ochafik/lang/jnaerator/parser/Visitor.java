@@ -18,8 +18,12 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.FunctionDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
+import com.ochafik.lang.jnaerator.parser.Statement.Block;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
@@ -30,14 +34,14 @@ import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.ochafik.lang.jnaerator.parser.Statement.ExpressionStatement;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.EnumTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 
 public interface Visitor {
 
@@ -84,11 +88,13 @@ public interface Visitor {
 
 	void visitCast(Cast cast);
 
-	void visitVariableStorage(VariableStorage variableStorage);
+	void visitDeclarator(Declarator variableStorage);
 
 	void visitVariablesDeclaration(VariablesDeclaration variablesDeclaration);
 
-	void visitStructTypeRef(StructTypeRef structTypeRef);
+	void visitTaggedTypeRefDeclaration(TaggedTypeRefDeclaration taggedTypeRefDeclaration);
+	
+	void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef);
 
 	void visitEmptyArraySize(EmptyArraySize emptyArraySize);
 
@@ -98,12 +104,24 @@ public interface Visitor {
 
 	void visitNew(New new1);
 
-	void visitEnumTypeRef(EnumTypeRef enumTypeRef);
-
 	void visitAnnotation(Annotation annotation);
 
 	void visitEmptyDeclaration(EmptyDeclaration emptyDeclaration);
 
 	void visitNewArray(NewArray newArray);
+
+	void visitPointerDeclarator(PointerDeclarator pointerDeclarator);
+
+	void visitArrayDeclarator(com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator.ArrayDeclarator arrayDeclarator);
+
+	void visitDirectDeclarator(DirectDeclarator directDeclarator);
+
+	void visitFunctionDeclarator(FunctionDeclarator functionDeclarator);
+
+	void visitModifiableElement(ModifiableElement modifiableElement);
+
+	void visitBlock(Block block);
+
+	void visitExpressionStatement(ExpressionStatement expressionStatement);
 	
 }

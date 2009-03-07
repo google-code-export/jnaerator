@@ -55,6 +55,15 @@ public abstract class Element {
 		return id;
 	}
 	
+	public void importDetails(Element from) {
+		if (from == null)
+			return;
+		
+		setElementFile(from.getElementFile());
+		setElementLine(from.getElementLine());
+		setCommentBefore(from.getCommentBefore());
+		setCommentAfter(from.getCommentAfter());
+	}
 	protected <T> List<T> unmodifiableList(List<T> list) {
 		return new SemiUnmodifiableList<T>(list);
 	}
@@ -76,6 +85,8 @@ public abstract class Element {
 			s = s.replaceAll("^/\\*++!?", "").replaceAll("\\*/$", "");
 			s = s.replaceAll("\n\\s+", "\n").replaceAll("\n\\*\\s?+", "\n");
 		}
+		s = s.replaceAll("<br/?>\n", "\n");
+		s = s.replaceAll("<br/?>$", "");
 		return s.trim();
 	}
 	public void addToCommentBefore(List<String> s) {
@@ -91,6 +102,9 @@ public abstract class Element {
 		//	ss.add(0, b);
 		
 		setCommentBefore(StringUtils.implode(ss, "\n"));
+	}
+	public void moveAllCommentsBefore() {
+		addToCommentBefore(getCommentAfter());
 	}
 	public static final <T extends Element> String implode(Iterable<T> elements, Object separator, CharSequence indent) {
 		String sepStr = separator.toString();
@@ -145,8 +159,8 @@ public abstract class Element {
 			
 		
 		String content = beginEachCommentLineWithStar ?
-			" * " + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br/>\n" + indent + " * ") + "\n" + indent : 
-			"\t" + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br/>" + LINE_SEPARATOR + indent + "\t");
+			" * " + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br>\n" + indent + " * ") + "\n" + indent : 
+			"\t" + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br>" + LINE_SEPARATOR + indent + "\t");
 		
 		return "/**" + LINE_SEPARATOR + indent + content + " */";
 	}

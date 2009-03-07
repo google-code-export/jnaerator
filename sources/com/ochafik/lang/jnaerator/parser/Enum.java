@@ -21,9 +21,10 @@ package com.ochafik.lang.jnaerator.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.string.StringUtils;
 
-public class Enum extends Declaration {
+public class Enum extends TaggedTypeRef {
 	public static class EnumItem extends Element {
 		String name;
 		Expression value;
@@ -131,13 +132,10 @@ public class Enum extends Declaration {
 
 	@Override
 	public String toString(CharSequence indent) {
-		return toCoreString(indent) + ";";
-	}
-	public String toCoreString(CharSequence indent) {
 		String indentt = "\n" + indent + "\t";
 		return 
 			"enum " +
-			(getName() != null ? getName() + " " : "")+ 
+			(getTag() != null ? getTag() + " " : "")+ 
 			"{" + 
 			indentt + StringUtils.implode(items, indentt) + "\n" + indent + "}";
 	}

@@ -22,27 +22,47 @@ int val = (1 << 16) - 2;
 --
 long value = (int)(__u.__u >> 31);
 --
+extern long long int i;
+--
+extern long int llrint(double);
+--
 extern long long int llrint(double);
+--
+typedef int I; 
+I register i; 
+--
+int register unsigned g;
+--
+/**
+ * Need to see public final ByteByReference[] data = new ByteByReference[3]; in results<br>
+ * https://jna.dev.java.net/servlets/ReadMsg?list=users&msgNo=2335
+ */
+typedef struct {
+	int width;
+	int height;
+	int rowBytes;
+	int columnBytes;
+	unsigned char *data[3];
+} ImageTransfer;
 --
 string name = "ok";
 --
+extern void **const GC_objfreelist_ptr;
+--
 typedef struct _NSSize {
 	CGFloat width; /* width should never be negative */
-
 	CGFloat height; /* height should never be negative */
 } NSSize;
 --
-/**
- * Struct comment
- */
+/// Struct comment
 struct ParamBlockRec {
 	int ok; // comment after ok
 };
 --
 /// these are comments...
-void* CreateHandle(int size);
+void *CreateHandle(int size);
 --
-void** ResizeHandle(void** h, int size);
+void **ResizeHandle(void** h, int size);
 --
 BOOL (*isEqual)(NSMapTable* table, const void*, const void*);
 --
@@ -64,11 +84,17 @@ const void x[];
 --
 const void const *&*x[];
 --
-// Only comments here !
+#// Only comments here !
 --
 char *(*(**foo[][8])())[];
 --
+typedef struct {
+	unsigned char *data[3];
+} S;
+--
 int x[4];
+--
+bool (*)(const void* buffer, unsigned int length) x;
 --
 unsigned short x, *px, **ppx, **&rppx = a, *pa[4];
 --
@@ -80,11 +106,9 @@ enum {
 	rAliasType = 'alis' /* Aliases are stored as resources of this type */
 };
 --
-bool (*test)(const void* buffer, unsigned int length) x;
---
 @class NSAppleEventDescriptor;
 --
-typedef const struct __NSAppleEventManagerSuspension* NSAppleEventManagerSuspensionID;
+typedef const struct __NSAppleEventManagerSuspension *NSAppleEventManagerSuspensionID;
 --
 extern const double NSAppleEventTimeOutNone;
 --
@@ -101,28 +125,21 @@ typedef char str40[41];
 --
 union short_or_long_NOVAR {
 	short i;
-
 	long l2;
 };
 --
 union short_or_long {
 	short i;
-
 	long l;
 } a_number, *p_anumber = NULL;
 --
-/* Test of comments before */
+/// Test of comments before
 union ParamBlockRec {
 	IOParam ioParam;
-
 	FileParam fileParam;
-
 	VolumeParam volumeParam;
-
 	CntrlParam cntrlParam;
-
 	SlotDevParam slotDevParam;
-
 	MultiDevParam multiDevParam;
 };
 --
@@ -130,7 +147,6 @@ typedef SInt32 (__cdecl *AVLCompareItemsProcPtr)(AVLTreePtr tree, const void* i1
 --
 typedef struct {
 	float *re;
-
 	float im[4];
 } complex;
 --
@@ -149,10 +165,8 @@ struct Test {
 static __inline__  int __inline_signbit( long double __x ){ 
 	union {
 		long double __ld;
-
 		struct { 
 			unsigned long long __m;
-
 			short __sexp;
 		} __p;
 	} __u = {__x}; 
@@ -252,3 +266,4 @@ extern TestMe();
 #pragma fail
 int[4] x;
 --
+bool (*test)(const void *buffer, unsigned int length) x;

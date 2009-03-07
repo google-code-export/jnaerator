@@ -17,27 +17,38 @@
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.ochafik.lang.jnaerator.parser;
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class VariablesDeclaration extends StoredDeclarations {
-
-	public VariablesDeclaration() {}
-	public VariablesDeclaration(TypeRef valueType, Declarator...declarators) {
-		this(valueType, Arrays.asList(declarators));
-	}
-	public VariablesDeclaration(TypeRef valueType, List<Declarator> declarators) {
-		setValueType(valueType);
-		setDeclarators(declarators);
-	}
-	@Override
-	public VariablesDeclaration addModifiers(Modifier... mod) {
-		return (VariablesDeclaration) super.addModifiers(mod);
-	}
+public abstract class ModifiableElement extends Element {
+	protected List<Modifier> modifiers = new ArrayList<Modifier>();
+	
 	@Override
 	public void accept(Visitor visitor) {
-		visitor.visitVariablesDeclaration(this);
+		visitor.visitModifiableElement(this);
+	}
+	public ModifiableElement addModifiers(List<Modifier> mods) {
+		if (mods != null)
+			for (Modifier mod : mods) {
+				if (mod != null)
+					modifiers.add(mod);
+			}
+		return this;
+	}
+
+	public ModifiableElement addModifiers(Modifier... mds) {
+		return addModifiers(Arrays.asList(mds));
+	}
+
+	public List<Modifier> getModifiers() {
+		return Collections.unmodifiableList(modifiers);
+	}
+	public void setModifiers(List<Modifier> modifiers) {
+		this.modifiers.clear();
+		if (modifiers != null)
+			this.modifiers.addAll(modifiers);
 	}
 	
 }

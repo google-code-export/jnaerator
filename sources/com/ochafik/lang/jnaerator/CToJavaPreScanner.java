@@ -20,13 +20,17 @@ package com.ochafik.lang.jnaerator;
 
 import java.util.Arrays;
 
+import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 
 public class CToJavaPreScanner extends Scanner {
+	public CToJavaPreScanner() {
+	}
 	@Override
 	public void visitVariablesDeclaration(VariablesDeclaration v) {
 		TypeRef valueType = v.getValueType();
@@ -34,24 +38,32 @@ public class CToJavaPreScanner extends Scanner {
 		Element toAddAfter = v;
 		
 		/// Explode comma-separated variables declarations
-		for (VariableStorage vs : v.getVariableStorages()) {
-			TypeRef type = vs.mutateType(valueType);
+		for (Declarator vs : v.getDeclarators()) {
+			if (vs instanceof DirectDeclarator)
+				continue;
 			
-			VariablesDeclaration decl = new VariablesDeclaration();
-			decl.setCommentAfter(v.getCommentAfter());
-			decl.setCommentBefore(v.getCommentBefore());
-			decl.setValueType(type);
-			
-			vs.setDimensions(null);
-			vs.setStorageModifiers(null);
-			decl.setVariableStorages(Arrays.asList(vs));
+			Declaration decl = null;
+		
+			Element type = vs.mutateType(valueType);
+			if (type instanceof TypeRef) {
+				
+				decl = new VariablesDeclaration((TypeRef)type, Arrays.asList(vs));
+				decl.importDetails(v);
+				//TODO vs.setDimensions(null);
+				//TODO vs.setStorageModifiers(null);
+			} else if (type instanceof Declaration) {
+				decl = (Declaration)type;
+			} else {
+				continue;
+			}
 			
 			toAddAfter.insertSibling(decl, false);
 			toAddAfter = decl;
 
-			super.visitVariablesDeclaration(decl);
+			decl.accept(this);//super.visitVariablesDeclaration(decl);
 		}
-		v.replaceBy(null);
+		if (toAddAfter != v)
+			v.replaceBy(null);
 	}
 	
 }

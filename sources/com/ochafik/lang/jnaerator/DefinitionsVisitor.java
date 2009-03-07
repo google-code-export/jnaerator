@@ -34,7 +34,7 @@ import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.math.graph.BinaryEdgeSet;
 import com.ochafik.math.graph.impl.FastSparseBinaryEdgeSet;
@@ -134,8 +134,8 @@ public class DefinitionsVisitor extends Scanner {
 	protected void visitStoredDeclarations(StoredDeclarations d) {
 		Environment env = getEnvironment(d.getParentElement());
 		if (env != null)
-			for (VariableStorage sto : d.getVariableStorages())
-				env.set(sto.getName(), sto);
+			for (Declarator sto : d.getDeclarators())
+				env.set(sto.resolveName(), sto);
 		
 		super.visitStoredDeclarations(d);
 	}
@@ -144,8 +144,8 @@ public class DefinitionsVisitor extends Scanner {
 	public void visitEnum(Enum e) {
 		Environment env = getEnvironment(e.getParentElement());
 		if (env != null) {
-			if (e.getName() != null)
-				env.set(e.getName(), e);
+			if (e.getTag() != null)
+				env.set(e.getTag(), e);
 		
 			for (EnumItem ei : e.getItems())
 				env.set(ei.getName(), ei);

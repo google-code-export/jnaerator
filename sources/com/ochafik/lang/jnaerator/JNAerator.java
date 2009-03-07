@@ -67,27 +67,31 @@ import com.ochafik.lang.jnaerator.parser.EmptyDeclaration;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
 import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
 import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
 import com.ochafik.lang.jnaerator.parser.ObjCppTests;
-import com.ochafik.lang.jnaerator.parser.PrintScanner;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
+import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
-import com.ochafik.lang.jnaerator.parser.VariableStorage;
+import com.ochafik.lang.jnaerator.parser.Declarator;
+import static com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
-import com.ochafik.lang.jnaerator.parser.Declaration.Modifier;
+import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.StructTypeRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.reflect.DebugUtils;
 import com.ochafik.util.listenable.Pair;
@@ -96,6 +100,7 @@ import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Union;
 
@@ -349,8 +354,8 @@ public class JNAerator {
 		
 		for (String library : result.libraries) {
 			if (library == null)
-				continue;
-				//library = "";
+				continue; // to handle code defined in macro-expanded expressions
+//				library = "";
 			
 			String javaPackage = result.javaPackageByLibrary.get(library);
 			String libraryClassName = result.getLibraryClassSimpleName(library);
@@ -460,13 +465,13 @@ public class JNAerator {
 		callbackStruct.setType(Struct.Type.JavaInterface);
 		callbackStruct.addModifiers(Modifier.Public);
 		callbackStruct.setParents(Arrays.asList(Callback.class.getName()));
-		callbackStruct.setName(chosenName);
+		callbackStruct.setTag(chosenName);
 		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
 		//out.setCommentBefore(Element.formatComments(chosenName, name, chosenName, fullFilePathInComments, null))
 		List<Declaration> children = new ArrayList<Declaration>();
 		convertFunction(function, new TreeSet<String>(), true, children, callerLibraryName);
 		callbackStruct.addDeclarations(children);
-		out.add(callbackStruct);
+		out.add(new TaggedTypeRefDeclaration(callbackStruct));
 	}
 	
 	private void convertCallbacks(List<FunctionSignature> functionSignatures, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
@@ -505,9 +510,10 @@ public class JNAerator {
 					}
 
 					//TypeRef tr = new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass));
-					Declaration declaration = new VariablesDeclaration(tr, new VariableStorage(name, converted)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
-					declaration.setCommentBefore(element.getCommentBefore());
-					declaration.addToCommentBefore(element.getCommentAfter());
+					Declaration declaration = new VariablesDeclaration(tr, new DirectDeclarator(name, converted));
+					declaration.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
+					declaration.importDetails(element);
+					declaration.moveAllCommentsBefore();
 					declaration.addToCommentBefore(getFileCommentContent(element));
 					return declaration;
 				}
@@ -537,15 +543,16 @@ public class JNAerator {
 				if (prim == null)
 					return;
 				
-				for (VariableStorage vs : v.getVariableStorages()) {
+				for (Declarator vs : v.getDeclarators()) {
 					try {
-						if (vs.getDefaultValue() == null || !vs.isPlainStorage())
+						if (vs.getDefaultValue() == null || !(vs instanceof DirectDeclarator))
 							continue; // TODO provide a mapping of exported values
 						
+						DirectDeclarator dd = (DirectDeclarator)vs;
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
 						
 						TypeRef tr = new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass));
-						VariablesDeclaration vd = new VariablesDeclaration(tr, new VariableStorage(vs.getName(), val));
+						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(dd.getName(), val));
 						vd.setCommentBefore(v.getCommentBefore());
 						vd.addToCommentBefore(vs.getCommentBefore());
 						vd.addToCommentBefore(vs.getCommentAfter());
@@ -636,10 +643,10 @@ public class JNAerator {
 				Set<String> localSignatures = signatures;
 				
 				Struct enumInterf = null;
-				if (e.getName() != null) {
-					enumInterf = publicStaticClass(e.getName(), null, Struct.Type.JavaInterface, e);
+				if (e.getTag() != null) {
+					enumInterf = publicStaticClass(e.getTag(), null, Struct.Type.JavaInterface, e);
 					enumInterf.addToCommentBefore("enum values");
-					out.add(enumInterf);
+					out.add(new TaggedTypeRefDeclaration(enumInterf));
 					
 					//out.println(indent + e.formatComments(indent, true, "enum " + e.getName(), getFileCommentContent(e)));
 					//out.println(indent + "public static interface " + e.getName() + " {");
@@ -890,8 +897,7 @@ public class JNAerator {
 			
 			convertedNat.setName(modifiedMethodName);
 			convertedNat.setValueType(new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass)));
-			convertedNat.setCommentBefore(function.getCommentBefore());
-			convertedNat.setCommentAfter(function.getCommentAfter());
+			convertedNat.importDetails(function);
 			if (!isCallback)
 				convertedNat.addToCommentBefore(getFileCommentContent(function));
 			//convertedNat.addToCommentBefore("SIGNATURE: " + function.computeSignature());
@@ -955,19 +961,26 @@ public class JNAerator {
 			}
 		}
 	}
+	TaggedTypeRefDeclaration publicStaticClassDecl(String name, String parentName, Struct.Type type, Element toCloneCommentsFrom, String... interfaces) {
+		return decl(publicStaticClass(name, parentName, type, toCloneCommentsFrom, interfaces));
+	}
+	TaggedTypeRefDeclaration decl(TaggedTypeRef tr) {
+		return new TaggedTypeRefDeclaration(tr);
+	}
 	Struct publicStaticClass(String name, String parentName, Struct.Type type, Element toCloneCommentsFrom, String... interfaces) {
 		Struct cl = new Struct();
 		cl.setType(type);
-		cl.setName(name);
-		cl.setParents(parentName);
+		cl.setTag(name);
+		if (parentName != null)
+			cl.setParents(parentName);
 		if (type == Struct.Type.JavaInterface)
 			for (String inter : interfaces)
 				cl.addParent(inter);
 		else
 		cl.setProtocols(Arrays.asList(interfaces));
 		if (toCloneCommentsFrom != null ) {
-			cl.setCommentBefore(toCloneCommentsFrom.getCommentBefore());
-			cl.addToCommentBefore(toCloneCommentsFrom.getCommentAfter());
+			cl.importDetails(toCloneCommentsFrom);
+			cl.moveAllCommentsBefore();
 			cl.addToCommentBefore(getFileCommentContent(toCloneCommentsFrom));
 		}
 		cl.addModifiers(Modifier.Public, Modifier.Static);
@@ -985,13 +998,13 @@ public class JNAerator {
 		}
 	}
 	void convertStruct(Struct struct, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
-		if (struct.getName() == null)
+		if (struct.getTag() == null)
 			return;
 		
-		if (struct.isForwardDeclaration() && !result.structsByName.get(struct.getName()).isForwardDeclaration())
+		if (struct.isForwardDeclaration() && !result.structsByName.get(struct.getTag()).isForwardDeclaration())
 			return;
 		
-		String signature = "struct " + struct.getName();
+		String signature = "struct " + struct.getTag();
 		if (!signatures.add(signature))
 			return;
 		
@@ -999,9 +1012,26 @@ public class JNAerator {
 		
 		String indent = "\t";
 		
-		final Struct structJavaClass = publicStaticClass(struct.getName(), baseClass, Struct.Type.JavaClass, struct);
-		structJavaClass.addDeclaration(publicStaticClass("ByReference", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByReference"));
-		structJavaClass.addDeclaration(publicStaticClass("ByValue", struct.getName(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByValue").addModifier(Modifier.Final));
+		final Struct structJavaClass = publicStaticClass(struct.getTag(), baseClass, Struct.Type.JavaClass, struct);
+		structJavaClass.addDeclaration(publicStaticClassDecl("ByReference", struct.getTag(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByReference"));
+		structJavaClass.addDeclaration(publicStaticClassDecl("ByValue", struct.getTag(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByValue").addModifiers(Modifier.Final));
+		
+		Function constructor = new Function(Function.Type.JavaMethod, struct.getTag(), null);
+		constructor.setBody(new Statement.Block());
+		structJavaClass.addDeclaration(constructor);
+		
+		constructor = new Function(Function.Type.JavaMethod, struct.getTag(), null, 
+			Arrays.asList(
+				new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),
+				new Arg("offset", new TypeRef.Primitive("int"))
+			)
+		);
+		constructor.setBody(new Statement.Block(
+				new Statement.ExpressionStatement(new Expression.FunctionCall("super")),
+				new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset"))),
+				new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
+		));
+		structJavaClass.addDeclaration(constructor);
 		
 		final int iChild[] = new int[] {0};
 		
@@ -1011,67 +1041,87 @@ public class JNAerator {
 		for (Declaration d : struct.getDeclarations()) {
 			if (d instanceof VariablesDeclaration) {
 				convertVariablesDeclaration((VariablesDeclaration)d, children, iChild, callerLibraryClass);
-			} else if (d instanceof Struct) {
-				convertStruct((Struct)d, childSignatures, children, callerLibraryClass);
+			} else if (d instanceof TaggedTypeRefDeclaration) {
+				TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
+				if (tr instanceof Struct) {
+					convertStruct((Struct)tr, childSignatures, children, callerLibraryClass);
+				} else if (tr instanceof Enum) {
+					// TODO
+					//convertEnum((Enum)tr, childSignatures, children, callerLibraryClass);
+				}
 			} else if (d instanceof TypeDef) {
 				TypeDef td = (TypeDef)d;
 				TypeRef tr = td.getValueType();
-				if (tr instanceof StructTypeRef) {
-					convertStruct(((StructTypeRef)tr).getStruct(), childSignatures, children, callerLibraryClass);
+				if (tr instanceof Struct) {
+					convertStruct((Struct)tr, childSignatures, children, callerLibraryClass);
 				} else if (tr instanceof FunctionSignature) {
 					convertCallback((FunctionSignature)tr, childSignatures, children, callerLibraryClass);
 				}
 			}
 		}
 		structJavaClass.addDeclarations(children);
-		out.add(structJavaClass);
+		out.add(decl(structJavaClass));
 	}
 	
 	private void convertVariablesDeclaration(VariablesDeclaration v, List<Declaration> out, int[] iChild, String callerLibraryName) {
 		//List<Declaration> out = new ArrayList<Declaration>();
 		try {
 			JavaPrim prim = result.typeConverter.getPrimitive(v.getValueType());
-			for (VariableStorage vs : v.getVariableStorages()) {
-				String name = vs.getName();
+			TypeRef valueType = v.getValueType();
+			for (Declarator vs : v.getDeclarators()) {
+				String name = vs.resolveName();
 				if (name == null || name.length() == 0)
 					continue;
 					//name = "u" + (iChild[0] + 1);
 				name = result.typeConverter.getValidJavaArgumentName(name);
 				
-				String javaTypeStr = result.typeConverter.typeToJNA(v.getValueType(), vs, 
-					vs.getDimensions().isEmpty() ? TypeConversion.TypeConversionMode.FieldType : TypeConversion.TypeConversionMode.StaticallySizedArrayField, 
-					callerLibraryName
-				);
-				
+				Expression initVal = null;
+				boolean hasFixedSizeStorage = false;
+				String javaTypeStr = null;
+				if (vs instanceof ArrayDeclarator) {
+					ArrayDeclarator ad = (ArrayDeclarator) vs;
+					if (!ad.getDimensions().isEmpty()) {
+						javaTypeStr = result.typeConverter.typeToJNA(valueType, vs, 
+							TypeConversion.TypeConversionMode.StaticallySizedArrayField, 
+							callerLibraryName
+						);
+							
+						//if (prim != null) {
+							hasFixedSizeStorage = true;
+							TypeRef arrayType = new TypeRef.SimpleTypeRef(result.typeConverter.toString(prim));
+							Expression mul = null;
+							List<Expression> dims = ad.getDimensions();
+							for (Expression x : dims) {
+								Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
+								c.setParenthesis(dims.size() == 1);
+								if (mul == null)
+									mul = c;
+								else
+									mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
+							}
+							initVal = new Expression.NewArray(arrayType, mul);
+						//}
+					}
+				}
+				if (javaTypeStr == null) {
+					javaTypeStr = result.typeConverter.typeToJNA((TypeRef)vs.mutateType(valueType), vs, 
+						TypeConversion.TypeConversionMode.FieldType,
+						callerLibraryName
+					);
+				}
 				if (javaTypeStr == null || javaTypeStr.equals("void")) {
 					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true), v.toString()));
 					//println(indent + v.formatComments(indent, true));
 					//print("//SKIPPED: ");
 				}
 				
-				boolean hasFixedSizeStorage = vs.getStorageModifiers().isEmpty() && prim != null && !vs.getDimensions().isEmpty();
-				
-				Expression initVal = null;
-				if (hasFixedSizeStorage) {
-					TypeRef arrayType = new TypeRef.SimpleTypeRef(result.typeConverter.toString(prim));
-					List<Expression> transDims = new ArrayList<Expression>();
-					Expression mul = null;
-					for (Expression x : vs.getDimensions()) {
-						Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
-						c.setParenthesis(vs.getDimensions().size() == 1);
-						if (mul == null)
-							mul = c;
-						else
-							mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
-					}
-					initVal = new Expression.NewArray(arrayType, mul);
-				}
+				//boolean hasFixedSizeStorage = vs.getStorageModifiers().isEmpty() && prim != null && !vs.getDimensions().isEmpty();
 				
 				VariablesDeclaration convDecl = new VariablesDeclaration();
-				convDecl.setCommentBefore(v.getCommentBefore());
-				convDecl.addToCommentBefore(v.getCommentAfter());
+				convDecl.importDetails(v);
+				convDecl.moveAllCommentsBefore();
 				convDecl.setValueType(new TypeRef.SimpleTypeRef(javaTypeStr));
-				convDecl.addVariableStorage(new VariableStorage(name, initVal));
+				convDecl.addDeclarator(new DirectDeclarator(name, initVal));
 				convDecl.addModifiers(Modifier.Public);
 				if (hasFixedSizeStorage)
 					convDecl.addModifiers(Modifier.Final);
@@ -1147,7 +1197,10 @@ public class JNAerator {
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
 		if (config.verbose)
 			originalOut.println("Resolving symbols");
+		
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());
+		sourceFiles.accept(new CToJavaPreScanner());
+		
 		
 		//TODO resolve variables in visual studio projects
 		/**
@@ -1190,7 +1243,7 @@ public class JNAerator {
 					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
 					TypeDef td = new TypeDef();
 					td.setValueType(functionSignature);
-					td.addVariableStorage(new VariableStorage(f.getName()));
+					td.addDeclarator(new DirectDeclarator(f.getName()));
 					holder.addDeclaration(td);
 					
 				}
@@ -1261,6 +1314,9 @@ public class JNAerator {
 				}
 				
 			}
+			
+			// TODO rewrite this :
+			/*
 			@Override
 			public void visitStructTypeRef(StructTypeRef structTypeRef) {
 				// TODO Auto-generated method stub
@@ -1272,49 +1328,77 @@ public class JNAerator {
 					//if (s.getName() != null) {
 					holder.addDeclaration(s);
 					VariablesDeclaration pd = as(structTypeRef.getParentElement(), VariablesDeclaration.class);
-					if (pd != null && pd.getVariableStorages().isEmpty())
+					if (pd != null && pd.getDeclarators().isEmpty())
 						pd.replaceBy(null); // special case of C++-like struct sub-type definition 
 					else
 						structTypeRef.replaceBy(new TypeRef.SimpleTypeRef(s.getName()));
 				}
-			}
+			}*/
 			@Override
-			public void visitStruct(Struct struct) {
+			public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
+				super.visitTaggedTypeRef(taggedTypeRef);
+				
 				boolean changed = false;
-				if (struct.getName() == null) {
-					TypeRef.StructTypeRef sr = as(struct.getParentElement(), TypeRef.StructTypeRef.class);
+				if (taggedTypeRef.getTag() == null) {
+					// TODO needs much better lookup, handles very little cases : 
+					Arg sr = as(taggedTypeRef.getParentElement(), Arg.class);
 					if (sr != null) {
 						TypeDef td = as(sr.getParentElement(), TypeDef.class);
 						String bestName = findBestPlainStorageName(td);
 						if (bestName != null)
-							struct.setName(bestName);
+							taggedTypeRef.setTag(bestName);
 					}
 				}
-				if (struct.getName() == null) {
-					List<String> ownerNames = guessOwnerName(struct.getParentElement() instanceof StructTypeRef ? struct.getParentElement() : struct);
+				if (taggedTypeRef.getTag() == null) {
+					List<String> ownerNames = guessOwnerName(taggedTypeRef);//.getParentElement() instanceof StructTypeRef ? struct.getParentElement() : struct);
 					List<String> names = new ArrayList<String>();
 					if (ownerNames != null)
 						names.addAll(ownerNames);
 					
-					if (struct.getType() == Struct.Type.CStruct) {
-						names.add("struct");
-						//struct.setName(ownerName == null ? "Struct" + (iNextStruct++) : ownerName + "Struct");
-						changed = true;
-					} else if (struct.getType() == Struct.Type.CUnion) {
-						names.add("union");
-						//struct.setName(ownerName == null ? "Union" + (iNextUnion++) : ownerName + "Union");
+					if (taggedTypeRef instanceof Struct) {
+						Struct struct = (Struct)taggedTypeRef;
+						if (struct.getType() == Struct.Type.CStruct) {
+							names.add("struct");
+							//struct.setName(ownerName == null ? "Struct" + (iNextStruct++) : ownerName + "Struct");
+							changed = true;
+						} else if (struct.getType() == Struct.Type.CUnion) {
+							names.add("union");
+							//struct.setName(ownerName == null ? "Union" + (iNextUnion++) : ownerName + "Union");
+							changed = true;
+						}
+					} else if (taggedTypeRef instanceof Enum) {
+						names.add("enum");
+						//struct.setName(ownerName == null ? "Enum" + (iNextEnum++) : ownerName + "Enum");
 						changed = true;
 					}
 					
 					if (changed)
-						struct.setName(StringUtils.implode(names, "_"));
+						taggedTypeRef.setTag(StringUtils.implode(names, "_"));
+						
 					//ownerName = StringUtils.capitalize(ownerNames, "_");
 					
 				}
 
-				super.visitStruct(struct);
+				if (changed)
+					taggedTypeRef.accept(this);//super.visitStruct(struct);
 //				if (changed)
 //					struct.accept(definitions);
+				
+				if (!(taggedTypeRef.getParentElement() instanceof TaggedTypeRefDeclaration)) {
+					DeclarationsHolder holder = taggedTypeRef.findParentOfType(DeclarationsHolder.class);
+					if (holder != null && holder != taggedTypeRef.getParentElement()) {
+						//if (s.getName() != null) {
+						if (taggedTypeRef instanceof Enum)
+							taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef("int"));//taggedTypeRef.getTag()));
+						else
+							taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef(taggedTypeRef.getTag()));
+						holder.addDeclaration(new TaggedTypeRefDeclaration(taggedTypeRef));
+						//VariablesDeclaration pd = as(taggedTypeRef.getParentElement(), VariablesDeclaration.class);
+						//if (pd != null && pd.getDeclarators().isEmpty())
+						//	pd.replaceBy(null); // special case of C++-like struct sub-type definition 
+							
+					}
+				}
 			}
 		});
 		
@@ -1429,18 +1513,19 @@ public class JNAerator {
 		if (sd == null)
 			return null;
 		
-		VariableStorage bestPlainStorage = null;
-		for (VariableStorage st : sd.getVariableStorages()) {
-			if (st.isPlainStorage()) {
-				boolean niceName = !st.getName().startsWith("_");
+		Declarator bestPlainStorage = null;
+		for (Declarator st : sd.getDeclarators()) {
+			if (st instanceof DirectDeclarator) {
+				boolean niceName = !((DirectDeclarator)st).getName().startsWith("_");
 				if (bestPlainStorage == null || niceName) {
 					bestPlainStorage = st;
 					if (niceName)
 						break;
 				}
 			}
+			// TODO play with other names ("pointed_by", "returned_by"...)
 		}
-		return bestPlainStorage != null ? bestPlainStorage.getName() : null;
+		return bestPlainStorage != null ? bestPlainStorage.resolveName() : null;
 	}
 	private void parseSlices(List<Slice> slices, PrintStream originalOut, PrintStream originalErr) throws InterruptedException {
 

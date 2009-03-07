@@ -18,23 +18,23 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-import com.ochafik.lang.jnaerator.parser.VariableStorage.StorageModifier;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 
 public abstract class TypeMutator {
 	public static TypeMutator 
 		CONST_STAR = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
-			type = new TypeRef.Pointer(type, StorageModifier.Pointer);
-			type.addModifier("const");
+			type = new TypeRef.Pointer(type, PointerStyle.Pointer);
+			type.addModifiers(Modifier.Const);
 			return type;
 		}},
 		STAR = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
-			return new TypeRef.Pointer(type, StorageModifier.Pointer);
+			return new TypeRef.Pointer(type, PointerStyle.Pointer);
 		}},
 		AMPERSTAND = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
-			return new TypeRef.Pointer(type, StorageModifier.Reference);
+			return new TypeRef.Pointer(type, PointerStyle.Reference);
 		}},
 		CONST = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
-			type.addModifier("const");
+			type.addModifiers(Modifier.Const);
 			return type;
 		}},
 		BRACKETS = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
