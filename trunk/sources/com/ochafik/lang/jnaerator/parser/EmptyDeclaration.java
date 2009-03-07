@@ -33,7 +33,7 @@ public class EmptyDeclaration extends Declaration {
 	
 	@Override
 	public String toString(CharSequence indent) {
-		return formatComments(indent, true);
+		return formatComments(indent, true, true, false);
 	}
 
 }

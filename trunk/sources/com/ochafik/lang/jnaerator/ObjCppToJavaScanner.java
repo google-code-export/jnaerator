@@ -100,10 +100,10 @@ public class ObjCppToJavaScanner extends Scanner {
 			Element parent = vs.getParentElement();
 			if (parent != null) {
 				if (parent instanceof TypeDef) {
-					Element mut = vs.mutateType(((TypeDef) parent).getValueType());
+					Declarator.MutableByDeclarator mut = vs.mutateType(((TypeDef) parent).getValueType());
 					if (mut instanceof TypeRef) {
-						simpleTypeRef.replaceBy(mut);
-						mut.accept(this);
+						simpleTypeRef.replaceBy((Element) mut);
+						((Element)mut).accept(this);
 					}
 				} else if (parent instanceof Struct) {
 					Struct s = (Struct) parent;

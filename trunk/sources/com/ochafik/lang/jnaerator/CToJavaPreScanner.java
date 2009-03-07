@@ -18,21 +18,34 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import java.util.Arrays;
-
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 
 public class CToJavaPreScanner extends Scanner {
 	public CToJavaPreScanner() {
 	}
+	
+	@Override
+	protected void visitStoredDeclarations(StoredDeclarations d) {
+		// TODO Auto-generated method stub
+		super.visitStoredDeclarations(d);
+	}
+	@Override
+	public void visitFunctionSignature(FunctionSignature functionSignature) {
+		// TODO Auto-generated method stub
+		super.visitFunctionSignature(functionSignature);
+	}
 	@Override
 	public void visitVariablesDeclaration(VariablesDeclaration v) {
+		super.visitVariablesDeclaration(v);
+		
 		TypeRef valueType = v.getValueType();
 		
 		Element toAddAfter = v;
@@ -44,10 +57,10 @@ public class CToJavaPreScanner extends Scanner {
 			
 			Declaration decl = null;
 		
-			Element type = vs.mutateType(valueType);
+			Declarator.MutableByDeclarator type = vs.mutateType(valueType);
 			if (type instanceof TypeRef) {
 				
-				decl = new VariablesDeclaration((TypeRef)type, Arrays.asList(vs));
+				decl = new VariablesDeclaration((TypeRef)type, new DirectDeclarator(vs.resolveName()));
 				decl.importDetails(v);
 				//TODO vs.setDimensions(null);
 				//TODO vs.setStorageModifiers(null);

@@ -149,7 +149,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		return nextMemberVisibility;
 	}
 	
-	public String toCoreString(CharSequence indent) {
+	public String toString(CharSequence indent) {
 		String lnind = "\n" + indent + "\t";
 		String body = isForwardDeclaration() ? "" :
 			" {" +
@@ -159,18 +159,18 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 			) + "}"
 		;
 		
-		String pre = (commentBefore == null ? "" : formatComments(indent, false) + "\n" + indent) + 
+		String pre = formatComments(indent, false, true, true) + 
 			getModifiersStringPrefix();
 			//commentBefore + "\n" + indent;//(indent, mergeCommentsBeforeAndAfter);
 		
 		String nameStr = (getTag() == null ? "" : " " + getTag());
-		String javaPublicity = getModifiers().contains(Modifier.Public) ? "public " :
-			getModifiers().contains(Modifier.Protected) ? "protected " :
-			"";
-		if (getModifiers().contains(Modifier.Static))
-			javaPublicity += "static ";
-		if (getModifiers().contains(Modifier.Final))
-			javaPublicity += "final ";
+//		String javaPublicity = getModifiers().contains(Modifier.Public) ? "public " :
+//			getModifiers().contains(Modifier.Protected) ? "protected " :
+//			"";
+//		if (getModifiers().contains(Modifier.Static))
+//			javaPublicity += "static ";
+//		if (getModifiers().contains(Modifier.Final))
+//			javaPublicity += "final ";
 		
 		String javaExtension = getParents().isEmpty() ? "" : " extends " + StringUtils.implode(getParents(), ", ");
 		String javaImplements = getProtocols().isEmpty() ? "" : " implements " + StringUtils.implode(getProtocols(), ", ");
@@ -181,9 +181,9 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 			case CUnion:
 				return pre + "union" + nameStr + body;
 			case JavaClass:
-				return pre + javaPublicity + "class" + nameStr + javaExtension + javaImplements + body;
+				return pre + "class" + nameStr + javaExtension + javaImplements + body;
 			case JavaInterface:
-				return pre + javaPublicity + "interface" + nameStr + javaExtension + javaImplements + body;
+				return pre + "interface" + nameStr + javaExtension + javaImplements + body;
 			case ObjCClass:
 				return pre + "@class" + nameStr + body;
 			case ObjCProtocol:
@@ -193,15 +193,6 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 				return pre + "struct" + nameStr + body;
 		}
 		
-	}
-	@Override
-	public String toString(CharSequence indent) {
-		String coreStr = toCoreString(indent);
-		//String varststr = StringUtils.implode(declarators, ", ");
-		return 
-			coreStr;// + 
-			//(varststr.length() == 0 ? "" : " " + varststr) + 
-		//";" + (commentAfter == null ? "" : " " + commentAfter.trim());
 	}
 	public void accept(Visitor visitor) {
 		visitor.visitStruct(this);

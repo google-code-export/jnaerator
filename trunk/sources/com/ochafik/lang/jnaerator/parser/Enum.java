@@ -54,7 +54,7 @@ public class Enum extends TaggedTypeRef {
 		@Override
 		public String toString(CharSequence indent) {
 			return
-				formatComments(indent, false) +
+				formatComments(indent, false, true, true) +
 				getName() + 
 				(getValue() == null ? "" : " = " + getValue()) + (getCommentAfter() == null ? "" : " " + getCommentAfter());
 		}
@@ -139,4 +139,5 @@ public class Enum extends TaggedTypeRef {
 			"{" + 
 			indentt + StringUtils.implode(items, indentt) + "\n" + indent + "}";
 	}
+
 }

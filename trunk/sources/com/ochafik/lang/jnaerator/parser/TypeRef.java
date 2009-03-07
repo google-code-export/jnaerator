@@ -27,7 +27,7 @@ import java.util.Set;
 import com.ochafik.lang.jnaerator.parser.Modifier.Kind;
 import com.ochafik.util.string.StringUtils;
 
-public abstract class TypeRef extends ModifiableElement {
+public abstract class TypeRef extends ModifiableElement implements Declarator.MutableByDeclarator {
 	
 	public static abstract class TaggedTypeRef extends TypeRef {
 		String tag;
@@ -93,7 +93,7 @@ public abstract class TypeRef extends ModifiableElement {
 		
 		@Override
 		public String toString(CharSequence indent) {
-			return getModifiersStringPrefix() + name;
+			return formatComments(indent, true, false, false) + getModifiersStringPrefix() + name;
 		}
 		
 		@Override
@@ -311,6 +311,43 @@ public abstract class TypeRef extends ModifiableElement {
 			visitor.visitEnumTypeRef(this);
 		}
 	}*/
+	public static class SubTypeRef extends TargettedTypeRef {
+		public enum Style { 
+			Dot { public String toString() { return "."; } }, 
+			Colons { public String toString() { return "::"; } } 
+		}
+		public SubTypeRef() {}
+		public SubTypeRef(TypeRef target, Style style, String subName) {
+			setTarget(target);
+			setStyle(style);
+			setSubName(subName);
+		}
+
+		Style style;
+		String subName;
+		
+		public void setStyle(Style style) {
+			this.style = style;
+		}
+		public Style getStyle() {
+			return style;
+		}
+		public String getSubName() {
+			return subName;
+		}
+		public void setSubName(String subName) {
+			this.subName = subName;
+		}
+		
+		@Override
+		public String toString(CharSequence indent) {
+			return getTarget().toString(indent) + getStyle() + getSubName();
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitSubTypeRef(this);
+		}
+	}
 	public static class Pointer extends TargettedTypeRef {
 		Declarator.PointerStyle pointerStyle;
 		

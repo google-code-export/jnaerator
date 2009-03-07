@@ -54,15 +54,21 @@ public abstract class Element {
 	public int getId() {
 		return id;
 	}
-	
+	public void stripDetails() {
+		setCommentBefore(null);
+		setCommentAfter(null);
+		setElementFile(null);
+		setElementLine(-1);
+	}
 	public void importDetails(Element from) {
 		if (from == null)
 			return;
 		
 		setElementFile(from.getElementFile());
 		setElementLine(from.getElementLine());
-		setCommentBefore(from.getCommentBefore());
-		setCommentAfter(from.getCommentAfter());
+		addToCommentBefore(from.getCommentBefore());
+		if (from.getCommentAfter() != null)
+			setCommentAfter(from.getCommentAfter());
 	}
 	protected <T> List<T> unmodifiableList(List<T> list) {
 		return new SemiUnmodifiableList<T>(list);
@@ -105,6 +111,7 @@ public abstract class Element {
 	}
 	public void moveAllCommentsBefore() {
 		addToCommentBefore(getCommentAfter());
+		setCommentAfter(null);
 	}
 	public static final <T extends Element> String implode(Iterable<T> elements, Object separator, CharSequence indent) {
 		String sepStr = separator.toString();
@@ -125,10 +132,13 @@ public abstract class Element {
 	public void addToCommentBefore(String... s) {
 		addToCommentBefore(Arrays.asList(s));
 	}
-	public String formatComments(CharSequence indent, boolean mergeCommentsAfter, String... otherComments) {
-		return formatComments(indent, commentBefore, commentAfter, mergeCommentsAfter, otherComments);
+	public String formatComments(CharSequence indent, boolean mergeCommentsAfter, boolean allowLineComments, boolean skipLineAfter, String... otherComments) {
+		return formatComments(indent, commentBefore, commentAfter, mergeCommentsAfter, allowLineComments, skipLineAfter, otherComments);
 	}
-	public static String formatComments(CharSequence indent, String commentBefore, String commentAfter, boolean mergeCommentsAfter, String... otherComments) {
+//	public String formatComments(CharSequence indent, boolean mergeCommentsAfter, String... otherComments) {
+//		return formatComments(indent, commentBefore, commentAfter, mergeCommentsAfter, otherComments);
+//	}
+	public static String formatComments(CharSequence indent, String commentBefore, String commentAfter, boolean mergeCommentsAfter, boolean allowLineComments, boolean skipLineAfter, String... otherComments) {
 		List<String> nakedComments = new ArrayList<String>();
 		List<String> src = new ArrayList<String>();
 		if (commentBefore != null)
@@ -154,17 +164,19 @@ public abstract class Element {
 		if (nakedComments.size() == 1 && !nakedComments.get(0).contains("\n"))
 			uniqueLine = nakedComments.get(0);
 			
-		if (uniqueLine != null && allowSingleLineDoc)
-			return "/// " + uniqueLine;
+		String suffix = skipLineAfter ? "\n" + indent : "";
+		if (uniqueLine != null && allowLineComments)
+			return "/// " + uniqueLine + suffix;
 			
 		
 		String content = beginEachCommentLineWithStar ?
 			" * " + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br>\n" + indent + " * ") + "\n" + indent : 
 			"\t" + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br>" + LINE_SEPARATOR + indent + "\t");
 		
-		return "/**" + LINE_SEPARATOR + indent + content + " */";
+		return "/**" + LINE_SEPARATOR + indent + content + " */" + suffix;
 	}
-	static final boolean allowSingleLineDoc = true, beginEachCommentLineWithStar = true;
+	static final boolean //allowSingleLineDoc = true, 
+		beginEachCommentLineWithStar = true;
 	
 
 	public void setCommentBefore(String text) {

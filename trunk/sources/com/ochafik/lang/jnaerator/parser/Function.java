@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 
 import com.ochafik.util.string.StringUtils;
 
-public class Function extends Declaration {
+public class Function extends Declaration implements Declarator.MutableByDeclarator {
 	//private Struct owner;
 
 	final List<Arg> args = new ArrayList<Arg>();
@@ -121,9 +121,7 @@ public class Function extends Declaration {
 		if (type == null)
 			return "<no function type>";
 		
-		String pre = formatComments(indent, false);
-		if (pre.length() > 0)
-			pre += "\n" + indent;
+		String pre = formatComments(indent, false, true, true);
 		String //pre = commentBefore == null ? "" : commentBefore + "\n" + indent, 
 				post = commentAfter == null ? "" : commentAfter;//" /*" + commentAfter + " */";
 		

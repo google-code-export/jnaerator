@@ -60,7 +60,6 @@ import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.lang.jnaerator.parser.Annotation;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
-import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.EmptyDeclaration;
@@ -76,12 +75,10 @@ import com.ochafik.lang.jnaerator.parser.ObjCppTests;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Statement;
-import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
-import static com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
@@ -377,7 +374,7 @@ public class JNAerator {
 				out.println("import org.rococoa.ID;");
 			
 			out.println();
-			out.println(Element.formatComments("", null, null, false, "JNA Wrapper for library <b>" + library + "</b>", 
+			out.println(Element.formatComments("", null, null, false, true, true, "JNA Wrapper for library <b>" + library + "</b>", 
 					getFileCommentContent(config.libraryProjectSources.get(library), null)));
 			out.println("public interface " + libraryClassName + " extends " + Library.class.getName() + "\n{");
 			
@@ -638,223 +635,94 @@ public class JNAerator {
 		if (enums != null) {
 			//out.println("public static class ENUMS {");
 			for (com.ochafik.lang.jnaerator.parser.Enum e : enums) {
-				String indent2;
-				List<Declaration> localOut = out;
-				Set<String> localSignatures = signatures;
+				if (e.findParentOfType(Struct.class) != null)
+					continue;
 				
-				Struct enumInterf = null;
-				if (e.getTag() != null) {
-					enumInterf = publicStaticClass(e.getTag(), null, Struct.Type.JavaInterface, e);
-					enumInterf.addToCommentBefore("enum values");
-					out.add(new TaggedTypeRefDeclaration(enumInterf));
-					
-					//out.println(indent + e.formatComments(indent, true, "enum " + e.getName(), getFileCommentContent(e)));
-					//out.println(indent + "public static interface " + e.getName() + " {");
-					localSignatures = new HashSet<String>();
-					localOut = new ArrayList<Declaration>();
-				}
-				Integer lastAdditiveValue = null;
-				Expression lastRefValue = null;
-				boolean failedOnceForThisEnum = false;
-				for (com.ochafik.lang.jnaerator.parser.Enum.EnumItem item : e.getItems()) {
-//					String resultingValue;
-					Expression resultingExpression;
-					try {
-						if (item.getValue() == null) {
-							// no explicit value
-							if (lastRefValue == null) {
-								if (lastAdditiveValue != null) {
-									lastAdditiveValue++;
-//									resultingValue = String.valueOf(lastAdditiveValue);
-									resultingExpression = new Expression.Constant(Constant.Type.Int, lastAdditiveValue);
-								} else {
-									if (item == e.getItems().get(0)) {
-										lastAdditiveValue = 0;
-//										resultingValue = String.valueOf(lastAdditiveValue);
-										resultingExpression = new Expression.Constant(Constant.Type.Int, lastAdditiveValue);
-									} else
-										//resultingValue = null; // fail
-										resultingExpression = null;
-								}
-							} else {
-								// has a last reference value
-								if (lastAdditiveValue != null)
-									lastAdditiveValue++;
-								else
-									lastAdditiveValue = 1;
-								
-								//resultingValue = result.typeConverter.convertExpressionToJava(new Expression.BinaryOp(Expression.BinaryOperator.Plus, lastRefValue, new Expression.Constant(lastAdditiveValue.toString()))).toString();
-								resultingExpression = //result.typeConverter.convertExpressionToJava(
-									new Expression.BinaryOp(
-										Expression.BinaryOperator.Plus, 
-										lastRefValue.clone(), 
-										new Expression.Constant(Constant.Type.Int, lastAdditiveValue)
-									//)
-								);
-							}
-						} else {
-							// has an explicit value
-							failedOnceForThisEnum = false;// reset skipping
-							lastAdditiveValue = null;
-							lastRefValue = item.getValue();
-//							resultingValue = result.typeConverter.convertExpressionToJava(lastRefValue).toString();
-							resultingExpression = lastRefValue;//result.typeConverter.convertExpressionToJava(lastRefValue);
-							if (lastRefValue instanceof Expression.Constant) {
-								try {
-									lastAdditiveValue = ((Expression.Constant)lastRefValue).asInteger();
-									lastRefValue = null;
-								} catch (Exception ex) {}
-							}	
-						}
-					} catch (Exception ex) {
-						//ex.printStackTrace();
-						resultingExpression = null;
-					}
-					if (failedOnceForThisEnum || (failedOnceForThisEnum = resultingExpression == null))
-						localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
-					else {
-						try {
-							localOut.add(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", callerLibraryClass));
-						} catch (Exception ex) {
-							localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
-						}
-						/*String signature = "public static final int " + item.getName();
-						if (localSignatures.add(signature)) {
-							out.println(indent2 + signature + " = " + resultingValue + ";");
-						}*/
-					}
-				}
-				if (enumInterf != null)
-					enumInterf.addDeclarations(localOut);
+				convertEnum(e, signatures, out, callerLibraryClass);
 			}
 			//out.println("}");
 		}
 	}
-	/*
-	@Deprecated
-	void outputFunction(Result result, PrintWriter out, Function function, Set<String> signatures, String indent, boolean isCallback) {
-		if (config.functionsAccepter != null && !config.functionsAccepter.adapt(function))
-			return;
-		
-		String functionName = function.getName();
-		if (functionName == null)
-			functionName = "callback";
-		
-		if (functionName.contains("<")) {
-			return;
-		}
-		
-		if (" new null class void public package extends boolean ".contains(" " + functionName + " "))
-			return;
-		
-		
-		try {
-			StringBuilder outPrefix = new StringBuilder();
-			TypeRef returnType = null;
-			
-			boolean isObjectiveC = function.getType() == Type.ObjCMethod;
-			if (!isObjectiveC) {
-				returnType = function.getValueType();
-				if (returnType == null)
-					returnType = new TypeRef.Primitive("int");
-			} else {
-				returnType = RococoaUtils.fixReturnType(function);
-				functionName = RococoaUtils.getMethodName(function);
-			}
-			
-			String modifiedMethodName;
-			if (isCallback) {
-				modifiedMethodName = "callback";
-			} else {
-				modifiedMethodName = result.typeConverter.getValidJavaMethodName(functionName);
-				if (!modifiedMethodName.equals(functionName))
-					outPrefix.append(indent + "@" + RenameSymbol.class.getName() + "(name=\"" + functionName + "\")\n");
-			}
-			
-			StringBuilder signatureNat = new StringBuilder();
-			StringBuilder signaturePrim = new StringBuilder();
-			signatureNat.append(modifiedMethodName + "(");
-			signaturePrim.append(modifiedMethodName + "(");
-			
-			outPrefix.append(indent + "public " + result.typeConverter.typeToJNA(returnType, TypeConversionMode.ReturnType) + " " + modifiedMethodName + "(");
-			boolean first = true;
-			
-			StringBuilder outNative = new StringBuilder();
-			StringBuilder outPrimitive = new StringBuilder();
-			
-			Set<String> names = new TreeSet<String>();
-			for (Arg arg : function.getArgs())
-				if (arg.getName() != null) 
-					names.add(arg.getName());
-				
-			int iArg = 1;
-			for (Arg arg : function.getArgs()) {
-				if (first)
-					first = false;
-				else {
-					signatureNat.append(", ");
-					signaturePrim.append(", ");
-					outNative.append(", ");
-					outPrimitive.append(", ");
-				}
-				
-				
-				if (arg.isVarArgs()) {
-					//TODO choose vaname dynamically !
-					String vaType = isObjectiveC ? "NSObject" : "Object";
-					String argName = chooseJavaArg("varargs", iArg, names);
-					outNative.append(vaType + "... " + argName);
-					outPrimitive.append(vaType + "... " + argName);
-				} else {
-					String argName = arg.getName();
-					if (argName == null)
-						argName = chooseJavaArg(arg.getName(), iArg, names);
-					String typeStrNat = result.typeConverter.typeToJNA(arg.getValueType(), TypeConversionMode.NativeParameter),
-						typeStrPrim = result.typeConverter.typeToJNA(arg.getValueType(), TypeConversionMode.PrimitiveParameter);
-					signatureNat.append(typeStrNat);
-					signaturePrim.append(typeStrPrim);
-					outNative.append(typeStrNat + " " + argName);
-					outPrimitive.append(typeStrPrim + " " + argName);
-				}
-				iArg++;
-			}
-			
-			signatureNat.append(")");
-			signaturePrim.append(")");
-			
-			//boolean outputtedSourceString = false;
-			boolean nativeSignatureDifferentFromPrimitiveSignature = !outNative.toString().equals(outPrimitive.toString());
-			if (signatures.add(signatureNat.toString())) {
-				if (!isCallback) {
-					out.println();
-					out.println(indent + function.formatComments(indent, true, getFileCommentContent(function), 
-						nativeSignatureDifferentFromPrimitiveSignature ?
-							"@deprecated use the safer and easier to use {@link #" + modifiedMethodName + "(" + outPrimitive + ")} instead" : null
-					));
-				}
-				//outputtedSourceString = true;
-				if (nativeSignatureDifferentFromPrimitiveSignature)
-					out.println(indent + "@Deprecated");
-				out.print(outPrefix);
-				out.println(outNative + ");");
-			}
-			
-			if (!isCallback && nativeSignatureDifferentFromPrimitiveSignature) {
-				if (signatures.add(signaturePrim.toString())) {
-					out.println();
-					out.println(indent + function.formatComments(indent, true, getFileCommentContent(function)));
-					out.print(outPrefix);
-					out.println(outPrimitive + ");");
-				}
-			}
-		} catch (TypeConversion.UnsupportedTypeConversion ex) {
-			out.println();
-			out.println(indent + "// " + getFileCommentContent(function));
-			//out.println(indent + "/// " + sourceString);
-			out.println(indent + "// " + ex.toString().replace('\n', ' '));
-		}
-	}*/
 	
+	private void convertEnum(Enum e, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
+		List<Declaration> localOut = out;
+		Set<String> localSignatures = signatures;
+		
+		Struct enumInterf = null;
+		if (e.getTag() != null) {
+			
+			enumInterf = publicStaticClass(e.getTag(), null, Struct.Type.JavaInterface, e);
+			enumInterf.addToCommentBefore("enum values");
+			out.add(new TaggedTypeRefDeclaration(enumInterf));
+			
+			localSignatures = new HashSet<String>();
+			localOut = new ArrayList<Declaration>();
+		}
+		Integer lastAdditiveValue = null;
+		Expression lastRefValue = null;
+		boolean failedOnceForThisEnum = false;
+		for (com.ochafik.lang.jnaerator.parser.Enum.EnumItem item : e.getItems()) {
+			Expression resultingExpression;
+			try {
+				if (item.getValue() == null) {
+					// no explicit value
+					if (lastRefValue == null) {
+						if (lastAdditiveValue != null) {
+							lastAdditiveValue++;
+							resultingExpression = new Expression.Constant(Constant.Type.Int, lastAdditiveValue);
+						} else {
+							if (item == e.getItems().get(0)) {
+								lastAdditiveValue = 0;
+								resultingExpression = new Expression.Constant(Constant.Type.Int, lastAdditiveValue);
+							} else
+								resultingExpression = null;
+						}
+					} else {
+						// has a last reference value
+						if (lastAdditiveValue != null)
+							lastAdditiveValue++;
+						else
+							lastAdditiveValue = 1;
+						
+						resultingExpression = //result.typeConverter.convertExpressionToJava(
+							new Expression.BinaryOp(
+								Expression.BinaryOperator.Plus, 
+								lastRefValue.clone(), 
+								new Expression.Constant(Constant.Type.Int, lastAdditiveValue)
+							//)
+						);
+					}
+				} else {
+					// has an explicit value
+					failedOnceForThisEnum = false;// reset skipping
+					lastAdditiveValue = null;
+					lastRefValue = item.getValue();
+					resultingExpression = lastRefValue;
+					if (lastRefValue instanceof Expression.Constant) {
+						try {
+							lastAdditiveValue = ((Expression.Constant)lastRefValue).asInteger();
+							lastRefValue = null;
+						} catch (Exception ex) {}
+					}	
+				}
+			} catch (Exception ex) {
+				//ex.printStackTrace();
+				resultingExpression = null;
+			}
+			if (failedOnceForThisEnum || (failedOnceForThisEnum = resultingExpression == null))
+				localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
+			else {
+				try {
+					localOut.add(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", callerLibraryClass));
+				} catch (Exception ex) {
+					localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
+				}
+			}
+		}
+		if (enumInterf != null)
+			enumInterf.addDeclarations(localOut);
+	}
+
 	void convertFunction(Function function, Set<String> signatures, boolean isCallback, List<Declaration> out, String callerLibraryClass) {
 		if (config.functionsAccepter != null && !config.functionsAccepter.adapt(function))
 			return;
@@ -896,7 +764,7 @@ public class JNAerator {
 			}
 			
 			convertedNat.setName(modifiedMethodName);
-			convertedNat.setValueType(new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass)));
+			convertedNat.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass));
 			convertedNat.importDetails(function);
 			if (!isCallback)
 				convertedNat.addToCommentBefore(getFileCommentContent(function));
@@ -923,11 +791,11 @@ public class JNAerator {
 					String argName = arg.getName();
 					if (argName == null)
 						argName = chooseJavaArg(arg.getName(), iArg, names);
-					String typeStrNat = result.typeConverter.typeToJNA(arg.getValueType(), TypeConversionMode.NativeParameter, callerLibraryClass),
-						typeStrPrim = result.typeConverter.typeToJNA(arg.getValueType(), TypeConversionMode.PrimitiveParameter, callerLibraryClass);
+					TypeRef typeStrNat = result.typeConverter.convertTypeToJNA(arg.getValueType(), TypeConversionMode.NativeParameter, callerLibraryClass),
+						typeStrPrim = result.typeConverter.convertTypeToJNA(arg.getValueType(), TypeConversionMode.PrimitiveParameter, callerLibraryClass);
 					
-					convertedNat.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(typeStrNat)));
-					convertedPrim.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(typeStrPrim)));
+					convertedNat.addArg(new Arg(argName, typeStrNat));
+					convertedPrim.addArg(new Arg(argName, typeStrPrim));
 				}
 				iArg++;
 			}
@@ -1046,8 +914,7 @@ public class JNAerator {
 				if (tr instanceof Struct) {
 					convertStruct((Struct)tr, childSignatures, children, callerLibraryClass);
 				} else if (tr instanceof Enum) {
-					// TODO
-					//convertEnum((Enum)tr, childSignatures, children, callerLibraryClass);
+					convertEnum((Enum)tr, childSignatures, children, callerLibraryClass);
 				}
 			} else if (d instanceof TypeDef) {
 				TypeDef td = (TypeDef)d;
@@ -1110,7 +977,7 @@ public class JNAerator {
 					);
 				}
 				if (javaTypeStr == null || javaTypeStr.equals("void")) {
-					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true), v.toString()));
+					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
 					//println(indent + v.formatComments(indent, true));
 					//print("//SKIPPED: ");
 				}
@@ -1119,6 +986,8 @@ public class JNAerator {
 				
 				VariablesDeclaration convDecl = new VariablesDeclaration();
 				convDecl.importDetails(v);
+				convDecl.importDetails(valueType);
+				valueType.stripDetails();
 				convDecl.moveAllCommentsBefore();
 				convDecl.setValueType(new TypeRef.SimpleTypeRef(javaTypeStr));
 				convDecl.addDeclarator(new DirectDeclarator(name, initVal));
@@ -1200,7 +1069,10 @@ public class JNAerator {
 		
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());
 		sourceFiles.accept(new CToJavaPreScanner());
-		
+
+		if (config.verbose)
+			originalOut.println("Defining missing names");
+		sourceFiles.accept(new MissingNamesChooser());
 		
 		//TODO resolve variables in visual studio projects
 		/**
@@ -1219,11 +1091,6 @@ public class JNAerator {
 		/// Choose arbitrary names where missing (use DefinitionsVisitor to find unused names)
 		// - function signatures
 		// - structs
-		
-		if (config.verbose)
-			originalOut.println("Defining missing names");
-		
-		sourceFiles.accept(new MissingNamesChooser());
 		
 		
 		/// Resolve references of variables and types (map id -> type)
