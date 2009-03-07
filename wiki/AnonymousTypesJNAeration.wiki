@@ -81,10 +81,14 @@ Here's what JNAerator produces out of the anonymous version :
 	...
 }}}
 
+= Naming convention =
 
-= Details =
+*This is subject to change.*
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Deanonymized types get a suffix that indicate their type :
+ * _struct for structures
+ * _callback for function signatures
+ * _enum for enumerations
+ * _union for unions
+
+The choice was made not to use Java naming conventions by default, because it would produce strange names when structures and fields have very short names.
