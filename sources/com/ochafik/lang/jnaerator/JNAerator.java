@@ -485,7 +485,7 @@ public class JNAerator {
 	}
 	
 	@SuppressWarnings("static-access")
-	private Declaration outputConstant(String name, Expression x, Set<String> signatures, Element element, String elementTypeDescription, String callerLibraryClass) throws UnsupportedTypeConversion {
+	private Declaration outputConstant(String name, Expression x, Set<String> signatures, Element element, String elementTypeDescription, String callerLibraryClass, boolean addFileComment) throws UnsupportedTypeConversion {
 		//out.println();
 		//String comments = element.formatComments(indent, true);
 		//if (comments.length() > 0)
@@ -510,9 +510,10 @@ public class JNAerator {
 					//TypeRef tr = new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass));
 					Declaration declaration = new VariablesDeclaration(tr, new DirectDeclarator(name, converted));
 					declaration.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
-					declaration.importDetails(element);
+					declaration.importDetails(element, false);
 					declaration.moveAllCommentsBefore();
-					declaration.addToCommentBefore(getFileCommentContent(element));
+					if (addFileComment)
+						declaration.addToCommentBefore(getFileCommentContent(element));
 					return declaration;
 				}
 			}
@@ -575,7 +576,7 @@ public class JNAerator {
 				if (define.getValue() == null)
 					continue;
 				
-				out.add(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", callerLibraryClass));
+				out.add(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", callerLibraryClass, true));
 			}
 		}
 	}
@@ -714,7 +715,10 @@ public class JNAerator {
 				localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
 			else {
 				try {
-					localOut.add(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", callerLibraryClass));
+					localOut.add(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", 
+							callerLibraryClass, 
+							enumInterf == null
+					));
 				} catch (Exception ex) {
 					localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
 				}
@@ -766,7 +770,7 @@ public class JNAerator {
 			
 			convertedNat.setName(modifiedMethodName);
 			convertedNat.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass));
-			convertedNat.importDetails(function);
+			convertedNat.importDetails(function, false);
 			if (!isCallback)
 				convertedNat.addToCommentBefore(getFileCommentContent(function));
 			//convertedNat.addToCommentBefore("SIGNATURE: " + function.computeSignature());
@@ -848,7 +852,7 @@ public class JNAerator {
 		else
 		cl.setProtocols(Arrays.asList(interfaces));
 		if (toCloneCommentsFrom != null ) {
-			cl.importDetails(toCloneCommentsFrom);
+			cl.importDetails(toCloneCommentsFrom, false);
 			cl.moveAllCommentsBefore();
 			cl.addToCommentBefore(getFileCommentContent(toCloneCommentsFrom));
 		}
@@ -857,7 +861,6 @@ public class JNAerator {
 	}
 	public void convertStructs(List<Struct> structs, Set<String> signatures, List<Declaration> out, String libraryClassName) {
 		if (structs != null) {
-			List<Declaration> children = new ArrayList<Declaration>();
 			for (Struct struct : structs) {
 				if (struct.findParentOfType(Struct.class) != null)
 					continue;
@@ -878,8 +881,6 @@ public class JNAerator {
 			return;
 		
 		String baseClass = (struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class).getName();
-		
-		String indent = "\t";
 		
 		final Struct structJavaClass = publicStaticClass(struct.getTag(), baseClass, Struct.Type.JavaClass, struct);
 		structJavaClass.addDeclaration(publicStaticClassDecl("ByReference", struct.getTag(), Struct.Type.JavaClass, null, Structure.class.getName() + ".ByReference"));
@@ -936,7 +937,6 @@ public class JNAerator {
 	private void convertVariablesDeclaration(VariablesDeclaration v, List<Declaration> out, int[] iChild, String callerLibraryName) {
 		//List<Declaration> out = new ArrayList<Declaration>();
 		try {
-			JavaPrim prim = result.typeConverter.getPrimitive(v.getValueType());
 			TypeRef valueType = v.getValueType();
 			for (Declarator vs : v.getDeclarators()) {
 				String name = vs.resolveName();
@@ -966,36 +966,34 @@ public class JNAerator {
 					ArrayRef mr = (ArrayRef)mutatedType;
 					ArrayRef jr = (ArrayRef)javaType;
 					convDecl.addModifiers(Modifier.Final);
-					//if (ar.getDimensions().isEmpty()) {
-						Expression mul = null;
-						List<Expression> dims = mr.getDimensions();
-						for (Expression x : dims) {
-							Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
-							c.setParenthesis(dims.size() == 1);
-							if (mul == null)
-								mul = c;
-							else
-								mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
-						}
-						initVal = new Expression.NewArray(jr.getTarget(), mul);
-					//}
+					Expression mul = null;
+					List<Expression> dims = mr.getDimensions();
+					for (Expression x : dims) {
+						Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
+						c.setParenthesis(dims.size() == 1);
+						if (mul == null)
+							mul = c;
+						else
+							mul = new Expression.BinaryOp(BinaryOperator.Multiply, mul, c);
+					}
+					initVal = new Expression.NewArray(jr.getTarget(), mul);
 				}
 				if (javaType == null || javaType.toString().equals("void")) {
 					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
+				} else {
+				
+					convDecl.importDetails(v, false);
+					convDecl.importDetails(vs, false);
+					convDecl.importDetails(valueType, false);
+					valueType.stripDetails();
+					convDecl.moveAllCommentsBefore();
+					convDecl.setValueType(javaType);
+					convDecl.addDeclarator(new DirectDeclarator(name, initVal));
+					if (hasFixedSizeStorage)
+						convDecl.addModifiers(Modifier.Final);
+					
+					out.add(convDecl);
 				}
-				
-				convDecl.importDetails(v);
-				convDecl.importDetails(vs);
-				convDecl.importDetails(valueType);
-				valueType.stripDetails();
-				convDecl.moveAllCommentsBefore();
-				convDecl.setValueType(javaType);
-				convDecl.addDeclarator(new DirectDeclarator(name, initVal));
-				if (hasFixedSizeStorage)
-					convDecl.addModifiers(Modifier.Final);
-				
-				out.add(convDecl);
-				
 				iChild[0]++;
 			}
 		} catch (UnsupportedTypeConversion e) {

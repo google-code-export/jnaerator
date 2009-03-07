@@ -60,15 +60,22 @@ public abstract class Element {
 		setElementFile(null);
 		setElementLine(-1);
 	}
-	public void importDetails(Element from) {
+	public Element importDetails(Element from, boolean move) {
 		if (from == null)
-			return;
+			return this;
 		
-		setElementFile(from.getElementFile());
-		setElementLine(from.getElementLine());
-		addToCommentBefore(from.getCommentBefore());
+		if (from.getElementFile() != null)
+			setElementFile(from.getElementFile());
+		if (from.getElementLine() >= 0)
+			setElementLine(from.getElementLine());
+		if (from.getCommentBefore() != null)
+			addToCommentBefore(from.getCommentBefore());
 		if (from.getCommentAfter() != null)
 			setCommentAfter(from.getCommentAfter());
+		
+		if (move)
+			from.stripDetails();
+		return this;
 	}
 	protected <T> List<T> unmodifiableList(List<T> list) {
 		return new SemiUnmodifiableList<T>(list);
@@ -107,11 +114,13 @@ public abstract class Element {
 		//if (b != null && b.trim().length() > 0)
 		//	ss.add(0, b);
 		
-		setCommentBefore(StringUtils.implode(ss, "\n"));
+		setCommentBefore(ss.isEmpty() ? null : StringUtils.implode(ss, "\n"));
 	}
 	public void moveAllCommentsBefore() {
-		addToCommentBefore(getCommentAfter());
-		setCommentAfter(null);
+		if (getCommentAfter() != null) {
+			addToCommentBefore(getCommentAfter());
+			setCommentAfter(null);
+		}
 	}
 	public static final <T extends Element> String implode(Iterable<T> elements, Object separator, CharSequence indent) {
 		String sepStr = separator.toString();

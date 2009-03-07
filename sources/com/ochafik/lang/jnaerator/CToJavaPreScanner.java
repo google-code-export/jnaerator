@@ -27,6 +27,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 
 public class CToJavaPreScanner extends Scanner {
@@ -34,20 +35,14 @@ public class CToJavaPreScanner extends Scanner {
 	}
 	
 	@Override
-	protected void visitStoredDeclarations(StoredDeclarations d) {
-		// TODO Auto-generated method stub
-		super.visitStoredDeclarations(d);
-	}
-	@Override
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
 		// TODO Auto-generated method stub
 		super.visitFunctionSignature(functionSignature);
 	}
+	
 	@Override
-	public void visitVariablesDeclaration(VariablesDeclaration v) {
-		super.visitVariablesDeclaration(v);
-		
-		TypeRef valueType = v.getValueType();
+	public void visitTypeDef(TypeDef v) {
+		super.visitTypeDef(v);
 		
 		Element toAddAfter = v;
 		
@@ -58,17 +53,51 @@ public class CToJavaPreScanner extends Scanner {
 			
 			Declaration decl = null;
 		
-			Declarator.MutableByDeclarator type = vs.mutateType(valueType);
+			Declarator.MutableByDeclarator type = vs.mutateType(v.getValueType());
 			if (type instanceof TypeRef) {
-				
-				decl = new VariablesDeclaration((TypeRef)type, new DirectDeclarator(vs.resolveName()));
-				decl.importDetails(v);
-				//TODO vs.setDimensions(null);
-				//TODO vs.setStorageModifiers(null);
+				TypeRef tr = (TypeRef)type;
+				decl = new StoredDeclarations.TypeDef(tr, new DirectDeclarator(vs.resolveName()));
+				decl.importDetails(v, false);
+				decl.importDetails(vs, false);
+				decl.importDetails(tr, true);
+			} else {
+				continue;
+			}
+			
+			toAddAfter.insertSibling(decl, false);
+			toAddAfter = decl;
+
+			decl.accept(this);//super.visitVariablesDeclaration(decl);
+		}
+		if (toAddAfter != v)
+			v.replaceBy(null);
+	}
+	@Override
+	public void visitVariablesDeclaration(VariablesDeclaration v) {
+		super.visitVariablesDeclaration(v);
+		
+		Element toAddAfter = v;
+		
+		/// Explode comma-separated variables declarations
+		for (Declarator vs : v.getDeclarators()) {
+			if (vs instanceof DirectDeclarator)
+				continue;
+			
+			Declaration decl = null;
+		
+			Declarator.MutableByDeclarator type = vs.mutateType(v.getValueType());
+			if (type instanceof TypeRef) {
+				TypeRef tr = (TypeRef)type;
+				decl = new VariablesDeclaration(tr, new DirectDeclarator(vs.resolveName()));
+				decl.importDetails(v, false);
+				decl.importDetails(vs, false);
+				decl.importDetails(tr, true);
 			} else if (type instanceof Function) {
 				Function f = (Function)type;
 				f.setName(vs.resolveName());
 				decl = (Function)type;
+				decl.importDetails(v, false);
+				decl.importDetails(vs, false);
 			} else if (type instanceof Declaration) {
 				decl = (Declaration)type;
 			} else {

@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -30,6 +31,9 @@ public abstract class StoredDeclarations extends Declaration {
 	public static class TypeDef extends StoredDeclarations {
 
 		public TypeDef() {}
+		public TypeDef(TypeRef valueType, Declarator... declarators) {
+			this(valueType, Arrays.asList(declarators));
+		}
 		public TypeDef(TypeRef valueType, List<Declarator> declarators) {
 			setValueType(valueType);
 			setDeclarators(declarators);
