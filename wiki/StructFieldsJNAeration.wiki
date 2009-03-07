@@ -54,11 +54,11 @@ public interface functions_callback extends com.sun.jna.Callback {
 
 public final foo_callback[] foo = new foo_callback[(10)];
 public interface foo_callback extends com.sun.jna.Callback {
-	com.sun.jna.NativeLong callback(foo_callback_union.ByValue arg1);
+	com.sun.jna.NativeLong callback(foo_callback_arg1_union.ByValue arg1);
 }
-public static class foo_callback_union extends com.sun.jna.Union {
-	public static class ByReference extends foo_callback_union implements com.sun.jna.Structure.ByReference {}
-	public static class ByValue extends foo_callback_union implements com.sun.jna.Structure.ByValue {}
+public static class foo_callback_arg1_union extends com.sun.jna.Union {
+	public static class ByReference extends foo_callback_arg1_union implements com.sun.jna.Structure.ByReference {}
+	public static class ByValue extends foo_callback_arg1_union implements com.sun.jna.Structure.ByValue {}
 	public com.sun.jna.NativeLong l;
 	public int i;
 }
