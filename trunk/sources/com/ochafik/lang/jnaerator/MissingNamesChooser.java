@@ -64,6 +64,8 @@ public class MissingNamesChooser extends Scanner {
 				//structTypeRef.replaceBy(new TypeRef.SimpleTypeRef(s.getName()));
 				functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
 			TypeDef td = new TypeDef();
+			//td.importDetails(d, false);
+			td.importDetails(functionSignature, true);
 			td.setValueType(functionSignature);
 			td.addDeclarator(new DirectDeclarator(f.getName()));
 			holder.addDeclaration(td);
@@ -161,6 +163,9 @@ public class MissingNamesChooser extends Scanner {
 		List<String> names = new ArrayList<String>();
 		if (ownerNames != null)
 			names.addAll(ownerNames);
+		if (ownerNames.isEmpty())
+			return null;
+		
 		names.add(s);
 		return StringUtils.implode(names, "_");
 		//return StringUtils.capitalize(ownerNames, "_");
@@ -180,8 +185,8 @@ public class MissingNamesChooser extends Scanner {
 		return null;
 	}
 
-	static <T extends Element> T importDetails(T t, Element e) {
-		t.importDetails(e);
+	static <T extends Element> T importDetails(T t, Element e, boolean move) {
+		t.importDetails(e, move);
 		return t;
 	}
 	

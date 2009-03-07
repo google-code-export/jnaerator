@@ -85,7 +85,9 @@ public abstract class Declarator extends ModifiableElement {
 			return getName();
 		}
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
-			return type.clone();
+			type = type.clone();
+			((Element)type).importDetails(this, false);
+			return type;
 		}
 		@Override
 		public String toCoreString(CharSequence arg0) {
@@ -151,12 +153,12 @@ public abstract class Declarator extends ModifiableElement {
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
 			type = type.clone();
 			if (type instanceof Function) {
-				type = new TypeRef.FunctionSignature((Function)type);
+				type = (MutableByDeclarator)new TypeRef.FunctionSignature((Function)type).importDetails((Element)type, true);
 			} else if (type instanceof TypeRef) {
-				type = new TypeRef.Pointer((TypeRef)type, getPointerStyle());
+				type = (MutableByDeclarator) new TypeRef.Pointer((TypeRef)type, getPointerStyle()).importDetails((Element)type, true);
 			} else
 				throw new IllegalArgumentException(type.getClass().getName() + " cannot be mutated by pointer");
-			
+			((Element)type).importDetails(this, false);
 			return getTarget().mutateType(type);
 		}
 		public Declarator.PointerStyle getPointerStyle() {
@@ -194,6 +196,7 @@ public abstract class Declarator extends ModifiableElement {
 				throw new IllegalArgumentException("Function declarator can only mutate type references !");
 			
 			Function f = new Function();
+			f.importDetails(this, false);
 			f.setValueType((TypeRef)type);
 			f.setType(Type.CFunction);
 			f.setArgs(getArgs());
@@ -286,6 +289,7 @@ public abstract class Declarator extends ModifiableElement {
 				f.setValueType(new TypeRef.ArrayRef(f.getValueType(), deepClone(getDimensions())));
 				type = f;
 			}
+			((Element)type).importDetails(this, false);
 			return target.mutateType(type);
 		}
 		
