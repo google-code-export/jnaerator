@@ -8,11 +8,13 @@ Arrays with initializers are converted to Java arrays :
  {{{
 int iarr[4]; 
 char* csarr[3][4]; 
+char s[8];
 }}}
 becomes
  {{{
 public final int[] iarr = new int[(4)];
 public final com.sun.jna.ptr.ByteByReference[] csarr = new com.sun.jna.ptr.ByteByReference[3 * 4];
+public final byte[] s = new byte[(8)];
 }}}
 
 == Arrays with partial initializers ==
@@ -24,4 +26,33 @@ char *(*(**foo[][8])())[];
 becomes
  {{{
 public final com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
+}}}
+
+= Callbacks =
+
+= Structs =
+
+ {{{
+struct A {
+    int i;
+};
+struct B {
+   A a;
+   A *pa;
+};
+}}}
+naturally becomes :
+ {{{
+	public static class A extends com.sun.jna.Structure {
+		public static class ByReference extends A implements com.sun.jna.Structure.ByReference {}
+		public static class ByValue extends A implements com.sun.jna.Structure.ByValue {}
+		public int i;
+	}
+
+	public static class B extends com.sun.jna.Structure {
+		public static class ByReference extends B implements com.sun.jna.Structure.ByReference {}
+		public static class ByValue extends B implements com.sun.jna.Structure.ByValue {}
+		public A.ByValue a;
+		public A pa;
+	}
 }}}
