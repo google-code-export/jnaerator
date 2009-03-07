@@ -38,6 +38,7 @@ public final com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
  {{{
 long (__cdecl *const fptr)();
 void (*functions[8])(void*);
+long (*foo[10])(union { long l; int i; });
 }}}
 becomes
  {{{
@@ -48,6 +49,14 @@ public interface fptr_callback extends com.sun.jna.Callback {
 }
 public interface functions_callback extends com.sun.jna.Callback {
 	void callback(com.sun.jna.Pointer arg1);
+}
+
+public final foo_callback[] foo = new foo_callback[(10)];
+public static class foo_callback_union extends com.sun.jna.Union {
+public static class ByReference extends foo_callback_union implements com.sun.jna.Structure.ByReference {}
+	public static class ByValue extends foo_callback_union implements com.sun.jna.Structure.ByValue {}
+	public com.sun.jna.NativeLong l;
+	public int i;
 }
 }}}
 
