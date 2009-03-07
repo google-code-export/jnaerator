@@ -49,6 +49,8 @@ public abstract class Declaration extends ModifiableElement {
 		return valueType;
 	}
 	public void setValueType(TypeRef valueType) {
+		if (valueType == null)
+			valueType = null;
 		this.valueType = changeValue(this, this.valueType, valueType);
 	}
 	
