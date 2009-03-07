@@ -478,6 +478,7 @@ structCore	returns [Struct struct, List<Modifier> modifiers]
 				$t.text.equals("union") ?	Struct.Type.CUnion :
 							Struct.Type.CPPClass
 			);
+			$struct.setForwardDeclaration(true); // until proven wrong
 		}
 		(
 			(
@@ -493,7 +494,7 @@ structCore	returns [Struct struct, List<Modifier> modifiers]
 				} )?
 				n1=IDENTIFIER { $struct.setTag($n1.text); } 
 			)?
-			'{'
+			'{'	{ $struct.setForwardDeclaration(false); }
 				(
 					(
 						'public' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Public); } | 

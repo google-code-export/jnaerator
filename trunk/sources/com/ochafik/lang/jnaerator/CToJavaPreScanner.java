@@ -23,6 +23,8 @@ import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
+import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
@@ -34,6 +36,18 @@ public class CToJavaPreScanner extends Scanner {
 	public CToJavaPreScanner() {
 	}
 	
+	@Override
+	public void visitStruct(Struct struct) {
+		super.visitStruct(struct);
+		if (struct.isForwardDeclaration() && struct.getTag() != null) {
+			Element parent = struct.getParentElement();
+			if (!(parent instanceof TaggedTypeRefDeclaration)) {
+				TypeRef tr = new TypeRef.SimpleTypeRef(struct.getTag());
+				struct.replaceBy(tr);
+				tr.accept(this);
+			}
+		}
+	}
 	@Override
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
 		// TODO Auto-generated method stub

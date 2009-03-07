@@ -34,13 +34,13 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
  * @author ochafik
  */
 public class ObjectiveCToJavaPreScanner extends Scanner {
-	@Override
-	public void visitStruct(Struct struct) {
-		if (struct.isForwardDeclaration())
-			struct.replaceBy(null);
-		else
-			super.visitStruct(struct);
-	}
+//	@Override
+//	public void visitStruct(Struct struct) {
+//		if (struct.isForwardDeclaration())
+//			struct.replaceBy(null);
+//		else
+//			super.visitStruct(struct);
+//	}
 	@Override
 	public void visitEnum(Enum e) {
 		if (e.getTag() == null) {
