@@ -1,0 +1,90 @@
+#summary Description of what JNAerator does with anonymous enums, structs, unions and function signatures
+
+= Introduction =
+
+In C/C++/Objective-C, it is possible to make use of anonymous types, such as in the following code :
+{{{
+void ComplexArgFunction(
+	struct { 
+		union { 
+			enum { A, B } e; 
+			float f; 
+		} u; 
+		long v; 
+		void (*fptr)(); 
+	}* pArg
+);
+}}}
+Which is roughly equivalent to the "deanonymized" version :
+{{{
+/// S, U and F gain some higher level visibility compared to the anonymous version
+struct S { 
+	union U { 
+		enum { A, B } e; 
+		float f; 
+	};
+	U u; 
+	long v; 
+	typedef void (*F)();
+	F *fptr; 
+};
+void ComplexArgFunction(S* pArg);
+}}}
+
+= JNAerator =
+
+As Java does not support such inline definition of anonymous types, JNA requires us to provide it with something that looks like the "deanonymized" version of the code.
+
+In the deanonymizing process, JNAerator tries its best to choose names that make sense (instead of S, U, V).
+
+Here's what JNAerator produces out of the anonymous version :
+{{{
+	...
+	public static class ComplexArgFunction_pArg_struct extends com.sun.jna.Structure {
+		public static class ByReference extends ComplexArgFunction_pArg_struct implements com.sun.jna.Structure.ByReference {}
+		public static class ByValue extends ComplexArgFunction_pArg_struct implements com.sun.jna.Structure.ByValue {}
+		/// Allocate a new ComplexArgFunction_pArg_struct struct on the heap
+		ComplexArgFunction_pArg_struct() {}
+		/// Cast data at given memory location (pointer + offset) as an existing ComplexArgFunction_pArg_struct struct
+		ComplexArgFunction_pArg_struct(com.sun.jna.Pointer pointer, int offset) {
+			super();
+			useMemory(pointer, offset);
+			read();
+		}
+		public u_union.ByValue u;
+		public com.sun.jna.NativeLong v;
+		public fptr_callback fptr;
+		public static class u_union extends com.sun.jna.Union {
+			public static class ByReference extends u_union implements com.sun.jna.Structure.ByReference {}
+			public static class ByValue extends u_union implements com.sun.jna.Structure.ByValue {}
+			/// Allocate a new u_union struct on the heap
+			u_union() {}
+			/// Cast data at given memory location (pointer + offset) as an existing u_union struct
+			u_union(com.sun.jna.Pointer pointer, int offset) {
+				super();
+				useMemory(pointer, offset);
+				read();
+			}
+			public int e;
+			public float f;
+			public static interface e_enum {
+				public static final int A = 0;
+				public static final int B = 1;
+			}
+		}
+		public interface fptr_callback extends com.sun.jna.Callback {
+			void callback();
+		}
+	}
+
+	void ComplexArgFunction(ComplexArgFunction_pArg_struct.ByReference pArg);
+	...
+}}}
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
