@@ -516,36 +516,7 @@ public class TypeConversion {
 		}
 		if (valueType instanceof TargettedTypeRef) {
 			TypeRef target = resolveTypeDef(((TargettedTypeRef) valueType).getTarget());
-			String name = null;
-			if (target instanceof SimpleTypeRef)
-				name = ((SimpleTypeRef) target).getName();
-			else if (target instanceof Struct) {
-				Struct struct = (Struct)target;
-				if (struct == null) {
-					valueType =  resolveTypeDef(original);
-					struct = null;
-				} else
-//				if (struct != null)
-					name = struct.getTag();
-			}
 			
-			if (name != null) {
-				/// Pointer to Objective-C class
-				if (result.objCClasses.containsKey(name))
-					return typeRef(name);
-				
-				/// Pointer to C structure
-				TypeRef structRef = findStructRef(name, callerLibraryClass);
-				if (structRef != null) {//result.cStructNames.contains(name)) {
-	 				switch (conversionMode) {
-						case NativeParameter:
-						case PrimitiveParameter:
-							return typeRef(structRef, SubTypeRef.Style.Dot, "ByReference");
-						default:
-							return structRef;
-					}
-				}
-			}
 			boolean staticallySized = valueType instanceof ArrayRef && ((ArrayRef)valueType).hasStaticStorageSize();
 			
 			TypeRef convTargType;
@@ -555,8 +526,46 @@ public class TypeConversion {
 					return typeRef(com.sun.jna.Pointer.class);
 				else
 					convTargType = typeRef(prim);
-			} else 
-				convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+			} else {
+				String name = null;
+				if (target instanceof SimpleTypeRef)
+					name = ((SimpleTypeRef) target).getName();
+				else if (target instanceof Struct) {
+					Struct struct = (Struct)target;
+					if (struct == null) {
+						valueType =  resolveTypeDef(original);
+						struct = null;
+					} else
+//					if (struct != null)
+						name = struct.getTag();
+				}
+				if (name != null) {
+					/// Pointer to Objective-C class
+					if (result.objCClasses.containsKey(name))
+						convTargType = typeRef(name);
+					else {
+						/// Pointer to C structure
+						TypeRef structRef = findStructRef(name, callerLibraryClass);
+						if (structRef != null) {//result.cStructNames.contains(name)) {
+			 				switch (conversionMode) {
+								case NativeParameter:
+								case PrimitiveParameter:
+									convTargType = typeRef(structRef, SubTypeRef.Style.Dot, "ByReference");
+									if (valueType instanceof Pointer)
+										return convTargType;
+									break;
+								default:
+									convTargType = structRef;
+									if (valueType instanceof Pointer)
+										return convTargType;
+									break;
+							}
+						} else
+							convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+					}
+				} else
+					convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+			}	
 			
 			switch (conversionMode) {
 				case StaticallySizedArrayField:
