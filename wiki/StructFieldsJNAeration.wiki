@@ -22,10 +22,15 @@ public final byte[] s = new byte[(8)];
 When an array has partial size initializers, JNAerator initializes the known part and switches to Pointer for the rest of the type :
  {{{
 char *(*(**foo[][8])())[];
+long* (*foo2[12][8])();
 }}}
 becomes
  {{{
 public final com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
+public final foo2_callback[] foo2 = new foo2_callback[12 * 8];
+public interface foo2_callback extends com.sun.jna.Callback {
+	com.sun.jna.ptr.NativeLongByReference callback();
+}
 }}}
 
 = Callbacks =
