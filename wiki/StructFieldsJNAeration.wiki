@@ -30,6 +30,22 @@ public final com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
 
 = Callbacks =
 
+ {{{
+long (__cdecl *const fptr)();
+void (*functions[8])(void*);
+}}}
+becomes
+ {{{
+public fptr_callback fptr;
+public final functions_callback[] functions = new functions_callback[(8)];
+public interface fptr_callback extends com.sun.jna.Callback {
+	com.sun.jna.NativeLong callback();
+}
+public interface functions_callback extends com.sun.jna.Callback {
+	void callback(com.sun.jna.Pointer arg1);
+}
+}}}
+
 = Structs =
 
  {{{
