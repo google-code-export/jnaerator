@@ -109,6 +109,11 @@ public abstract class Declarator extends ModifiableElement {
 		public boolean replaceChild(Element child, Element by) {
 			return super.replaceChild(child, by);
 		}
+
+		@Override
+		public void propagateName(String name) {
+			setName(name);
+		}
 	}
 	
 	public static abstract class TargettedDeclarator extends Declarator {
@@ -135,6 +140,14 @@ public abstract class Declarator extends ModifiableElement {
 				return true;
 			}
 			return super.replaceChild(child, by);
+		}
+
+		@Override
+		public void propagateName(String name) {
+			if (getTarget() != null)
+				getTarget().propagateName(name);
+			else
+				setTarget(new DirectDeclarator(name));
 		}
 	}
 
@@ -356,6 +369,7 @@ public abstract class Declarator extends ModifiableElement {
 	}
 
 	public abstract String resolveName();
+	public abstract void propagateName(String name);
 	
 	public String toString(CharSequence indent) {
 		StringBuilder b = new StringBuilder();

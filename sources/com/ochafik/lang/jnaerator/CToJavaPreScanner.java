@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -85,6 +86,16 @@ public class CToJavaPreScanner extends Scanner {
 		}
 		if (toAddAfter != v)
 			v.replaceBy(null);
+	}
+	
+	@Override
+	public void visitArg(Arg arg) {
+		Declarator d = arg.getDeclarator();
+		if (d != null && !(d instanceof DirectDeclarator)) {
+			arg.setValueType((TypeRef)d.mutateType(arg.getValueType()));
+			arg.setDeclarator(new DirectDeclarator(d.resolveName()));
+		}
+		super.visitArg(arg);
 	}
 	@Override
 	public void visitVariablesDeclaration(VariablesDeclaration v) {

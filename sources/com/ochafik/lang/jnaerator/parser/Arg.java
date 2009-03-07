@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator.parser;
 public class Arg extends Declaration {
 	String selector;
 	boolean varArg;
+	Declarator declarator;
 	Expression defaultValue;
 
 	public Arg(String name, TypeRef type) {
@@ -32,6 +33,38 @@ public class Arg extends Declaration {
 	public Arg() {
 	}
 	
+	@Override
+//	@Deprecated
+	public TypeRef getValueType() {
+		return super.getValueType();
+	}
+	
+	public TypeRef createMutatedType() {
+		TypeRef vt = getValueType();
+		if (vt == null)
+			return null;
+		if (getDeclarator() != null)
+			return (TypeRef)getDeclarator().mutateType(vt);
+		return vt;
+	}
+	
+	public Declarator getDeclarator() {
+		return declarator;
+	}
+	public void setDeclarator(Declarator declarator) {
+		this.declarator = changeValue(this, this.declarator, declarator);
+	}
+	@Override
+	public String getName() {
+		return declarator == null ? null : declarator.resolveName();
+	}
+	@Override
+	public void setName(String name) {
+		if (declarator == null)
+			setDeclarator(new Declarator.DirectDeclarator(name));
+		else
+			declarator.propagateName(name);
+	}
 	@Override
 	public Arg clone() {
 		return (Arg)super.clone();
@@ -62,6 +95,10 @@ public class Arg extends Declaration {
 	public boolean replaceChild(Element child, Element by) {
 		if (child == getDefaultValue()) {
 			setDefaultValue((Expression) by);
+			return true;
+		}
+		if (child == getDeclarator()) {
+			setDeclarator((Declarator) by);
 			return true;
 		}
 		return super.replaceChild(child, by);

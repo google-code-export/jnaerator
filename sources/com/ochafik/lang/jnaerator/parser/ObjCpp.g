@@ -607,12 +607,43 @@ extendedModifiers returns [List<Modifier> modifiers]
 		)*
 	;
 argDef	returns [Arg arg]
-	:	typeRef (IDENTIFIER arrayTypeMutator?)? { 
+	:	
+		{ $arg = new Arg(); }
+		typeRef { 
+			$arg.setValueType($typeRef.type); 
+		}
+		(
+			declarator? { 
+				if ($declarator.declarator != null)
+					$arg.setDeclarator($declarator.declarator); 
+				else if ($arg.getValueType() instanceof FunctionSignature) {
+					FunctionSignature fs = (FunctionSignature)$arg.getValueType();
+					if (fs != null && fs.getFunction() != null) {
+						$arg.setName(fs.getFunction().getName());
+						fs.getFunction().setName(null);
+					}
+				}
+			}
+		)
+		/*
+		structOrEnum { $arg.setValueType($structOrEnum.type; }
+		(declarator { $arg.setDeclarator($declarator.declarator); })?
+		
+			if ($d1.declarators != null)
+							$decl = new VariablesDeclaration($type, $d1.declarators);
+						else
+							$decl = new VariablesDeclaration($type); //new TaggedTypeRefDeclaration((TaggedTypeRef)$type);
+					}	
+				) |
+				tcfs=typeRefCoreOrAnonymousFuncSig { $type = $tcfs.type; }
+				d2=declaratorsList
+		*/
+		/*typeRef (IDENTIFIER arrayTypeMutator?)? { 
 			TypeRef type = $arrayTypeMutator.text == null ?
 				$typeRef.type :
 				$arrayTypeMutator.mutator.mutateType($typeRef.type);
 			$arg = new Arg($IDENTIFIER.text, type); 
-		} 
+		} */
 		('=' expression {
 			$arg.setDefaultValue($expression.expr);
 		})? 

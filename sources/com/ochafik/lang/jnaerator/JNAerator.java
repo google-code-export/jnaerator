@@ -81,7 +81,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
-import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
@@ -782,8 +781,10 @@ public class JNAerator {
 					String argName = arg.getName();
 					if (argName == null)
 						argName = chooseJavaArg(arg.getName(), iArg, names);
-					TypeRef typeStrNat = result.typeConverter.convertTypeToJNA(arg.getValueType(), TypeConversionMode.NativeParameter, callerLibraryClass),
-						typeStrPrim = result.typeConverter.convertTypeToJNA(arg.getValueType(), TypeConversionMode.PrimitiveParameter, callerLibraryClass);
+					
+					TypeRef mutType = arg.createMutatedType();
+					TypeRef typeStrNat = result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.NativeParameter, callerLibraryClass),
+						typeStrPrim = result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.PrimitiveParameter, callerLibraryClass);
 					
 					convertedNat.addArg(new Arg(argName, typeStrNat));
 					convertedPrim.addArg(new Arg(argName, typeStrPrim));
@@ -959,7 +960,7 @@ public class JNAerator {
 					//}
 					//for (Expression x : dims) {
 						if (x == null || x instanceof EmptyArraySize) {
-							javaType = jr = new ArrayRef(result.typeConverter.typeRef(Pointer.class));
+							javaType = jr = new ArrayRef(TypeConversion.typeRef(Pointer.class));
 							break;
 						} else {
 							Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);

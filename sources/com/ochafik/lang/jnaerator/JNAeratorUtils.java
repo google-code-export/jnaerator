@@ -18,8 +18,6 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import static com.ochafik.lang.SyntaxUtils.as;
-
 import java.util.ArrayList;
 import java.util.List;
 
