@@ -18,47 +18,27 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import org.anarres.cpp.LexerException;
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 
-import com.ochafik.io.WriteText;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
-import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
-import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
 import com.ochafik.lang.jnaerator.parser.ObjCppTests;
-import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
-import com.ochafik.lang.reflect.DebugUtils;
-import com.ochafik.util.listenable.Pair;
-import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -69,7 +49,13 @@ import com.sun.jna.Native;
  */
 
 public class JNAerator {
+
+	final JNAeratorConfig config;
 	
+	public JNAerator(JNAeratorConfig config) {
+		this.config = config;
+	}
+
 	static final Pattern definePattern = Pattern.compile("#\\s*define\\s+(\\w+)\\s+(.*)");
 	static final boolean fullFilePathInComments = true;
 	
@@ -248,18 +234,18 @@ public class JNAerator {
 			
 			//if (auto)
 			JNAeratorConfigUtils.autoConfigure(config);
-			jnaerate(config);
+			new JNAerator(config).jnaerate();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void jnaerate(final JNAeratorConfig config) throws IOException, LexerException, RecognitionException {
-		SourceFiles sourceFiles = JNAeratorParser.parse(config);
-		jnaerate(config, sourceFiles, new ClassOutputter() {
+	public void jnaerate() throws IOException, LexerException, RecognitionException {
+		SourceFiles sourceFiles = parse();
+		jnaerate(sourceFiles, new ClassOutputter() {
 			public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
-				File file = new File(config.outputDir, className.replace('.', File.separatorChar) + ".java");
+				File file = new File(JNAerator.this.config.outputDir, className.replace('.', File.separatorChar) + ".java");
 				File parent = file.getParentFile();
 				if (!parent.exists())
 					parent.mkdirs();
@@ -276,10 +262,10 @@ public class JNAerator {
 			}
 		});
 	}
-
-	
-	
 			
+	public SourceFiles parse() throws IOException, LexerException {
+		return JNAeratorParser.parse(config);
+	}
 	public void addFile(File file, List<File> out) throws IOException {
 		if (file.isFile()) {
 			out.add(file);
@@ -348,11 +334,14 @@ public class JNAerator {
 		}
 	}
 
-
+	/// To be overridden
+	public Result createResult(ClassOutputter outputter) {
+		return new Result(config, outputter);
+	}
 	
-	public static void jnaerate(JNAeratorConfig config, SourceFiles sourceFiles, ClassOutputter outputter) throws IOException, LexerException, RecognitionException {
+	public void jnaerate(SourceFiles sourceFiles, ClassOutputter outputter) throws IOException, LexerException, RecognitionException {
 		
-		Result result = new Result(config, outputter);
+		Result result = createResult(outputter);
 		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());

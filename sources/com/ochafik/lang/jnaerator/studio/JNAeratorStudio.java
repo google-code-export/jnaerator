@@ -70,7 +70,6 @@ import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
-import com.ochafik.lang.jnaerator.JNAeratorParser;
 import com.ochafik.lang.jnaerator.SourceFiles;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
@@ -334,10 +333,10 @@ public class JNAeratorStudio extends JPanel {
 					config.preprocessorConfig.includeStrings.add(sourceArea.getText());
 					
 					JNAeratorConfigUtils.autoConfigure(config);
-					SourceFiles sourceFiles = JNAeratorParser.parse(config);
+					JNAerator jnaerator = new JNAerator(config);
+					SourceFiles sourceFiles = jnaerator.parse();
 					final SourceFiles sourceFilesClone = sourceFiles.clone();
-					
-					JNAerator.jnaerate(config, sourceFiles, new ClassOutputter() {
+					jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 						@Override
 						public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
 							final ResultContent c = new ResultContent(className);
