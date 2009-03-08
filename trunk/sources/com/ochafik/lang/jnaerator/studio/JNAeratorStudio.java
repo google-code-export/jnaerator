@@ -66,8 +66,12 @@ import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.SyntaxUtils;
+import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
+import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
+import com.ochafik.lang.jnaerator.JNAeratorParser;
+import com.ochafik.lang.jnaerator.SourceFiles;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
 import com.ochafik.swing.syntaxcoloring.JavaTokenMarker;
@@ -328,15 +332,19 @@ public class JNAeratorStudio extends JPanel {
 					config.libraryForElementsInNullFile = config.defaultLibrary;
 //					config.addFile(getFile(), "");
 					config.preprocessorConfig.includeStrings.add(sourceArea.getText());
-					final JNAerator jnaerator = new JNAerator(config) {
+					
+					JNAeratorConfigUtils.autoConfigure(config);
+					SourceFiles sourceFiles = JNAeratorParser.parse(config);
+					final SourceFiles sourceFilesClone = sourceFiles.clone();
+					
+					JNAerator.jnaerate(config, sourceFiles, new ClassOutputter() {
 						@Override
 						public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
 							final ResultContent c = new ResultContent(className);
 							results.add(c);
 							return c.getPrintWriter();
 						}
-					}; 
-					jnaerator.run();
+					});
 					SwingUtilities.invokeLater(new Runnable() { public void run() {
 						String title = "Parsing Tree";
 						for (int i = sourceTabs.getTabCount(); i-- != 0;) {
@@ -346,7 +354,7 @@ public class JNAeratorStudio extends JPanel {
 							}
 						}
 								
-						final JTree parsedTree = new JTree(new ElementNode(null, "ROOT", jnaerator.getSourceFiles()));
+						final JTree parsedTree = new JTree(new ElementNode(null, "ROOT", sourceFilesClone));
 						final JEditTextArea selectionContent = textArea(new CCTokenMarker());
 						
 						parsedTree.addTreeSelectionListener(new TreeSelectionListener() { public void valueChanged(TreeSelectionEvent e) {

@@ -30,6 +30,10 @@ public class SourceFiles extends Element {
 	public List<Define> defines = new ArrayList<Define>();
 	public List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 	
+	@Override
+	public SourceFiles clone() {
+		return (SourceFiles) super.clone();
+	}
 	public void accept(Visitor visitor) {
 		for (SourceFile sourceFile : sourceFiles)
 			sourceFile.accept(visitor);

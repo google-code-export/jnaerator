@@ -46,14 +46,17 @@ import com.sun.jna.Platform;
 
 public class Result extends Scanner {
 
-	final JNAerator jnaerator;
-	TypeConversion typeConverter = new TypeConversion(this);
+	final JNAeratorConfig config;
+	final ClassOutputter classOutputter;
+	final TypeConversion typeConverter = new TypeConversion(this);
+	final DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
 	
 	/**
 	 * @param aerator
 	 */
-	Result(JNAerator aerator) {
-		this.jnaerator = aerator;
+	Result(JNAeratorConfig config, ClassOutputter classOutputter) {
+		this.config = config;
+		this.classOutputter = classOutputter;
 	}
 
 	Set<String> javaPackages = new TreeSet<String>();
@@ -217,7 +220,7 @@ public class Result extends Scanner {
 			if (decl instanceof Define) {
 				e = decl;
 			}
-			library = jnaerator.config.getLibrary(file);
+			library = config.getLibrary(file);
 		}
 		return library;
 	}

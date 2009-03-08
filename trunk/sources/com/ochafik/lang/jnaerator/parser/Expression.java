@@ -314,11 +314,13 @@ public abstract class Expression extends Element {
 				addArgument(x);
 		}
 		
-		public FunctionCall(Expression target, String functionName, MemberRefStyle memberRefStyle) {
+		public FunctionCall(Expression target, String functionName, MemberRefStyle memberRefStyle, Expression... unnamedArgs) {
 			this();
 			setTarget(target);
 			setFunctionName(functionName);
 			setMemberRefStyle(memberRefStyle);
+			for (Expression x : unnamedArgs)
+				addArgument(x);
 		}
 		public FunctionCall() {
 		}

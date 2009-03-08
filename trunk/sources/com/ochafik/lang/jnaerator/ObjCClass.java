@@ -18,7 +18,7 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,7 +62,7 @@ class ObjCClass {
 	//String javaPackage;
 	List<Struct> categories = new ArrayList<Struct>(), protocols = new ArrayList<Struct>();
 	
-	public void generateWrapperFile() throws FileNotFoundException {
+	public void generateWrapperFile() throws IOException {
 		if (type == null)
 			return;
 		
@@ -70,7 +70,7 @@ class ObjCClass {
 		String javaPackage = result.javaPackageByLibrary.get(library);
 		//String libraryClassName = result.getLibraryClassSimpleName(library);
 		
-		PrintWriter out = this.result.jnaerator.getClassSourceWriter(javaPackage + "." + type.getTag());
+		PrintWriter out = result.classOutputter.getClassSourceWriter(javaPackage + "." + type.getTag());
 		//this.result.javaPackages.add(javaPackage);
 		
 		String fullClassName = type.getTag();
@@ -220,19 +220,19 @@ class ObjCClass {
 		}
 		
 		List<String> otherComments = new ArrayList<String>();
-		otherComments.add(result.jnaerator.getFileCommentContent(type));
+		otherComments.add(result.declarationsConverter.getFileCommentContent(type));
 		
 		for (Struct ss : protocols)
 			if (ss.getCommentBefore() != null) {
 				otherComments.add("");
-				otherComments.add("Imported " + ss.getCategoryName() + " " + result.jnaerator.getFileCommentContent(ss));
+				otherComments.add("Imported " + ss.getCategoryName() + " " + result.declarationsConverter.getFileCommentContent(ss));
 				otherComments.add(ss.getCommentBefore());
 			}
 		
 		for (Struct ss : categories)
 			if (ss.getCommentBefore() != null) {
 				otherComments.add("");
-				otherComments.add("Imported " + ss.getCategoryName() + " " + result.jnaerator.getFileCommentContent(ss));
+				otherComments.add("Imported " + ss.getCategoryName() + " " + result.declarationsConverter.getFileCommentContent(ss));
 				otherComments.add(ss.getCommentBefore());
 			}
 		
@@ -250,7 +250,7 @@ class ObjCClass {
 			public void visitFunctionSignature(FunctionSignature functionSignature) {
 				super.visitFunctionSignature(functionSignature);
 				List<Declaration> decls = new ArrayList<Declaration>();
-				result.jnaerator.convertCallback(functionSignature, signatures, decls, callerLibraryClass);
+				result.declarationsConverter.convertCallback(functionSignature, signatures, decls, callerLibraryClass);
 				instanceStruct.addDeclarations(decls);
 			}
 		};
@@ -296,7 +296,7 @@ class ObjCClass {
 			if (d instanceof Function) {
 				Function f = (Function)d;//as(d, Function.class);
 				List<Declaration> conv = new ArrayList<Declaration>();
-				result.jnaerator.convertFunction(f, signatures, false, conv, callerLibraryClass);
+				result.declarationsConverter.convertFunction(f, signatures, false, conv, callerLibraryClass);
 				if (f.getModifiers().contains(Modifier.Static)) {
 					classStruct.addDeclarations(conv);
 				} else {
