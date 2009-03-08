@@ -13,10 +13,10 @@ long* (*foo2[12][8])();
 }}}
 becomes
  {{{
-public final int[] iarr = new int[(4)];
-public final com.sun.jna.ptr.ByteByReference[] csarr = new com.sun.jna.ptr.ByteByReference[3 * 4];
-public final byte[] s = new byte[(8)];
-public final foo2_callback[] foo2 = new foo2_callback[12 * 8];
+public int[] iarr = new int[(4)];
+public com.sun.jna.ptr.ByteByReference[] csarr = new com.sun.jna.ptr.ByteByReference[3 * 4];
+public byte[] s = new byte[(8)];
+public foo2_callback[] foo2 = new foo2_callback[12 * 8];
 public interface foo2_callback extends com.sun.jna.Callback {
 	com.sun.jna.ptr.NativeLongByReference callback();
 }
@@ -30,7 +30,7 @@ char *(*(**foo[][8])())[];
 }}}
 becomes
  {{{
-public final com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
+public com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
 }}}
 
 = Callbacks =
@@ -47,12 +47,12 @@ public interface fptr_callback extends com.sun.jna.Callback {
 	com.sun.jna.NativeLong callback();
 }
 
-public final functions_callback[] functions = new functions_callback[(8)];
+public functions_callback[] functions = new functions_callback[(8)];
 public interface functions_callback extends com.sun.jna.Callback {
 	void callback(com.sun.jna.Pointer arg1);
 }
 
-public final foo_callback[] foo = new foo_callback[(10)];
+public foo_callback[] foo = new foo_callback[(10)];
 public interface foo_callback extends com.sun.jna.Callback {
 	com.sun.jna.NativeLong callback(foo_callback_arg1_union.ByValue arg1);
 }
