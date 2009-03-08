@@ -494,6 +494,10 @@ public class TypeConversion {
 			return typeRef(String.class);
 		else if (valueTypeString.matches("(__)?const wchar_t\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
 			return typeRef(WString.class);
+		else if (valueTypeString.matches("(__)?const char\\*\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter))// || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
+			return new ArrayRef(typeRef(String.class));
+		else if (valueTypeString.matches("(__)?const wchar_t\\*\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter))// || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
+			return new ArrayRef(typeRef(WString.class));
 		
 		if (valueType instanceof Primitive) {
 			JavaPrim prim = getPrimitive(valueType);

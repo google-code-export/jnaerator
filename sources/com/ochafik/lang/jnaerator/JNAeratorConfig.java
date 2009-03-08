@@ -23,6 +23,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,11 @@ public class JNAeratorConfig {
 	public enum Platform {
 		Windows, Linux, MacOSX
 	}
+	public enum GenFeatures {
+		StructConstructors
+	}
+	
+	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
 	
 	public static class PreprocessorConfig {
 

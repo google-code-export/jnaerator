@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -103,6 +104,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		setName(name);
 		setValueType(returnType);
 	}
+	public Function(Type type, String name, TypeRef returnType, Arg... args) {
+		this(type, name, returnType, Arrays.asList(args));
+	}
+		
 	public Function(Type type, String name, TypeRef returnType, List<Arg> args) {
 		setType(type);
 		setName(name);
