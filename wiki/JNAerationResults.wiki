@@ -1,11 +1,40 @@
-#summary Behaviour of JNAerator for struct fields
+#summary Behaviour of JNAerator for different inputs
 #labels Manual,Featured
 
 <wiki:toc max_depth="2" />
 
-= Arrays =
+= Structs =
 
-== Arrays with initializers ==
+ {{{
+struct A {
+    int i;
+};
+struct B {
+   A a;
+   A *pa;
+};
+}}}
+naturally becomes :
+ {{{
+	public static class A extends com.sun.jna.Structure {
+		public static class ByReference extends A implements com.sun.jna.Structure.ByReference {}
+		public static class ByValue extends A implements com.sun.jna.Structure.ByValue {}
+		public int i;
+	}
+
+	public static class B extends com.sun.jna.Structure {
+		public static class ByReference extends B implements com.sun.jna.Structure.ByReference {}
+		public static class ByValue extends B implements com.sun.jna.Structure.ByValue {}
+		public A.ByValue a;
+		public A pa;
+	}
+}}}
+
+= Struct fields =
+
+== Arrays ==
+
+=== Arrays with initializers ===
 Arrays with initializers are converted to Java arrays :
  {{{
 int iarr[4]; 
@@ -24,7 +53,7 @@ public interface foo2_callback extends com.sun.jna.Callback {
 }
 }}}
 
-== Arrays with partial initializers ==
+=== Arrays with partial initializers ===
 
 When an array has partial size initializers, JNAerator initializes the known part and switches to Pointer for the rest of the type :
  {{{
@@ -35,7 +64,7 @@ becomes
 public com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
 }}}
 
-= Callbacks =
+== Callbacks ==
 
  {{{
 long (__cdecl *const fptr)();
@@ -64,33 +93,6 @@ public static class foo_callback_arg1_union extends com.sun.jna.Union {
 	public com.sun.jna.NativeLong l;
 	public int i;
 }
-}}}
-
-= Structs =
-
- {{{
-struct A {
-    int i;
-};
-struct B {
-   A a;
-   A *pa;
-};
-}}}
-naturally becomes :
- {{{
-	public static class A extends com.sun.jna.Structure {
-		public static class ByReference extends A implements com.sun.jna.Structure.ByReference {}
-		public static class ByValue extends A implements com.sun.jna.Structure.ByValue {}
-		public int i;
-	}
-
-	public static class B extends com.sun.jna.Structure {
-		public static class ByReference extends B implements com.sun.jna.Structure.ByReference {}
-		public static class ByValue extends B implements com.sun.jna.Structure.ByValue {}
-		public A.ByValue a;
-		public A pa;
-	}
 }}}
 
 = Anonymous types =
@@ -196,7 +198,15 @@ JNA provides the [https://jna.dev.java.net/javadoc/com/sun/jna/NativeLibrary.htm
 
 In JNAerated code, a global {{{ int errno; }}} in library "c" is accessed through {{{ CLibrary.errno.get() }}} (this returns directly an [https://jna.dev.java.net/javadoc/com/sun/jna/ptr/IntByReference.html IntByReference]).
 
-== Pointer-like ==
+== Primitive values ==
+
+{{{
+int* pInt;
+void* pVoid;
+}}}
+
+
+== Primitive pointers ==
 
 {{{
 int* pInt;
