@@ -96,9 +96,13 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 			if (token.getType() == COMMENT || token.getType() == LINE_COMMENT) {
 				//if (comment != null)
 				//return comment;
+				if (comment != null && comment.endsWith("\n") && toleratedNewLine)
+    					return null;
 				if (comment != null)
 					return comment;
 				comment = token.getText();
+	  			if (comment != null && comment.endsWith("\n") && toleratedNewLine)
+    					return null;
 			} else if (token.getType() == WS) {
 				if (token.getText().indexOf("\n") >= 0) {
 					if (comment != null)
