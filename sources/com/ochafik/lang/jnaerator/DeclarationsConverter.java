@@ -71,10 +71,7 @@ public class DeclarationsConverter {
 		callbackStruct.setParents(Arrays.asList(Callback.class.getName()));
 		callbackStruct.setTag(chosenName);
 		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
-		//out.setCommentBefore(Element.formatComments(chosenName, name, chosenName, fullFilePathInComments, null))
-		List<Declaration> children = new ArrayList<Declaration>();
 		convertFunction(function, new TreeSet<String>(), true, callbackStruct, callerLibraryName);
-		//callbackStruct.addDeclarations(children);
 		out.addDeclaration(new TaggedTypeRefDeclaration(callbackStruct));
 	}
 
@@ -99,7 +96,7 @@ public class DeclarationsConverter {
 			
 		}
 	}
-	void convertConstants(List<Define> defines, Element sourcesRoot, Set<String> signatures, final DeclarationsHolder out, final String callerLibraryClass) {
+	void convertConstants(List<Define> defines, Element sourcesRoot, final Set<String> signatures, final DeclarationsHolder out, final String callerLibraryClass) {
 		//final List<Define> defines = new ArrayList<Define>();
 		sourcesRoot.accept(new Scanner() {
 //			@Override
@@ -120,23 +117,29 @@ public class DeclarationsConverter {
 				if (v.getValueType() instanceof FunctionSignature)
 					return;
 					
-				if (!v.getModifiers().contains(Modifier.Const))
-					return;
-				
-				TypeRef type = v.getValueType();
-				JavaPrim prim = result.typeConverter.getPrimitive(type);
-				if (prim == null)
-					return;
-				
 				for (Declarator vs : v.getDeclarators()) {
+					if (!(vs instanceof DirectDeclarator))
+						continue; // TODO provide a mapping of exported values
+					
+					if (!signatures.add(vs.resolveName()))
+						continue;
+					
+					TypeRef mutatedType = (TypeRef) vs.mutateType(v.getValueType());
+					
+					if (!mutatedType.getModifiers().contains(Modifier.Const))
+						return;
+					
+					//TypeRef type = v.getValueType();
+					JavaPrim prim = result.typeConverter.getPrimitive(mutatedType);
+					if (prim == null)
+						return;
+					
 					try {
-						if (vs.getDefaultValue() == null || !(vs instanceof DirectDeclarator))
-							continue; // TODO provide a mapping of exported values
 						
 						DirectDeclarator dd = (DirectDeclarator)vs;
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
 						
-						TypeRef tr = result.typeConverter.convertTypeToJNA((TypeRef)vs.mutateType(type), TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
+						TypeRef tr = result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(dd.getName(), val));
 						vd.setCommentBefore(v.getCommentBefore());
 						vd.addToCommentBefore(vs.getCommentBefore());

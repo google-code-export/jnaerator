@@ -62,9 +62,14 @@ public class GlobalsGenerator {
 	public void convertGlobals(VariablesDeclaration globals, Set<String> signatures, DeclarationsHolder out, String callerLibraryName) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
 			String name = d.resolveName();
+			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
+			if (type.getModifiers().contains(Modifier.Const)) {
+				//result.declarationsConverter.convertCon
+				continue;
+			}
+			
 			if (!signatures.add(name))
 				continue;
-			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
 			
 			Struct struct = result.declarationsConverter.publicStaticClass(name, null, Struct.Type.JavaClass, null);
 			struct.addModifiers(Modifier.Final);
