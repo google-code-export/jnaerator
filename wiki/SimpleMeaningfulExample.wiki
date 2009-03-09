@@ -127,6 +127,10 @@ public interface TestLibrary extends com.sun.jna.Library
 }
 }}}
 
+= More examples =
+
+Please read the page [JNAerationResults].
+
 = Try it for yourself ! =
 
 Simply download [http://jna.dev.java.net jna.jar] and [http://ochafik.free.fr/Java/jnaerator.jar jnaerator.jar] and you'll be generating your JNA interfaces in a minute !
