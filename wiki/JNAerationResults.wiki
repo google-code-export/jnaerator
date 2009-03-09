@@ -5,7 +5,7 @@
 
 = Structs =
 
- {{{
+{{{
 struct A {
     int i;
 };
@@ -14,8 +14,8 @@ struct B {
    A *pa;
 };
 }}}
-naturally becomes :
- {{{
+becomes :
+{{{
 	public static class A extends com.sun.jna.Structure {
 		A() {}
 		A(com.sun.jna.Pointer pointer, int offset) {
