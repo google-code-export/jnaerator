@@ -201,10 +201,21 @@ In JNAerated code, a global {{{ int errno; }}} in library "c" is accessed throug
 == Primitive values ==
 
 {{{
-int* pInt;
-void* pVoid;
+int errno;
 }}}
-
+becomes:
+{{{
+public static final class errno {
+	private static com.sun.jna.ptr.IntByReference errno;
+	public static synchronized com.sun.jna.ptr.IntByReference get() {
+		if (errno == null) {
+			errno = new com.sun.jna.ptr.IntByReference();
+			errno.setPointer(TestLibrary.INSTANCE.getGlobalVariableAddress("errno"));
+		}
+		return errno;
+	}
+}
+}}}
 
 == Primitive pointers ==
 
@@ -212,7 +223,42 @@ void* pVoid;
 int* pInt;
 void* pVoid;
 }}}
+become :
+{{{
+public static final class pInt {
+	public static final class pInt_holder extends com.sun.jna.Structure {
+		public com.sun.jna.ptr.IntByReference value;
+		pInt_holder(com.sun.jna.Pointer pointer) {
+			super();
+			useMemory(pointer, 0);
+			read();
+		}
+	}
+	private static pInt_holder pInt;
+	public static synchronized pInt_holder get() {
+		if (pInt == null) 
+			pInt = new pInt_holder(TestLibrary.INSTANCE.getGlobalVariableAddress("pInt"));
+		return pInt;
+	}
+}
 
+public static final class pVoid {
+	public static final class pVoid_holder extends com.sun.jna.Structure {
+		public com.sun.jna.Pointer value;
+		pVoid_holder(com.sun.jna.Pointer pointer) {
+			super();
+			useMemory(pointer, 0);
+			read();
+		}
+	}
+	private static pVoid_holder pVoid;
+	public static synchronized pVoid_holder get() {
+		if (pVoid == null) 
+			pVoid = new pVoid_holder(TestLibrary.INSTANCE.getGlobalVariableAddress("pVoid"));
+		return pVoid;
+	}
+}
+}}}
 == Struct & struct pointers ==
 
 == Constant expressions ==
