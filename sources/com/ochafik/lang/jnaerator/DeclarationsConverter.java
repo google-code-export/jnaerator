@@ -492,7 +492,7 @@ public class DeclarationsConverter {
 		//convertVariablesDeclaration(name, mutatedType, out, iChild, callerLibraryName);
 
 		Expression initVal = null;
-		TypeRef javaType = result.typeConverter.convertTypeToJNA(
+		TypeRef  javaType = result.typeConverter.convertTypeToJNA(
 			mutatedType, 
 			TypeConversion.TypeConversionMode.FieldType,
 			callerLibraryName

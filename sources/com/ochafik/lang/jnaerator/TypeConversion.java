@@ -530,6 +530,8 @@ public class TypeConversion {
 			TypeRef tr = findCallbackRef((FunctionSignature)valueType, callerLibraryClass);
 			if (tr != null)
 				return tr;
+			else
+				return typeRef(((FunctionSignature)valueType).getFunction().getName());
 		}
 		if (valueType instanceof TargettedTypeRef) {
 			TypeRef target = resolveTypeDef(((TargettedTypeRef) valueType).getTarget());
