@@ -121,9 +121,6 @@ public class DeclarationsConverter {
 					if (!(vs instanceof DirectDeclarator))
 						continue; // TODO provide a mapping of exported values
 					
-					if (!signatures.add(vs.resolveName()))
-						continue;
-					
 					TypeRef mutatedType = (TypeRef) vs.mutateType(v.getValueType());
 					
 					if (!mutatedType.getModifiers().contains(Modifier.Const))
@@ -138,6 +135,9 @@ public class DeclarationsConverter {
 						
 						DirectDeclarator dd = (DirectDeclarator)vs;
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
+						
+						if (!signatures.add(vs.resolveName()))
+							continue;
 						
 						TypeRef tr = result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(dd.getName(), val));
