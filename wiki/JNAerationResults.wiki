@@ -17,16 +17,40 @@ struct B {
 naturally becomes :
  {{{
 	public static class A extends com.sun.jna.Structure {
-		public static class ByReference extends A implements com.sun.jna.Structure.ByReference {}
-		public static class ByValue extends A implements com.sun.jna.Structure.ByValue {}
+		A() {}
+		A(com.sun.jna.Pointer pointer, int offset) {
+			super();
+			useMemory(pointer, offset);
+			read();
+		}
+		public static class ByReference extends A implements com.sun.jna.Structure.ByReference {
+			A() {}
+			A(A struct) { super(struct.getPointer(), 0); }
+		}
+		public static class ByValue extends A implements com.sun.jna.Structure.ByValue {
+			A() {}
+			A(A struct) { super(struct.getPointer(), 0); }
+		}
 		public int i;
 	}
 
 	public static class B extends com.sun.jna.Structure {
-		public static class ByReference extends B implements com.sun.jna.Structure.ByReference {}
-		public static class ByValue extends B implements com.sun.jna.Structure.ByValue {}
+		B() {}
+		B(com.sun.jna.Pointer pointer, int offset) {
+			super();
+			useMemory(pointer, offset);
+			read();
+		}
+		public static class ByReference extends B implements com.sun.jna.Structure.ByReference {
+			B() {}
+			B(B struct) { super(struct.getPointer(), 0); }
+		}
+		public static class ByValue extends B implements com.sun.jna.Structure.ByValue {
+			B() {}
+			B(B struct) { super(struct.getPointer(), 0); }
+		}
 		public A.ByValue a;
-		public A pa;
+		public A.ByReference pa;
 	}
 }}}
 
