@@ -37,11 +37,14 @@ import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
 import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
+import com.ochafik.lang.jnaerator.parser.Expression.NullExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
 import com.ochafik.lang.jnaerator.parser.Statement.ExpressionStatement;
+import com.ochafik.lang.jnaerator.parser.Statement.If;
+import com.ochafik.lang.jnaerator.parser.Statement.Return;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -419,6 +422,29 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitSubTypeRef(SubTypeRef subTypeRef) {
 		visitTargettedTypeRef(subTypeRef);
+	}
+
+	@Override
+	public void visitIf(If if1) {
+		visitStatement(if1);
+		if (if1.getCondition() != null)
+			if1.getCondition().accept(this);
+		if (if1.getThenBranch() != null)
+			if1.getThenBranch().accept(this);
+		if (if1.getElseBranch() != null)
+			if1.getElseBranch().accept(this);
+	}
+
+	@Override
+	public void visitNullExpression(NullExpression nullExpression) {
+		visitExpression(nullExpression);
+	}
+
+	@Override
+	public void visitReturn(Return return1) {
+		visitStatement(return1);
+		if (return1.getValue() != null)
+			return1.getValue().accept(this);
 	}
 
 }

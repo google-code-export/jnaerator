@@ -135,7 +135,9 @@ public enum Modifier {
 	Used(Kind.Attribute),
 	Visibility(Kind.Attribute),
 	Warn_unused_result(Kind.Attribute),
-	Weak(Kind.Attribute);
+	Weak(Kind.Attribute), 
+	
+	Synchronized;
 	
 	EnumSet<Modifier.Kind> kinds = EnumSet.noneOf(Modifier.Kind.class);
 	Modifier alias;

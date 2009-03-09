@@ -499,15 +499,20 @@ public abstract class Element {
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> T findParentOfType(Class<T> type) {
+		return (T)findParentOfTypes(type);
+	}
+	public Object findParentOfTypes(Class<?>... types) {
 		Element e = this;
 		for (;;) {
 			e = e.getParentElement();
 			if (e == null)
 				return null;
 
-			if (type.isAssignableFrom(e.getClass()))
-				return type.cast(e);
+			for (Class<?> type : types)
+				if (type.isAssignableFrom(e.getClass()))
+					return type.cast(e);
 		}
 	}
 	

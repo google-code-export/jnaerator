@@ -36,6 +36,7 @@ import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
@@ -50,6 +51,7 @@ public class Result extends Scanner {
 	final ClassOutputter classOutputter;
 	final TypeConversion typeConverter = new TypeConversion(this);
 	final DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
+	final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
 	
 	/**
 	 * @param aerator
@@ -68,6 +70,8 @@ public class Result extends Scanner {
 	
 	Map<String, List<Struct>> structsByLibrary = new HashMap<String, List<Struct>>();
 	Map<String, List<FunctionSignature>> callbacksByLibrary = new HashMap<String, List<FunctionSignature>>();
+	
+	Map<String, List<VariablesDeclaration>> globalsByLibrary = new HashMap<String, List<VariablesDeclaration>>();
 	
 	Map<String, Struct> structsByName = new HashMap<String, Struct>();
 	Map<String, FunctionSignature> callbacksByName = new HashMap<String, FunctionSignature>();
@@ -195,6 +199,16 @@ public class Result extends Scanner {
 	public void visitEnumItem(EnumItem enumItem) {
 		super.visitEnumItem(enumItem);
 		enumItems.put(enumItem.getName(), enumItem);
+	}
+	
+
+	@Override
+	public void visitVariablesDeclaration(VariablesDeclaration v) {
+		super.visitVariablesDeclaration(v);
+		if (v.findParentOfTypes(Struct.class, Function.class, Enum.class) != null)
+			return;
+
+		getList(globalsByLibrary, getLibrary(v)).add(v);
 	}
 	@Override
 	public void visitTypeDef(TypeDef typeDef) {

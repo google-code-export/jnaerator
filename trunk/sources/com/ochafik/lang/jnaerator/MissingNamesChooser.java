@@ -1,5 +1,4 @@
-/*
-	
+/*	
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
 	This file is part of JNAerator (http://jnaerator.googlecode.com/).
 	
@@ -35,6 +34,7 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -121,9 +121,14 @@ public class MissingNamesChooser extends Scanner {
 		if (!(parent instanceof TaggedTypeRefDeclaration)) {
 			DeclarationsHolder holder = taggedTypeRef.findParentOfType(DeclarationsHolder.class);
 			if (holder != null && holder != taggedTypeRef.getParentElement() && !(parent instanceof DeclarationsHolder)) {
-				taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef(taggedTypeRef.getTag()));
+				TaggedTypeRefDeclaration td = new TaggedTypeRefDeclaration();
+				if (parent instanceof VariablesDeclaration && ((VariablesDeclaration)parent).getDeclarators().isEmpty()) {
+					taggedTypeRef.importDetails(parent, false);
+					parent.replaceBy(null);
+				} else
+					taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef(taggedTypeRef.getTag()));
 				
-		 		TaggedTypeRefDeclaration td = new TaggedTypeRefDeclaration(taggedTypeRef);
+		 		td.setTaggedTypeRef(taggedTypeRef);
 		 		holder.addDeclaration(td);
 				td.accept(this);
 			}

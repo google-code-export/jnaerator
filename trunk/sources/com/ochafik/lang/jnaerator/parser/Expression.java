@@ -241,12 +241,13 @@ public abstract class Expression extends Element {
 		TypeRef type;
 		FunctionCall construction;
 		public New(TypeRef type) {
-			super();
 			setType(type);
 		}
-		public New() {
-			super();
+		public New(TypeRef type, FunctionCall construction) {
+			setType(type);
+			setConstruction(construction);
 		}
+		public New() {}
 		public void setType(TypeRef type) {
 			this.type = changeValue(this, this.type, type);
 		}
@@ -261,7 +262,7 @@ public abstract class Expression extends Element {
 		}
 		@Override
 		public String toString(CharSequence indent) {
-			return "new " + (type == null ? "" : type) + (construction == null ? "()" : construction.toString());
+			return "new " + (type == null ? "" : type) + (construction == null ? "()" : construction.toString(indent));
 		}
 		@Override
 		public void accept(Visitor visitor) {
@@ -311,7 +312,8 @@ public abstract class Expression extends Element {
 			this();
 			setFunctionName(functionName);
 			for (Expression x : unnamedArgs)
-				addArgument(x);
+				if (x != null)
+					addArgument(x);
 		}
 		
 		public FunctionCall(Expression target, String functionName, MemberRefStyle memberRefStyle, Expression... unnamedArgs) {
@@ -431,7 +433,9 @@ public abstract class Expression extends Element {
 				String pref = getTargetPrefix();
 				if (pref != null)
 					b.append(pref);
-				b.append(getFunctionName() + "(" + StringUtils.implode(ListenableCollections.adapt(arguments, new Adapter<Pair<String, Expression>, Expression>() {
+				if (getFunctionName() != null)
+					b.append(getFunctionName());
+				b.append("(" + StringUtils.implode(ListenableCollections.adapt(arguments, new Adapter<Pair<String, Expression>, Expression>() {
 	
 					public Expression adapt(Pair<String, Expression> value) {
 						return value.getValue();
@@ -549,7 +553,7 @@ public abstract class Expression extends Element {
 	private static final Map<String, UnaryOperator> unOps = new HashMap<String, UnaryOperator>();
 	private static final Map<BinaryOperator, String> binOpsRev = new HashMap<BinaryOperator, String>();
 	private static final Map<UnaryOperator, String> unOpsRev = new HashMap<UnaryOperator, String>();
-	public static final Expression EMPTY_EXPRESSION = new Constant(null, null, "");
+	//public static final Expression EMPTY_EXPRESSION = new Constant(null, null, "");
 	static {
 		map(unOps, unOpsRev, "!", UnaryOperator.Not);
 		map(unOps, unOpsRev, "~", UnaryOperator.Complement);
@@ -586,6 +590,34 @@ public abstract class Expression extends Element {
 		return unOps.get(s);
 	}
 	
+	public static class NullExpression extends Expression {
+
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitNullExpression(this);
+		}
+
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			return false;
+		}
+
+		@Override
+		public String toString(CharSequence indent) {
+			return "null";
+		}
+		
+	}
 	public static class Cast extends Expression {
 		TypeRef type;
 		Expression target;

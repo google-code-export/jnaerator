@@ -23,6 +23,145 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class Statement extends Element {
+	
+	public static class Return extends Statement {
+		Expression value;
+		
+		public Return() {}
+		public Return(Expression value) {
+			setValue(value);
+		}
+
+		public void setValue(Expression value) {
+			this.value = changeValue(this, this.value, value);
+		}
+		public Expression getValue() {
+			return value;
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitReturn(this);
+		}
+
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getValue()) {
+				setValue((Expression)by);
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String toString(CharSequence indent) {
+			return "return " + (getValue() == null ? "<null>" : getValue().toString(indent)) + ";";
+		}
+
+	}
+	public static class If extends Statement {
+		public If() {}
+		public If(Expression condition, Statement thenBranch, Statement elseBranch) {
+			setCondition(condition);
+			setThenBranch(thenBranch);
+			setElseBranch(elseBranch);
+		}
+		Expression condition;
+		Statement thenBranch, elseBranch;
+		
+		public void setElseBranch(Statement elseBranch) {
+			this.elseBranch = changeValue(this, this.elseBranch, elseBranch);
+		}
+		public void setCondition(Expression condition) {
+			this.condition = changeValue(this, this.condition, condition);
+		}
+		public void setThenBranch(Statement thenBranch) {
+			this.thenBranch = changeValue(this, this.thenBranch, thenBranch);
+		}
+		public Statement getElseBranch() {
+			return elseBranch;
+		}
+		public Statement getThenBranch() {
+			return thenBranch;
+		}
+		public Expression getCondition() {
+			return condition;
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitIf(this);
+		}
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getCondition()) {
+				setCondition((Expression)by);
+				return true;
+			}
+			if (child == getThenBranch()) {
+				setThenBranch((Statement)by);
+				return true;
+			}
+			if (child == getElseBranch()) {
+				setElseBranch((Statement)by);
+				return true;
+			}
+			return false;
+		}
+		@Override
+		public String toString(CharSequence indent) {
+			StringBuffer b = new StringBuffer("if (");
+			if (getCondition() == null)
+				b.append("<null>");
+			else
+				b.append(getCondition().toString(indent));
+			String indent2 = indent + "\t";
+			b.append(") ");
+			if (getThenBranch() == null)
+				b.append("<null>");
+			else {
+				if (getThenBranch() instanceof Block) {
+					b.append(getThenBranch().toString(indent));
+					if (getElseBranch() != null)
+						b.append(" ");
+				} else {
+					b.append("\n");
+					b.append(indent2);
+					b.append(getThenBranch().toString(indent2));
+					if (getElseBranch() != null)
+						b.append("\n" + indent);
+				}
+			}
+			
+			if (getElseBranch() != null) {
+				b.append("else ");
+				if (getElseBranch() instanceof Block) {
+					b.append(getElseBranch().toString(indent));
+				} else {
+					b.append("\n");
+					b.append(indent2);
+					b.append(getElseBranch().toString(indent2));
+				}
+			}
+			return b.toString();
+		}
+	}
 	public static class ExpressionStatement extends Statement {
 
 		public ExpressionStatement() {}
@@ -82,6 +221,9 @@ public abstract class Statement extends Element {
 		public Block(Statement... statements) {
 			setStatements(statements);
 		}
+		public Block(List<Statement> statements) {
+			setStatements(statements);
+		}
 		public void setStatements(List<Statement> statements) {
 			changeValue(this, this.statements, statements);
 		}
@@ -108,10 +250,13 @@ public abstract class Statement extends Element {
 
 		@Override
 		public String toString(CharSequence indent) {
+			String nindent = indent + "\t";
+//			if (statements.size() == 1 && !(getParentElement() instanceof Function))
+//				return "\t" + statements.get(0).toString(nindent);
+			
 			StringBuilder b = new StringBuilder();
 			b.append('{');
 			if (!statements.isEmpty()) {
-				String nindent = indent + "\t";
 				String lnindent = "\n" + nindent;
 				b.append(lnindent);
 				b.append(implode(statements, lnindent, nindent));

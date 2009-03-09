@@ -67,7 +67,9 @@ public class TaggedTypeRefDeclaration extends Declaration {
 			return null;
 		
 		TaggedTypeRef tr = getTaggedTypeRef();
-		return tr.toString(indent) + (tr.isForwardDeclaration() ? ";" : "");
+		return formatComments(indent, false, true, true) + 
+			tr.toString(indent) + (tr.isForwardDeclaration() ? ";" : "") +
+			(getCommentAfter() == null ? "" : getCommentAfter());
 	}
 
 }
