@@ -1,7 +1,7 @@
 #summary Behaviour of JNAerator for different inputs
 #labels Manual,Featured
 
-<wiki:toc max_depth="2" />
+<wiki:toc max_depth="3" />
 
 = Structs =
 
