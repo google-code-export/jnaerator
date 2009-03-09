@@ -32,6 +32,7 @@ import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.sun.jna.Pointer;
@@ -76,20 +77,23 @@ public class GlobalsGenerator {
 			struct.importDetails(globals, false);
 			struct.moveAllCommentsBefore();
 			
-			TypeRef convType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.FieldType, callerLibraryName);
+			/// We get a pointer to the global, not the global itself
+			TypeRef pointerType = new TypeRef.Pointer(type, PointerStyle.Pointer);
+			
+			TypeRef convPointerType = result.typeConverter.convertTypeToJNA(pointerType, TypeConversionMode.FieldType, callerLibraryName);
 			TypeRef instType;
 			boolean hasOffset, isPtr = false, isByRef = false;
-			String convTypeStr = convType.toString();
-			if (convTypeStr.equals(Pointer.class.getName())) {
+			String convPointerTypeStr = convPointerType.toString();
+			if (convPointerTypeStr.equals(Pointer.class.getName())) {
 				isPtr = true;
-				instType = convType;
+				instType = convPointerType;
 				hasOffset = false;
-			} else if (TypeConversion.byReferenceClassesNames.contains(convTypeStr)) {
+			} else if (TypeConversion.byReferenceClassesNames.contains(convPointerTypeStr)) {
 				isByRef = true;
-				instType = convType;
+				instType = convPointerType;
 				hasOffset = false;
-			} else if (convTypeStr.endsWith(".ByValue") && result.structsByName.get(convTypeStr.substring(0, convTypeStr.length() - ".ByValue".length())) != null) {
-				instType = convType;
+			} else if (convPointerTypeStr.endsWith(".ByValue") && result.structsByName.get(convPointerTypeStr.substring(0, convPointerTypeStr.length() - ".ByValue".length())) != null) {
+				instType = convPointerType;
 				hasOffset = true;
 			} else {
 				String instTypeName = name + "_holder";
