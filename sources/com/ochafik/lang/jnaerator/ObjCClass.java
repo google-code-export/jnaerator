@@ -249,9 +249,7 @@ class ObjCClass {
 			@Override
 			public void visitFunctionSignature(FunctionSignature functionSignature) {
 				super.visitFunctionSignature(functionSignature);
-				List<Declaration> decls = new ArrayList<Declaration>();
-				result.declarationsConverter.convertCallback(functionSignature, signatures, decls, callerLibraryClass);
-				instanceStruct.addDeclarations(decls);
+				result.declarationsConverter.convertCallback(functionSignature, signatures, instanceStruct, callerLibraryClass);
 			}
 		};
 		for (Struct c : categories)
@@ -294,14 +292,8 @@ class ObjCClass {
 		
 		for (Declaration d : declarations) {
 			if (d instanceof Function) {
-				Function f = (Function)d;//as(d, Function.class);
-				List<Declaration> conv = new ArrayList<Declaration>();
-				result.declarationsConverter.convertFunction(f, signatures, false, conv, callerLibraryClass);
-				if (f.getModifiers().contains(Modifier.Static)) {
-					classStruct.addDeclarations(conv);
-				} else {
-					instanceStruct.addDeclarations(conv);
-				}
+				Function f = (Function)d;
+				result.declarationsConverter.convertFunction(f, signatures, false, f.getModifiers().contains(Modifier.Static) ? classStruct : instanceStruct, callerLibraryClass);
 			}
 		}
 		

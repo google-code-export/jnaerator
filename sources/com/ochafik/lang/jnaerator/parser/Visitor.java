@@ -24,6 +24,8 @@ import com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
+import com.ochafik.lang.jnaerator.parser.Statement.If;
+import com.ochafik.lang.jnaerator.parser.Statement.Return;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
@@ -31,6 +33,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
 import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
+import com.ochafik.lang.jnaerator.parser.Expression.NullExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
@@ -126,5 +129,11 @@ public interface Visitor {
 	void visitExpressionStatement(ExpressionStatement expressionStatement);
 
 	void visitSubTypeRef(SubTypeRef subTypeRef);
+
+	void visitIf(If if1);
+
+	void visitNullExpression(NullExpression nullExpression);
+
+	void visitReturn(Return return1);
 	
 }

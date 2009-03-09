@@ -92,8 +92,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		changeValue(this, this.args, args);
 	}
 	
-	public void setBody(Statement.Block body) {
+	public Function setBody(Statement.Block body) {
 		this.body = changeValue(this, this.body, body);
+		return this;
 	}
 
 	//public static class CFunction extends Function {
@@ -116,6 +117,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	}
 
 
+	@Override
+	public Function addModifiers(Modifier... mds) {
+		return (Function) super.addModifiers(mds);
+	}
 	@Override
 	public String toString(CharSequence indent) {
 		String s = "";

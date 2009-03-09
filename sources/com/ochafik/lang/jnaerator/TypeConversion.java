@@ -18,6 +18,13 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,25 +98,19 @@ public class TypeConversion {
 		this.result = result;
 	}
 
-	public static class UnsupportedTypeConversion extends RuntimeException {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		Element element;
-		public UnsupportedTypeConversion(Element x, Object reason) {
-			super("Conversion Error : " + String.valueOf(x) + (reason == null ? "" : " (" + reason + ")"));
-			this.element = x;
-		}
-		@Override
-		public String toString() {
-			return getMessage();
-		}
-	}
 	enum TypeConversionMode {
-		PrimitiveParameter, NativeParameter, FieldType, ReturnType, ExpressionType, StaticallySizedArrayField, PrimitiveReturnType
+		PrimitiveParameter, 
+		NativeParameter,
+		BufferParameter,
+		FieldType, 
+		ReturnType, 
+		ExpressionType, 
+		StaticallySizedArrayField, 
+		PrimitiveReturnType
 	}
 	static Map<JavaPrim, Class<? extends ByReference>> primToByReference = new HashMap<JavaPrim, Class<? extends ByReference>>();
+	static Map<JavaPrim, Class<? extends Buffer>> primToBuffer = new HashMap<JavaPrim, Class<? extends Buffer>>();
+	static final Set<String> byReferenceClassesNames = new HashSet<String>();
 	
 	static Map<String, JavaPrim> javaPrims = new TreeMap<String, JavaPrim>();
 	static void prim(String from, JavaPrim to) {
@@ -224,10 +225,20 @@ public class TypeConversion {
 		primToByReference.put(JavaPrim.Byte, ByteByReference.class);
 		primToByReference.put(JavaPrim.Long, LongByReference.class);
 		primToByReference.put(JavaPrim.Float, FloatByReference.class);
-
-		//primsByReference.put(JavaPrim.Void, PointerByReference.class);
-		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.Double, DoubleByReference.class);
+		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
+		//primsByReference.put(JavaPrim.Void, PointerByReference.class);
+		for (Class<?> c : primToByReference.values())
+			byReferenceClassesNames.add(c.getName());
+		
+		primToBuffer.put(JavaPrim.Int, IntBuffer.class);
+		primToBuffer.put(JavaPrim.Short, ShortBuffer.class);
+		primToBuffer.put(JavaPrim.Byte, ByteBuffer.class);
+		primToBuffer.put(JavaPrim.Long, LongBuffer.class);
+		primToBuffer.put(JavaPrim.Float, FloatBuffer.class);
+		primToBuffer.put(JavaPrim.Double, DoubleBuffer.class);
+		//primToBuffer.put(JavaPrim.NativeLong, NativeLongByReference.class);
+		
 	}
 	
 	static Map<String, TypeRef> manualTypeDefs = new HashMap<String, TypeRef>();
@@ -460,10 +471,6 @@ public class TypeConversion {
 		return typeRef(libTypeRef(result.getLibraryClassSimpleName(library), callerLibraryClass), inferCallBackName(s, true));	
 	}
 	
-	public TypeRef convertTypeToJNA(TypeRef valueType, Declarator vs, TypeConversionMode fieldType, String callerLibraryClass) throws UnsupportedTypeConversion {
-		TypeRef mutatedType = as(vs.mutateType(valueType), TypeRef.class);
-		return convertTypeToJNA(mutatedType, fieldType, callerLibraryClass);
-	}
 	static TypeRef typeRef(Class<?> jc) {
 		return new SimpleTypeRef(jc.getName());
 	}
@@ -482,7 +489,7 @@ public class TypeConversion {
 		return typeRef(parentTypeRef, Style.Dot, subName);
 	}
 	
-	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, String callerLibraryClass) throws UnsupportedTypeConversion {
+	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, String callerLibraryClass) throws UnsupportedConversionException {
 		
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType);
@@ -490,14 +497,20 @@ public class TypeConversion {
 		String valueTypeString = String.valueOf(valueType);
 		if (valueTypeString.equals("void*"))
 			valueType = (TypeRef)valueType;
-		else if (valueTypeString.matches("(__)?const char\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
-			return typeRef(String.class);
-		else if (valueTypeString.matches("(__)?const wchar_t\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
-			return typeRef(WString.class);
-		else if (valueTypeString.matches("(__)?const char\\*\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter))// || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
-			return new ArrayRef(typeRef(String.class));
-		else if (valueTypeString.matches("(__)?const wchar_t\\*\\*") && (conversionMode == TypeConversionMode.PrimitiveParameter))// || conversionMode == TypeConversionMode.FieldType || conversionMode == TypeConversionMode.PrimitiveReturnType))
-			return new ArrayRef(typeRef(WString.class));
+		else {
+			if (conversionMode == TypeConversionMode.BufferParameter ||
+					conversionMode == TypeConversionMode.PrimitiveParameter) 
+			{
+				if (valueTypeString.matches("(__)?const char\\*"))
+					return typeRef(String.class);
+				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
+					return typeRef(WString.class);
+				else if (valueTypeString.matches("(__)?const char\\*\\*"))
+					return new ArrayRef(typeRef(String.class));
+				else if (valueTypeString.matches("(__)?const wchar_t\\*\\*"))
+					return new ArrayRef(typeRef(WString.class));
+			}
+		}
 		
 		if (valueType instanceof Primitive) {
 			JavaPrim prim = getPrimitive(valueType);
@@ -578,6 +591,11 @@ public class TypeConversion {
 					List<Modifier> modifiers = target.getModifiers();
 					if (modifiers.contains(Modifier.Const))
 						return new ArrayRef(convTargType);
+				case BufferParameter:
+					Class<? extends Buffer> bc = primToBuffer.get(prim);
+					if (bc != null) {
+						return typeRef(bc);
+					}
 				case FieldType:
 					if (staticallySized)
 						return new ArrayRef(convTargType);
@@ -599,7 +617,7 @@ public class TypeConversion {
 		if (valueType instanceof SimpleTypeRef) {
 			String name = ((SimpleTypeRef) valueType).getName();
 			if (name == null)
-				throw new UnsupportedTypeConversion(valueType, null);
+				throw new UnsupportedConversionException(valueType, null);
 			
 			TypeRef structRef = findStructRef(name, callerLibraryClass);
 			if (structRef != null)
@@ -632,7 +650,7 @@ public class TypeConversion {
 			return typeRef(prim);
 		
 		unknownTypes.add(String.valueOf(valueType));
-		throw new UnsupportedTypeConversion(valueType, null);
+		throw new UnsupportedConversionException(valueType, null);
 	}
 	Set<String> unknownTypes = new HashSet<String>();
 
@@ -676,7 +694,7 @@ public class TypeConversion {
 		return null;
 	}*/
 	
-	public TypeRef inferJavaType(Expression x) throws UnsupportedTypeConversion {
+	public TypeRef inferJavaType(Expression x) throws UnsupportedConversionException {
 		if (x instanceof Assignment)
 			return inferJavaType(((Assignment)x).getTarget());
 		if (x instanceof BinaryOp) {
@@ -783,7 +801,7 @@ public class TypeConversion {
 		return null;
 	}
 	
-	public Expression convertExpressionToJava(Expression x, String callerLibraryClass) throws UnsupportedTypeConversion {
+	public Expression convertExpressionToJava(Expression x, String callerLibraryClass) throws UnsupportedConversionException {
 		Expression res = null;
 		if (x instanceof Assignment)
 			res = new Assignment(convertExpressionToJava(((Assignment) x).getTarget(), callerLibraryClass), ((Assignment) x).getValue());
@@ -855,13 +873,13 @@ public class TypeConversion {
 		}
 		if (res == null) {
 //			return convertExpressionToJava(x);
-			throw new UnsupportedTypeConversion(x, null);
+			throw new UnsupportedConversionException(x, null);
 		}
 
 		return res;
 	}
 
-	private Expression sizeofToJava(TypeRef type, String callerLibraryClass) {
+	private Expression sizeofToJava(TypeRef type, String callerLibraryClass) throws UnsupportedConversionException {
 		type = resolveTypeDef(type);
 //		type = type;
 		

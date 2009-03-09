@@ -33,6 +33,7 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 
 import com.ochafik.lang.jnaerator.parser.Declaration;
+import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
@@ -316,7 +317,7 @@ public class JNAerator {
 			
 			Set<String> signatures = result.getSignaturesForOutputClass(libraryClassName);
 			
-			List<Declaration> children = new ArrayList<Declaration>();
+			DeclarationsHolder children = new DeclarationsHolder.ListWrapper(new ArrayList<Declaration>());
 			
 			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, children, libraryClassName);
 			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, children, libraryClassName);
@@ -324,7 +325,9 @@ public class JNAerator {
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, children, libraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, children, libraryClassName);
 
-			for (Declaration d : children) {
+			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, children, libraryClassName);
+			
+			for (Declaration d : children.getDeclarations()) {
 				out.println();
 				out.println("\t" + d.toString("\t"));
 			}

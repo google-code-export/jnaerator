@@ -26,7 +26,6 @@ import java.util.*;
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
-import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.lang.jnaerator.parser.*;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -48,7 +47,7 @@ public class DeclarationsConverter {
 	final Result result;
 	
 	
-	void convertCallback(FunctionSignature functionSignature, Set<String> signatures, List<Declaration> out, String callerLibraryName) {
+	void convertCallback(FunctionSignature functionSignature, Set<String> signatures, DeclarationsHolder out, String callerLibraryName) {
 		String name = result.typeConverter.inferCallBackName(functionSignature, false);
 		if (name == null)
 			return;
@@ -74,12 +73,12 @@ public class DeclarationsConverter {
 		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
 		//out.setCommentBefore(Element.formatComments(chosenName, name, chosenName, fullFilePathInComments, null))
 		List<Declaration> children = new ArrayList<Declaration>();
-		convertFunction(function, new TreeSet<String>(), true, children, callerLibraryName);
-		callbackStruct.addDeclarations(children);
-		out.add(new TaggedTypeRefDeclaration(callbackStruct));
+		convertFunction(function, new TreeSet<String>(), true, callbackStruct, callerLibraryName);
+		//callbackStruct.addDeclarations(children);
+		out.addDeclaration(new TaggedTypeRefDeclaration(callbackStruct));
 	}
 
-	void convertCallbacks(List<FunctionSignature> functionSignatures, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
+	void convertCallbacks(List<FunctionSignature> functionSignatures, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (functionSignatures != null) {
 			for (FunctionSignature functionSignature : functionSignatures) {
 				if (functionSignature.findParentOfType(Struct.class) != null)
@@ -100,7 +99,7 @@ public class DeclarationsConverter {
 			
 		}
 	}
-	void convertConstants(List<Define> defines, Element sourcesRoot, Set<String> signatures, final List<Declaration> out, final String callerLibraryClass) {
+	void convertConstants(List<Define> defines, Element sourcesRoot, Set<String> signatures, final DeclarationsHolder out, final String callerLibraryClass) {
 		//final List<Define> defines = new ArrayList<Define>();
 		sourcesRoot.accept(new Scanner() {
 //			@Override
@@ -137,16 +136,16 @@ public class DeclarationsConverter {
 						DirectDeclarator dd = (DirectDeclarator)vs;
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
 						
-						TypeRef tr = result.typeConverter.convertTypeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
+						TypeRef tr = result.typeConverter.convertTypeToJNA((TypeRef)vs.mutateType(type), TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(dd.getName(), val));
 						vd.setCommentBefore(v.getCommentBefore());
 						vd.addToCommentBefore(vs.getCommentBefore());
 						vd.addToCommentBefore(vs.getCommentAfter());
 						vd.addToCommentBefore(v.getCommentAfter());
 						
-						out.add(vd);
-					} catch (UnsupportedTypeConversion e) {
-						out.add(new EmptyDeclaration(getFileCommentContent(v), e.toString()));
+						out.addDeclaration(vd);
+					} catch (UnsupportedConversionException e) {
+						out.addDeclaration(skipDeclaration(v, e.toString()));
 					}
 					
 				}
@@ -158,13 +157,21 @@ public class DeclarationsConverter {
 				if (define.getValue() == null)
 					continue;
 				
-				out.add(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", callerLibraryClass, true));
+				try {
+					out.addDeclaration(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", callerLibraryClass, true));
+				} catch (UnsupportedConversionException ex) {
+					out.addDeclaration(new EmptyDeclaration("SKIPPED:", define.formatComments("", true, true, false), define.toString()));
+				}
 			}
 		}
 	}
 
-	private void convertEnum(Enum e, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
-		List<Declaration> localOut = out;
+	EmptyDeclaration skipDeclaration(Element e, String preMessage) {
+		return new EmptyDeclaration(preMessage, "SKIPPED:", e.formatComments("", true, true, false), getFileCommentContent(e), e.toString());
+	}
+	
+	private void convertEnum(Enum e, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+		DeclarationsHolder localOut = out;
 		Set<String> localSignatures = signatures;
 		
 		Struct enumInterf = null;
@@ -172,10 +179,10 @@ public class DeclarationsConverter {
 			
 			enumInterf = publicStaticClass(e.getTag(), null, Struct.Type.JavaInterface, e);
 			enumInterf.addToCommentBefore("enum values");
-			out.add(new TaggedTypeRefDeclaration(enumInterf));
+			out.addDeclaration(new TaggedTypeRefDeclaration(enumInterf));
 			
 			localSignatures = new HashSet<String>();
-			localOut = new ArrayList<Declaration>();
+			localOut = enumInterf;
 		}
 		Integer lastAdditiveValue = null;
 		Expression lastRefValue = null;
@@ -229,27 +236,27 @@ public class DeclarationsConverter {
 				resultingExpression = null;
 			}
 			if (failedOnceForThisEnum || (failedOnceForThisEnum = resultingExpression == null))
-				localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
+				localOut.addDeclaration(new EmptyDeclaration("SKIPPED enum item: " + item));
 			else {
 				try {
-					localOut.add(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", 
+					localOut.addDeclaration(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", 
 							callerLibraryClass, 
 							enumInterf == null
 					));
 				} catch (Exception ex) {
-					localOut.add(new EmptyDeclaration("SKIPPED enum item: " + item));
+					localOut.addDeclaration(new EmptyDeclaration("SKIPPED enum item: " + item));
 				}
 			}
 		}
-		if (enumInterf != null)
-			enumInterf.addDeclarations(localOut);
+		//if (enumInterf != null)
+		//	enumInterf.addDeclarations(localOut);
 	}
 
 	@SuppressWarnings("static-access")
-	private Declaration outputConstant(String name, Expression x, Set<String> signatures, Element element, String elementTypeDescription, String callerLibraryClass, boolean addFileComment) throws UnsupportedTypeConversion {
+	private Declaration outputConstant(String name, Expression x, Set<String> signatures, Element element, String elementTypeDescription, String callerLibraryClass, boolean addFileComment) throws UnsupportedConversionException {
 		try {
 			if (!result.typeConverter.isValidJavaIdentifier(name))
-				throw new UnsupportedTypeConversion(element, "The name '" + name + "' is invalid for a Java field.");
+				throw new UnsupportedConversionException(element, "The name '" + name + "' is invalid for a Java field.");
 			
 			Expression converted = result.typeConverter.convertExpressionToJava(x, callerLibraryClass);
 			TypeRef tr = result.typeConverter.inferJavaType(converted);
@@ -274,13 +281,13 @@ public class DeclarationsConverter {
 				}
 			}
 			return new EmptyDeclaration("SKIPPED " + elementTypeDescription + ": " + element);
-		} catch (UnsupportedTypeConversion e) {
+		} catch (UnsupportedConversionException e) {
 			return new EmptyDeclaration(e.toString());//.replace('\n', ' '));
 		}	
 		
 	} 
 
-	void convertEnums(List<Enum> enums, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
+	void convertEnums(List<Enum> enums, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (enums != null) {
 			//out.println("public static class ENUMS {");
 			for (com.ochafik.lang.jnaerator.parser.Enum e : enums) {
@@ -293,7 +300,7 @@ public class DeclarationsConverter {
 		}
 	}
 
-	void convertFunction(Function function, Set<String> signatures, boolean isCallback, List<Declaration> out, String callerLibraryClass) {
+	void convertFunction(Function function, Set<String> signatures, boolean isCallback, DeclarationsHolder out, String callerLibraryClass) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
 		
@@ -308,8 +315,8 @@ public class DeclarationsConverter {
 		if (" new null class void public package extends boolean ".contains(" " + functionName + " "))
 			return;
 		
-		Function convertedNat = new Function();
-		convertedNat.setType(Function.Type.JavaMethod);
+		Function natFunc = new Function();
+		natFunc.setType(Function.Type.JavaMethod);
 		try {
 			//StringBuilder outPrefix = new StringBuilder();
 			TypeRef returnType = null;
@@ -330,16 +337,20 @@ public class DeclarationsConverter {
 			} else {
 				modifiedMethodName = result.typeConverter.getValidJavaMethodName(functionName);
 				if (!modifiedMethodName.equals(functionName))
-					convertedNat.addAnnotation(new Annotation("@" + RenameSymbol.class.getName() + "(name=\"" + functionName + "\")"));
+					natFunc.addAnnotation(new Annotation("@" + RenameSymbol.class.getName() + "(name=\"" + functionName + "\")"));
 			}
 			
-			convertedNat.setName(modifiedMethodName);
-			convertedNat.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass));
-			convertedNat.importDetails(function, false);
+			natFunc.setName(modifiedMethodName);
+			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass));
+			natFunc.importDetails(function, false);
+			natFunc.moveAllCommentsBefore();
 			if (!isCallback)
-				convertedNat.addToCommentBefore(getFileCommentContent(function));
-			//convertedNat.addToCommentBefore("SIGNATURE: " + function.computeSignature());
-			Function convertedPrim = convertedNat.clone();
+				natFunc.addToCommentBefore(getFileCommentContent(function));
+			
+			boolean alternativeOutputs = !isCallback;
+			
+			Function primFunc = alternativeOutputs ? natFunc.clone() : null;
+			Function bufFunc = alternativeOutputs ? natFunc.clone() : null;
 			
 			Set<String> names = new TreeSet<String>();
 			for (Arg arg : function.getArgs())
@@ -352,48 +363,55 @@ public class DeclarationsConverter {
 					//TODO choose vaname dynamically !
 					String vaType = isObjectiveC ? "NSObject" : "Object";
 					String argName = chooseJavaArg("varargs", iArg, names);
-					convertedNat.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
-					convertedPrim.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
-					
-					//convertedNat.addArg(Arg.createVarArgs());
-					//convertedPrim.addArg(Arg.createVarArgs());
+					natFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
+					if (alternativeOutputs) {
+						primFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
+						bufFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
+					}
 				} else {
 					String argName = arg.getName();
 					if (argName == null)
 						argName = chooseJavaArg(arg.getName(), iArg, names);
 					
 					TypeRef mutType = arg.createMutatedType();
-					TypeRef typeStrNat = result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.NativeParameter, callerLibraryClass),
-						typeStrPrim = result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.PrimitiveParameter, callerLibraryClass);
 					
-					convertedNat.addArg(new Arg(argName, typeStrNat));
-					convertedPrim.addArg(new Arg(argName, typeStrPrim));
+					natFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.NativeParameter, callerLibraryClass)));
+					if (alternativeOutputs) {
+						primFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.PrimitiveParameter, callerLibraryClass)));
+						bufFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.BufferParameter, callerLibraryClass)));
+					}
 				}
 				iArg++;
 			}
 			
-			//boolean outputtedSourceString = false;
-			boolean nativeSignatureDifferentFromPrimitiveSignature = !convertedNat.toString().equals(convertedPrim.toString());
-			String nativeSignature = convertedNat.computeSignature();
-			if (signatures.add(nativeSignature)) {
-				if (!isCallback && nativeSignatureDifferentFromPrimitiveSignature) {
-					convertedNat.addToCommentBefore(Arrays.asList("@deprecated use the safer and easier to use {@link #" + convertedPrim.computeSignature() + "} instead"));
-					convertedNat.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
+			String natSign = natFunc.computeSignature(),
+				primSign = alternativeOutputs ? primFunc.computeSignature() : null,
+				bufSign = alternativeOutputs ? bufFunc.computeSignature() : null;
+			if (signatures.add(natSign)) {
+				if (alternativeOutputs && !primSign.equals(natSign)) {
+					if (primSign.equals(bufSign))
+						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primFunc.computeSignature() + "} instead"));
+					else
+						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primFunc.computeSignature() + "} and {@link #" + bufFunc.computeSignature() + "} instead"));
+					natFunc.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
 				}
-				out.add(convertedNat);
+				out.addDeclaration(natFunc);
 			}
 			
-			if (!isCallback && nativeSignatureDifferentFromPrimitiveSignature) {
-				if (signatures.add(convertedPrim.computeSignature())) {
-					out.add(convertedPrim);
+			if (alternativeOutputs) {
+				if (signatures.add(primSign)) {
+					out.addDeclaration(primFunc);
+				}
+				if (signatures.add(bufSign)) {
+					out.addDeclaration(bufFunc);
 				}
 			}
-		} catch (TypeConversion.UnsupportedTypeConversion ex) {
-			out.add(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
+		} catch (UnsupportedConversionException ex) {
+			out.addDeclaration(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
 		}
 	}
 
-	void convertFunctions(List<Function> functions, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
+	void convertFunctions(List<Function> functions, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (functions != null) {
 			//System.err.println("FUNCTIONS " + functions);
 			for (Function function : functions) {
@@ -402,7 +420,7 @@ public class DeclarationsConverter {
 		}
 	}
 
-	void convertStruct(Struct struct, Set<String> signatures, List<Declaration> out, String callerLibraryClass) {
+	void convertStruct(Struct struct, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
 		String structName = struct.getTag();
 		if (structName == null)
 			return;
@@ -430,32 +448,32 @@ public class DeclarationsConverter {
 		
 		//cl.addDeclaration(new EmptyDeclaration())
 		Set<String> childSignatures = new TreeSet<String>();
-		List<Declaration> children = new ArrayList<Declaration>();
+		//List<Declaration> children = new ArrayList<Declaration>();
 		for (Declaration d : struct.getDeclarations()) {
 			if (d instanceof VariablesDeclaration) {
-				convertVariablesDeclaration((VariablesDeclaration)d, children, iChild, callerLibraryClass);
+				convertVariablesDeclaration((VariablesDeclaration)d, structJavaClass, iChild, callerLibraryClass);
 			} else if (d instanceof TaggedTypeRefDeclaration) {
 				TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
 				if (tr instanceof Struct) {
-					convertStruct((Struct)tr, childSignatures, children, callerLibraryClass);
+					convertStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass);
 				} else if (tr instanceof Enum) {
-					convertEnum((Enum)tr, childSignatures, children, callerLibraryClass);
+					convertEnum((Enum)tr, childSignatures, structJavaClass, callerLibraryClass);
 				}
 			} else if (d instanceof TypeDef) {
 				TypeDef td = (TypeDef)d;
 				TypeRef tr = td.getValueType();
 				if (tr instanceof Struct) {
-					convertStruct((Struct)tr, childSignatures, children, callerLibraryClass);
+					convertStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass);
 				} else if (tr instanceof FunctionSignature) {
-					convertCallback((FunctionSignature)tr, childSignatures, children, callerLibraryClass);
+					convertCallback((FunctionSignature)tr, childSignatures, structJavaClass, callerLibraryClass);
 				}
 			}
 		}
-		structJavaClass.addDeclarations(children);
-		out.add(decl(structJavaClass));
+		//structJavaClass.addDeclarations(children);
+		out.addDeclaration(decl(structJavaClass));
 	}
 
-	public void convertStructs(List<Struct> structs, Set<String> signatures, List<Declaration> out, String libraryClassName) {
+	public void convertStructs(List<Struct> structs, Set<String> signatures, DeclarationsHolder out, String libraryClassName) {
 		if (structs != null) {
 			for (Struct struct : structs) {
 				if (struct.findParentOfType(Struct.class) != null)
@@ -466,7 +484,64 @@ public class DeclarationsConverter {
 		}
 	}
 
-	private void convertVariablesDeclaration(VariablesDeclaration v, List<Declaration> out, int[] iChild, String callerLibraryName) {
+	public void convertVariablesDeclaration(String name, TypeRef mutatedType, DeclarationsHolder out, int[] iChild, String callerLibraryName, Element... toImportDetailsFrom) throws UnsupportedConversionException {
+		name = result.typeConverter.getValidJavaArgumentName(name);
+		//convertVariablesDeclaration(name, mutatedType, out, iChild, callerLibraryName);
+
+		Expression initVal = null;
+		TypeRef javaType = result.typeConverter.convertTypeToJNA(
+			mutatedType, 
+			TypeConversion.TypeConversionMode.FieldType,
+			callerLibraryName
+		);
+		
+		VariablesDeclaration convDecl = new VariablesDeclaration();
+		convDecl.addModifiers(Modifier.Public);
+		
+		if (javaType instanceof ArrayRef && mutatedType instanceof ArrayRef) {
+			ArrayRef mr = (ArrayRef)mutatedType;
+			ArrayRef jr = (ArrayRef)javaType;
+			Expression mul = null;
+			List<Expression> dims = mr.getDimensions();
+			for (int i = dims.size(); i-- != 0;) {
+				Expression x = dims.get(i);
+			
+				if (x == null || x instanceof EmptyArraySize) {
+					javaType = jr = new ArrayRef(TypeConversion.typeRef(Pointer.class));
+					break;
+				} else {
+					Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
+					c.setParenthesis(dims.size() == 1);
+					if (mul == null)
+						mul = c;
+					else
+						mul = new Expression.BinaryOp(BinaryOperator.Multiply, c, mul);
+				}
+			}
+			initVal = new Expression.NewArray(jr.getTarget(), mul);
+		}
+		if (javaType == null) {
+			throw new UnsupportedConversionException(mutatedType, "failed to convert type to Java");
+		} else if (javaType.toString().equals("void")) {
+			throw new UnsupportedConversionException(mutatedType, "void type !");
+			//out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
+		} else {
+			for (Element e : toImportDetailsFrom)
+				convDecl.importDetails(e, false);
+			convDecl.importDetails(mutatedType, true);
+			
+//			convDecl.importDetails(v, false);
+//			convDecl.importDetails(vs, false);
+//			convDecl.importDetails(valueType, false);
+//			valueType.stripDetails();
+			convDecl.moveAllCommentsBefore();
+			convDecl.setValueType(javaType);
+			convDecl.addDeclarator(new DirectDeclarator(name, initVal));
+			
+			out.addDeclaration(convDecl);
+		}
+	}
+	public void convertVariablesDeclaration(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, String callerLibraryName) {
 		//List<Declaration> out = new ArrayList<Declaration>();
 		try {
 			TypeRef valueType = v.getValueType();
@@ -481,60 +556,11 @@ public class DeclarationsConverter {
 					mutatedType = (TypeRef)vs.mutateType(valueType);
 					vs = new DirectDeclarator(vs.resolveName());
 				}
-				name = result.typeConverter.getValidJavaArgumentName(name);
-				
-				Expression initVal = null;
-				TypeRef javaType = result.typeConverter.convertTypeToJNA(
-					mutatedType, vs, 
-					TypeConversion.TypeConversionMode.FieldType,
-					callerLibraryName
-				);
-				
-				VariablesDeclaration convDecl = new VariablesDeclaration();
-				convDecl.addModifiers(Modifier.Public);
-				
-				if (javaType instanceof ArrayRef && mutatedType instanceof ArrayRef) {
-					ArrayRef mr = (ArrayRef)mutatedType;
-					ArrayRef jr = (ArrayRef)javaType;
-					Expression mul = null;
-					List<Expression> dims = mr.getDimensions();
-					for (int i = dims.size(); i-- != 0;) {
-						Expression x = dims.get(i);
-					
-						if (x == null || x instanceof EmptyArraySize) {
-							javaType = jr = new ArrayRef(TypeConversion.typeRef(Pointer.class));
-							break;
-						} else {
-							Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
-							c.setParenthesis(dims.size() == 1);
-							if (mul == null)
-								mul = c;
-							else
-								mul = new Expression.BinaryOp(BinaryOperator.Multiply, c, mul);
-						}
-					}
-					initVal = new Expression.NewArray(jr.getTarget(), mul);
-				}
-				if (javaType == null || javaType.toString().equals("void")) {
-					out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
-				} else {
-				
-					convDecl.importDetails(v, false);
-					convDecl.importDetails(vs, false);
-					convDecl.importDetails(valueType, false);
-					valueType.stripDetails();
-					convDecl.moveAllCommentsBefore();
-					convDecl.setValueType(javaType);
-					convDecl.addDeclarator(new DirectDeclarator(name, initVal));
-					//if (hasFixedSizeStorage)
-					//	convDecl.addModifiers(Modifier.Final);
-					
-					out.add(convDecl);
-				}
+				convertVariablesDeclaration(name, mutatedType, out, iChild, callerLibraryName, v, vs);
 				iChild[0]++;
 			}
-		} catch (UnsupportedTypeConversion e) {
-			out.add(new EmptyDeclaration(e.toString()));
+		} catch (UnsupportedConversionException e) {
+			out.addDeclaration(new EmptyDeclaration(e.toString()));
 		}
 	}
 	Struct publicStaticClass(String name, String parentName, Struct.Type type, Element toCloneCommentsFrom, String... interfaces) {
@@ -601,7 +627,7 @@ public class DeclarationsConverter {
 				new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
 		));
 		structJavaClass.addDeclaration(pointerConstructor);
-		structJavaClass.addDeclaration(shareMemConstructor.clone());
+		//structJavaClass.addDeclaration(shareMemConstructor.clone());
 	}
 	
 	String getFileCommentContent(File file, Element e) {

@@ -32,7 +32,6 @@ import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.DefinitionsVisitor.Environment;
-import com.ochafik.lang.jnaerator.TypeConversion.UnsupportedTypeConversion;
 import com.ochafik.util.string.StringUtils;
 
 public class ObjCppToJavaScanner extends Scanner {
@@ -113,7 +112,7 @@ public class ObjCppToJavaScanner extends Scanner {
 					// TODO ensure all structs have names !
 					String library = getLibrary(s);
 					if (library == null)
-						throw new UnsupportedTypeConversion(simpleTypeRef, "struct " + structName + " is not bound to a library");
+						throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, "struct " + structName + " is not bound to a library"));
 					
 					TypeRef tr = new SimpleTypeRef(getLibraryClassSimpleName(library) + "." + structName);
 					simpleTypeRef.replaceBy(tr);
@@ -129,10 +128,10 @@ public class ObjCppToJavaScanner extends Scanner {
 					TypeRef tr = new SimpleTypeRef(fr.getName());
 					simpleTypeRef.replaceBy(tr);
 				} else
-					throw new UnsupportedTypeConversion(simpleTypeRef, "no support for complex define expressions as of yet");
+					throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, "no support for complex define expressions as of yet"));
 			}
 		}
-		throw new UnsupportedTypeConversion(simpleTypeRef, null);
+		throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, null));
 	}
 	
 	
@@ -142,6 +141,6 @@ public class ObjCppToJavaScanner extends Scanner {
 		
 		String v  = ((Constant) constant).getValue().toString();
 		if (v.endsWith("U"))
-			throw new UnsupportedTypeConversion(constant, "no support for unsigned constants");
+			throw new RuntimeException(new UnsupportedConversionException(constant, "no support for unsigned constants"));
 	}
 }

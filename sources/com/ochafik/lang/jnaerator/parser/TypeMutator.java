@@ -38,7 +38,7 @@ public abstract class TypeMutator {
 			return type;
 		}},
 		BRACKETS = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
-			return new TypeRef.ArrayRef(type, Expression.EMPTY_EXPRESSION);
+			return new TypeRef.ArrayRef(type, new Expression.EmptyArraySize());
 		}}
 	;
 	public abstract TypeRef mutateType(TypeRef type);

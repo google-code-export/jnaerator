@@ -1,6 +1,5 @@
-/*
+/*	
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
-	
 	This file is part of JNAerator (http://jnaerator.googlecode.com/).
 	
 	JNAerator is free software: you can redistribute it and/or modify
@@ -16,31 +15,22 @@
 	You should have received a copy of the GNU General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.ochafik.lang.jnaerator.parser;
+package com.ochafik.lang.jnaerator;
 
-import java.util.Collections;
-import java.util.List;
+import com.ochafik.lang.jnaerator.parser.Element;
 
-public interface DeclarationsHolder {
-	void addDeclaration(Declaration d);
-	List<Declaration> getDeclarations();
-	
-	public static class ListWrapper implements DeclarationsHolder {
-		public ListWrapper(List<Declaration> list) {
-			this.list = list;
-		}
-
-		List<Declaration> list;
-
-		@Override
-		public void addDeclaration(Declaration d) {
-			list.add(d);
-		}
-
-		@Override
-		public List<Declaration> getDeclarations() {
-			return Collections.unmodifiableList(list);
-		}
-		
+public class UnsupportedConversionException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Element element;
+	public UnsupportedConversionException(Element x, Object reason) {
+		super("Conversion Error : " + String.valueOf(x) + (reason == null ? "" : " (" + reason + ")"));
+		this.element = x;
+	}
+	@Override
+	public String toString() {
+		return getMessage();
 	}
 }

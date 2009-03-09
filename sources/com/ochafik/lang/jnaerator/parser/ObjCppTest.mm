@@ -18,13 +18,13 @@
 #	
 #pragma reversible
 --
+void f(void (*g)());
+--
 int val = (1 << 16) - 2;
 --
 long value = (int)(__u.__u >> 31);
 --
 void f(struct s i);
---
-void f(void (*g)());
 --
 extern long long int i;
 --
