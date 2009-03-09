@@ -1,5 +1,5 @@
 #summary Behaviour of JNAerator for struct fields
-#labels Manual
+#labels Manual,Featured
 
 <wiki:toc max_depth="2" />
 
@@ -187,3 +187,35 @@ Deanonymized types get a suffix that indicate their type :
  * _union for unions
 
 The choice was made not to use Java naming conventions by default, because it would produce strange names when structures and fields have very short names.
+
+= Global Variables =
+
+Global variables are JNAerated with a lazy implementation : we don't want to try and bind all of the globals when the interface is instantiated or some of its static initializers is called. This could lead to many linkage errors, and it's safer to wait until a global is actually used to provoke such a failure.
+
+JNA provides the [https://jna.dev.java.net/javadoc/com/sun/jna/NativeLibrary.html#getGlobalVariableAddress(java.lang.String) NativeLibrary. getGlobalVariableAddress(symbolName)] method to get the address of a global variable.
+
+In JNAerated code, a global {{{ int errno; }}} in library "c" is accessed through {{{ CLibrary.errno.get() }}} (this returns directly an [https://jna.dev.java.net/javadoc/com/sun/jna/ptr/IntByReference.html IntByReference]).
+
+== Pointer-like ==
+
+{{{
+int* pInt;
+void* pVoid;
+}}}
+
+== Struct & struct pointers ==
+
+== Constant expressions ==
+
+Constant expressions are typically not exported in dynamic libraries.
+Hence they are simply translated and put as static fields in the resulting interfaces
+
+TODO
+
+== All other types ==
+
+{{{
+int errno;
+}}}
+
+TODO
