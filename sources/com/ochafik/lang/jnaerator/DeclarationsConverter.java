@@ -603,16 +603,16 @@ public class DeclarationsConverter {
 		pointerConstructor.setBody(new Statement.Block(
 				new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset")))
 		));
-		byRef.addDeclaration(pointerConstructor);
-		pointerConstructor = pointerConstructor.clone();
-		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByValue struct");
-		byVal.addDeclaration(pointerConstructor);
+		//byRef.addDeclaration(pointerConstructor);
+		//pointerConstructor = pointerConstructor.clone();
+		//pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByValue struct");
+		//byVal.addDeclaration(pointerConstructor);
 		
 		Function shareMemConstructor = new Function(Function.Type.JavaMethod, structName, null, 
 			new Arg("struct", new TypeRef.SimpleTypeRef(structName))
 		);
 		shareMemConstructor.setBody(new Statement.Block(
-			new Statement.ExpressionStatement(new Expression.FunctionCall("this", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
+			new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
 		));
 		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
 		byRef.addDeclaration(shareMemConstructor);

@@ -569,6 +569,7 @@ public class TypeConversion {
 			 				switch (conversionMode) {
 								case NativeParameter:
 								case PrimitiveParameter:
+								case FieldType:
 									convTargType = typeRef(structRef, SubTypeRef.Style.Dot, "ByReference");
 									if (valueType instanceof Pointer)
 										return convTargType;
