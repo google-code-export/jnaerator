@@ -267,6 +267,8 @@ public abstract class Element {
 				fieldName = e.getKey();
 				if (fieldName.equals("parentElement"))
 					continue;
+				if (fieldName.equals("parenthesis"))
+					fieldName = (String)fieldName;
 				
 				GetterAndSetterInfo p = e.getValue();
 				if (p.getter == null || p.setter == null)
