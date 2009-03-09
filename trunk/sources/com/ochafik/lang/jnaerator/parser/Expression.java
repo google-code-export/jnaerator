@@ -96,7 +96,7 @@ public abstract class Expression extends Element {
 			return false;
 		}
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return getType() == null ? "" : getType().toString();
 		}
 	}
@@ -123,7 +123,7 @@ public abstract class Expression extends Element {
 			return false;
 		}
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return "";
 		}
 	}
@@ -231,7 +231,7 @@ public abstract class Expression extends Element {
 		}
 
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return "new " + getType() + "[" + implode(getDimensions(), "][", indent) + "]";
 		}
 
@@ -261,7 +261,7 @@ public abstract class Expression extends Element {
 			return construction;
 		}
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return "new " + (type == null ? "" : type) + (construction == null ? "()" : construction.toString(indent));
 		}
 		@Override
@@ -408,7 +408,7 @@ public abstract class Expression extends Element {
 		}
 		
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			StringBuilder b = new StringBuilder();
 			if (getMemberRefStyle() == MemberRefStyle.SquareBrackets) {
 				/// Objective-C method call
@@ -487,7 +487,7 @@ public abstract class Expression extends Element {
 		}
 		
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			String pref = getTargetPrefix();
 			return (pref == null ? "" : pref) + getName();
 		}
@@ -533,11 +533,8 @@ public abstract class Expression extends Element {
 		}
 
 		@Override
-		public String toString(CharSequence indent) {
-			return 
-				(getParenthesis() ? "(" : "") + 
-				getName() + 
-				(getParenthesis() ? ")" : "");
+		public String toInnerString(CharSequence indent) {
+			return getName();
 		}
 	}
 
@@ -613,7 +610,7 @@ public abstract class Expression extends Element {
 		}
 
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return "null";
 		}
 		
@@ -670,7 +667,7 @@ public abstract class Expression extends Element {
 		}
 		
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return "(" + type + ")" + target;
 		}
 	}
@@ -733,7 +730,7 @@ public abstract class Expression extends Element {
 		}
 
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			return getTarget() + " = " + getValue();
 		}
 	}
@@ -810,12 +807,10 @@ public abstract class Expression extends Element {
 		}
 
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			String opStr = binOpsRev.get(getOperator());
-			return 
-				(getParenthesis() ? "(" : "") + 
-				getFirstOperand() + " " + opStr + " " + getSecondOperand() +
-				(getParenthesis() ? ")" : "");
+			return  
+				getFirstOperand() + " " + opStr + " " + getSecondOperand();
 		}
 	}
 
@@ -872,11 +867,9 @@ public abstract class Expression extends Element {
 		}
 		
 		@Override
-		public String toString(CharSequence indent) {
-			return 
-				(getParenthesis() ? "(" : "") + 
-				unOpsRev.get(getOperator()) + getOperand() +
-				(getParenthesis() ? ")" : "");
+		public String toInnerString(CharSequence indent) {
+			return  
+				unOpsRev.get(getOperator()) + getOperand();
 		}
 
 	}
@@ -994,10 +987,8 @@ public abstract class Expression extends Element {
 				;
 		}
 		@Override
-		public String toString(CharSequence indent) {
+		public String toInnerString(CharSequence indent) {
 			StringBuffer b = new StringBuffer();
-			if (getParenthesis())
-				b.append('(');
 			
 			if (getType() == null)
 				b.append("");
@@ -1044,8 +1035,6 @@ public abstract class Expression extends Element {
 					break;
 				}
 			}
-			if (getParenthesis())
-				b.append(')');
 			return b.toString();
 		}
 		
@@ -1286,4 +1275,13 @@ public abstract class Expression extends Element {
 
 		
 	}
+	
+	@Override
+	public final String toString(CharSequence indent) {
+		return 
+			(getParenthesis() ? "(" : "") + 
+			toInnerString(indent) + 
+			(getParenthesis() ? ")" : "");
+	}
+	protected abstract String toInnerString(CharSequence indent);
 }

@@ -322,6 +322,7 @@ public class Result extends Scanner {
 		libraries.addAll(callbacksByLibrary.keySet());
 		libraries.addAll(functionsByLibrary.keySet());
 		libraries.addAll(enumsByLibrary.keySet());
+		libraries.addAll(globalsByLibrary.keySet());
 		libraries.addAll(definesByLibrary.keySet());
 		
 		for (String library : libraries) {

@@ -148,7 +148,8 @@ public class GlobalsGenerator {
 		}
 	}
 
-	public void convertGlobals(List<VariablesDeclaration> list, Set<String> signatures, DeclarationsHolder out, String libraryNameExpression) {		if (list == null)
+	public void convertGlobals(List<VariablesDeclaration> list, Set<String> signatures, DeclarationsHolder out, String libraryNameExpression) {		
+		if (list == null)
 			return;
 		
 		for (VariablesDeclaration v : list) {
