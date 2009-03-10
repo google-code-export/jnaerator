@@ -137,16 +137,20 @@ void ComplexArgFunction(
 Which is roughly equivalent to the "deanonymized" version :
 {{{
 /// S, U and F gain some higher level visibility compared to the anonymous version
-struct S { 
-	union U { 
-		enum { A, B } e; 
+typedef struct { 
+	typedef union { 
+		typedef enum { 
+			A, 
+			B
+		} E; 
+		E e;
 		float f; 
-	};
+	} U;
 	U u; 
 	long v; 
 	typedef void (*F)();
 	F *fptr; 
-};
+} S;
 void ComplexArgFunction(S* pArg);
 }}}
 
