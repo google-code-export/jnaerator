@@ -296,6 +296,10 @@ public class TypeConversion {
 					return resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName));
 			}
 		}
+		if (valueType instanceof Pointer) {
+			Pointer pt = (Pointer)valueType;
+			return new Pointer(resolveTypeDef(pt.getTarget()), pt.getPointerStyle());
+		}
 		return valueType;
 	}
 	

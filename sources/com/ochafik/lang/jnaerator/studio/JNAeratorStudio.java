@@ -335,7 +335,7 @@ public class JNAeratorStudio extends JPanel {
 					JNAeratorConfigUtils.autoConfigure(config);
 					JNAerator jnaerator = new JNAerator(config);
 					SourceFiles sourceFiles = jnaerator.parse();
-					final SourceFiles sourceFilesClone = sourceFiles.clone();
+					final SourceFiles sourceFilesClone = sourceFiles;//.clone();
 					jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 						@Override
 						public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
