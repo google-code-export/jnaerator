@@ -46,6 +46,7 @@ import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.FunctionPointerDeclaration;
 import com.ochafik.lang.jnaerator.parser.Modifier;
+import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
@@ -267,40 +268,49 @@ public class TypeConversion {
 		if (valueType == null)
 			return null;
 		
-		if (valueType instanceof SimpleTypeRef) {
-			String name = ((SimpleTypeRef) valueType).getName();
-			
-			Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
-			if (p != null) {
-				TypeRef tr = as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
-				if (tr instanceof Struct && ((Struct)tr).isForwardDeclaration())
-					return valueType;
-				else 
-					return tr;
-			}
-			
-			TypeRef manualTypeRef = manualTypeDefs.get(name);
-			if (manualTypeRef != null)
-				return manualTypeRef;
-			
-			Define define = result.defines.get(name);
-			Expression expression = define == null ? null : define.getValue();
-			if (expression != null) {
-				String fieldName = null;
-				if (expression instanceof Expression.VariableRef) 
-					fieldName = ((Expression.VariableRef) expression).getName();
-				else if (expression instanceof Expression.FieldRef)
-					fieldName = ((FieldRef) expression).getName();
+		valueType = valueType.clone();
+		Arg holder = new Arg();
+		holder.setValueType(valueType);
+		valueType.accept(new Scanner() {
+			@Override
+			public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
+				super.visitSimpleTypeRef(simpleTypeRef);
+				String name = ((SimpleTypeRef) simpleTypeRef).getName();
 				
-				if (fieldName != null && !fieldName.equals(name))
-					return resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName));
+				Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
+				if (p != null) {
+					TypeRef tr = as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
+					if (tr instanceof Struct && ((Struct)tr).isForwardDeclaration())
+						return;
+					else {
+						simpleTypeRef.replaceBy(tr);
+						return;
+					}
+				}
+				
+				TypeRef manualTypeRef = manualTypeDefs.get(name);
+				if (manualTypeRef != null) {
+					simpleTypeRef.replaceBy(manualTypeRef);
+					return;
+				}
+				
+				Define define = result.defines.get(name);
+				Expression expression = define == null ? null : define.getValue();
+				if (expression != null) {
+					String fieldName = null;
+					if (expression instanceof Expression.VariableRef) 
+						fieldName = ((Expression.VariableRef) expression).getName();
+					else if (expression instanceof Expression.FieldRef)
+						fieldName = ((FieldRef) expression).getName();
+					
+					if (fieldName != null && !fieldName.equals(name)) {
+						simpleTypeRef.replaceBy(resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName)));
+						return;
+					}
+				}
 			}
-		}
-		if (valueType instanceof Pointer) {
-			Pointer pt = (Pointer)valueType;
-			return new Pointer(resolveTypeDef(pt.getTarget()), pt.getPointerStyle());
-		}
-		return valueType;
+		});
+		return holder.getValueType();
 	}
 	
 	public static boolean resolvesToPrimitive(String name) {
