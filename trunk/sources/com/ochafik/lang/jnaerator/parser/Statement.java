@@ -216,7 +216,15 @@ public abstract class Statement extends Element {
 			visitor.visitBlock(this);
 		}
 
+		boolean compact;
 		
+		public Block setCompact(boolean compact) {
+			this.compact = compact;
+			return this;
+		}
+		public boolean isCompact() {
+			return compact;
+		}
 		public Block() {}
 		public Block(Statement... statements) {
 			setStatements(statements);
@@ -257,11 +265,17 @@ public abstract class Statement extends Element {
 			StringBuilder b = new StringBuilder();
 			b.append('{');
 			if (!statements.isEmpty()) {
-				String lnindent = "\n" + nindent;
-				b.append(lnindent);
-				b.append(implode(statements, lnindent, nindent));
-				b.append('\n');
-				b.append(indent);
+				if (isCompact()) {
+					b.append(' ');
+					b.append(implode(statements, ", ", indent));
+					b.append(' ');
+				} else {
+					String lnindent = "\n" + nindent;
+					b.append(lnindent);
+					b.append(implode(statements, lnindent, nindent));
+					b.append('\n');
+					b.append(indent);
+				}
 			}
 			b.append('}');
 			return b.toString();
