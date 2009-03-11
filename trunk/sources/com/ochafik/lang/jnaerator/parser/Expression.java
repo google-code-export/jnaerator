@@ -34,10 +34,14 @@ public abstract class Expression extends Element {
 	
 
 	boolean parenthesis;
-	public void setParenthesis(boolean parenthesis) {
+	public Expression setParenthesis(boolean parenthesis) {
 		this.parenthesis = parenthesis;
+		return this;
 	}
 	public boolean getParenthesis() {
+		return parenthesis;
+	}
+	public boolean isParenthesis() {
 		return parenthesis;
 	}
 	

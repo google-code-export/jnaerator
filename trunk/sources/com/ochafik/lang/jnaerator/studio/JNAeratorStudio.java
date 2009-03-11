@@ -61,11 +61,18 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.SyntaxUtils;
+import com.ochafik.lang.compiler.CompilerUtils;
+import com.ochafik.lang.compiler.MemoryFileManager;
+import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
@@ -380,14 +387,42 @@ public class JNAeratorStudio extends JPanel {
 						System.setErr(err);
 						classCountLabel.setText("JNAerated classes (" + results.size() + ") :");
 						setTabTitle(resultTabs, errorsPane, "Errors (" + (errorsArea.getLineCount() - 1) + ")");
-					}});
-					
+					}});	
 				}
+				try {
+					compile();
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
+				}
+				
 			}
 		}.start();
 	}
 
+	public static class SyntaxException extends Exception {
+		public SyntaxException(String message) {
+			super(message);
+		}
+	}
 
+	protected void compile() throws FileNotFoundException, SyntaxException {
+		JavaCompiler c = CompilerUtils.getJavaCompiler();
+		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
+		for (ResultContent rc : results)
+			mfm.addSourceInput(rc.path, rc.getContent());
+		CompilerUtils.compile(mfm, diagnostics, "1.4");
+		if (!diagnostics.getDiagnostics().isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+				//diagnostic.getKind()
+				//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
+				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(getLocale()));//.toUri());
+			}
+			System.out.println(sb);
+			throw new SyntaxException(sb.toString());
+		}
+	}
 	private void displayError(Exception e) {
 		JOptionPane.showMessageDialog(this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 	}
