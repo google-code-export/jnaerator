@@ -588,18 +588,20 @@ public class DeclarationsConverter {
 	private void addStructConstructors(String structName, Struct structJavaClass, Struct byRef,
 			Struct byVal) {
 		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName, null);
-		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
 		emptyConstructor.setBody(new Statement.Block());
-		byRef.addDeclaration(emptyConstructor);
+		
+		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
+		addConstructor(byRef, emptyConstructor);
+		
 		emptyConstructor = emptyConstructor.clone();
 		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByVal struct on the heap");
-		byVal.addDeclaration(emptyConstructor);
+		addConstructor(byVal, emptyConstructor);
 		
 		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName, null, 
 			new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),
 			new Arg("offset", new TypeRef.Primitive("int"))
 		);
-		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByRef struct");
+		//pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByRef struct");
 		pointerConstructor.setBody(new Statement.Block(
 				new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset")))
 		).setCompact(true));
@@ -615,12 +617,13 @@ public class DeclarationsConverter {
 			new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
 		).setCompact(true));
 		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
-		byRef.addDeclaration(shareMemConstructor);
-		byVal.addDeclaration(shareMemConstructor.clone());
+		addConstructor(byRef, shareMemConstructor);
+		shareMemConstructor = shareMemConstructor.clone();
+		addConstructor(byVal, shareMemConstructor);
 	
 		emptyConstructor = emptyConstructor.clone();
 		emptyConstructor.setCommentBefore("Allocate a new " + structName + " struct on the heap");
-		structJavaClass.addDeclaration(emptyConstructor);
+		addConstructor(structJavaClass, emptyConstructor);
 		
 		pointerConstructor = pointerConstructor.clone();
 		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + " struct");
@@ -629,8 +632,17 @@ public class DeclarationsConverter {
 				new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset"))),
 				new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
 		));
-		structJavaClass.addDeclaration(pointerConstructor);
-		//structJavaClass.addDeclaration(shareMemConstructor.clone());
+		addConstructor(structJavaClass, pointerConstructor);
+		shareMemConstructor = shareMemConstructor.clone();
+		shareMemConstructor.setBody(new Statement.Block(
+			new Statement.ExpressionStatement(new Expression.FunctionCall("this", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
+		).setCompact(true));
+		addConstructor(structJavaClass, shareMemConstructor);
+	}
+	
+	static void addConstructor(Struct s, Function f) {
+		f.setName(s.getTag());
+		s.addDeclaration(f);
 	}
 	
 	String getFileCommentContent(File file, Element e) {

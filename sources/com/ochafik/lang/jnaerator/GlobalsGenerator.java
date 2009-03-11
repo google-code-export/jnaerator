@@ -35,6 +35,7 @@ import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
@@ -119,11 +120,14 @@ public class GlobalsGenerator {
 			struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName)).addModifiers(Modifier.Private, Modifier.Static));
 			VariableRef instRef = new VariableRef(instName);
 			Expression ptrExpr = new Expression.FunctionCall(
-				new Expression.FieldRef(
-					new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(callerLibraryName)), 
-					"INSTANCE", 
-					MemberRefStyle.Dot
-				),
+				new Expression.Cast(
+					TypeConversion.typeRef(NativeLibrary.class),
+					new Expression.FieldRef(
+						new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(callerLibraryName)), 
+						"INSTANCE", 
+						MemberRefStyle.Dot
+					)
+				).setParenthesis(true),
 				"getGlobalVariableAddress",
 				MemberRefStyle.Dot,
 				new Expression.Constant(Expression.Constant.Type.String, name)
