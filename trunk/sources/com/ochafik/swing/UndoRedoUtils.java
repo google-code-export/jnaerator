@@ -16,28 +16,22 @@
 	You should have received a copy of the GNU General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.ochafik.lang.compiler;
+package com.ochafik.swing;
 
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
-import javax.tools.JavaFileObject;
+import javax.swing.JComponent;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
 
-public class MemoryJavaFile extends MemoryFileObject implements JavaFileObject {
-	JavaFileObject.Kind kind;
-	public MemoryJavaFile(String path, String content, JavaFileObject.Kind kind) {
-		super(path, content);
-		this.kind = kind;
+public class UndoRedoUtils {
+
+	public static void registerNewUndoManager(JTextComponent jtc) {
+		registerNewUndoManager(jtc, jtc.getDocument());
 	}
-	public Modifier getAccessLevel() {
-		return Modifier.PUBLIC;
+	public static void registerNewUndoManager(JComponent jtc, Document d) {
+		UndoManager undoManager = new UndoManager();
+		d.addUndoableEditListener(undoManager);
+	    FormUtils.registerUndoRedoActions(jtc, FormUtils.createUndoAction(undoManager, "undo"), FormUtils.createRedoAction(undoManager, "redo"));
 	}
-	public JavaFileObject.Kind getKind() {
-		return kind;
-	}
-	public NestingKind getNestingKind() {
-		return null;
-	}
-	public boolean isNameCompatible(String simpleName, JavaFileObject.Kind kind) {
-		return true; // TODO
-	}
+
 }

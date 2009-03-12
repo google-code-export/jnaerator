@@ -687,7 +687,15 @@ arrayTypeMutator returns [TypeMutator mutator]
 	
 typeRefCore returns [TypeRef type]
 @init { List<Modifier> mods = new ArrayList<Modifier>(); }
-	:	({ next(Modifier.Kind.TypeQualifier) }? m=modifier { mods.add($m.modifier); })?
+	:	
+		(
+			/// TODO handle it properly ?
+			/// @see http://blogs.msdn.com/staticdrivertools/archive/2008/11/06/annotating-for-success.aspx
+			{ "__success".equals(next()) }? IDENTIFIER  '(' 'return' binaryOp expression ')' |
+			{ next(Modifier.Kind.VCAnnotation1Arg) }? m1a=modifier  '(' expression ')' { mods.add($m1a.modifier); } |
+			{ next(Modifier.Kind.VCAnnotation2Args) }? m2a=modifier  '(' expression ',' expression ')' { mods.add($m2a.modifier); } 
+		)?
+		({ next(Modifier.Kind.TypeQualifier, Modifier.Kind.VCAnnotationNoArg) }? m=modifier { mods.add($m.modifier); })?
 		(
 			{ next(Modifier.Kind.ReferenceQualifier) }? m1=modifier { mods.add($m1.modifier); }
 			tr=typeRef { $type = $tr.type; } | 
@@ -1130,6 +1138,10 @@ functionCall returns [FunctionCall expr]
 		')'
 	;
 
+binaryOp	:	'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' |
+		'<=' | '>=' | '<' | '>' | '==' | '!='
+	;
+
 expression returns [Expression expr]
 	:	(
 			id=IDENTIFIER {
@@ -1158,10 +1170,7 @@ expression returns [Expression expr]
 			'{' expression '}' // TODO in some union initializers, for instance : union{ float __f; unsigned int __u; }__u = {__x};
 		)
 		(
-			bop=(
-				'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' |
-				'<=' | '>=' | '<' | '>' | '==' | '!='
-			)
+			bop=binaryOp
 			opd2=expression {
 				$expr = new BinaryOp(getBinaryOperator($bop.text), $expr, $opd2.expr);
 			} |

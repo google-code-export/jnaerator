@@ -29,13 +29,36 @@ public enum Modifier {
 	__cdecl(Kind.CallingConvention),
 	__stdcall(Kind.CallingConvention),
 	
-	__pre,
-	__valid,
-	__deref,
-	__readonly,
-	__null,
-	__refparam,
-	__exceptthat,
+	/// VC++ annotations 
+	/// @see http://msdn.microsoft.com/en-us/library/cc264104.aspx
+	
+	__pre(Kind.VCAnnotationNoArg),
+	__valid(Kind.VCAnnotationNoArg),
+	__reserved(Kind.VCAnnotationNoArg),
+	__checkReturn(Kind.VCAnnotationNoArg),
+	__fallthrough(Kind.VCAnnotationNoArg),
+	__readonly(Kind.VCAnnotationNoArg),
+	__null(Kind.VCAnnotationNoArg),
+	__in(Kind.VCAnnotationNoArg),
+	__out(Kind.VCAnnotationNoArg),
+	__inout(Kind.VCAnnotationNoArg),
+	__refparam(Kind.VCAnnotationNoArg),
+	__exceptthat(Kind.VCAnnotationNoArg),
+	
+	_opt(Kind.VCAnnotationNoArg),
+	_deref(Kind.VCAnnotationNoArg),
+	_deref_opt(Kind.VCAnnotationNoArg),
+	_ecount(Kind.VCAnnotation1Arg),
+	_bcount(Kind.VCAnnotation1Arg),
+	_full(Kind.VCAnnotation1Arg),
+	_part(Kind.VCAnnotation2Args),
+	
+	__ptr64(Kind.TypeQualifier), // TODO find better kind 
+	__maybenull(Kind.TypeQualifier),
+	__nullterminated(Kind.TypeQualifier, Kind.StringAnnotation),
+	__nullnullterminated(Kind.TypeQualifier, Kind.StringAnnotation),
+	__possibly_notnullterminated(Kind.TypeQualifier, Kind.StringAnnotation),
+	//__success,
 	
 	Auto(Kind.StorageClassSpecifier),
 	Register(Kind.StorageClassSpecifier),
@@ -169,8 +192,11 @@ public enum Modifier {
 		
 		Plain, Extended, 
 		
-		NumericTypeQualifier, ReferenceQualifier, SizeModifier, SignModifier
-	};
+		NumericTypeQualifier, ReferenceQualifier, SizeModifier, SignModifier, 
+		
+		///http://msdn.microsoft.com/en-us/library/cc264105.aspx
+		StringAnnotation, VCAnnotationNoArg
+	, VCAnnotation2Args, VCAnnotation1Arg};
 	
 	static Map<String, Modifier> mods = new 
 	HashMap<String, Modifier>();

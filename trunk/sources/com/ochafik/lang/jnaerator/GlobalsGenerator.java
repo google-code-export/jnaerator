@@ -65,7 +65,7 @@ public class GlobalsGenerator {
 		for (Declarator d : globals.getDeclarators()) {
 			String name = d.resolveName();
 			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
-			if (type.getModifiers().contains(Modifier.Const)) {
+			if (type.getModifiers().contains(Modifier.Const) && d.getDefaultValue() != null) {
 				//result.declarationsConverter.convertCon
 				continue;
 			}
@@ -100,21 +100,28 @@ public class GlobalsGenerator {
 				String instTypeName = name + "_holder";
 				Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, Structure.class.getName(), Struct.Type.JavaClass, null);
 				holderStruct.addModifiers(Modifier.Final);
-				result.declarationsConverter.convertVariablesDeclaration("value", type, holderStruct, new int[1], callerLibraryName);
-				Function pointerConstructor = new Function(Function.Type.JavaMethod, instTypeName, null, 
-					new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
-				);
-				hasOffset = false;
-				pointerConstructor.setBody(new Statement.Block(
-						new Statement.ExpressionStatement(new Expression.FunctionCall("super")),
-						new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.Constant(Expression.Constant.Type.Int, 0))),
-						new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
-				));
-				holderStruct.addDeclaration(pointerConstructor);
-				
-				//holderStruct.addDeclaration(new VariablesDeclaration(convType, new Declarator.DirectDeclarator("value")).addModifiers(Modifier.Public));
-				instType = new TypeRef.SimpleTypeRef(instTypeName);
-				struct.addDeclaration(result.declarationsConverter.decl(holderStruct));
+				VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclaration("value", type, new int[1], callerLibraryName);
+				if (vd.getValueType().toString().equals(Pointer.class.getName())) {
+					isByRef = true;
+					instType = convPointerType;
+					hasOffset = false;	
+				} else {
+					holderStruct.addDeclaration(vd);
+					Function pointerConstructor = new Function(Function.Type.JavaMethod, instTypeName, null, 
+						new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
+					);
+					hasOffset = false;
+					pointerConstructor.setBody(new Statement.Block(
+							new Statement.ExpressionStatement(new Expression.FunctionCall("super")),
+							new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.Constant(Expression.Constant.Type.Int, 0))),
+							new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
+					));
+					holderStruct.addDeclaration(pointerConstructor);
+					
+					//holderStruct.addDeclaration(new VariablesDeclaration(convType, new Declarator.DirectDeclarator("value")).addModifiers(Modifier.Public));
+					instType = new TypeRef.SimpleTypeRef(instTypeName);
+					struct.addDeclaration(result.declarationsConverter.decl(holderStruct));
+				}
 			}
 			String instName = name;//"_";
 			struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName)).addModifiers(Modifier.Private, Modifier.Static));

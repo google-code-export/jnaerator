@@ -487,7 +487,7 @@ public class DeclarationsConverter {
 		}
 	}
 
-	public void convertVariablesDeclaration(String name, TypeRef mutatedType, DeclarationsHolder out, int[] iChild, String callerLibraryName, Element... toImportDetailsFrom) throws UnsupportedConversionException {
+	public VariablesDeclaration convertVariablesDeclaration(String name, TypeRef mutatedType, int[] iChild, String callerLibraryName, Element... toImportDetailsFrom) throws UnsupportedConversionException {
 		name = result.typeConverter.getValidJavaArgumentName(name);
 		//convertVariablesDeclaration(name, mutatedType, out, iChild, callerLibraryName);
 
@@ -541,7 +541,7 @@ public class DeclarationsConverter {
 			convDecl.setValueType(javaType);
 			convDecl.addDeclarator(new DirectDeclarator(name, initVal));
 			
-			out.addDeclaration(convDecl);
+			return convDecl;//out.addDeclaration(convDecl);
 		}
 	}
 	public void convertVariablesDeclaration(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, String callerLibraryName) {
@@ -559,7 +559,9 @@ public class DeclarationsConverter {
 					mutatedType = (TypeRef)vs.mutateType(valueType);
 					vs = new DirectDeclarator(vs.resolveName());
 				}
-				convertVariablesDeclaration(name, mutatedType, out, iChild, callerLibraryName, v, vs);
+				VariablesDeclaration vd = convertVariablesDeclaration(name, mutatedType, iChild, callerLibraryName, v, vs);
+				if (vd != null)
+					out.addDeclaration(vd);
 				iChild[0]++;
 			}
 		} catch (UnsupportedConversionException e) {

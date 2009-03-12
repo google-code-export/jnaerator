@@ -142,10 +142,13 @@ public class TypeConversion {
 		prim("long long", JavaPrim.Long);
 		prim("long long int", JavaPrim.Long);
 		prim("long int", JavaPrim.Int);
+		prim("LONGLONG", JavaPrim.Long);
+		prim("ULONGLONG", JavaPrim.Long);
+		prim("DWORD64", JavaPrim.Long);
+		prim("LONG64", JavaPrim.Long);
 		prim("UInt64", JavaPrim.Long);
 		prim("SInt64", JavaPrim.Long);
 		prim("__int64", JavaPrim.Long);
-		
 		
 		prim("int32_t", JavaPrim.Int);
 		prim("uint32_t", JavaPrim.Int);
@@ -182,6 +185,7 @@ public class TypeConversion {
 		prim("SInt16", JavaPrim.Short);
 		prim("UInt16", JavaPrim.Short);
 		prim("short", JavaPrim.Short);
+		prim("WCHAR", JavaPrim.Short);
 		prim("wchar_t", JavaPrim.Short);
 		
 		prim("WORD", JavaPrim.Short);
@@ -231,6 +235,7 @@ public class TypeConversion {
 		//primsByReference.put(JavaPrim.Void, PointerByReference.class);
 		for (Class<?> c : primToByReference.values())
 			byReferenceClassesNames.add(c.getName());
+//		byReferenceClassesNames.add(PointerByReference.class.getName());
 		
 		primToBuffer.put(JavaPrim.Int, IntBuffer.class);
 		primToBuffer.put(JavaPrim.Short, ShortBuffer.class);
@@ -251,13 +256,25 @@ public class TypeConversion {
 		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
 		manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
 		manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
-//		prim("LONG_PTR", JavaPrim.NativeLong);
+		manualTypeDefs.put("INT_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
+		manualTypeDefs.put("UINT_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
+		manualTypeDefs.put("PVOID", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
+		
+		prim("LONG_PTR", JavaPrim.NativeLong);
 //		prim("ULONG_PTR", JavaPrim.NativeLong);
 //		
+		manualTypeDefs.put("CHAR", new TypeRef.Primitive("char"));
+		manualTypeDefs.put("WCHAR", new TypeRef.Primitive("wchar_t"));
+		manualTypeDefs.put("HRESULT", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
+		
 		
 		
 		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifiers(Modifier.Const), PointerStyle.Pointer));
+		manualTypeDefs.put("LPCWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t").addModifiers(Modifier.Const), PointerStyle.Pointer));
 		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
+		manualTypeDefs.put("LPWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t"), PointerStyle.Pointer));
+		
+//		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
 		manualTypeDefs.put("PBYTE", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
 		//manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long"), StorageModifier.Pointer));
 		//manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long", "unsigned"), StorageModifier.Pointer));
@@ -571,6 +588,12 @@ public class TypeConversion {
 					} else
 //					if (struct != null)
 						name = struct.getTag();
+				} else if (target instanceof FunctionSignature) {
+					TypeRef tr = findCallbackRef((FunctionSignature)target, callerLibraryClass);
+					if (tr != null)
+						return tr;
+					//else
+					//	return typeRef(((FunctionSignature)valueType).getFunction().getName());
 				}
 				if (name != null) {
 					/// Pointer to Objective-C class

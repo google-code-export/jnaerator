@@ -172,7 +172,7 @@ public abstract class Declarator extends ModifiableElement {
 			} else
 				throw new IllegalArgumentException(type.getClass().getName() + " cannot be mutated by pointer");
 			((Element)type).importDetails(this, false);
-			return getTarget().mutateType(type);
+			return getTarget() == null ? type : getTarget().mutateType(type);
 		}
 		public Declarator.PointerStyle getPointerStyle() {
 			return pointerStyle;
@@ -205,16 +205,28 @@ public abstract class Declarator extends ModifiableElement {
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
 			type = type.clone();
 			
-			if (!(type instanceof TypeRef))
-				throw new IllegalArgumentException("Function declarator can only mutate type references !");
+			if (type instanceof TypeRef) {
+				Function f = new Function();
+				f.importDetails(this, false);
+				f.setValueType((TypeRef)type);
+				f.setType(Type.CFunction);
+				f.setArgs(getArgs());
 			
-			Function f = new Function();
-			f.importDetails(this, false);
-			f.setValueType((TypeRef)type);
-			f.setType(Type.CFunction);
-			f.setArgs(getArgs());
+				return getTarget().mutateType(f);
+			} else if (type instanceof Function) {
+				Function ff = (Function)type;
+				
+				Function f = new Function();
+				f.importDetails(this, false);
+				f.setValueType(new TypeRef.FunctionSignature(ff));
+				f.setType(Type.CFunction);
+				f.setArgs(getArgs());
 			
-			return getTarget().mutateType(f);
+				return getTarget().mutateType(f);
+			} else {
+				throw new IllegalArgumentException("Function declarator can only mutate type references ! (mutating \"" + type + "\" by \"" + this + "\")");
+				
+			}
 		}
 		public List<Arg> getArgs() {
 			return unmodifiableList(args);

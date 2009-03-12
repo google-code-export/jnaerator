@@ -63,7 +63,7 @@ public class CToJavaPreScanner extends Scanner {
 		
 		/// Explode comma-separated variables declarations
 		for (Declarator vs : v.getDeclarators()) {
-			if (vs instanceof DirectDeclarator)
+			if (vs == null || vs instanceof DirectDeclarator)
 				continue;
 			
 			Declaration decl = null;
@@ -106,7 +106,7 @@ public class CToJavaPreScanner extends Scanner {
 		/// Explode comma-separated variables declarations
 		int nDecl = v.getDeclarators().size();
 		for (Declarator vs : v.getDeclarators()) {
-			if (vs instanceof DirectDeclarator && nDecl == 1)
+			if (vs == null || vs instanceof DirectDeclarator && nDecl == 1)
 				continue;
 			
 			Declaration decl = null;
