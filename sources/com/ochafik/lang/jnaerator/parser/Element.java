@@ -417,8 +417,9 @@ public abstract class Element {
 		
 		if (newValue != null) {
 			for (T t : newValue) {
-				if (t != null)
-					t.setParentElement(parent);
+				if (t == null)
+					continue;
+				t.setParentElement(parent);
 				oldValue.add(t);
 			}
 		}

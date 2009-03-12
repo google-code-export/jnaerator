@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
@@ -72,12 +73,12 @@ import com.ochafik.io.WriteText;
 import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
-import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
 import com.ochafik.lang.jnaerator.SourceFiles;
+import com.ochafik.swing.UndoRedoUtils;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
 import com.ochafik.swing.syntaxcoloring.JavaTokenMarker;
@@ -86,6 +87,7 @@ import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.ListenableCollections;
 import com.ochafik.util.listenable.ListenableComboModel;
 import com.ochafik.util.listenable.ListenableList;
+import com.sun.jna.Pointer;
 
 /*
 include com/ochafik/lang/jnaerator/examples/*.h
@@ -126,6 +128,20 @@ public class JNAeratorStudio extends JPanel {
 		}
 		
 	};
+	
+	public void error(String title, String message, Throwable th) {
+		StringWriter sw = new StringWriter();
+		th.printStackTrace(new PrintWriter(sw));
+		JOptionPane.showMessageDialog(
+			this,
+			new Object[] {
+				message, 
+				new JScrollPane(new JTextArea(sw.toString()))
+			},
+			title == null ? "JNAeratorStudio Error" : title,
+			-1
+		);
+	}
 	
 	public File getFile() {
 		File dir = new File(System.getProperty("user.home"));
@@ -175,7 +191,9 @@ public class JNAeratorStudio extends JPanel {
 	public void close() {
 		try {
 			save();
-		} catch (Exception ex) {}
+		} catch (Exception ex) {
+			error(null, "Error while closing", ex);
+		}
 	}
 	JTabbedPane sourceTabs = new JTabbedPane(JTabbedPane.TOP), resultTabs = new JTabbedPane(JTabbedPane.TOP);
 	//JButton actButton = new JButton("JNAerate !");
@@ -209,8 +227,7 @@ public class JNAeratorStudio extends JPanel {
 					System.out.println("About JNAerator: " + url);
 					SystemUtils.runSystemOpenURL(url);
 				} catch (Exception ex) {
-					
-					displayError(ex);
+					error(null, "Error while opening about page", ex);
 				}
 			}
 		},
@@ -222,8 +239,7 @@ public class JNAeratorStudio extends JPanel {
 					System.out.println("About JNA: " + url);
 					SystemUtils.runSystemOpenURL(url);
 				} catch (Exception ex) {
-					
-					displayError(ex);
+					error(null, "Error while opening about page", ex);
 				}
 			}
 		},
@@ -296,6 +312,8 @@ public class JNAeratorStudio extends JPanel {
 		
 		if (sourceArea.getText().trim().length() == 0)
 			doShowExample(false);
+		
+		UndoRedoUtils.registerNewUndoManager(sourceArea, sourceArea.getDocument());
 	}
 	
 	private void doShowExample(boolean generate) {
@@ -314,7 +332,7 @@ public class JNAeratorStudio extends JPanel {
 		try {
 			save();
 		} catch (IOException e1) {
-			displayError(e1);
+			error(null, "Error while saving file", e1);
 			return;
 		}
 		JNAeratorStudio.this.setEnabled(false);
@@ -378,6 +396,7 @@ public class JNAeratorStudio extends JPanel {
 							resultsListCombo.setSelectedIndex(0);
 					}});
 				} catch (Exception e) {
+					error(null, "Error while JNAerating", e);
 					e.printStackTrace();
 				} finally {
 					SwingUtilities.invokeLater(new Runnable() { public void run() {
@@ -392,7 +411,8 @@ public class JNAeratorStudio extends JPanel {
 				try {
 					compile();
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
+					error(null, "Compilation error !", ex);
+					//JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
 				}
 				
 			}
@@ -410,8 +430,8 @@ public class JNAeratorStudio extends JPanel {
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
-			mfm.addSourceInput(rc.path, rc.getContent());
-		CompilerUtils.compile(mfm, diagnostics, "1.4");
+			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
+		CompilerUtils.compile(c, mfm, diagnostics, "1.4", Pointer.class);
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
@@ -423,9 +443,9 @@ public class JNAeratorStudio extends JPanel {
 			throw new SyntaxException(sb.toString());
 		}
 	}
-	private void displayError(Exception e) {
-		JOptionPane.showMessageDialog(this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-	}
+//	private void displayError(Exception e) {
+//		JOptionPane.showMessageDialog(this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+//	}
 	private static void setTabTitle(JTabbedPane tabs, Component c, String string) {
 		for (int i = tabs.getTabCount(); i-- != 0;) {
 			Component tc = tabs.getComponent(i);//tabs.getTabComponentAt(i); 

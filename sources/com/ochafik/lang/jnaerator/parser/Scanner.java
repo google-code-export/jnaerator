@@ -78,15 +78,16 @@ public class Scanner implements Visitor {
 
 	public void visitEnum(Enum enum1) {
 		visitTaggedTypeRef(enum1);
-		for (EnumItem item : copy(enum1.getItems())) {
-			item.accept(this);
-		}
+		for (EnumItem item : copy(enum1.getItems()))
+			if (item != null)
+				item.accept(this);
 	}
 
 	public void visitFunction(Function function) {
 		visitDeclaration(function);
 		for (Arg arg : copy(function.getArgs()))
-			arg.accept(this);
+			if (arg != null)
+				arg.accept(this);
 		
 		if (function.getBody() != null)
 			function.getBody().accept(this);
@@ -163,7 +164,8 @@ public class Scanner implements Visitor {
 	protected void visitStoredDeclarations(StoredDeclarations d) {
 		visitDeclaration(d);
 		for (Declarator s : copy(d.getDeclarators()))
-			s.accept(this);
+			if (s != null)
+				s.accept(this);
 	}
 
 	protected void visitCPPClass(Struct struct) {
@@ -173,7 +175,8 @@ public class Scanner implements Visitor {
 	protected void doVisitStruct(Struct struct) {
 		visitTaggedTypeRef(struct);
 		for (Declaration m : copy(struct.getDeclarations()))
-			m.accept(this);
+			if (m != null)
+				m.accept(this);
 	}
 
 	protected void visitCStruct(Struct struct) {
@@ -194,10 +197,9 @@ public class Scanner implements Visitor {
 
 	public void visitArray(ArrayRef array) {
 		visitTargettedTypeRef(array);
-		for (Expression x : copy(array.getDimensions())) {
+		for (Expression x : copy(array.getDimensions()))
 			if (x != null)
 				x.accept(this);
-		}
 	}
 
 	protected void visitTypeRef(TypeRef array) {
@@ -234,7 +236,8 @@ public class Scanner implements Visitor {
 	public void visitSourceFile(SourceFile header) {
 		visitElement(header);
 		for (Declaration d : copy(header.getDeclarations()))
-			d.accept(this);
+			if (d != null)
+				d.accept(this);
 	}
 
 	public void visitEnumItem(EnumItem enumItem) {
@@ -268,7 +271,8 @@ public class Scanner implements Visitor {
 			functionCall.getTarget().accept(this);
 		
 		for (Pair<String, Expression> x : copy(functionCall.getArguments())) {
-			x.getSecond().accept(this);
+			if (x != null && x.getSecond() != null)
+				x.getSecond().accept(this);
 		}
 	}
 
@@ -307,7 +311,8 @@ public class Scanner implements Visitor {
 	public void visitVariablesDeclaration(VariablesDeclaration v) {
 		visitDeclaration(v);
 		for (Declarator vs : copy(v.getDeclarators()))
-			vs.accept(this);
+			if (vs != null)
+				vs.accept(this);
 	}
 
 	public void visitTaggedTypeRefDeclaration(TaggedTypeRefDeclaration taggedTypeRefDeclaration) {
@@ -357,14 +362,16 @@ public class Scanner implements Visitor {
 		if (newArray.getType() != null)
 			newArray.getType().accept(this);
 		for (Expression x : newArray.getDimensions())
-			x.accept(this);
+			if (x != null)
+				x.accept(this);
 	}
 
 	@Override
 	public void visitArrayDeclarator(ArrayDeclarator arrayDeclarator) {
 		visitTargettedDeclarator(arrayDeclarator);
 		for (Expression x : arrayDeclarator.getDimensions())
-			x.accept(this);
+			if (x != null)
+				x.accept(this);
 	}
 
 	@Override
@@ -376,7 +383,8 @@ public class Scanner implements Visitor {
 	public void visitFunctionDeclarator(FunctionDeclarator functionDeclarator) {
 		visitTargettedDeclarator(functionDeclarator);
 		for (Arg arg : functionDeclarator.getArgs())
-			arg.accept(this);
+			if (arg != null)
+				arg.accept(this);
 	}
 
 	@Override
@@ -405,7 +413,8 @@ public class Scanner implements Visitor {
 	public void visitBlock(Block block) {
 		visitStatement(block);
 		for (Statement x : copy(block.getStatements()))
-			x.accept(this);
+			if (x != null)
+				x.accept(this);
 	}
 
 	@Override

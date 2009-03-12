@@ -22,6 +22,11 @@ void f(void (*g)());
 --
 int val = (1 << 16) - 2;
 --
+typedef void *__ptr64 PVOID64;
+--
+typedef CHAR *PCHAR, *LPCH, *PCH;
+typedef CONST CHAR *LPCCH, *PCCH;
+--
 long value = (int)(__u.__u >> 31);
 --
 void f(struct s i);
@@ -162,9 +167,11 @@ extern volatile GC_thread GC_threads[];
 --
 #pragma parse
 
-struct Test {
+struct Test {__
 	int i, j, k;
 };
+--
+typedef __success(return >= 0) long HRESULT;
 --
 static __inline__  int __inline_signbit( long double __x ){ 
 	union {
