@@ -167,6 +167,8 @@ public class StringUtils {
 		return b.toString();
 	}
 	public static final String javaEscape(String s) {
+		if (s == null)
+			return null;
 		char c;
 		int len=s.length();
 		StringBuffer b=new StringBuffer(len);

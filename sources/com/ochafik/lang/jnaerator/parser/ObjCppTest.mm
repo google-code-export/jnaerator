@@ -25,9 +25,12 @@ int val = (1 << 16) - 2;
 typedef void *__ptr64 PVOID64;
 --
 typedef CHAR *PCHAR, *LPCH, *PCH;
-typedef CONST CHAR *LPCCH, *PCCH;
+--
+typedef const CHAR *LPCCH, *PCCH;
 --
 long value = (int)(__u.__u >> 31);
+--
+long long l = 0x8000000000000000;
 --
 void f(struct s i);
 --

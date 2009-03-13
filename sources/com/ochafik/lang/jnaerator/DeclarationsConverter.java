@@ -127,7 +127,7 @@ public class DeclarationsConverter {
 						return;
 					
 					//TypeRef type = v.getValueType();
-					JavaPrim prim = result.typeConverter.getPrimitive(mutatedType);
+					JavaPrim prim = result.typeConverter.getPrimitive(mutatedType, callerLibraryClass);
 					if (prim == null)
 						return;
 					
@@ -263,7 +263,7 @@ public class DeclarationsConverter {
 			
 			Expression converted = result.typeConverter.convertExpressionToJava(x, callerLibraryClass);
 			TypeRef tr = result.typeConverter.inferJavaType(converted);
-			JavaPrim prim = result.typeConverter.getPrimitive(tr);
+			JavaPrim prim = result.typeConverter.getPrimitive(tr, callerLibraryClass);
 			if (prim == null) {
 				return new EmptyDeclaration("Failed to infer type of " + converted);
 			} else if (prim != JavaPrim.Void) {
@@ -423,8 +423,18 @@ public class DeclarationsConverter {
 		}
 	}
 
+	public String getActualTaggedTypeName(TaggedTypeRef struct) {
+		String structName = null;
+		TypeDef parentDef = as(struct.getParentElement(), TypeDef.class);
+		if (parentDef != null) {
+			structName = JNAeratorUtils.findBestPlainStorageName(parentDef);
+		}
+		if (structName == null)
+			structName = struct.getTag();
+		return structName;
+	}
 	void convertStruct(Struct struct, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
-		String structName = struct.getTag();
+		String structName = getActualTaggedTypeName(struct);
 		if (structName == null)
 			return;
 		
@@ -532,6 +542,7 @@ public class DeclarationsConverter {
 			for (Element e : toImportDetailsFrom)
 				convDecl.importDetails(e, false);
 			convDecl.importDetails(mutatedType, true);
+			convDecl.importDetails(javaType, true);
 			
 //			convDecl.importDetails(v, false);
 //			convDecl.importDetails(vs, false);
@@ -642,8 +653,10 @@ public class DeclarationsConverter {
 		addConstructor(structJavaClass, shareMemConstructor);
 	}
 	
-	static void addConstructor(Struct s, Function f) {
-		f.setName(s.getTag());
+	void addConstructor(Struct s, Function f) {
+		String structName = getActualTaggedTypeName(s);
+		
+		f.setName(structName);
 		s.addDeclaration(f);
 	}
 	
