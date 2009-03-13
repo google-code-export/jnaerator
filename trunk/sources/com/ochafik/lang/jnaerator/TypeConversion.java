@@ -108,7 +108,7 @@ public class TypeConversion {
 		ReturnType, 
 		ExpressionType, 
 		StaticallySizedArrayField, 
-		PrimitiveReturnType
+		PrimitiveReturnType, PointedValue
 	}
 	static Map<JavaPrim, Class<? extends ByReference>> primToByReference = new HashMap<JavaPrim, Class<? extends ByReference>>();
 	static Map<JavaPrim, Class<? extends Buffer>> primToBuffer = new HashMap<JavaPrim, Class<? extends Buffer>>();
@@ -591,8 +591,15 @@ public class TypeConversion {
 		} 
 		if (valueType instanceof Struct) {
 			String structName = result.declarationsConverter.getActualTaggedTypeName((Struct) valueType);
-			if (structName != null)
-				return typeRef(findStructRef(structName, callerLibraryClass), SubTypeRef.Style.Dot, "ByValue");
+			if (structName != null) {
+				TypeRef structRef = findStructRef(structName, callerLibraryClass);
+				switch (conversionMode) {
+				case PointedValue:
+					return structRef;
+				default:
+					return typeRef(structRef, SubTypeRef.Style.Dot, "ByValue");
+				}
+			}
 		}
 		
 		if (valueType instanceof FunctionSignature) {
@@ -698,8 +705,14 @@ public class TypeConversion {
 				throw new UnsupportedConversionException(valueType, null);
 			
 			TypeRef structRef = findStructRef(name, callerLibraryClass);
-			if (structRef != null)
-				return typeRef(structRef, SubTypeRef.Style.Dot, "ByValue");
+			if (structRef != null) {
+				switch (conversionMode) {
+				case PointedValue:
+					return structRef;
+				default:
+					return typeRef(structRef, SubTypeRef.Style.Dot, "ByValue");
+				}
+			}
 			
 			TypeRef callbackRef = findCallbackRef(name, callerLibraryClass);
 			if (callbackRef != null)
@@ -953,7 +966,7 @@ public class TypeConversion {
 //			return convertExpressionToJava(x);
 			throw new UnsupportedConversionException(x, null);
 		}
-
+		res.setParenthesis(x.getParenthesis());
 		return res;
 	}
 
