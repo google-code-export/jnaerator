@@ -93,8 +93,8 @@ public class GlobalsGenerator {
 				isByRef = true;
 				instType = convPointerType;
 				hasOffset = false;
-			} else if (convPointerTypeStr.endsWith(".ByValue") && result.structsByName.get(convPointerTypeStr.substring(0, convPointerTypeStr.length() - ".ByValue".length())) != null) {
-				instType = convPointerType;
+			} else if (convPointerTypeStr.endsWith(".ByReference") && result.structsByName.get(convPointerTypeStr.substring(0, convPointerTypeStr.length() - ".ByReference".length())) != null) {
+				instType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.PointedValue, callerLibraryName);//convPointerType;
 				hasOffset = true;
 			} else {
 				String instTypeName = name + "_holder";
