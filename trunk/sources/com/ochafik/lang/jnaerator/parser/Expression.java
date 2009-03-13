@@ -892,6 +892,8 @@ public abstract class Expression extends Element {
 		
 		public Constant(Type type, IntForm intForm, Object value) {
 			this();
+			if (value == null)
+				throw new NullPointerException();
 			setType(type);
 			setIntForm(intForm);
 			setValue(value);
@@ -1217,8 +1219,15 @@ public abstract class Expression extends Element {
 			long val;
 			if (string.equals("ffffffffffffffff"))
 				val = 0xffffffffffffffffL;
-			else
-				val = Long.parseLong(string, radix);
+			else {
+				try {
+					val = Long.parseLong(string, radix);
+				} catch (NumberFormatException ex) {
+					unsigned = true;
+					val = Long.parseLong(string.substring(0, string.length() - 1), radix);
+					val = val * radix + Short.parseShort(string.substring(string.length() - 1));
+				}
+			}
 			
 			//TODO handle unsigned properly !
 			if (val > Integer.MIN_VALUE && val < Integer.MAX_VALUE)

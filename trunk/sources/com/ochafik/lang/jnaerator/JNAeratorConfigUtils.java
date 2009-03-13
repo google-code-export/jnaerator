@@ -229,6 +229,8 @@ public class JNAeratorConfigUtils {
 		config.preprocessorConfig.includes.addAll(getDefaultIncludePath());//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
 		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath());//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
+			//http://msdn.microsoft.com/en-us/library/b0084kay(VS.80).aspx
+			
 			//http://support.microsoft.com/kb/65472
 			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);;
 			config.preprocessorConfig.macros.put("_MSC_VER", "800");
@@ -287,16 +289,24 @@ public class JNAeratorConfigUtils {
 	 * @param config
 	 */
 	static void autoConfigureArchitecture(JNAeratorConfig config) {
-		
 		String arch = System.getProperty("os.arch").toLowerCase();
+		System.out.println("os.arch = " + arch);
+		
+		//protect us from inline assembly in VC++:
+		config.preprocessorConfig.macros.put("_M_CEE_PURE", null);
+		
 		if (arch.equals("x86_64") || arch.equals("amd64")) {
 			config.preprocessorConfig.macros.put("TARGET_CPU_X86_64", null);
+			config.preprocessorConfig.macros.put("__i386__", null);
 			config.preprocessorConfig.macros.put("__x86_64__", null);
 			config.preprocessorConfig.macros.put("__amd64__", null);
 			config.preprocessorConfig.macros.put("__LITTLE_ENDIAN__", null);
-			config.preprocessorConfig.macros.put("M_X64", "1");
-			config.preprocessorConfig.macros.put("_M_X64", "1");
-			config.preprocessorConfig.macros.put("_WIN64", "1");
+			config.preprocessorConfig.macros.put("M_I86", "1");
+			config.preprocessorConfig.macros.put("_M_I86", "1");
+			config.preprocessorConfig.macros.put("_WIN32", "1");
+//			config.preprocessorConfig.macros.put("M_X64", "1");
+//			config.preprocessorConfig.macros.put("_M_X64", "1");
+//			config.preprocessorConfig.macros.put("_WIN64", "1");
 		} else if (arch.equals("i386") || arch.equals("x86")) {
 			config.preprocessorConfig.macros.put("TARGET_CPU_X86", null);
 			config.preprocessorConfig.macros.put("__i386__", null);

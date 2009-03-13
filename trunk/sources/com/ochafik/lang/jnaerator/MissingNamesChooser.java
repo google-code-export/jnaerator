@@ -118,7 +118,7 @@ public class MissingNamesChooser extends Scanner {
 			return;
 		
 		Element parent = taggedTypeRef.getParentElement(); 
-		if (!(parent instanceof TaggedTypeRefDeclaration)) {
+		if (!(parent instanceof TaggedTypeRefDeclaration) && !(parent instanceof TypeDef)) {
 			DeclarationsHolder holder = taggedTypeRef.findParentOfType(DeclarationsHolder.class);
 			if (holder != null && holder != taggedTypeRef.getParentElement() && !(parent instanceof DeclarationsHolder)) {
 				TaggedTypeRefDeclaration td = new TaggedTypeRefDeclaration();

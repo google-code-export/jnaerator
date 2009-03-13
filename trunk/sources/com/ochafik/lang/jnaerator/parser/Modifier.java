@@ -26,7 +26,9 @@ import java.util.Map;
  * @see http://msdn.microsoft.com/en-us/library/dabb5z75.aspx
  */
 public enum Modifier {
+	_cdecl(Kind.CallingConvention),
 	__cdecl(Kind.CallingConvention),
+	_stdcall(Kind.CallingConvention),
 	__stdcall(Kind.CallingConvention),
 	
 	/// VC++ annotations 

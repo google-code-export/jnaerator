@@ -168,7 +168,7 @@ public class JNAeratorParser {
 						sourceFilesOut.add(p.getSecond().get(1000, TimeUnit.MILLISECONDS));
 					} catch (ExecutionException e) {
 						originalErr.println("Exception for " + p.getFirst().file + " at line " + p.getFirst().line + ":" + e);
-						e.printStackTrace();
+						e.printStackTrace(originalErr);
 						//e.getCause().printStackTrace();
 					} catch (TimeoutException e) {
 						originalErr.println("TIMEOUT for " + p.getFirst().file + " at line " + p.getFirst().line + ".");

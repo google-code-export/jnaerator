@@ -32,7 +32,6 @@ public class Enum extends TaggedTypeRef {
 		public EnumItem() {
 			super();
 		}
-		
 		public EnumItem(String name, Expression value) {
 			setName(name);
 			setValue(value);

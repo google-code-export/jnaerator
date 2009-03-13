@@ -304,7 +304,7 @@ functionPointerVarDecl  returns [List<? extends Declaration> declarations]
 	
 enumItem returns [Enum.EnumItem item]
 	:	n=IDENTIFIER ('=' v=expression)? {
-			$item = new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr);
+			$item = mark(new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr), , getLine($n));
 			$item.setCommentBefore(getCommentBefore($n.getTokenIndex()));
 			$item.setCommentAfter(getCommentAfterOnSameLine($n.getTokenIndex() - 1));
 		}
@@ -841,7 +841,8 @@ declarator  returns [Declarator declarator, List<Modifier> modifiers]
 				}
 			)?
 		) {
-			$declarator.setModifiers($modifiers);
+			if ($declarator != null)
+				$declarator.setModifiers($modifiers);
 		}
 	;
 
@@ -922,7 +923,8 @@ varDecl returns [Declaration decl, TypeRef type]
 		)
 		';' { 
 			$decl.addModifiers(stoMods);
-			$type.addModifiers(typMods); 
+			if ($type != null)
+				$type.addModifiers(typMods); 
 		}
 	;
 	
