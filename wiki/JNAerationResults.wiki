@@ -323,17 +323,18 @@ public static final class pVoid {
 }}}
 == Struct & struct pointers ==
 
-== Constant expressions ==
+== Constant expressions & Defines ==
 
 Constant expressions are typically not exported in dynamic libraries.
 Hence they are simply translated and put as static fields in the resulting interfaces
 
-TODO
-
-== All other types ==
-
 {{{
-int errno;
+#define X 10
+const int i = X + (1 + 2) * 4;
 }}}
-
-TODO
+becomes :
+{{{
+public static final int i = 10 + (1 + 2) * 4;
+public static final int X = 10;
+}}}
+== All other types ==
