@@ -9,8 +9,8 @@ There may be more than one way to translate some arguments.
 For instance, a {{{ const int* pInts }}} argument could be mapped to an {{{ IntByReference }}}, an {{{ IntBuffer }}} or an {{{ int[] }}}.
 
 It wouldn't be reasonable to provide all of the possible combinations for all arguments (there could be too many of them), so JNAerator does the following : for each function, it tries three translations : 
- * one which favours [https://jna.dev.java.net/javadoc/com/sun/jna/Pointer.html Pointer], [https://jna.dev.java.net/javadoc/com/sun/jna/ptr/IntByReference.html IntByReference] and other [https://jna.dev.java.net/javadoc/com/sun/jna/ptr/package-tree.html com.sun.jna.ptr.\*] classes
- * one that favours String, [https://jna.dev.java.net/javadoc/com/sun/jna/WString.html WString], [http://java.sun.com/j2se/1.4.2/docs/api/java/nio/ByteBuffer.html ByteBuffer] and other [http://java.sun.com/j2se/1.4.2/docs/api/java/nio/package-summary.html java.nio.\*] buffers and defaults to aforementioned Pointer subclasses when the use of Buffer classes is not appropriate
+ * one which favours [https://jna.dev.java.net/javadoc/com/sun/jna/Pointer.html Pointer], [https://jna.dev.java.net/javadoc/com/sun/jna/ptr/IntByReference.html IntByReference] and other [https://jna.dev.java.net/javadoc/com/sun/jna/ptr/package-tree.html com.sun.jna.ptr.*] classes
+ * one that favours String, [https://jna.dev.java.net/javadoc/com/sun/jna/WString.html WString], [http://java.sun.com/j2se/1.4.2/docs/api/java/nio/ByteBuffer.html ByteBuffer] and other [http://java.sun.com/j2se/1.4.2/docs/api/java/nio/package-summary.html java.nio.*] buffers and defaults to aforementioned Pointer subclasses when the use of Buffer classes is not appropriate
  * one that favours primitive arrays where possible, then backs to Strings and Buffers, then to Pointers
 
 As a result, the following function :
