@@ -3,6 +3,31 @@
 
 <wiki:toc max_depth="3" />
 
+= Functions = 
+
+There may be more than one way to translate some arguments.
+For instance, a {{{ const int* pInts }}} argument could be mapped to an {{{ IntByReference }}}, an {{{ IntBuffer }}} or an {{{ int[] }}}.
+
+It wouldn't be reasonable to provide all of the possible combinations for all arguments (there could be too many of them), so JNAerator does the following : for each function, it tries three translations : 
+ * one which favours Pointer, IntByReference and other com.sun.jna.ptr.* classes
+ * one that favours String, WString, ByteBuffer and other java.nio.* buffers and defaults to aforementioned Pointer subclasses when the use of Buffer classes is not appropriate
+ * one that favours primitive arrays where possible, then backs to Strings and Buffers, then to Pointers
+
+As a result, the following function :
+{{{
+int* process(int* pInts, const int* cpInts, const wchar_t* wstring, double d);
+}}}
+is translated to :
+{{{
+/// @deprecated use the safer methods {@link #process(java.nio.IntBuffer, int[], com.sun.jna.WString, double)} and {@link #process(java.nio.IntBuffer, java.nio.IntBuffer, com.sun.jna.WString, double)} instead
+@Deprecated
+com.sun.jna.ptr.IntByReference process(com.sun.jna.ptr.IntByReference pInts, com.sun.jna.ptr.IntByReference cpInts, com.sun.jna.ptr.ShortByReference wstring, double d);
+
+com.sun.jna.ptr.IntByReference process(java.nio.IntBuffer pInts, int cpInts[], com.sun.jna.WString wstring, double d);
+
+com.sun.jna.ptr.IntByReference process(java.nio.IntBuffer pInts, java.nio.IntBuffer cpInts, com.sun.jna.WString wstring, double d);
+}}}
+
 = Structs =
 
 {{{
