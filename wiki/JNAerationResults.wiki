@@ -39,6 +39,8 @@ int process(com.sun.jna.Pointer ptr);
 
 = Structs =
 
+JNAerated structs all get ByReference and ByValue subclasses (that have a struct-pointer-copy constructor) + a constructor with a Pointer and an offset, to cast any memory block to a struct.
+
 {{{
 struct A {
     int i;
@@ -48,7 +50,7 @@ struct B {
    A *pa;
 };
 }}}
-becomes :
+becomes (comments were stripped out) :
 {{{
 public static class A extends com.sun.jna.Structure {
 	A() {}
@@ -57,6 +59,7 @@ public static class A extends com.sun.jna.Structure {
 		useMemory(pointer, offset);
 		read();
 	}
+	A(A struct) { this(struct.getPointer(), 0); }
 	public static class ByReference extends A implements com.sun.jna.Structure.ByReference {
 		ByReference() {}
 		ByReference(A struct) { super(struct.getPointer(), 0); }
@@ -75,6 +78,7 @@ public static class B extends com.sun.jna.Structure {
 		useMemory(pointer, offset);
 		read();
 	}
+	B(B struct) { this(struct.getPointer(), 0); }
 	public static class ByReference extends B implements com.sun.jna.Structure.ByReference {
 		ByReference() {}
 		ByReference(B struct) { super(struct.getPointer(), 0); }
@@ -90,10 +94,11 @@ public static class B extends com.sun.jna.Structure {
 
 = Struct fields =
 
-== Arrays ==
+== Arrays fields ==
 
-=== Arrays with initializers ===
-Arrays with initializers are converted to Java arrays :
+=== Arrays fields with initializers ===
+
+Arrays struct fields with initializers are converted to Java arrays :
  {{{
 int iarr[4]; 
 char* csarr[3][4]; 
@@ -111,7 +116,7 @@ public interface foo2_callback extends com.sun.jna.Callback {
 }
 }}}
 
-=== Arrays with partial initializers ===
+=== Arrays fields with partial initializers ===
 
 When an array has partial size initializers, JNAerator initializes the known part and switches to Pointer for the rest of the type :
  {{{
@@ -122,7 +127,7 @@ becomes
 public com.sun.jna.Pointer[] foo = new com.sun.jna.Pointer[8];
 }}}
 
-== Callbacks ==
+== Callbacks fields ==
 
  {{{
 long (__cdecl *const fptr)();
@@ -168,7 +173,7 @@ void ComplexArgFunction(
 	}* pArg
 );
 }}}
-Which is roughly equivalent to the "deanonymized" version :
+Which is _roughly_ equivalent to the "deanonymized" version :
 {{{
 /// S, U and F gain some higher level visibility compared to the anonymous version
 typedef struct { 
@@ -194,7 +199,7 @@ As Java does not support such inline definition of anonymous types, JNA requires
 
 Another option would be to simply skip everything anonymous, but this would exclude way too much code.
 
-In the deanonymizing process, JNAerator tries its best to choose names that make sense (instead of S, U, V).
+In the deanonymizing process, JNAerator tries its best to choose names that make sense (hence no S, F, U, E, no Struct1, Union3... !).
 
 Here's what JNAerator produces out of the anonymous version :
 {{{
