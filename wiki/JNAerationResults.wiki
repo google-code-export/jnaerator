@@ -337,4 +337,3 @@ becomes :
 public static final int i = 10 + (1 + 2) * 4;
 public static final int X = 10;
 }}}
-== All other types ==
