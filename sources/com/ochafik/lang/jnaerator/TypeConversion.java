@@ -307,8 +307,10 @@ public class TypeConversion {
 						tr = findRef(name, s, callerLibraryClass);
 						
 					}
-					simpleTypeRef.replaceBy(tr);
-					tr.accept(this);
+					if (!simpleTypeRef.toString().equals(tr.toString())) {
+						simpleTypeRef.replaceBy(tr);
+						tr.accept(this);
+					}
 					return;
 				}
 				
@@ -662,11 +664,21 @@ public class TypeConversion {
 										return convTargType;
 									break;
 							}
-						} else
-							convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+						} else {
+							try {
+								convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+							} catch (UnsupportedConversionException ex) {
+								return typeRef(com.sun.jna.Pointer.class);
+							}
+						}
 					}
-				} else
-					convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+				} else {
+					try {
+						convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+					} catch (UnsupportedConversionException ex) {
+						return typeRef(com.sun.jna.Pointer.class);
+					}
+				}
 			}	
 			
 			switch (conversionMode) {

@@ -387,15 +387,15 @@ public class DeclarationsConverter {
 				iArg++;
 			}
 			
-			String natSign = natFunc.computeSignature(),
-				primSign = alternativeOutputs ? primFunc.computeSignature() : null,
-				bufSign = alternativeOutputs ? bufFunc.computeSignature() : null;
+			String natSign = natFunc.computeSignature(false),
+				primSign = alternativeOutputs ? primFunc.computeSignature(false) : null,
+				bufSign = alternativeOutputs ? bufFunc.computeSignature(false) : null;
 			if (signatures.add(natSign)) {
 				if (alternativeOutputs && !primSign.equals(natSign)) {
 					if (primSign.equals(bufSign))
-						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primFunc.computeSignature() + "} instead"));
+						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primSign + "} instead"));
 					else
-						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primFunc.computeSignature() + "} and {@link #" + bufFunc.computeSignature() + "} instead"));
+						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primSign + "} and {@link #" + bufSign + "} instead"));
 					natFunc.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
 				}
 				out.addDeclaration(natFunc);

@@ -200,13 +200,16 @@ lineDirective
 	
 sourceFile returns [SourceFile sourceFile]
 	:	
-		{ $sourceFile = mark(new SourceFile(), getLine()); }
+		{ $sourceFile = new SourceFile(); }//mark(new SourceFile(), getLine()); }
 		(
 			declaration { 
 				for (Declaration d : $declaration.declarations)
 					$sourceFile.addDeclaration(d); 
 			} |
-			lineDirective
+			lineDirective {
+				if ($sourceFile.getElementFile() == null)
+					$sourceFile.setElementFile(getFile());
+			}
 		)* 
 	 	EOF
 	;
@@ -304,7 +307,7 @@ functionPointerVarDecl  returns [List<? extends Declaration> declarations]
 	
 enumItem returns [Enum.EnumItem item]
 	:	n=IDENTIFIER ('=' v=expression)? {
-			$item = mark(new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr), , getLine($n));
+			$item = mark(new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr), getLine($n));
 			$item.setCommentBefore(getCommentBefore($n.getTokenIndex()));
 			$item.setCommentAfter(getCommentAfterOnSameLine($n.getTokenIndex() - 1));
 		}
@@ -533,11 +536,9 @@ functionDeclaration returns [Function function]
 			$function.setName($n.text); 
 			$function = mark($function, getLine($n));
 		} 
-		'(' 
-			argList {
-				$function.setArgs($argList.args);
-			}
-		')' 
+		argList {
+			$function.setArgs($argList.args);
+		}
 		{ next("const", "__const") }? ct=IDENTIFIER?{
 			if ($ct.text != null)
 				$function.addModifiers(Modifier.Const);
@@ -612,7 +613,12 @@ extendedModifiers returns [List<Modifier> modifiers]
 	;
 argDef	returns [Arg arg]
 	:	
-		{ $arg = new Arg(); }
+		{ 
+			$arg = new Arg(); 
+			int i = getTokenStream().index() + 1;
+			$arg.setCommentBefore(getCommentBefore(i));
+			$arg.setCommentAfter(getCommentAfterOnSameLine(i));
+		}
 		typeRef { 
 			$arg.setValueType($typeRef.type); 
 		}
@@ -987,7 +993,7 @@ directDeclarator  returns [Declarator declarator]
 				}
 			)
 			']' | 
-			'(' argList ')' {
+			argList {
 				$declarator = new FunctionDeclarator($declarator, $argList.args);
 			}
 		)*
@@ -998,6 +1004,7 @@ argList returns [List<Arg> args, boolean isObjC]
 			$isObjC = false; 
 			$args = new ArrayList<Arg>();
 		}
+		op='(' 
 		(
 			a1=argDef {
 				if (!$a1.text.equals("void"))
@@ -1016,7 +1023,7 @@ argList returns [List<Arg> args, boolean isObjC]
 				}
 			)?
 		)?
-		
+		cp=')'
 	;
 
 typeRef	returns [TypeRef type]

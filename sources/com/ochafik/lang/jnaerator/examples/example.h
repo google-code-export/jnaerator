@@ -16,7 +16,7 @@ enum SimpleEnum {
 typedef int (__cdecl *DummyCallback)(void);
 
 struct TestStruct {
-	TestEnum	 enumValue;
+	SimpleEnum enumValue;
 	char		 charValue;
 	short	 shortValue; // comment on shortValue
 	wchar_t	 wcharValue;	
@@ -32,7 +32,7 @@ struct TestStruct {
 	char		 charArrayValue[255];
 	void*	 voidPointerValue;
 	// first comment on functionValue
-	int		 (*functionValue)(TestEnum e); // second comment on functionValue
+	int		 (*functionValue)(SimpleEnum e); // second comment on functionValue
 	struct { int first, second; } structValue;
 	TestStruct *structPointerValue;
 };

@@ -130,9 +130,12 @@ public class JNAerator {
 						//"-f", "QTKit", 
 //						"-o", "/Users/ochafik/Prog/Java/test/objc",
 //						"-o", "/Users/ochafik/Prog/Java/testxp",
-						"/Users/ochafik/Prog/Java/test/Test.h",
+//						"/Users/ochafik/Prog/Java/test/Test.h",
 //						"/Users/ochafik/Prog/Java/test/JNATest.h",
-						"-o", "/Users/ochafik/Prog/Java",
+						//"-o", "/Users/ochafik/Prog/Java",
+						"-library", "opencl",
+						"/Users/ochafik/src/opencl/cl.h",
+						"-o", "/Users/ochafik/src/opencl",
 						"-v"
 				};
 			} else {
@@ -146,6 +149,7 @@ public class JNAerator {
 			List<String> frameworks = new ArrayList<String>();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 //			boolean auto = false;
+			String currentLibrary = null;
 			for (int iArg = 0, len = args.length; iArg < len; iArg++) {
 				String arg = args[iArg];
 				if (arg.startsWith("-I")) {
@@ -194,6 +198,8 @@ public class JNAerator {
 					JNAeratorConfigUtils.readProjectConfig(projectFile, configName, config);
 				}
 				else if (arg.equals("-library"))
+					currentLibrary = args[++iArg];
+				else if (arg.equals("-defaultLibrary"))
 					config.defaultLibrary = args[++iArg];
 				else if (arg.equals("-framework"))
 					frameworks.add(args[++iArg]);
@@ -205,7 +211,7 @@ public class JNAerator {
 				} else if (arg.endsWith(".framework"))
 					frameworks.add(arg);
 				else
-					config.addFile(new File(arg), config.defaultLibrary);
+					config.addFile(new File(arg), currentLibrary);//config.defaultLibrary);
 			}
 			
 			if (config.defaultLibrary == null) {
@@ -354,6 +360,9 @@ public class JNAerator {
 		
 		/// Give sensible names to anonymous function signatures, structs, enums, unions, and move them up one level as typedefs
 		sourceFiles.accept(new MissingNamesChooser());
+		
+		/// Build JavaDoc comments where applicable
+		sourceFiles.accept(new JavaDocCreator());
 		
 		//##################################################################
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######
