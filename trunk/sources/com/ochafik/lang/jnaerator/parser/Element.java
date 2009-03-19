@@ -90,7 +90,7 @@ public abstract class Element {
 		return file;
 	}
 	
-	static String cleanComment(String s) {
+	public static String cleanComment(String s) {
 		s = s.trim();
 		if (s.startsWith("//"))
 			s = s.replaceAll("^//+", "");
@@ -262,6 +262,9 @@ public abstract class Element {
 	public Element clone() {
 		String fieldName = null;
 		try {
+//			if (this instanceof Function) {
+//				this.toString();
+//			}
 			Element clone = getClass().newInstance();
 			for (Map.Entry<String, GetterAndSetterInfo> e : getGettersAndSetters().gettersAndSetters.entrySet()) {
 				fieldName = e.getKey();

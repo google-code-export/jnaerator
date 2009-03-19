@@ -352,7 +352,7 @@ public class JNAeratorStudio extends JPanel {
 				try {
 					
 					JNAeratorConfig config = new JNAeratorConfig();
-					config.defaultLibrary = libraryName.getText();
+					//config.defaultLibrary = libraryName.getText();
 					config.libraryForElementsInNullFile = config.defaultLibrary;
 //					config.addFile(getFile(), "");
 					config.preprocessorConfig.includeStrings.add(sourceArea.getText());
@@ -431,7 +431,7 @@ public class JNAeratorStudio extends JPanel {
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
 			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
-		CompilerUtils.compile(c, mfm, diagnostics, "1.4", Pointer.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class);
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {

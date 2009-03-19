@@ -183,8 +183,14 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		return body;
 	}
 
-	public String computeSignature() {
+	public String computeSignature(boolean addReturnType) {
 		StringBuilder b = new StringBuilder();
+		if (addReturnType && getValueType() != null) {
+			TypeRef t = getValueType().clone();
+			t.stripDetails();
+			b.append(t);
+			b.append(' ');
+		}
 		b.append(getName());
 		boolean first = true;
 		for (Arg arg : getArgs()) {
@@ -193,7 +199,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 				first = false;
 			} else 
 				b.append(", ");
-			b.append(arg.createMutatedType());
+			TypeRef t = arg.createMutatedType();
+			if (t != null)
+				t.stripDetails();
+			b.append(t);
 		}
 		b.append(')');
 		return b.toString();

@@ -52,7 +52,16 @@ public class MissingNamesChooser extends Scanner {
 		this.nameGenerationStyle = nameGenerationStyle;
 	}
 	
-	
+	public String chooseArgNameFromType(TypeRef tr) throws UnsupportedConversionException {
+		if (tr instanceof TypeRef.SimpleTypeRef) {
+			return ((TypeRef.SimpleTypeRef)tr).getName();
+		} else if (tr instanceof TypeRef.Pointer) {
+			return chooseArgNameFromType(((TypeRef.Pointer)tr).getTarget()) + "Ptr";
+		} else if (tr instanceof TypeRef.ArrayRef) {
+			return chooseArgNameFromType(((TypeRef.ArrayRef)tr).getTarget()) + "Arr";
+		}
+		throw new UnsupportedConversionException(tr, String.valueOf(tr));
+	}
 	@Override
 	public void visitFunction(Function function) {
 		switch (function.getType()) {
@@ -70,9 +79,21 @@ public class MissingNamesChooser extends Scanner {
 					i++;
 				}
 				for (Pair<Arg, Integer> p : missing) {
-					i = 0;
-					String name, base = "arg" + (n == 1 ? "" : p.getValue());
-					while (names.contains(name = base + (i == 0 ? "" : "_" + i)))
+					i = 1;
+					String base;
+					try {
+						base = chooseArgNameFromType(p.getFirst().getValueType());
+					} catch (UnsupportedConversionException ex) {
+						base = "arg";
+					}
+//					if (p.getFirst().getValueType() instanceof TypeRef.SimpleTypeRef)
+//						base = ((TypeRef.SimpleTypeRef)p.getFirst().getValueType()).getName();
+//					else
+//						base = "arg";
+					
+					//(n == 1 ? "" : p.getValue())
+					String name;
+					while (names.contains(name = base + i))
 						i++;
 					names.add(name);
 					p.getFirst().setName(name);
