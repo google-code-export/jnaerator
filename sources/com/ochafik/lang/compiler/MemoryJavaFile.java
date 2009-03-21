@@ -40,4 +40,5 @@ public class MemoryJavaFile extends MemoryFileObject implements JavaFileObject {
 	public boolean isNameCompatible(String simpleName, JavaFileObject.Kind kind) {
 		return true; // TODO
 	}
+	
 }

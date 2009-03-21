@@ -16,13 +16,17 @@
 	You should have received a copy of the GNU General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.ochafik.lang.jnaerator.parser;
+package com.ochafik.lang.jnaerator;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
+import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
 
-
+/*
+include com/ochafik/lang/jnaerator/tests/*.test
+*/
 @RunWith(Suite.class)
 @SuiteClasses({
 	ObjCppElementsTests.class,
@@ -30,4 +34,4 @@ import org.junit.runners.Suite.SuiteClasses;
 	ObjCppParsingTests.class,
 	JNAerationTests.class
 })
-public class ObjCppTests {}
+public class JNAeratorTests {}
