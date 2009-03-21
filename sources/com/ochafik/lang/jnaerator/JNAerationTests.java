@@ -69,7 +69,9 @@ public class JNAerationTests {
 		public TestDesc addMainContentSource(String className, String javaContent) {
 			Set<String> imports = new TreeSet<String>();
 			List<String> content = new ArrayList<String>();
-			imports.add("import " + libraryName + "." + StringUtils.capitalize(libraryName) + "Library;");
+			String lib = libraryName + "." + StringUtils.capitalize(libraryName) + "Library";
+			imports.add("import " + lib + ";");
+			imports.add("import static " + lib + ".*;");
 			imports.add("import com.sun.jna.*;");
 			imports.add("import com.sun.jna.ptr.*;");
 			imports.add("import java.nio.*;");
