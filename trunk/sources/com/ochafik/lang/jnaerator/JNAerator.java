@@ -210,25 +210,22 @@ public class JNAerator {
 					System.exit(0);
 				} else if (arg.endsWith(".framework"))
 					frameworks.add(arg);
-				else
-					config.addFile(new File(arg), currentLibrary);//config.defaultLibrary);
-			}
-			
-			if (config.defaultLibrary == null) {
-				for (File f : config.getFiles()) {
-					String name = f.getName();
-					int i = name.indexOf('.');
-					if (i >= 0)
-						name = name.substring(0, i).trim();
-					if (name.length() > 0)
-						config.defaultLibrary = name;
-					else
-						config.defaultLibrary = "default";
-					
-					System.out.println("Warning: no -library option, using \"" + config.defaultLibrary + "\".");
-					break;
+				else {
+					String lib = currentLibrary;
+					File f = new File(arg);
+					if (lib == null) {
+						String name = f.getName();
+						int i = name.indexOf('.');
+						if (i >= 0)
+							name = name.substring(0, i).trim();
+						if (name.length() > 0)
+							lib = name;
+						System.out.println("Warning: no -library option for file '" + f.getName() + "', using \"" + lib + "\".");
+					}
+					config.addFile(f, lib);//config.defaultLibrary);
 				}
 			}
+			
 			for (String framework : frameworks)
 				JNAeratorConfigUtils.addFramework(config, framework);
 			

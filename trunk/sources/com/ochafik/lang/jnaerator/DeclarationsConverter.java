@@ -306,11 +306,13 @@ public class DeclarationsConverter {
 	void convertFunction(Function function, Set<String> signatures, boolean isCallback, DeclarationsHolder out, String callerLibraryClass) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
-		
 		String functionName = function.getName();
 		if (functionName == null)
 			functionName = "callback";
 		
+//		if (functionName.equals("clEnqueueReadBuffer"))
+//			functionName = functionName.toString();
+//		
 		if (functionName.contains("<")) {
 			return;
 		}
