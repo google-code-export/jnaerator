@@ -308,7 +308,7 @@ public class DeclarationsConverter {
 			return;
 		String functionName = function.getName();
 		if (functionName == null)
-			functionName = "callback";
+			functionName = "invoke";
 		
 //		if (functionName.equals("clEnqueueReadBuffer"))
 //			functionName = functionName.toString();
@@ -338,7 +338,7 @@ public class DeclarationsConverter {
 			
 			String modifiedMethodName;
 			if (isCallback) {
-				modifiedMethodName = "callback";
+				modifiedMethodName = "invoke";
 			} else {
 				modifiedMethodName = result.typeConverter.getValidJavaMethodName(functionName);
 				if (!modifiedMethodName.equals(functionName))
@@ -602,7 +602,7 @@ public class DeclarationsConverter {
 	}
 	private void addStructConstructors(String structName, Struct structJavaClass, Struct byRef,
 			Struct byVal) {
-		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName, null);
+		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName, null).addModifiers(Modifier.Public);
 		emptyConstructor.setBody(new Statement.Block());
 		
 		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
@@ -615,7 +615,8 @@ public class DeclarationsConverter {
 		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName, null, 
 			new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),
 			new Arg("offset", new TypeRef.Primitive("int"))
-		);
+		).addModifiers(Modifier.Public);
+		
 		//pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByRef struct");
 		pointerConstructor.setBody(new Statement.Block(
 				new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset")))
@@ -627,7 +628,8 @@ public class DeclarationsConverter {
 		
 		Function shareMemConstructor = new Function(Function.Type.JavaMethod, structName, null, 
 			new Arg("struct", new TypeRef.SimpleTypeRef(structName))
-		);
+		).addModifiers(Modifier.Public);
+		
 		shareMemConstructor.setBody(new Statement.Block(
 			new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
 		).setCompact(true));

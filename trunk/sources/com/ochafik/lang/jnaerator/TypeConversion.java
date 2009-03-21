@@ -685,8 +685,8 @@ public class TypeConversion {
 				case StaticallySizedArrayField:
 					return new ArrayRef(convTargType);
 				case PrimitiveParameter:
-					List<Modifier> modifiers = target.getModifiers();
-					if (modifiers.contains(Modifier.Const))
+					if (target.getModifiers().contains(Modifier.Const) ||
+							valueType.getModifiers().contains(Modifier.Const))
 						return new ArrayRef(convTargType);
 				case BufferParameter:
 					Class<? extends Buffer> bc = primToBuffer.get(prim);
