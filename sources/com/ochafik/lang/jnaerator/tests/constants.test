@@ -1,0 +1,5 @@
+#define X 10
+const int Expression = X + (1 + 2) * 4;
+--
+int v = X / 2;
+int x = Expression;
