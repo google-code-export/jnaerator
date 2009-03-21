@@ -431,7 +431,7 @@ public class JNAeratorStudio extends JPanel {
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
 			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class, JNAerator.class);
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {

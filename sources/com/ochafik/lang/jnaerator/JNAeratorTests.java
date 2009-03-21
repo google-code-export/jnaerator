@@ -27,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	ObjCppElementsTests.class,
 	ObjCppElementsTests.TestSiblings.class, 
-	ObjCppParsingTests.class
+	ObjCppParsingTests.class,
+	JNAerationTests.class
 })
 public class ObjCppTests {}
