@@ -4,10 +4,10 @@
 
 There are many things to test in JNAerator, and the current test coverage is rather low.
 
-All the tests can be launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/parser/ObjCppTests.java ObjCppTests.java] (uses a custom JUnit test aggregator that needs JUnit 4.4 - *won't work with JUnit 4.5*).
-
-TODO
- * test that some example code that would link to jnaerated interfaces compiles
+All the tests can be launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/parser/ObjCppTests.java ObjCppTests.java] (uses a custom JUnit test aggregator that needs JUnit 4.4 - *won't work with JUnit 4.5*), or from the command line : 
+{{{
+java -jar jnaerator.jar -test
+}}}
 
 = DOM Elements tests =
 
@@ -29,3 +29,7 @@ I ensure that a few dozen expressions are parsed without error and that they are
 I also ensure some expressions are not parsed properly (e.g. {{{ int[4] var; }}}.
 
 Some expressions are not yet serialized back properly and I only test that their parsing yields no error.
+
+= JNAerated Artifacts Tests (new !) =
+
+These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the *.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
