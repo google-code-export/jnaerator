@@ -7,6 +7,7 @@
   # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
   # prefer simple names for structs and enums (S typedef instead of _S tag)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
+  # enhance the error reporting of parsing (work on antlr grammar) and of compilation
   # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
   # rework globals entirely : Lib.get(), Lib.set(int) when possible
   # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
