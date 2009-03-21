@@ -1,4 +1,5 @@
 #summary Description of the automatic tests performed on JNAerator
+#labels Phase-QA
 
 = Overview =
 
@@ -8,6 +9,13 @@ All the tests can be launched by [http://code.google.com/p/jnaerator/source/brow
 {{{
 java -jar jnaerator.jar -test
 }}}
+
+
+= JNAerated Artifacts Tests (new !) =
+
+These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the \*.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
+
+Many more .test files are to be added soon.
 
 = DOM Elements tests =
 
@@ -29,7 +37,3 @@ I ensure that a few dozen expressions are parsed without error and that they are
 I also ensure some expressions are not parsed properly (e.g. {{{ int[4] var; }}}.
 
 Some expressions are not yet serialized back properly and I only test that their parsing yields no error.
-
-= JNAerated Artifacts Tests (new !) =
-
-These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the *.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
