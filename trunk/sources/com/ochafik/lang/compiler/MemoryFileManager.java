@@ -59,10 +59,13 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 		super(fm);
 	}
 
-	public void addSourceInput(String path, String content) {
+	public MemoryJavaFile addSourceInput(String path, String content) {
 		if (!path.startsWith("file:///"))
 			path = "file:///" + path;
-		inputs.put(path, new MemoryJavaFile(path, content, JavaFileObject.Kind.SOURCE));
+		
+		MemoryJavaFile mjf = new MemoryJavaFile(path, content, JavaFileObject.Kind.SOURCE);
+		inputs.put(path, mjf);
+		return mjf;
 	}
 	public Iterable<? extends JavaFileObject> getJavaFileObjects() {
 		return new ArrayList<JavaFileObject>(inputs.values());

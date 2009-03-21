@@ -36,9 +36,6 @@ import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
-import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
-import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
-import com.ochafik.lang.jnaerator.parser.ObjCppTests;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
@@ -61,8 +58,7 @@ public class JNAerator {
 	static final boolean fullFilePathInComments = true;
 	
 	static final Class<?>[] includeClassesHack = new Class<?>[] {
-		ObjCppParsingTests.class,
-		ObjCppElementsTests.class,
+		JNAeratorTests.class,
 		JNAeratorStudio.class
 	};
 
@@ -173,7 +169,7 @@ public class JNAerator {
 					config.packageName = args[++iArg];
 				else if (arg.equals("-test")) {
 					try {
-						JUnitCore.main(ObjCppTests.class.getName());
+						JUnitCore.main(JNAeratorTests.class.getName());
 						System.exit(0);
 					} catch (Exception ex) {
 						ex.printStackTrace();

@@ -94,4 +94,8 @@ public class MemoryFileObject implements FileObject {
 			return null;
 		}
 	}
+	@Override
+	public String toString() {
+		return getPath();
+	}
 }
