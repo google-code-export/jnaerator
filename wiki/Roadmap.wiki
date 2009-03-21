@@ -1,6 +1,7 @@
 #summary Plans for JNAerator
 
-  # fix the line-numbering in comments
+= Enhancements =
+
   # create Pointer subclasses for unknown pointer references
   # automated tests for Objective-C (long time no try !)
   # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
@@ -10,3 +11,7 @@
   # rework globals entirely : Lib.get(), Lib.set(int) when possible
   # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
  
+= Bugfixes = 
+
+  # fix the compiler's classpath in in JNAeratorStudio + Web Start
+  # fix the line-numbering in comments
