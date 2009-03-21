@@ -1,6 +1,6 @@
 #summary Plans for JNAerator
 
-  # greatly enhance test coverage of JNAerator with new JNAerationTests scheme
+  # greatly enhance test coverage of JNAerator with the new JNAerationTests infrastructure
   # create Pointer subclasses for unknown pointer references
   # prefer simple names for structs and enums (S typedef instead of _S tag)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
