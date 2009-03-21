@@ -53,13 +53,13 @@ struct B {
 becomes (comments were stripped out) :
 {{{
 public static class A extends com.sun.jna.Structure {
-	A() {}
-	A(com.sun.jna.Pointer pointer, int offset) {
+	public A() {}
+	public  A(com.sun.jna.Pointer pointer, int offset) {
 		super();
 		useMemory(pointer, offset);
 		read();
 	}
-	A(A struct) { this(struct.getPointer(), 0); }
+	public  A(A struct) { this(struct.getPointer(), 0); }
 	public static class ByReference extends A implements com.sun.jna.Structure.ByReference {
 		ByReference() {}
 		ByReference(A struct) { super(struct.getPointer(), 0); }
@@ -72,13 +72,13 @@ public static class A extends com.sun.jna.Structure {
 }
 
 public static class B extends com.sun.jna.Structure {
-	B() {}
-	B(com.sun.jna.Pointer pointer, int offset) {
+	public  B() {}
+	public  B(com.sun.jna.Pointer pointer, int offset) {
 		super();
 		useMemory(pointer, offset);
 		read();
 	}
-	B(B struct) { this(struct.getPointer(), 0); }
+	public  B(B struct) { this(struct.getPointer(), 0); }
 	public static class ByReference extends B implements com.sun.jna.Structure.ByReference {
 		ByReference() {}
 		ByReference(B struct) { super(struct.getPointer(), 0); }
@@ -208,9 +208,9 @@ Here's what JNAerator produces out of the anonymous version :
 		public static class ByReference extends ComplexArgFunction_pArg_struct implements com.sun.jna.Structure.ByReference {}
 		public static class ByValue extends ComplexArgFunction_pArg_struct implements com.sun.jna.Structure.ByValue {}
 		/// Allocate a new ComplexArgFunction_pArg_struct struct on the heap
-		ComplexArgFunction_pArg_struct() {}
+		public  ComplexArgFunction_pArg_struct() {}
 		/// Cast data at given memory location (pointer + offset) as an existing ComplexArgFunction_pArg_struct struct
-		ComplexArgFunction_pArg_struct(com.sun.jna.Pointer pointer, int offset) {
+		public  ComplexArgFunction_pArg_struct(com.sun.jna.Pointer pointer, int offset) {
 			super();
 			useMemory(pointer, offset);
 			read();
@@ -295,7 +295,7 @@ become :
 public static final class pInt {
 	public static final class pInt_holder extends com.sun.jna.Structure {
 		public com.sun.jna.ptr.IntByReference value;
-		pInt_holder(com.sun.jna.Pointer pointer) {
+		public  pInt_holder(com.sun.jna.Pointer pointer) {
 			super();
 			useMemory(pointer, 0);
 			read();
@@ -312,7 +312,7 @@ public static final class pInt {
 public static final class pVoid {
 	public static final class pVoid_holder extends com.sun.jna.Structure {
 		public com.sun.jna.Pointer value;
-		pVoid_holder(com.sun.jna.Pointer pointer) {
+		public  pVoid_holder(com.sun.jna.Pointer pointer) {
 			super();
 			useMemory(pointer, 0);
 			read();
