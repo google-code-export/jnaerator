@@ -1,0 +1,12 @@
+struct S {
+	int iarr[4]; 
+	char* csarr[3][4]; 
+	char s[8];
+	long* (*foo2[12][8])();
+};
+--
+S s = new S();
+s.iarr[2] = 10;
+s.csarr[10] = (ByteByReference)null;
+s.s[10] = (byte)0;
+NativeLongByReference lp = s.foo2[10].invoke();
