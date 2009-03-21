@@ -1,0 +1,9 @@
+int *pInt;
+void *pVoid;
+int i;
+void (*fptr)(int);
+--
+IntByReference pInt = TestLibrary.pInt.get().value;
+PointerByReference pVoid = TestLibrary.pVoid.get();
+IntByReference i = TestLibrary.i.get();
+TestLibrary.fptr.get().value.invoke(10);
