@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -32,6 +33,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -44,6 +46,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -74,6 +77,7 @@ import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.jnaerator.ClassOutputter;
+import com.ochafik.lang.jnaerator.JNAerationUtils;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
@@ -106,6 +110,7 @@ public class JNAeratorStudio extends JPanel {
 	JTextArea errorsArea = new JTextArea();
 	JSplitPane sp;
 	ListenableList<ResultContent> results = ListenableCollections.listenableList(new ArrayList<ResultContent>());
+	MemoryFileManager memoryFileManager;
 	static MouseWheelListener mouseWheelListener = new MouseWheelListener() {
 
 		@Override
@@ -143,16 +148,25 @@ public class JNAeratorStudio extends JPanel {
 		);
 	}
 	
-	public File getFile() {
+	public File getDir() {
 		File dir = new File(System.getProperty("user.home"));
 		dir = new File(dir, ".jnaeratorStudio");
 		dir = new File(dir, "pad");
 		if (!dir.exists())
 			dir.mkdirs();
-		return new File(dir, "input.h");
+		return dir;
+	}
+	public File getInputFile() {
+		return new File(getDir(), "input.h");
+	}
+	public File getOutputJarFile() {
+		String lib = libraryName.getText().trim();
+		if (lib.length() == 0)
+			lib = "out";
+		return new File(getDir(), lib + ".jar");
 	}
 	void save() throws IOException {
-		WriteText.writeText(sourceArea.getText(), getFile());
+		WriteText.writeText(sourceArea.getText(), getInputFile());
 	}
 	static JEditTextArea textArea(TokenMarker marker) {
 		JEditTextArea ta = new JEditTextArea() {
@@ -255,7 +269,7 @@ public class JNAeratorStudio extends JPanel {
 			}
 		}
 	;
-	
+	JButton showJarButton;
 	JPanel errorsPane = new JPanel(new BorderLayout());
 	public JNAeratorStudio() {
 		super(new BorderLayout());
@@ -275,8 +289,21 @@ public class JNAeratorStudio extends JPanel {
 		
 		JComponent sourcePane = new JPanel(new BorderLayout()), resultPane = new JPanel(new BorderLayout());
 		Box libBox = Box.createHorizontalBox();
+		showJarButton = new JButton("Show JAR");
+		showJarButton.setEnabled(false);
+		showJarButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					SystemUtils.runSystemOpenFileParent(getOutputJarFile());
+				} catch (Exception e1) {
+					showJarButton.setEnabled(false);
+				}
+			}
+		});
 		libBox.add(new JLabel("Library Name :", JLabel.RIGHT));
 		libBox.add(libraryName);
+		
 		sourcePane.add("North", libBox);//raryName);
 		sourcePane.add("Center", sourceArea);
 		sourceTabs.addTab("Source", sourcePane);
@@ -285,6 +312,8 @@ public class JNAeratorStudio extends JPanel {
 		Box resChoiceBox = Box.createHorizontalBox();
 		resChoiceBox.add(classCountLabel);
 		resChoiceBox.add(resultsListCombo);
+		resChoiceBox.add(showJarButton);
+		
 		resultPane.add("North", resChoiceBox);
 		resultPane.add("Center", resultArea);
 		sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sourceTabs, resultTabs);
@@ -306,7 +335,7 @@ public class JNAeratorStudio extends JPanel {
 		}});
 		
 		try {
-			sourceArea.setText(ReadText.readText(getFile()));
+			sourceArea.setText(ReadText.readText(getInputFile()));
 			sourceArea.scrollTo(0, 0);
 		} catch (Exception ex) {}
 		
@@ -339,6 +368,7 @@ public class JNAeratorStudio extends JPanel {
 		errorsArea.setText("");
 		results.clear();
 		resultArea.setText("");
+		showJarButton.setEnabled(false);
 		
 		new Thread() {
 			public void run() {
@@ -425,7 +455,8 @@ public class JNAeratorStudio extends JPanel {
 		}
 	}
 
-	protected void compile() throws FileNotFoundException, SyntaxException {
+	protected void compile() throws SyntaxException, IOException {
+		
 		JavaCompiler c = CompilerUtils.getJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
@@ -442,6 +473,8 @@ public class JNAeratorStudio extends JPanel {
 			System.out.println(sb);
 			throw new SyntaxException(sb.toString());
 		}
+		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true);
+		showJarButton.setEnabled(true);
 	}
 //	private void displayError(Exception e) {
 //		JOptionPane.showMessageDialog(this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
