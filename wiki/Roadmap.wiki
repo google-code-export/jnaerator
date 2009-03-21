@@ -2,7 +2,8 @@
 
   # greatly enhance test coverage of JNAerator with new JNAerationTests scheme
   # create Pointer subclasses for unknown pointer references
+  # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
   # rework globals entirely : Lib.get(), Lib.set(int) when possible
   # automated tests for Objective-C (long time no try !)
-  # parse {{{ typedef unsigned U; register U int i; }}}
+  # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
  
