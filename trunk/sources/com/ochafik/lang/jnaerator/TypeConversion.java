@@ -637,8 +637,13 @@ public class TypeConversion {
 					}
 				} else if (target instanceof FunctionSignature) {
 					TypeRef tr = findCallbackRef((FunctionSignature)target, callerLibraryClass);
-					if (tr != null)
-						return tr;
+					if (tr != null) {
+						if (valueType instanceof TypeRef.ArrayRef) {
+							return new TypeRef.ArrayRef(tr);
+						} else {
+							return tr;
+						}
+					}
 					//else
 					//	return typeRef(((FunctionSignature)valueType).getFunction().getName());
 				}
