@@ -1,8 +1,8 @@
 #summary Plans for JNAerator
 
-# greatly enhance test coverage of JNAerator with new JNAerationTests scheme
-# create Pointer subclasses for unknown pointer references
-# rework globals entirely : Lib.get(), Lib.set(int) when possible
-# automated tests for Objective-C (long time no try !)
-# parse {{{ typedef unsigned U; register U int i; }}}
+  # greatly enhance test coverage of JNAerator with new JNAerationTests scheme
+  # create Pointer subclasses for unknown pointer references
+  # rework globals entirely : Lib.get(), Lib.set(int) when possible
+  # automated tests for Objective-C (long time no try !)
+  # parse {{{ typedef unsigned U; register U int i; }}}
  
