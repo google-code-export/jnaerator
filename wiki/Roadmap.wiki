@@ -2,6 +2,7 @@
 
   # greatly enhance test coverage of JNAerator with new JNAerationTests scheme
   # create Pointer subclasses for unknown pointer references
+  # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
   # rework globals entirely : Lib.get(), Lib.set(int) when possible
   # automated tests for Objective-C (long time no try !)
