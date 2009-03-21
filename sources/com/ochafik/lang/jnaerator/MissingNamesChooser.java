@@ -69,7 +69,7 @@ public class MissingNamesChooser extends Scanner {
 			case CppMethod:
 				Set<String> names = new TreeSet<String>();
 				List<Pair<Arg, Integer>> missing = new ArrayList<Pair<Arg,Integer>>();
-				int i = 0, n = function.getArgs().size();
+				int i = 0;//, n = function.getArgs().size();
 				
 				for (Arg arg : function.getArgs()) {
 					if (arg.getName() == null) {

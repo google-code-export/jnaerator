@@ -92,6 +92,7 @@ public abstract class Declaration extends ModifiableElement {
 	public void setName(String name) {
 		if (name == null)
 			name = null;
+		
 		this.name = name;
 	}
 	public void addNameSpace(String nameSpace) {

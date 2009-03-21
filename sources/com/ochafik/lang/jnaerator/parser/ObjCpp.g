@@ -277,8 +277,7 @@ declaration returns [List<Declaration> declarations, List<Modifier> modifiers, S
 						continue;
 					d.setCommentBefore($preComment);
 					d.setCommentAfter(commentAfter);
-					for (Modifier modifier : $modifiers)
-						d.addModifiers(modifier);
+					d.addModifiers($modifiers);
 				}
 				
 			}
@@ -496,8 +495,7 @@ structCore	returns [Struct struct, List<Modifier> modifiers]
 			) |
 			( 
 				( exportationModifiers {
-					for (Modifier m : $exportationModifiers.modifiers)
-						$struct.addModifiers(m);
+					$struct.addModifiers($exportationModifiers.modifiers);
 				} )?
 				n1=IDENTIFIER { $struct.setTag($n1.text); } 
 			)?
@@ -529,8 +527,7 @@ functionDeclaration returns [Function function]
 			$function.setValueType($typeRef.type); 
 		}
 		preMods=exportationModifiers {
-			for (Modifier m : $preMods.modifiers)
-				$function.addModifiers(m);
+			$function.addModifiers($preMods.modifiers);
 		}
 		n=IDENTIFIER { 
 			$function.setName($n.text); 
@@ -612,16 +609,30 @@ extendedModifiers returns [List<Modifier> modifiers]
 		)*
 	;
 argDef	returns [Arg arg]
-	:	
-		{ 
+@init {
+	List<Modifier> stoMods = new ArrayList<Modifier>(), typMods = new ArrayList<Modifier>();
+}	
+	:	{ 
 			$arg = new Arg(); 
 			int i = getTokenStream().index() + 1;
 			$arg.setCommentBefore(getCommentBefore(i));
 			$arg.setCommentAfter(getCommentAfterOnSameLine(i));
 		}
-		typeRef { 
-			$arg.setValueType($typeRef.type); 
-		}
+		(
+			{ next(Modifier.Kind.StorageClassSpecifier) }? 
+			sm=modifier { stoMods.add($sm.modifier); } |
+			{ next(Modifier.Kind.TypeQualifier) }? 
+			tm=modifier { typMods.add($tm.modifier); }
+		)*
+		(
+			//soe=structOrEnum  { $arg.setValueType($soe.type); } |
+			//tcfs=typeRefCoreOrAnonymousFuncSig  { $arg.setValueType($tcfs.type); }
+			typeRef { 
+				$typeRef.type.addModifiers(typMods);
+				$typeRef.type.addModifiers(stoMods);
+				$arg.setValueType($typeRef.type); 
+			}
+		)
 		(
 			declarator? { 
 				if ($declarator.declarator != null)
@@ -877,7 +888,7 @@ typeDef returns [TypeDef typeDef]
 varDeclEOF returns [Declaration decl]
 	: varDecl EOF { $decl = $varDecl.decl; }
 	;
-	
+
 varDecl returns [Declaration decl, TypeRef type]
 @init {
 	List<Modifier> stoMods = new ArrayList<Modifier>(), typMods = new ArrayList<Modifier>();
@@ -1200,7 +1211,7 @@ expression returns [Expression expr]
 				//TODO
 			}
 		
-		)*
+				)*
 	;
 
 statementsBlock

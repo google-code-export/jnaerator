@@ -35,8 +35,10 @@ public class CompilerUtils {
 			String resstr = resource.toString();
 			if (resstr.matches("jar:file:.*!.*"))
 				return resstr.substring("jar:file:".length(), resstr.indexOf("!"));
+			else if (resstr.matches("jar:http:.*!.*"))
+				return resstr.substring("jar:".length(), resstr.indexOf("!"));
 			else {
-				String p = c.getName().replace('.', '/') + ".class";
+				String p = '/' + c.getName().replace('.', '/') + ".class";
 				if (resstr.endsWith(p))
 					return resstr.substring(0, resstr.length() - p.length());
 			}

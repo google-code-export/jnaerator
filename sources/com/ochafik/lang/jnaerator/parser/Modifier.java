@@ -69,6 +69,7 @@ public enum Modifier {
 	//TypeDef(Kind.StorageClassSpecifier), // TODO propagate this to everywhere : need to remove TypeDef class
 	
 	Const(Kind.TypeQualifier), 
+	__const(Kind.TypeQualifier), 
 	Volatile(Kind.TypeQualifier), 
 	Mutable(Kind.TypeQualifier),
 	
@@ -95,6 +96,7 @@ public enum Modifier {
 	Protected(Kind.Publicity),
 	
 	Inline,
+	__inline,
 	__inline__,
 
 	Align(Kind.Declspec, Kind.HasArguments),
