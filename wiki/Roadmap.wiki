@@ -1,0 +1,7 @@
+#summary Plans for JNAerator
+
+  * create Pointer subclasses for unknown pointer references
+  * rework globals entirely : Lib.get(), Lib.set(int) when possible
+
+  * automated tests for Objective-C (long time no try !)
+  * 
