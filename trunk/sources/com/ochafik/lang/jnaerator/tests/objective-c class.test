@@ -1,0 +1,12 @@
+@interface NSMutableArray: NSObject 
+{}
+
+-(int) count;
+-(BOOL) empty;
++arrayWithCapacity: (int) c;
+
+@end
+--
+NSMutableArray a = NSMutableArray.CLASS.arrayWithCapacity(10);
+int c = a.count();
+boolean e = a.empty();
