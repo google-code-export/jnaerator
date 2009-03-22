@@ -1,0 +1,18 @@
+@protocol Printing
+-(void) print;
+@end
+
+@interface Base: NSObject <Printing> 
+{}
++baseWithName();
+
+@end
+
+@interface Base (Categ)
+-(Base*) merge: (Base*) f;
+@end
+
+--
+Base base = Base.CLASS.baseWithName();
+base = base.merge(base);
+base.print();
