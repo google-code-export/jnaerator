@@ -4,16 +4,16 @@
 	This file is part of JNAerator (http://jnaerator.googlecode.com/).
 	
 	JNAerator is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
+	it under the terms of the GNU Lesser General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
 	
 	JNAerator is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+	GNU Lesser General Public License for more details.
 	
-	You should have received a copy of the GNU General Public License
+	You should have received a copy of the GNU Lesser General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.ochafik.lang.jnaerator;
@@ -616,13 +616,13 @@ public class TypeConversion {
 			
 			boolean staticallySized = valueType instanceof ArrayRef && ((ArrayRef)valueType).hasStaticStorageSize();
 			
-			TypeRef convTargType;
+			TypeRef convArgType;
 			JavaPrim prim = getPrimitive(target, callerLibraryClass);
 			if (prim != null) {
 				if (prim == JavaPrim.Void)
 					return typeRef(com.sun.jna.Pointer.class);
 				else
-					convTargType = typeRef(prim);
+					convArgType = typeRef(prim);
 			} else {
 				String name = null;
 				if (target instanceof SimpleTypeRef)
@@ -650,7 +650,7 @@ public class TypeConversion {
 				if (name != null) {
 					/// Pointer to Objective-C class
 					if (result.objCClasses.containsKey(name))
-						convTargType = typeRef(name);
+						convArgType = typeRef(name);
 					else {
 						/// Pointer to C structure
 						TypeRef structRef = findStructRef(name, callerLibraryClass);
@@ -659,19 +659,19 @@ public class TypeConversion {
 								case NativeParameter:
 								case PrimitiveParameter:
 								case FieldType:
-									convTargType = typeRef(structRef, SubTypeRef.Style.Dot, "ByReference");
+									convArgType = typeRef(structRef, SubTypeRef.Style.Dot, "ByReference");
 									if (valueType instanceof Pointer)
-										return convTargType;
+										return convArgType;
 									break;
 								default:
-									convTargType = structRef;
+									convArgType = structRef;
 									if (valueType instanceof Pointer)
-										return convTargType;
+										return convArgType;
 									break;
 							}
 						} else {
 							try {
-								convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+								convArgType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
 							} catch (UnsupportedConversionException ex) {
 								return typeRef(com.sun.jna.Pointer.class);
 							}
@@ -679,7 +679,7 @@ public class TypeConversion {
 					}
 				} else {
 					try {
-						convTargType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
+						convArgType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
 					} catch (UnsupportedConversionException ex) {
 						return typeRef(com.sun.jna.Pointer.class);
 					}
@@ -688,11 +688,11 @@ public class TypeConversion {
 			
 			switch (conversionMode) {
 				case StaticallySizedArrayField:
-					return new ArrayRef(convTargType);
+					return new ArrayRef(convArgType);
 				case PrimitiveParameter:
 					if (target.getModifiers().contains(Modifier.Const) ||
 							valueType.getModifiers().contains(Modifier.Const))
-						return new ArrayRef(convTargType);
+						return new ArrayRef(convArgType);
 				case BufferParameter:
 					Class<? extends Buffer> bc = primToBuffer.get(prim);
 					if (bc != null) {
@@ -700,13 +700,15 @@ public class TypeConversion {
 					}
 				case FieldType:
 					if (staticallySized)
-						return new ArrayRef(convTargType);
+						return new ArrayRef(convArgType);
 				default:
 					if (prim != null) {
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
 						if (byRefClass != null)
 							return typeRef(byRefClass);
 					}
+					if (convArgType != null && !convArgType.toString().equals(com.sun.jna.Pointer.class.getName()) && valueType instanceof TypeRef.Pointer && target instanceof TypeRef.SimpleTypeRef)
+						return convArgType;
 					
 			}
 			if (target instanceof Pointer) {

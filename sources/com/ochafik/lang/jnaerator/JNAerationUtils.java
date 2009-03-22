@@ -13,6 +13,7 @@ import javax.tools.JavaFileObject;
 
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
+import org.rococoa.NSClass;
 
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
@@ -48,7 +49,7 @@ public class JNAerationUtils {
 			}
 		});
 		
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class, JNAerator.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class, JNAerator.class, NSClass.class);
 		return mfm;
 		/*if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
