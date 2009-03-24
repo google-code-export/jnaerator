@@ -1,26 +1,29 @@
 #summary Plans for JNAerator
 #labels Phase-Requirements
 
-= Enhancements =
+= New features =
 
-  # cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
   # include libraries to generated JARs, w/ auto extract
   # create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
   # make jnaeration features selectable from the GUI & CLI
-  # add progression bar to studio
   # include jna.jar & rococoa.jar to generated JARs (optional, otherwise link to them in classpath)
-  # add option not to keep comments (then by default, do not include sources in generated JAR)
-  # finalize VisualStudio parsing (replace $() variables)
-  # prefer simple names for structs and enums (S typedef instead of `_`S tag)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
+  # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
+
+= Enhancements =
+
+  # cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
+  # prefer simple names for structs and enums (S typedef instead of `_`S tag)
+  # add progression bar to studio
+  # add option not to keep comments (then by default, do not include sources in generated JAR)
   # automated tests for Objective-C (long time no try !)
   # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
   # enhance the error reporting of parsing (work on antlr grammar) and of compilation
   # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
-  # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
-  # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
  
 = Bugfixes = 
 
   # fix the compiler's classpath in in JNAeratorStudio + Web Start
+  # finalize VisualStudio parsing (replace $() variables)
   # fix the line-numbering in comments
+  # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
