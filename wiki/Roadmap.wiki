@@ -11,7 +11,7 @@
   # include jna.jar & rococoa.jar to generated JARs (optional, otherwise link to them in classpath)
   # add option not to keep comments (then by default, do not include sources in generated JAR)
   # finalize VisualStudio parsing (replace $() variables)
-  # prefer simple names for structs and enums (S typedef instead of \_S tag)
+  # prefer simple names for structs and enums (S typedef instead of `_`S tag)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # automated tests for Objective-C (long time no try !)
   # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
