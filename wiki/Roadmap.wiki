@@ -4,10 +4,10 @@
 = Enhancements =
 
   # create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
-  # automated tests for Objective-C (long time no try !)
-  # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
   # prefer simple names for structs and enums (S typedef instead of _S tag)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
+  # automated tests for Objective-C (long time no try !)
+  # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
   # enhance the error reporting of parsing (work on antlr grammar) and of compilation
   # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
   # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
