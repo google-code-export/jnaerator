@@ -310,15 +310,15 @@ public abstract class Element {
 	}
 	public static Collection<?> cloneElements(Collection<?> col) throws CloneNotSupportedException {
 		Collection<Object> colClone;
-		if (col instanceof List)
+		if (col instanceof List<?>)
 			colClone = new ArrayList<Object>(col.size());
-		else if (col instanceof LinkedHashSet)
+		else if (col instanceof LinkedHashSet<?>)
 			colClone = new LinkedHashSet<Object>(col.size());
-		else if (col instanceof HashSet)
+		else if (col instanceof HashSet<?>)
 			colClone = new HashSet<Object>(col.size());
-		else if (col instanceof TreeSet)
+		else if (col instanceof TreeSet<?>)
 			colClone = new TreeSet<Object>();
-		else if (col instanceof Set)
+		else if (col instanceof Set<?>)
 			colClone = new LinkedHashSet<Object>(col.size());
 		else
 			throw new CloneNotSupportedException();
@@ -332,13 +332,13 @@ public abstract class Element {
 	
 	public static Map<?, ?> cloneElements(Map<?, ?> col) throws CloneNotSupportedException {
 		Map<Object, Object> colClone;
-		if (col instanceof LinkedHashMap)
+		if (col instanceof LinkedHashMap<?,?>)
 			colClone = new LinkedHashMap<Object, Object>(col.size());
-		else if (col instanceof HashMap)
+		else if (col instanceof HashMap<?,?>)
 			colClone = new HashMap<Object, Object>(col.size());
-		else if (col instanceof TreeMap)
+		else if (col instanceof TreeMap<?,?>)
 			colClone = new TreeMap<Object, Object>();
-		else if (col instanceof Map)
+		else if (col instanceof Map<?,?>)
 			colClone = new LinkedHashMap<Object, Object>();
 		else
 			throw new CloneNotSupportedException();

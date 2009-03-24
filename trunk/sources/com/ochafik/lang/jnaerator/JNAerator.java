@@ -26,20 +26,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 
+import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Expression;
+import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Modifier;
+import com.ochafik.lang.jnaerator.parser.Statement;
+import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 
 /*
 //include com/ochafik/lang/jnaerator/parser/*.mm
@@ -278,13 +287,15 @@ public class JNAerator {
 			}
 		}
 	}
-
+	
 	private static void generateLibraryFiles(SourceFiles sourceFiles, Result result, ClassOutputter outputter) throws IOException {
 		
 		for (String library : result.libraries) {
 			if (library == null)
 				continue; // to handle code defined in macro-expanded expressions
 //				library = "";
+			
+			result.typeConverter.fakePointersSink = new TreeSet<String>();
 			
 			String javaPackage = result.javaPackageByLibrary.get(library);
 			String libraryClassName = result.getLibraryClassSimpleName(library);
@@ -325,6 +336,17 @@ public class JNAerator {
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, children, libraryClassName);
 
 			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, children, libraryClassName);
+			
+			for (String fakePointer : result.typeConverter.fakePointersSink) {
+				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, Pointer.class.getName(), Struct.Type.JavaClass, null);
+				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
+					new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
+				).addModifiers(Modifier.Public).setBody(new Statement.Block(
+					new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer")))
+				)));
+				children.addDeclaration(result.declarationsConverter.decl(ptClass));
+			}
+			result.typeConverter.fakePointersSink = null;
 			
 			for (Declaration d : children.getDeclarations()) {
 				out.println();

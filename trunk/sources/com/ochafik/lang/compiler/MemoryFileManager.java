@@ -50,7 +50,10 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 		if (c == null)
 			return;
 
-		JarEntry e = new JarEntry(o.getPath());
+		String path = o.getPath();
+		if (path.startsWith("file:///"))
+			path = path.substring("file:///".length());
+		JarEntry e = new JarEntry(path);
 		jout.putNextEntry(e);
 		jout.write(c);
 		jout.closeEntry();

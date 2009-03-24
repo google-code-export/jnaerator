@@ -45,7 +45,8 @@ public class JNAeratorConfig {
 		Windows, Linux, MacOSX
 	}
 	public enum GenFeatures {
-		StructConstructors
+		StructConstructors, 
+		TypedPointersForForwardDeclarations
 	}
 	
 	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
@@ -84,6 +85,9 @@ public class JNAeratorConfig {
 		}
 	}
 
+	public JNAeratorConfig() {
+		features.remove(GenFeatures.TypedPointersForForwardDeclarations);
+	}
 	public boolean verbose = false;
 	public File outputDir = new File(".");
 	public List<String> rootDirectoriesPrefixesForSourceComments = new ArrayList<String>();

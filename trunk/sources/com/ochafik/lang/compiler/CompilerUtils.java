@@ -20,17 +20,34 @@ package com.ochafik.lang.compiler;
 
 import java.util.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.tools.*;
 
+import com.ochafik.io.IOUtils;
 import com.ochafik.util.string.StringUtils;
 
 public class CompilerUtils {
 	
-	public static String getClassPath(Class<?> c) {
+	public static String getClassPath(Class<?> c) throws MalformedURLException, IOException {
 
 		URL resource = c.getResource(c.getSimpleName() + ".class");
+		if (resource != null) {
+			String resstr = resource.toString();
+//			if (resstr.contains("Prog/"))
+//				resstr = "jar:http://ochafik.free.fr/Java/jnaerator.jar!/...";
+			
+			if (resstr.matches("jar:.*!.*"))
+				resstr = resstr.substring("jar:".length(), resstr.indexOf("!"));
+			else {
+				String p = '/' + c.getName().replace('.', '/') + ".class";
+				if (resstr.endsWith(p))
+					resstr = resstr.substring(0, resstr.length() - p.length());
+			}
+			return getLocalFile(new URL(resstr)).toString();
+		}
+		/*
 		if (resource != null) {
 			String resstr = resource.toString();
 			if (resstr.matches("jar:file:.*!.*"))
@@ -42,10 +59,10 @@ public class CompilerUtils {
 				if (resstr.endsWith(p))
 					return resstr.substring(0, resstr.length() - p.length());
 			}
-		}
+		}*/
 		return null;
 	}
-	public static Set<String> getClassPaths(Class<?>... cs) {
+	public static Set<String> getClassPaths(Class<?>... cs) throws MalformedURLException, IOException {
 		Set<String> ret = new TreeSet<String>();
 		for (Class<?> c : cs) {
 			String cp ;
@@ -55,7 +72,34 @@ public class CompilerUtils {
 		}
 		return ret;
 	}
-	public static void compile(JavaCompiler compiler, MemoryFileManager fileManager, DiagnosticCollector<JavaFileObject> diagnostics, String sourceCompatibility, Class<?>...classpathHints) {
+	static Map<String, File> localURLCaches = new HashMap<String, File>();
+	static File getLocalFile(URL remoteFile) throws IOException {
+		if ("file".equals(remoteFile.getProtocol()))
+			return new File(remoteFile.getFile());
+		
+		String remoteStr = remoteFile.toString();
+		File f = localURLCaches.get(remoteStr);
+		if (f == null) {
+			f = File.createTempFile(new File(remoteStr).getName(), ".jar");
+			f.deleteOnExit();
+			InputStream in = new BufferedInputStream(remoteFile.openStream());
+			try {
+				OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+				try {
+					System.out.print("Downloading file '" + remoteStr + "'...");
+					long length = IOUtils.readWrite(in, out);
+					System.out.println(" OK (" + length + " bytes)");
+					localURLCaches.put(remoteStr, f.getAbsoluteFile());
+				} finally {
+					out.close();
+				}
+			} finally {
+				in.close();
+			}
+		}
+		return f;
+	}
+	public static void compile(JavaCompiler compiler, MemoryFileManager fileManager, DiagnosticCollector<JavaFileObject> diagnostics, String sourceCompatibility, Class<?>...classpathHints) throws MalformedURLException, IOException {
 		//JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		System.out.println("compiler = " + (compiler == null ? "<none found>" : compiler.getClass().getName()));
 		Set<String> bootclasspaths = getClassPaths(classpathHints);
@@ -66,8 +110,9 @@ public class CompilerUtils {
 		List<String> options = sourceCompatibility == null ? null : Arrays.asList(
 			"-target", sourceCompatibility, 
 			"-source", sourceCompatibility,
-			"-bootclasspath", bootclasspath,
-			"-classpath", bootclasspath
+			"-bootclasspath", bootclasspath, //"/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/classes.jar",//bootclasspath,
+			"-classpath", bootclasspath //"/Users/ochafik/Prog/Java/bin/jnaerator.jar"//
+				//"http://ochafik.free.fr/Java/jnaerator.jar"//bootclasspath
 		);  
 		compiler.getTask(null, fileManager, diagnostics, options, null, fileObjects).call();
 		

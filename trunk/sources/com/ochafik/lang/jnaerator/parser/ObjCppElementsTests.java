@@ -112,13 +112,13 @@ public class ObjCppElementsTests {
 			
 //			System.err.println("Testing field " + type.getSimpleName() + "." + fieldName);// + ": ");
 			
-			if (fieldType instanceof Class && Element.class.isAssignableFrom((Class<?>) fieldType)) {
+			if (fieldType instanceof Class<?> && Element.class.isAssignableFrom((Class<?>) fieldType)) {
 				testSetNewInstancesOf(fieldType, implementations, element, fieldName, p.setter, p.getter, null);
 				System.err.println();
 			} else if (fieldType instanceof ParameterizedType) {
 				ParameterizedType paramType = (ParameterizedType) fieldType;
 				Type rawType = paramType.getRawType();
-				if (rawType instanceof Class) {
+				if (rawType instanceof Class<?>) {
 					Class<?> rawClass = (Class<?>) rawType;
 					boolean isList = List.class.isAssignableFrom(rawClass);
 					if (isList || Set.class.isAssignableFrom(rawClass)) {
@@ -128,7 +128,7 @@ public class ObjCppElementsTests {
 							}
 						});
 						Type[] typeArguments = paramType.getActualTypeArguments();
-						if (typeArguments.length == 1 && typeArguments[0] instanceof Class && Element.class.isAssignableFrom((Class<?>) typeArguments[0])) {
+						if (typeArguments.length == 1 && typeArguments[0] instanceof Class<?> && Element.class.isAssignableFrom((Class<?>) typeArguments[0])) {
 							Class<?> elementType = (Class<?>) typeArguments[0];
 							testSetNewInstancesOf(elementType, implementations, element, fieldName, p.setter, p.getter, container);
 						}
