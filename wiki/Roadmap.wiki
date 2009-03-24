@@ -3,7 +3,14 @@
 
 = Enhancements =
 
+  # cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
+  # include libraries to generated JARs, w/ auto extract
   # create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
+  # make jnaeration features selectable from the GUI & CLI
+  # add progression bar to studio
+  # include jna.jar & rococoa.jar to generated JARs (optional, otherwise link to them in classpath)
+  # add option not to keep comments (then by default, do not include sources in generated JAR)
+  # finalize VisualStudio parsing (replace $() variables)
   # prefer simple names for structs and enums (S typedef instead of _S tag)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # automated tests for Objective-C (long time no try !)
