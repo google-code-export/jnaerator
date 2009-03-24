@@ -1,27 +1,18 @@
 package com.ochafik.lang.jnaerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
 import junit.framework.Assert;
@@ -29,22 +20,17 @@ import junit.framework.Assert;
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
-import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryFileObject;
-import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.net.URLUtils;
-import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
 import com.ochafik.util.string.StringUtils;
-import com.sun.jna.Pointer;
 
 @RunWith(ParameterizedWithDescription.class)
 public class JNAerationTests {

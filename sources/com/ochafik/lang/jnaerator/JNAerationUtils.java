@@ -3,10 +3,8 @@ package com.ochafik.lang.jnaerator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -49,7 +47,7 @@ public class JNAerationUtils {
 			}
 		});
 		
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class, JNAerator.class, NSClass.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class, JNAerator.class, NSClass.class, RenameSymbol.class);
 		return mfm;
 		/*if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();

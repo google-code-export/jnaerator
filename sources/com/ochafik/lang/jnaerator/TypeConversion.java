@@ -99,6 +99,8 @@ public class TypeConversion {
 		super();
 		this.result = result;
 	}
+	
+	public Set<String> fakePointersSink;
 
 	enum TypeConversionMode {
 		PrimitiveParameter, 
@@ -616,7 +618,7 @@ public class TypeConversion {
 			
 			boolean staticallySized = valueType instanceof ArrayRef && ((ArrayRef)valueType).hasStaticStorageSize();
 			
-			TypeRef convArgType;
+			TypeRef convArgType = null;
 			JavaPrim prim = getPrimitive(target, callerLibraryClass);
 			if (prim != null) {
 				if (prim == JavaPrim.Void)
@@ -673,7 +675,16 @@ public class TypeConversion {
 							try {
 								convArgType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
 							} catch (UnsupportedConversionException ex) {
-								return typeRef(com.sun.jna.Pointer.class);
+								//convArgType = null;//return typeRef(com.sun.jna.Pointer.class);
+								if (valueType instanceof TypeRef.Pointer && 
+										target instanceof TypeRef.SimpleTypeRef &&
+										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations) &&
+										fakePointersSink != null) {
+									fakePointersSink.add(name);
+									return new TypeRef.SimpleTypeRef(name);
+								} else {
+									return typeRef(com.sun.jna.Pointer.class);
+								}
 							}
 						}
 					}
@@ -681,11 +692,11 @@ public class TypeConversion {
 					try {
 						convArgType = convertTypeToJNA(target, conversionMode, callerLibraryClass);
 					} catch (UnsupportedConversionException ex) {
+						//convArgType = null;//
 						return typeRef(com.sun.jna.Pointer.class);
 					}
 				}
 			}	
-			
 			switch (conversionMode) {
 				case StaticallySizedArrayField:
 					return new ArrayRef(convArgType);
