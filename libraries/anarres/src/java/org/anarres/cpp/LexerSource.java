@@ -779,6 +779,8 @@ public class LexerSource extends Source {
 		if (tok == null) {
 			if (Character.isWhitespace(c)) {
 				tok = whitespace(c);
+				if (bol)
+					return tok;
 			}
 			else if (Character.isDigit(c)) {
 				tok = number_decimal(c);
