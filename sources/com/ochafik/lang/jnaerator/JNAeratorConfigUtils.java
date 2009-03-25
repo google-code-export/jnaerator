@@ -75,10 +75,17 @@ public class JNAeratorConfigUtils {
 	static List<String> DEFAULT_INCLUDE_PATH;
 	static {
 		if (SystemUtils.isMacOSX()) {
-			DEFAULT_INCLUDE_PATH = Arrays.asList(
-				"/Developer/SDKs/MacOSX10.4u.sdk/usr/include", 
-				"."
-			);
+			DEFAULT_INCLUDE_PATH = new ArrayList<String>();
+			for (String s : new String[] {
+				"/Developer/SDKs/MacOSX10.5.sdk/usr/include",
+				"/Developer/SDKs/MacOSX10.4u.sdk/usr/include"
+			})
+				if (new File(s).exists()) {
+					DEFAULT_INCLUDE_PATH.add(s);
+					break;
+				}
+			
+			DEFAULT_INCLUDE_PATH.add(".");
 		} else if (SystemUtils.isWindows()) {
 			ArrayList<String> list = new ArrayList<String>(VisualStudioUtils.getMicrosoftIncludes());
 			list.add(".");
@@ -256,8 +263,15 @@ public class JNAeratorConfigUtils {
 		} else {
 			config.preprocessorConfig.macros.put("__GNUC__", null);
 			
-			if (SystemUtils.isMacOSX())
+			if (SystemUtils.isMacOSX()) {
 				config.preprocessorConfig.macros.put("TARGET_API_MAC_OSX", null);
+				config.preprocessorConfig.macros.put("__APPLE_CPP__", null);
+				config.preprocessorConfig.macros.put("__APPLE_CC__", null);
+//				config.preprocessorConfig.macros.put("FUNCTION_PASCAL", "0");
+//				config.preprocessorConfig.macros.put("FUNCTION_DECLSPEC", "1");
+//				config.preprocessorConfig.macros.put("FUNCTION_WIN32CC", "1");
+				
+			}
 			
 			config.functionsAccepter = new Adapter<Function, Boolean>() {
 	
@@ -267,6 +281,7 @@ public class JNAeratorConfigUtils {
 				}
 			};
 		}
+		
 		
 		JNAeratorConfigUtils.autoConfigureArchitecture(config);
 	}

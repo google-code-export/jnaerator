@@ -628,9 +628,11 @@ argDef	returns [Arg arg]
 			//soe=structOrEnum  { $arg.setValueType($soe.type); } |
 			//tcfs=typeRefCoreOrAnonymousFuncSig  { $arg.setValueType($tcfs.type); }
 			typeRef { 
-				$typeRef.type.addModifiers(typMods);
-				$typeRef.type.addModifiers(stoMods);
-				$arg.setValueType($typeRef.type); 
+				if ($typeRef.type != null) {
+					$typeRef.type.addModifiers(typMods);
+					$typeRef.type.addModifiers(stoMods);
+					$arg.setValueType($typeRef.type); 
+				}
 			}
 		)
 		(
@@ -734,7 +736,10 @@ typeRefCore returns [TypeRef type]
 					$type = mark($type, getLine($ref));
 				}
 			) 
-		) { $type.addModifiers(mods); }	
+		) { 
+			if ($type != null)
+				$type.addModifiers(mods); 
+		}	
 	;
 
 templateDef
@@ -987,8 +992,10 @@ directDeclarator  returns [Declarator declarator]
 			inner=declarator 
 			')' {
 				$declarator = $inner.declarator;
-				$declarator.setParenthesized(true);
-				$declarator.addModifiers(modifiers);
+				if ($declarator != null) {
+					$declarator.setParenthesized(true);
+					$declarator.addModifiers(modifiers);
+				}
 			}
 		)
 		(
@@ -1207,7 +1214,7 @@ expression returns [Expression expr]
 					$expr = $fc2.expr;
 				}
 			} |
-			'?' xif=expression ':' xelse=expression {
+						'?' xif=expression ':' xelse=expression {
 				//TODO
 			}
 		

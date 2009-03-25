@@ -187,7 +187,7 @@ public class JNAeratorParser {
 		System.setOut(pout);
 		System.setErr(pout);
 		try {
-			if (false) {
+			if (true) {
 				// easier to debug
 				try {
 					ObjCppParser parser = newObjCppParser(sourceContent);

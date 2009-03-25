@@ -24,9 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-import org.anarres.cpp.CppReader;
 import org.anarres.cpp.Feature;
 import org.anarres.cpp.FileLexerSource;
 import org.anarres.cpp.LexerException;
@@ -36,13 +34,12 @@ import org.anarres.cpp.PreprocessorListener;
 import org.anarres.cpp.Source;
 import org.anarres.cpp.StringLexerSource;
 import org.anarres.cpp.Token;
+import org.anarres.cpp.Warning;
 
-import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Expression;
-import com.ochafik.util.listenable.Adapter;
-import com.ochafik.util.string.RegexUtils;
+import com.ochafik.util.string.StringUtils;
 
 public class PreprocessorUtils {
 	
@@ -55,46 +52,67 @@ public class PreprocessorUtils {
 		for (String content : config.preprocessorConfig.includeStrings)
 			preProcessor.addInput(new StringLexerSource(content, true));
 		
-		String sourceContent = ReadText.readText(new CppReader(preProcessor));
+		StringBuilder b = new StringBuilder();
+		try {
+			for (;;) {
+				Token	tok = preProcessor.token();
+				if (tok == null)
+					break;
+				if (tok.getType() == Token.EOF)
+					break;
+				b.append(tok.getText());
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		//String sourceContent = ReadText.readText(new CppReader(preProcessor));
+		String sourceContent = b.toString();
 		preProcessor.close();
 		
 		Map<String, Macro> macros = preProcessor.getMacros();
-		if (config.preprocessorConfig.WORKAROUND_PP_BUGS) {
-			//WriteText.writeText(sourceContent, new File("_jnaerator_debug.raw.c"));
-			
-			sourceContent = PreprocessorUtils.removePreprocessorDirectives(sourceContent);
-			//File cleanedFile = new File("_jnaerator_debug.clean.cpp");
-			
-			//WriteText.writeText(StringUtils.implode(preProcessor.getMacros().entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
-			
-			sourceContent = "\n" + sourceContent;
-			sourceContent = RegexUtils.regexReplace(Pattern.compile("(?s)\\n#line\\s+(\\d+)\\s+\"([^\"]+)\""), sourceContent, new Adapter<String[], String>() {
-				public String adapt(String[] value) {
-					//return "\n//##line " + value[1] + " \"" + value[2].replace("\\", "\\\\") + "\"";
-					return "\n//##line " + value[1] + " \"" + value[2].replace('\\', '/') + "\"";
-				}
-				
-			});
-			sourceContent = sourceContent.replaceAll("(?s)\n#line", "\n//##line");
-			//WriteText.writeText(sourceContent, cleanedFile);
-			
-			Preprocessor preProcessor2 = PreprocessorUtils.createPreProcessor(new JNAeratorConfig.PreprocessorConfig());
-			preProcessor2.getMacros().putAll(macros);
-			//File temp = File.createTempFile("temp", ".h");
-			
-			//preProcessor2.addInput(new FileLexerSource(cleanedFile));
-			preProcessor2.addInput(new StringLexerSource(sourceContent, true));
-			sourceContent = ReadText.readText(new CppReader(preProcessor2));
-			preProcessor2.close();
-			
-			macros = preProcessor2.getMacros();
-			sourceContent = "\n" + sourceContent;
-			sourceContent = sourceContent.replaceAll("(?s)\n#line.*?\n", "\n");
-			sourceContent = sourceContent.replaceAll("(?s)\n//##line", "\n#line").trim();
-			sourceContent = PreprocessorUtils.removeNastyDefines(sourceContent);
-			sourceContent = sourceContent.replaceAll("__attribute__[^;]*;", ";");
-			WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
-		}
+		
+		WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
+		WriteText.writeText(StringUtils.implode(macros.entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
+		
+//		if (false && config.preprocessorConfig.WORKAROUND_PP_BUGS) {
+//			WriteText.writeText(sourceContent, new File("_jnaerator_debug.raw.c"));
+//			
+//			//sourceContent = PreprocessorUtils.removePreprocessorDirectives(sourceContent);
+//			//File cleanedFile = new File("_jnaerator_debug.clean.cpp");
+//			
+//			sourceContent = "\n" + sourceContent;
+//			sourceContent = RegexUtils.regexReplace(Pattern.compile("(?s)\\n#line\\s+(\\d+)\\s+\"([^\"]+)\""), sourceContent, new Adapter<String[], String>() {
+//				public String adapt(String[] value) {
+//					//return "\n//##line " + value[1] + " \"" + value[2].replace("\\", "\\\\") + "\"";
+//					return "\n//##line " + value[1] + " \"" + value[2].replace('\\', '/') + "\"";
+//				}
+//				
+//			});
+//			sourceContent = sourceContent.replaceAll("(?s)\n#line", "\n//##line");
+//			//WriteText.writeText(sourceContent, cleanedFile);
+//			
+//			Preprocessor preProcessor2 = PreprocessorUtils.createPreProcessor(new JNAeratorConfig.PreprocessorConfig());
+//			preProcessor2.getMacros().putAll(macros);
+//			//File temp = File.createTempFile("temp", ".h");
+//			
+//			//preProcessor2.addInput(new FileLexerSource(cleanedFile));
+//			preProcessor2.addInput(new StringLexerSource(sourceContent, true));
+//			sourceContent = ReadText.readText(new CppReader(preProcessor2));
+//			preProcessor2.close();
+//			
+//			macros = preProcessor2.getMacros();
+//			
+//			WriteText.writeText(StringUtils.implode(macros.entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
+//			
+//			sourceContent = "\n" + sourceContent;
+//			sourceContent = sourceContent.replaceAll("(?s)\n#line.*?\n", "\n");
+//			sourceContent = sourceContent.replaceAll("(?s)\n//##line", "\n#line").trim();
+//			sourceContent = PreprocessorUtils.removeNastyDefines(sourceContent);
+//			sourceContent = PreprocessorUtils.removePreprocessorDirectives(sourceContent);
+//			sourceContent = sourceContent.replaceAll("__attribute__[^;]*;", ";");
+//			WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
+//		}
 		
 		for (String k : config.preprocessorConfig.macros.keySet())
 			macros.remove(k);
@@ -103,67 +121,6 @@ public class PreprocessorUtils {
 		PreprocessorUtils.addDefines(macros, defines);
 		
 		return sourceContent;
-	}
-	
-	public static Preprocessor createPreProcessor(File file, JNAeratorConfig.PreprocessorConfig config) throws IOException, LexerException {
-		Preprocessor preprocessor = new Preprocessor(file) {
-			Set<String> pragmaOnces = new HashSet<String>();
-			@Override
-			protected void pragma(Token name, List<Token> value)
-					throws IOException, LexerException {
-				if ("once".equals(name.getText())) {
-					if (!pragmaOnces.add(getSource().toString()))
-						pop_source();
-				} 
-				//else
-					//super.pragma(name, value);
-			}
-			
-			Set<String> openedSources = new HashSet<String>();
-			@Override
-			protected void push_source(Source source, boolean autopop) {
-				//System.out.println("push_source(" + source + ")");
-				if (source instanceof FileLexerSource) {
-					if (!openedSources.add(source.toString()))
-						return;
-				}
-				super.push_source(source, autopop);
-			}
-			@Override
-			protected void pop_source() throws IOException {
-				if (getSource() instanceof FileLexerSource) {
-					//openedSources.remove(getSource().toString());
-				}
-				
-				super.pop_source();
-			}
-		};
-		preprocessor.addFeature(Feature.KEEPCOMMENTS);
-		preprocessor.addFeature(Feature.DIGRAPHS);
-		preprocessor.addFeature(Feature.TRIGRAPHS);
-		//preprocessor.addFeature(Feature.CSYNTAX);
-		preprocessor.addFeature(Feature.LINEMARKERS);
-		preprocessor.addFeature(Feature.DEBUG);
-		
-		preprocessor.setListener(new PreprocessorListener() {
-			@Override
-			public void handleWarning(Source source, int line, int column,
-					String msg) throws LexerException {
-				// TODO Auto-generated method stub
-				super.handleWarning(source, line, column, msg);
-			}
-		});
-		
-		preprocessor.getSystemIncludePath().addAll(config.includes);
-		preprocessor.getQuoteIncludePath().addAll(config.includes);
-		preprocessor.getFrameworksPath().addAll(config.frameworksPath);
-		for (Map.Entry<String, String> e : config.macros.entrySet()) {
-			if (e.getValue() != null)
-				preprocessor.addMacro(e.getKey(), e.getValue());
-			else
-				preprocessor.addMacro(e.getKey());
-		}
-		return preprocessor;
 	}
 
 	public static Preprocessor createPreProcessor(JNAeratorConfig.PreprocessorConfig config) throws IOException, LexerException {
@@ -178,6 +135,13 @@ public class PreprocessorUtils {
 				} else
 					super.pragma(name, value);
 			}
+			@Override
+			protected void pop_source() throws IOException {
+				if (getSource() instanceof FileLexerSource) {
+					
+				}
+				super.pop_source();
+			}
 		};
 		//preprocessor.addFeatures(EnumSet.allOf(Feature.class));
 		preprocessor.addFeature(Feature.KEEPCOMMENTS);
@@ -187,12 +151,20 @@ public class PreprocessorUtils {
 		preprocessor.addFeature(Feature.LINEMARKERS);
 		//preprocessor.addFeature(Feature.DEBUG);
 		
+
+		preprocessor.addWarning(Warning.IMPORT);
+		
 		preprocessor.setListener(new PreprocessorListener() {
 			@Override
 			public void handleWarning(Source source, int line, int column,
 					String msg) throws LexerException {
-				if (!msg.contains("#pragma"))
-					super.handleWarning(source, line, column, msg);
+				if (msg.contains("Unnecessary escape character "))
+					return;
+				
+				if (msg.contains("#pragma"))
+					return;
+					
+				super.handleWarning(source, line, column, msg);
 			}
 		});
 		
@@ -254,12 +226,15 @@ public class PreprocessorUtils {
 					continue;
 			
 				Define define = new Define(e.getKey(), expression);
-				define.setElementFile(macro.getFile());
+				if (macro.getSource() != null)
+					define.setElementFile(macro.getSource().getPath());
 				defines.add(define);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				System.err.println("Failed to convert define '" + e.getValue() + ":\n" + ex);
+				//ex.printStackTrace();
 			}
 		}
 	}
+	
 
 }

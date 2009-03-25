@@ -309,7 +309,7 @@ public class TypeConversion {
 						tr = findRef(name, s, callerLibraryClass);
 						
 					}
-					if (!simpleTypeRef.toString().equals(tr.toString())) {
+					if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
 						simpleTypeRef.replaceBy(tr);
 						tr.accept(this);
 					}

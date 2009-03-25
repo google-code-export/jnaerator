@@ -45,6 +45,8 @@ public class JNAeratorConfig {
 		Windows, Linux, MacOSX
 	}
 	public enum GenFeatures {
+		Compile,
+		LibrariesAutoExtraction,
 		StructConstructors, 
 		TypedPointersForForwardDeclarations
 	}

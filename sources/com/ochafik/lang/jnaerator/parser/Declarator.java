@@ -203,6 +203,10 @@ public abstract class Declarator extends ModifiableElement {
 		
 		@Override
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			if (type == null) {
+				System.out.println("mutating null type : " + this);
+				return null;
+			}
 			type = type.clone();
 			
 			if (type instanceof TypeRef) {
