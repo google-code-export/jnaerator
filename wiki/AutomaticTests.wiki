@@ -15,7 +15,7 @@ java -jar jnaerator.jar -test
 
 These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the `*`.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
 
-Many more .test files are to be added soon.
+More .test files are to be added soon.
 
 = DOM Elements tests =
 
