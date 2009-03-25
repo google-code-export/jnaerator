@@ -1,6 +1,7 @@
 /*
  * Anarres C Preprocessor
  * Copyright (c) 2007-2008, Shevek
+ * Copyright (c) 2009, Olivier Chafik (changes/additions flagged with ochafik)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,12 +104,18 @@ public class Preprocessor implements Closeable {
 	/* Support junk to make it work like cpp */
 	private List<String>			quoteincludepath;	/* -iquote */
 	private List<String>			sysincludepath;		/* -I */
+	
+	//ochafik
+	/* -F @see http://developer.apple.com/DOCUMENTATION/DeveloperTools/gcc-3.3/gcc/Directory-Options.html */
 	private List<String>			frameworkspath;
 	private Set<Feature>			features;
 	private Set<Warning>			warnings;
 	private VirtualFileSystem		filesystem;
 	private PreprocessorListener	listener;
-
+	
+	//ochafik
+	private boolean 				inIncludeNext = false; // whether current include should ignore current file's directory in include paths
+	
 	public Preprocessor() {
 		this.inputs = new ArrayList<Source>();
 		this.macros = new HashMap<String,Macro>();
@@ -119,6 +126,9 @@ public class Preprocessor implements Closeable {
 		this.source = null;
 		this.quoteincludepath = new ArrayList<String>();
 		this.sysincludepath = new ArrayList<String>();
+		//ochafik
+		this.frameworkspath = new ArrayList<String>(Arrays.asList(new String[] {"/System/Library/Frameworks/", "/Library/Frameworks/", "/Local/Library/Frameworks/"})); 
+		
 		this.features = EnumSet.noneOf(Feature.class);
 		this.warnings = EnumSet.noneOf(Warning.class);
 		this.filesystem = new JavaFileSystem();
@@ -372,7 +382,7 @@ public class Preprocessor implements Closeable {
 	public void setQuoteIncludePath(List<String> path) {
 		this.quoteincludepath = path;
 	}
-
+	
 	/**
 	 * Returns the user include-path of this Preprocessor.
 	 *
@@ -381,7 +391,7 @@ public class Preprocessor implements Closeable {
 	public List<String> getQuoteIncludePath() {
 		return quoteincludepath;
 	}
-
+	
 	/**
 	 * Sets the system include path used by this Preprocessor.
 	 */
@@ -398,7 +408,7 @@ public class Preprocessor implements Closeable {
 	public List<String> getSystemIncludePath() {
 		return sysincludepath;
 	}
-
+	
 	/**
 	 * Sets the Objective-C frameworks path used by this Preprocessor.
 	 */
@@ -406,7 +416,7 @@ public class Preprocessor implements Closeable {
 	public void setFrameworksPath(List<String> path) {
 		this.frameworkspath = path;
 	}
-
+	
 	/**
 	 * Returns the Objective-C frameworks path used by this
 	 * Preprocessor.
@@ -416,7 +426,7 @@ public class Preprocessor implements Closeable {
 	public List<String> getFrameworksPath() {
 		return frameworkspath;
 	}
-
+	
 	/**
 	 * Returns the Map of Macros parsed during the run of this
 	 * Preprocessor.
@@ -424,7 +434,7 @@ public class Preprocessor implements Closeable {
 	public Map<String,Macro> getMacros() {
 		return macros;
 	}
-
+	
 	/**
 	 * Returns the named macro.
 	 *
@@ -514,7 +524,7 @@ public class Preprocessor implements Closeable {
 	 * their own NL. */
 	private Token line_token(int line, String name, String extra) {
 		return new Token(P_LINE, line, 0,
-			"#line " + line + " \"" + name + "\"" + extra + "\n",
+			"\n#line " + line + " \"" + name + "\"" + extra + "\n",
 			null
 				);
 	}
@@ -816,7 +826,7 @@ public class Preprocessor implements Closeable {
 
 		return expansion;
 	}
-
+	
 	/* processes a #define directive */
 	private Token define()
 						throws IOException,
@@ -1017,6 +1027,10 @@ public class Preprocessor implements Closeable {
 		// System.out.println("Try to include " + file);
 		if (!file.isFile())
 			return false;
+		//ochafik
+		if (getFeature(Feature.DEBUG))
+			System.err.println("Including: " + file);
+		
 		push_source(file.getSource(), true);
 		return true;
 	}
@@ -1032,6 +1046,11 @@ public class Preprocessor implements Closeable {
 			if (include(file))
 				return true;
 		}
+		// Accept absolute paths in includes
+		VirtualFile	file = filesystem.getFile(name);
+		if (include(file))
+			return true;
+		
 		return false;
 	}
 
@@ -1044,13 +1063,46 @@ public class Preprocessor implements Closeable {
 								LexerException {
 		VirtualFile	pdir = null;
 		if (quoted) {
-			VirtualFile	pfile = filesystem.getFile(parent);
-			pdir = pfile.getParentFile();
-			VirtualFile	ifile = pdir.getChildFile(name);
-			if (include(ifile))
-				return;
+			if (!inIncludeNext) {
+				VirtualFile	pfile = filesystem.getFile(parent);
+				pdir = pfile.getParentFile();
+				VirtualFile	ifile = pdir.getChildFile(name);
+				if (include(ifile))
+					return;
+			}
 			if (include(quoteincludepath, name))
 				return;
+		} else {
+			// Try to recognize an include from a framework (for both \#include and \#import directives in Objective-C files)
+			String frameworkName = null;
+			int i = name.indexOf("/");
+			String subName = null;
+			if (i > 0) {
+				frameworkName = name.substring(0, i);
+				subName = name.substring(i + 1);
+			}
+			if (subName != null) {
+				String frameworkDirName = frameworkName + ".framework";
+				for (String path : frameworkspath) {
+					File frameworkDir = new File(path, frameworkDirName);
+					if (frameworkDir.exists() && frameworkDir.isDirectory()) {
+						if (getFeature(Feature.DEBUG))
+							System.err.println("Found framework: " + frameworkDir);
+						
+						File headers = new File(frameworkDir, "Headers");
+						if (!headers.exists())
+							headers = new File(frameworkDir, "PrivateHeaders");
+						
+						if (headers.exists()) {
+							pdir = filesystem.getFile(headers.toString());
+							VirtualFile ifile = pdir.getChildFile(subName);
+							if (include(ifile))
+								return;
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		if (include(sysincludepath, name))
@@ -1126,14 +1178,16 @@ public class Preprocessor implements Closeable {
 			/* 'tok' is the 'nl' after the include. We use it after the
 			 * #line directive. */
 			if (getFeature(Feature.LINEMARKERS))
-				return line_token(1, name, " 1");
+				//ochafik:changed
+				return line_token(1, source.getName(), " 1");
+				
 			return tok;
 		}
 		finally {
 			lexer.setInclude(false);
 		}
 	}
-
+	
 	protected void pragma(Token name, List<Token> value)
 						throws IOException,
 								LexerException {
@@ -1545,7 +1599,8 @@ public class Preprocessor implements Closeable {
 					case CCOMMENT:
 					case CPPCOMMENT:
 						// Patch up to preserve whitespace.
-						if (getFeature(Feature.KEEPCOMMENTS))
+						//ochafik: don't output comments in inactive blocks
+						if (getFeature(Feature.KEEPCOMMENTS) && isActive())
 							return tok;
 						return toWhitespace(tok);
 					default:
@@ -1580,8 +1635,10 @@ public class Preprocessor implements Closeable {
 				case '^': case '{': case '|':
 				case '}': case '~': case '.':
 
-				// case '#':
-
+				//ochafik:added two tokens
+				case '@': // Objective-C's inline NString prefix
+				case '#':
+	
 				case AND_EQ:
 				case ARROW:
 				case CHARACTER:
@@ -1677,6 +1734,12 @@ public class Preprocessor implements Closeable {
 							// break;
 
 						case PP_INCLUDE:
+						
+						//ochafik:added PP_INCLUDE_NEXT & PP_IMPORT
+						case PP_INCLUDE_NEXT:
+						case PP_IMPORT:
+							inIncludeNext = ppcmd == PP_INCLUDE_NEXT;
+						
 							if (!isActive())
 								return source_skipline(false);
 							else
@@ -1859,7 +1922,8 @@ public class Preprocessor implements Closeable {
 	}
 
 #set ($i = 1)	/* First ppcmd is 1, not 0. */
-#set ($ppcmds = [ "define", "elif", "else", "endif", "error", "if", "ifdef", "ifndef", "include", "line", "pragma", "undef", "warning" ])
+//ochafik:added include_next & import
+#set ($ppcmds = [ "define", "elif", "else", "endif", "error", "if", "ifdef", "ifndef", "include", "include_next", "import", "line", "pragma", "undef", "warning" ])
 #foreach ($ppcmd in $ppcmds)
 	private static final int PP_$ppcmd.toUpperCase() = $i;
 #set ($i = $i + 1)
