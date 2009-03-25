@@ -238,26 +238,28 @@ class ObjCClass {
 				otherComments.add(ss.getCommentBefore());
 			}
 		
+		String className = type.getTag();
 		final Struct instanceStruct = new Struct();
 		instanceStruct.setType(Struct.Type.JavaInterface);
 		instanceStruct.addModifiers(Modifier.Public);
-		instanceStruct.setTag(type.getTag());
+		instanceStruct.setTag(className);
 		instanceStruct.setParents(extensions);
 		
 		instanceStruct.addToCommentBefore(otherComments);
 		
-		PrintScanner callbackScanner = new PrintScanner("") {
-			Set<String> signatures = new TreeSet<String>();
-			@Override
-			public void visitFunctionSignature(FunctionSignature functionSignature) {
-				super.visitFunctionSignature(functionSignature);
-				result.declarationsConverter.convertCallback(functionSignature, signatures, instanceStruct, callerLibraryClass);
-			}
-		};
-		for (Struct c : categories)
-			c.accept(callbackScanner);
-		for (Struct c : protocols)
-			c.accept(callbackScanner);
+//		
+//		PrintScanner callbackScanner = new PrintScanner("") {
+//			Set<String> signatures = new TreeSet<String>();
+//			@Override
+//			public void visitFunctionSignature(FunctionSignature functionSignature) {
+//				super.visitFunctionSignature(functionSignature);
+//				result.declarationsConverter.convertCallback(functionSignature, signatures, instanceStruct, callerLibraryClass);
+//			}
+//		};
+//		for (Struct c : categories)
+//			c.accept(callbackScanner);
+//		for (Struct c : protocols)
+//			c.accept(callbackScanner);
 		
 		//s.append(callbackScanner.toString());
 		
@@ -297,6 +299,23 @@ class ObjCClass {
 				Function f = (Function)d;
 				result.declarationsConverter.convertFunction(f, signatures, false, f.getModifiers().contains(Modifier.Static) ? classStruct : instanceStruct, callerLibraryClass);
 			}
+		}
+		
+		boolean hasAllocator = false;
+		for (Declaration d : classStruct.getDeclarations()) {
+			if (!(d instanceof Function))
+				continue;
+			Function f = (Function)d;
+			if (className.equals(String.valueOf(f.getValueType()))) {
+				hasAllocator = true;
+				break;
+			}
+		}
+		if (!hasAllocator) {
+			Function initMeth = new Function(Function.Type.JavaMethod, "alloc", new TypeRef.SimpleTypeRef(className));
+			//if (!signatures.contains(initMeth.computeSignature(false))) {
+				classStruct.addDeclaration(initMeth);
+			//}
 		}
 		
 		return instanceStruct;

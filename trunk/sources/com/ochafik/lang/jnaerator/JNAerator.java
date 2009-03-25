@@ -88,8 +88,12 @@ public class JNAerator {
 		System.out.println("\t\tDefine a preprocessor symbol.");
 		System.out.println("\t-library name");
 		System.out.println("\t\tGives name of the library in which definitions will end up. \"c\" library will be generated as CLibrary class.");
-		System.out.println("\t-o outputDir");
+		System.out.println("\t-defaultLibrary name");
+		System.out.println("\t-out outputDir");
 		System.out.println("\t\tRoot directory where all generated sources go");
+		//System.out.println("\t-compile");
+		System.out.println("\t-jar outputJar");
+		System.out.println("\t\tJar file where all generated sources go (implies -compile)");
 		System.out.println("\t-project SolutionFile configString");
 		System.out.println("\t\tRead Visual Studio 2008 project or solution file and use the configuration specified (e.g. \"Release|Win32\").");
 		System.out.println("\t-package forcedPackageName");
@@ -114,7 +118,7 @@ public class JNAerator {
 	//					"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
-	//					
+						
 //						"-autoConf",
 						//"-library", "c",
 //						"-root", "org.rococoa",
@@ -138,9 +142,15 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/Test.h",
 //						"/Users/ochafik/Prog/Java/test/JNATest.h",
 						//"-o", "/Users/ochafik/Prog/Java",
-						"-library", "opencl",
-						"/Users/ochafik/src/opencl/cl.h",
-						"-o", "/Users/ochafik/src/opencl",
+						
+						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
+						//"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
+						"/System/Library/Frameworks/Cocoa.framework/Headers/Cocoa.h",
+						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
+						
+//						"-library", "opencl",
+//						"/Users/ochafik/src/opencl/cl.h",
+//						"-o", "/Users/ochafik/src/opencl",
 						"-v"
 				};
 			} else {

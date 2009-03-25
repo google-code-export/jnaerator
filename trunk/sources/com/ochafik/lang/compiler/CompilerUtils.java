@@ -22,6 +22,7 @@ import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.tools.*;
 
@@ -30,7 +31,7 @@ import com.ochafik.util.string.StringUtils;
 
 public class CompilerUtils {
 	
-	public static String getClassPath(Class<?> c) throws MalformedURLException, IOException {
+	public static String getClassPath(Class<?> c, File cacheDirectory) throws MalformedURLException, IOException {
 
 		URL resource = c.getResource(c.getSimpleName() + ".class");
 		if (resource != null) {
@@ -45,7 +46,7 @@ public class CompilerUtils {
 				if (resstr.endsWith(p))
 					resstr = resstr.substring(0, resstr.length() - p.length());
 			}
-			return getLocalFile(new URL(resstr)).toString();
+			return getLocalFile(new URL(resstr), cacheDirectory).toString();
 		}
 		/*
 		if (resource != null) {
@@ -62,31 +63,44 @@ public class CompilerUtils {
 		}*/
 		return null;
 	}
-	public static Set<String> getClassPaths(Class<?>... cs) throws MalformedURLException, IOException {
+	public static Set<String> getClassPaths(File cacheDirectory, Class<?>... cs) throws MalformedURLException, IOException {
 		Set<String> ret = new TreeSet<String>();
 		for (Class<?> c : cs) {
 			String cp ;
-			if (c == null || (cp = getClassPath(c)) == null)
+			if (c == null || (cp = getClassPath(c, cacheDirectory)) == null)
 				continue;
 			ret.add(cp);
 		}
 		return ret;
 	}
 	static Map<String, File> localURLCaches = new HashMap<String, File>();
-	static File getLocalFile(URL remoteFile) throws IOException {
+	static File getLocalFile(URL remoteFile, File cacheDirectory) throws IOException {
 		if ("file".equals(remoteFile.getProtocol()))
 			return new File(remoteFile.getFile());
 		
 		String remoteStr = remoteFile.toString();
 		File f = localURLCaches.get(remoteStr);
 		if (f == null) {
-			f = File.createTempFile(new File(remoteStr).getName(), ".jar");
-			f.deleteOnExit();
+			URLConnection con = remoteFile.openConnection();
+			String fileName = new File(remoteStr).getName();
+			if (cacheDirectory != null) {
+				f = new File(cacheDirectory, fileName);
+				if (f.exists() && f.lastModified() > con.getLastModified()) {
+					System.out.println("Reusing cached file " + f);
+					con.getInputStream().close();
+					return f;
+				}
+			} else {
+				f = File.createTempFile(fileName, ".jar");
+				f.deleteOnExit();
+			}
+			System.out.print("Downloading file " + remoteFile + " to " + f);
+			
 			InputStream in = new BufferedInputStream(remoteFile.openStream());
 			try {
 				OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
 				try {
-					System.out.print("Downloading file '" + remoteStr + "'...");
+					//System.out.print("Downloading file '" + remoteStr + "'...");
 					long length = IOUtils.readWrite(in, out);
 					System.out.println(" OK (" + length + " bytes)");
 					localURLCaches.put(remoteStr, f.getAbsoluteFile());
@@ -99,11 +113,11 @@ public class CompilerUtils {
 		}
 		return f;
 	}
-	public static void compile(JavaCompiler compiler, MemoryFileManager fileManager, DiagnosticCollector<JavaFileObject> diagnostics, String sourceCompatibility, Class<?>...classpathHints) throws MalformedURLException, IOException {
+	public static void compile(JavaCompiler compiler, MemoryFileManager fileManager, DiagnosticCollector<JavaFileObject> diagnostics, String sourceCompatibility, File cacheDirectory, Class<?>...classpathHints) throws MalformedURLException, IOException {
 		//JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		System.out.println("compiler = " + (compiler == null ? "<none found>" : compiler.getClass().getName()));
-		Set<String> bootclasspaths = getClassPaths(classpathHints);
-		bootclasspaths.addAll(getClassPaths(String.class));
+		Set<String> bootclasspaths = getClassPaths(cacheDirectory, classpathHints);
+		bootclasspaths.addAll(getClassPaths(cacheDirectory, String.class));
 		String bootclasspath = StringUtils.implode(bootclasspaths, File.pathSeparator);
 		System.out.println("bootclasspath = " + bootclasspath);
 		Iterable<? extends JavaFileObject> fileObjects = fileManager.getJavaFileObjects();  
@@ -146,7 +160,7 @@ public class CompilerUtils {
 			fileManager.addSourceInput("test/Main.java", "package test; public class Main { }");
 			fileManager.close();
 
-			compile(compiler, fileManager, diagnostics, null);
+			compile(compiler, fileManager, diagnostics, null, null);
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
 				//diagnostic.getKind()
 				//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());

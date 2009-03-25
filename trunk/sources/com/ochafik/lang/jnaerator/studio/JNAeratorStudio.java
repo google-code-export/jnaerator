@@ -149,13 +149,16 @@ public class JNAeratorStudio extends JPanel {
 			-1
 		);
 	}
-	
+	public File getDir(String name) {
+		File dir = new File(getDir(), name);
+		dir.mkdirs();
+		return dir;
+	}
 	public File getDir() {
 		File dir = new File(System.getProperty("user.home"));
 		dir = new File(dir, ".jnaeratorStudio");
 		dir = new File(dir, "pad");
-		if (!dir.exists())
-			dir.mkdirs();
+		dir.mkdirs();
 		return dir;
 	}
 	public File getInputFile() {
@@ -464,7 +467,7 @@ public class JNAeratorStudio extends JPanel {
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
 			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", Pointer.class, JNAerator.class, NSClass.class, RenameSymbol.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", getDir("cache"), Pointer.class, JNAerator.class, NSClass.class, RenameSymbol.class);
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
