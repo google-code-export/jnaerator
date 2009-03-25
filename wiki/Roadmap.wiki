@@ -1,5 +1,5 @@
 #summary Plans for JNAerator
-#labels Phase-Requirements
+#labels Phase-Requirements,Featured
 
 = New features =
 
@@ -12,9 +12,10 @@
 
 = Enhancements =
 
-  # cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
+  # OK cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
   # prefer simple names for structs and enums (S typedef instead of `_`S tag)
   # add progression bar to studio
+  # select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
   # add option not to keep comments (then by default, do not include sources in generated JAR)
   # automated tests for Objective-C (long time no try !)
   # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
@@ -23,7 +24,7 @@
  
 = Bugfixes = 
 
-  # fix the compiler's classpath in in JNAeratorStudio + Web Start
+  # OK fix the compiler's classpath in in JNAeratorStudio + Web Start
   # finalize VisualStudio parsing (replace $() variables)
   # fix the line-numbering in comments
   # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
