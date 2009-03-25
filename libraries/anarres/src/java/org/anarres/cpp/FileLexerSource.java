@@ -69,7 +69,8 @@ public class FileLexerSource extends LexerSource {
 	}
 
 	@Override
-	/* pp */ String getPath() {
+	/* pp */ 
+	public String getPath() {
 		return path;
 	}
 
