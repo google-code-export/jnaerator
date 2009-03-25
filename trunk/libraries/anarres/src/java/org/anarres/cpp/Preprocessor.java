@@ -604,8 +604,22 @@ public class Preprocessor implements Closeable {
 	private Token source_skipline(boolean white)
 						throws IOException,
 								LexerException {
-		// (new Exception("skipping line")).printStackTrace(System.out);
-		return source.skipline(white);
+		Source s = source;
+		Token tok = s.skipline(white);
+		if (tok.getType() == EOF && s.isAutopop()) {
+			// System.out.println("Autopop " + s);
+			pop_source();
+			Source	t = getSource();
+			if (getFeature(Feature.LINEMARKERS)
+					&& s.isNumbered()
+					&& t != null) {
+				/* We actually want 'did the nested source
+				 * contain a newline token', which isNumbered()
+				 * approximates. This is not perfect, but works. */
+				return line_token(t.getLine() + 1, t.getName(), " 2");
+			}
+		}
+		return tok;
 	}
 
 	/* processes and expands a macro. */
