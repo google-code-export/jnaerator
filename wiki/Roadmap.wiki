@@ -6,6 +6,7 @@
   # include libraries to generated JARs, w/ auto extract
   # create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
   # make jnaeration features selectable from the GUI & CLI
+  # text / xml format for jnaerator config (w/ variables, so that users might contribute configs for well-known libraries)
   # include jna.jar & rococoa.jar to generated JARs (optional, otherwise link to them in classpath)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
