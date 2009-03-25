@@ -19,7 +19,7 @@ package org.anarres.cpp;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+//import com.ochafik.lang.jnaerator.DeferredFileReader;
 import java.io.IOException;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class FileLexerSource extends LexerSource {
 						throws IOException {
 		super(
 			new BufferedReader(
-				new FileReader(
+				new DeferredFileReader(
 					file
 				)
 			),
