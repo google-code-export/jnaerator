@@ -13,7 +13,7 @@ java -jar jnaerator.jar -test
 
 = JNAerated Artifacts Tests (new !) =
 
-These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the \*.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
+These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the `*`.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
 
 Many more .test files are to be added soon.
 
