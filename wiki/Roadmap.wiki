@@ -13,6 +13,7 @@
 = Enhancements =
 
   # OK cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
+  # add option to switch NativeLong off : on MSVC++ 64bits, long is 32 bits !
   # prefer simple names for structs and enums (S typedef instead of `_`S tag)
   # add progression bar to studio
   # select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
