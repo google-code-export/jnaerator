@@ -244,7 +244,7 @@ public class DeclarationsConverter {
 				resultingExpression = null;
 			}
 			if (failedOnceForThisEnum || (failedOnceForThisEnum = resultingExpression == null))
-				out.addDeclaration(skipDeclaration(item, null));
+				out.addDeclaration(skipDeclaration(item));
 			else {
 				try {
 					localOut.addDeclaration(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", 
