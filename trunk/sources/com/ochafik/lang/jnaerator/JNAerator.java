@@ -143,10 +143,11 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/JNATest.h",
 						//"-o", "/Users/ochafik/Prog/Java",
 						
-						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
-						//"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
-						"/System/Library/Frameworks/Cocoa.framework/Headers/Cocoa.h",
-						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
+//						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
+//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
+						
+						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
+						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
 						
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
@@ -384,7 +385,7 @@ public class JNAerator {
 		sourceFiles.accept(new CToJavaPreScanner());
 		
 		/// Give sensible names to anonymous function signatures, structs, enums, unions, and move them up one level as typedefs
-		sourceFiles.accept(new MissingNamesChooser());
+		sourceFiles.accept(new MissingNamesChooser(result));
 		
 		/// Build JavaDoc comments where applicable
 		sourceFiles.accept(new JavaDocCreator());

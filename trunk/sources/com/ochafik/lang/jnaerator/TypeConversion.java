@@ -593,15 +593,34 @@ public class TypeConversion {
 //			if (!valueType.getModifiers().contains("long"))
 //				return valueType.toString();
 		} 
-		if (valueType instanceof Struct) {
-			String structName = result.declarationsConverter.getActualTaggedTypeName((Struct) valueType);
-			if (structName != null) {
-				TypeRef structRef = findStructRef(structName, callerLibraryClass);
-				switch (conversionMode) {
-				case PointedValue:
-					return structRef;
-				default:
-					return typeRef(structRef, SubTypeRef.Style.Dot, "ByValue");
+		if (valueType instanceof TaggedTypeRef) {
+			String name = result.declarationsConverter.getActualTaggedTypeName((TaggedTypeRef) valueType);
+			if (name != null) {
+				if (valueType instanceof Enum) {
+					TypeRef tr = findEnum(name, callerLibraryClass);
+					if (tr != null) {
+						TypeRef intRef = typeRef(JavaPrim.Int);
+						intRef.setCommentBefore(tr.getCommentBefore());
+						return intRef;
+					}
+				} else if (valueType instanceof Struct) {
+					TypeRef tr = findStructRef(name, callerLibraryClass);
+					if (tr != null) {
+						switch (conversionMode) {
+						case PointedValue:
+						case BufferParameter:
+						case NativeParameter:
+						case PrimitiveParameter:
+						case ReturnType:
+						case PrimitiveReturnType:
+							return tr;
+						case FieldType:
+						case StaticallySizedArrayField:
+						case ExpressionType:
+						default:
+							return typeRef(tr, SubTypeRef.Style.Dot, "ByValue");
+						}
+					}
 				}
 			}
 		}

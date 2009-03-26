@@ -187,8 +187,8 @@ public class JNAeratorParser {
 		System.setOut(pout);
 		System.setErr(pout);
 		try {
-			if (true) {
-				// easier to debug
+			if (false) {
+				// easier to debug but any error might ruin all the rest of the parsing
 				try {
 					ObjCppParser parser = newObjCppParser(sourceContent);
 					SourceFile sourceFile = parser.sourceFile().sourceFile;
@@ -197,7 +197,7 @@ public class JNAeratorParser {
 					ex.printStackTrace();
 				}
 			} else {
-				// faster on multiprocessor architectures
+				// faster on multiprocessor architectures, compartimented parsing (at each change of file)
 				List<Slice> slices = cutSourceContentInSlices(sourceContent, originalOut);
 				if (config.verbose)
 					originalOut.println("Now parsing " + slices.size() + " text blocks");

@@ -163,14 +163,18 @@ public class DeclarationsConverter {
 				try {
 					out.addDeclaration(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", callerLibraryClass, true));
 				} catch (UnsupportedConversionException ex) {
-					out.addDeclaration(new EmptyDeclaration("SKIPPED:", define.formatComments("", true, true, false), define.toString()));
+					out.addDeclaration(skipDeclaration(define, ex.toString()));
 				}
 			}
 		}
 	}
 
-	EmptyDeclaration skipDeclaration(Element e, String preMessage) {
-		return new EmptyDeclaration(preMessage, "SKIPPED:", e.formatComments("", true, true, false), getFileCommentContent(e), e.toString());
+	EmptyDeclaration skipDeclaration(Element e, String... preMessages) {
+		List<String> mess = new ArrayList<String>();
+		if (preMessages != null)
+			mess.addAll(Arrays.asList(preMessages));
+		mess.addAll(Arrays.asList("SKIPPED:", e.formatComments("", true, true, false), getFileCommentContent(e), e.toString()));
+		return new EmptyDeclaration(mess.toArray(new String[0]));
 	}
 	
 	private void convertEnum(Enum e, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
@@ -178,9 +182,10 @@ public class DeclarationsConverter {
 		Set<String> localSignatures = signatures;
 		
 		Struct enumInterf = null;
-		if (e.getTag() != null) {
+		String enumName = getActualTaggedTypeName(e);
+		if (enumName != null) {
 			
-			enumInterf = publicStaticClass(e.getTag(), null, Struct.Type.JavaInterface, e);
+			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
 			enumInterf.addToCommentBefore("enum values");
 			out.addDeclaration(new TaggedTypeRefDeclaration(enumInterf));
 			
@@ -239,7 +244,7 @@ public class DeclarationsConverter {
 				resultingExpression = null;
 			}
 			if (failedOnceForThisEnum || (failedOnceForThisEnum = resultingExpression == null))
-				localOut.addDeclaration(new EmptyDeclaration("SKIPPED enum item: " + item));
+				out.addDeclaration(skipDeclaration(item, null));
 			else {
 				try {
 					localOut.addDeclaration(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, callerLibraryClass), localSignatures, item, "enum item", 
@@ -247,7 +252,7 @@ public class DeclarationsConverter {
 							enumInterf == null
 					));
 				} catch (Exception ex) {
-					localOut.addDeclaration(new EmptyDeclaration("SKIPPED enum item: " + item));
+					out.addDeclaration(skipDeclaration(item, ex.toString()));
 				}
 			}
 		}
@@ -283,9 +288,9 @@ public class DeclarationsConverter {
 					return declaration;
 				}
 			}
-			return new EmptyDeclaration("SKIPPED " + elementTypeDescription + ": " + element);
+			return skipDeclaration(element, elementTypeDescription);
 		} catch (UnsupportedConversionException e) {
-			return new EmptyDeclaration(e.toString());//.replace('\n', ' '));
+			return skipDeclaration(element, elementTypeDescription, e.toString());
 		}	
 		
 	} 
@@ -380,6 +385,9 @@ public class DeclarationsConverter {
 					
 					TypeRef mutType = arg.createMutatedType();
 					
+					if (mutType.toString().contains("NSOpenGLContextParameter")) {
+						argName = argName.toString();
+					}
 					natFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.NativeParameter, callerLibraryClass)));
 					if (alternativeOutputs) {
 						primFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.PrimitiveParameter, callerLibraryClass)));
@@ -392,6 +400,7 @@ public class DeclarationsConverter {
 			String natSign = natFunc.computeSignature(false),
 				primSign = alternativeOutputs ? primFunc.computeSignature(false) : null,
 				bufSign = alternativeOutputs ? bufFunc.computeSignature(false) : null;
+				
 			if (signatures.add(natSign)) {
 				if (alternativeOutputs && !primSign.equals(natSign)) {
 					if (primSign.equals(bufSign))
@@ -400,19 +409,38 @@ public class DeclarationsConverter {
 						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primSign + "} and {@link #" + bufSign + "} instead"));
 					natFunc.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
 				}
+				collectParamComments(natFunc);
 				out.addDeclaration(natFunc);
 			}
 			
 			if (alternativeOutputs) {
 				if (signatures.add(primSign)) {
+					collectParamComments(primFunc);
 					out.addDeclaration(primFunc);
 				}
 				if (signatures.add(bufSign)) {
+					collectParamComments(bufFunc);
 					out.addDeclaration(bufFunc);
 				}
 			}
 		} catch (UnsupportedConversionException ex) {
 			out.addDeclaration(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
+		}
+	}
+
+	private void collectParamComments(Function f) {
+		for (Arg arg : f.getArgs()) {
+			arg.moveAllCommentsBefore();
+			TypeRef argType = arg.getValueType();
+			if (argType != null) {
+				argType.moveAllCommentsBefore();
+				arg.addToCommentBefore(argType.getCommentBefore());
+				argType.stripDetails();
+			}
+			if (arg.getCommentBefore() != null) {
+				f.addToCommentBefore("@param " + arg.getName() + " " + Element.cleanComment(arg.getCommentBefore()));
+				arg.stripDetails();
+			}
 		}
 	}
 
@@ -427,12 +455,15 @@ public class DeclarationsConverter {
 
 	public String getActualTaggedTypeName(TaggedTypeRef struct) {
 		String structName = null;
-		TypeDef parentDef = as(struct.getParentElement(), TypeDef.class);
-		if (parentDef != null) {
-			structName = JNAeratorUtils.findBestPlainStorageName(parentDef);
+		String tag = struct.getTag();
+		if (tag == null || tag.startsWith("_")) {
+			TypeDef parentDef = as(struct.getParentElement(), TypeDef.class);
+			if (parentDef != null) {
+				structName = JNAeratorUtils.findBestPlainStorageName(parentDef);
+			}
 		}
 		if (structName == null)
-			structName = struct.getTag();
+			structName = tag;
 		return structName;
 	}
 	void convertStruct(Struct struct, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
