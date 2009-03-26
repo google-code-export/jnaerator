@@ -129,7 +129,7 @@ public interface TestLibrary extends com.sun.jna.Library
 
 = More examples =
 
-Please read the page [JNAerationResults].
+Please read the page [Documentation].
 
 = Try it for yourself ! =
 
