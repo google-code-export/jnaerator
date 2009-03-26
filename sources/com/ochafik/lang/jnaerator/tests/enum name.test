@@ -1,0 +1,18 @@
+typedef enum _Choice {
+	A, 
+	B,
+	C
+} Choice;
+
+enum _OtherChoice {
+	A, 
+	B,
+	C
+};
+void f(Choice c);
+void ff(_OtherChoice c);
+
+--
+
+INSTANCE.f(Choice.A);
+INSTANCE.ff(_OtherChoice.B);

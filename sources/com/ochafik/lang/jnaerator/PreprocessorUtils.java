@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.anarres.cpp.CppReader;
 import org.anarres.cpp.Feature;
 import org.anarres.cpp.FileLexerSource;
 import org.anarres.cpp.LexerException;
@@ -36,6 +37,7 @@ import org.anarres.cpp.StringLexerSource;
 import org.anarres.cpp.Token;
 import org.anarres.cpp.Warning;
 
+import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Expression;
@@ -52,22 +54,7 @@ public class PreprocessorUtils {
 		for (String content : config.preprocessorConfig.includeStrings)
 			preProcessor.addInput(new StringLexerSource(content, true));
 		
-		StringBuilder b = new StringBuilder();
-		try {
-			for (;;) {
-				Token	tok = preProcessor.token();
-				if (tok == null)
-					break;
-				if (tok.getType() == Token.EOF)
-					break;
-				b.append(tok.getText());
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		//String sourceContent = ReadText.readText(new CppReader(preProcessor));
-		String sourceContent = b.toString();
+		String sourceContent = ReadText.readText(new CppReader(preProcessor));
 		preProcessor.close();
 		
 		Map<String, Macro> macros = preProcessor.getMacros();
@@ -75,49 +62,9 @@ public class PreprocessorUtils {
 		WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
 		WriteText.writeText(StringUtils.implode(macros.entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
 		
-//		if (false && config.preprocessorConfig.WORKAROUND_PP_BUGS) {
-//			WriteText.writeText(sourceContent, new File("_jnaerator_debug.raw.c"));
-//			
-//			//sourceContent = PreprocessorUtils.removePreprocessorDirectives(sourceContent);
-//			//File cleanedFile = new File("_jnaerator_debug.clean.cpp");
-//			
-//			sourceContent = "\n" + sourceContent;
-//			sourceContent = RegexUtils.regexReplace(Pattern.compile("(?s)\\n#line\\s+(\\d+)\\s+\"([^\"]+)\""), sourceContent, new Adapter<String[], String>() {
-//				public String adapt(String[] value) {
-//					//return "\n//##line " + value[1] + " \"" + value[2].replace("\\", "\\\\") + "\"";
-//					return "\n//##line " + value[1] + " \"" + value[2].replace('\\', '/') + "\"";
-//				}
-//				
-//			});
-//			sourceContent = sourceContent.replaceAll("(?s)\n#line", "\n//##line");
-//			//WriteText.writeText(sourceContent, cleanedFile);
-//			
-//			Preprocessor preProcessor2 = PreprocessorUtils.createPreProcessor(new JNAeratorConfig.PreprocessorConfig());
-//			preProcessor2.getMacros().putAll(macros);
-//			//File temp = File.createTempFile("temp", ".h");
-//			
-//			//preProcessor2.addInput(new FileLexerSource(cleanedFile));
-//			preProcessor2.addInput(new StringLexerSource(sourceContent, true));
-//			sourceContent = ReadText.readText(new CppReader(preProcessor2));
-//			preProcessor2.close();
-//			
-//			macros = preProcessor2.getMacros();
-//			
-//			WriteText.writeText(StringUtils.implode(macros.entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
-//			
-//			sourceContent = "\n" + sourceContent;
-//			sourceContent = sourceContent.replaceAll("(?s)\n#line.*?\n", "\n");
-//			sourceContent = sourceContent.replaceAll("(?s)\n//##line", "\n#line").trim();
-//			sourceContent = PreprocessorUtils.removeNastyDefines(sourceContent);
-//			sourceContent = PreprocessorUtils.removePreprocessorDirectives(sourceContent);
-//			sourceContent = sourceContent.replaceAll("__attribute__[^;]*;", ";");
-//			WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
-//		}
-		
 		for (String k : config.preprocessorConfig.macros.keySet())
 			macros.remove(k);
 		
-		//PreprocessorUtils.addDefines(preProcessor, defines);
 		PreprocessorUtils.addDefines(macros, defines);
 		
 		return sourceContent;

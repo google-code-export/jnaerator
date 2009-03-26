@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -39,6 +40,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
+import com.ochafik.swing.syntaxcoloring.SyntaxUtilities;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 
@@ -47,7 +49,11 @@ public class MissingNamesChooser extends Scanner {
 		Java, PreserveCaseAndSeparateByUnderscores
 	}
 	NameGenerationStyle nameGenerationStyle = NameGenerationStyle.PreserveCaseAndSeparateByUnderscores;
-	
+	Result result;
+	public MissingNamesChooser(Result result) {
+		this.result = result;
+	}
+
 	public void setNameGenerationStyle(NameGenerationStyle nameGenerationStyle) {
 		this.nameGenerationStyle = nameGenerationStyle;
 	}
@@ -135,10 +141,10 @@ public class MissingNamesChooser extends Scanner {
 	public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
 		super.visitTaggedTypeRef(taggedTypeRef);
 
+		Element parent = taggedTypeRef.getParentElement(); 
 		if (chooseNameIfMissing(taggedTypeRef))
 			return;
 		
-		Element parent = taggedTypeRef.getParentElement(); 
 		if (!(parent instanceof TaggedTypeRefDeclaration) && !(parent instanceof TypeDef)) {
 			DeclarationsHolder holder = taggedTypeRef.findParentOfType(DeclarationsHolder.class);
 			if (holder != null && holder != taggedTypeRef.getParentElement() && !(parent instanceof DeclarationsHolder)) {
@@ -177,11 +183,21 @@ public class MissingNamesChooser extends Scanner {
 	 * @return true if changed and revisited on change results (caller can give up)
 	 */
 	private boolean chooseNameIfMissing(TaggedTypeRef taggedTypeRef) {
+//		String tag = taggedTypeRef.getTag(); 
+//		taggedTypeRef.setTag(result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef));
+//		if (!SyntaxUtils.equal(tag, taggedTypeRef.getTag())) {
+//			taggedTypeRef.accept(this);
+//			return true;
+//		}
+		//String betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
 		if (taggedTypeRef.getTag() == null) {
-			List<String> ownerNames = JNAeratorUtils.guessOwnerName(taggedTypeRef);//.getParentElement() instanceof StructTypeRef ? struct.getParentElement() : struct);
-			String tag = chooseName(taggedTypeRef, ownerNames);
-			if (tag != null) {
-				taggedTypeRef.setTag(tag);
+			String betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
+			if (betterTag == null) {
+				List<String> ownerNames = JNAeratorUtils.guessOwnerName(taggedTypeRef);//.getParentElement() instanceof StructTypeRef ? struct.getParentElement() : struct);
+				betterTag = chooseName(taggedTypeRef, ownerNames);
+			}
+			if (betterTag != null) {
+				taggedTypeRef.setTag(betterTag);
 				taggedTypeRef.accept(this);
 				return true;
 			}

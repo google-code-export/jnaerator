@@ -24,7 +24,7 @@ public class EmptyDeclaration extends Declaration {
 
 	public EmptyDeclaration() {}
 	public EmptyDeclaration(String... comments) {
-		setCommentBefore(StringUtils.implode(comments, "\n"));
+		addToCommentBefore(comments);
 	}
 	@Override
 	public void accept(Visitor visitor) {
