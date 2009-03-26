@@ -3,8 +3,8 @@
 
 <wiki:toc max_depth="3" />
 
-Below on this page you'll find isolated examples of what JNAerator produces for different isolated example input.
-If you want to see a more complete example, please visit [SimpleMeaningfulExample].
+Below on this page you'll find isolated examples of what JNAerator produces for different kinds of isolated input.
+If you wish to see a more complete example, please visit [SimpleMeaningfulExample].
 
 = Functions = 
 
