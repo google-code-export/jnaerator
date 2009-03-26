@@ -26,6 +26,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -579,9 +580,9 @@ public class TypeConversion {
 				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
 					return typeRef(WString.class);
 				else if (valueTypeString.matches("(__)?const char\\*\\*"))
-					return new ArrayRef(typeRef(String.class));
+					return arrayRef(typeRef(String.class));
 				else if (valueTypeString.matches("(__)?const wchar_t\\*\\*"))
-					return new ArrayRef(typeRef(WString.class));
+					return arrayRef(typeRef(WString.class));
 			}
 		}
 		
@@ -729,8 +730,9 @@ public class TypeConversion {
 						return typeRef(bc);
 					}
 				case FieldType:
-					if (staticallySized)
-						return new ArrayRef(convArgType);
+					if (staticallySized) {
+						return arrayRef(convArgType);
+					}
 				default:
 					if (prim != null) {
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
@@ -792,6 +794,16 @@ public class TypeConversion {
 		unknownTypes.add(String.valueOf(valueType));
 		throw new UnsupportedConversionException(valueType, null);
 	}
+	private TypeRef arrayRef(TypeRef tr) {
+		ArrayRef arrayRef;
+		if (tr instanceof ArrayRef) {
+			arrayRef = (ArrayRef)tr;
+			arrayRef.addDimension(new Expression.EmptyArraySize());
+		} else 
+			arrayRef = new ArrayRef(tr);
+		return arrayRef;
+	}
+
 	Set<String> unknownTypes = new HashSet<String>();
 
 	/*public TypeRef inferJavaType(Expression x) throws UnsupportedTypeConversion {
@@ -1108,7 +1120,66 @@ public class TypeConversion {
 			enumItem.getName()
 		);
 	}
-	static String keywords = " true false double float wait new null boolean return class public protected private ";
+	/// @see http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
+	public static Set<String> INVALID_JAVA_IDENTIFIERS = new HashSet<String>(Arrays.asList(
+			"null",
+			"true",
+			"false",
+			
+			"abstract",
+			"continue",
+			"for",
+			"new",
+			"switch",
+			"assert",
+			"default",
+			"goto",
+			"package",
+			"synchronized",
+			"boolean",
+			"do",
+			"if",
+			"private",
+			"this",
+			"break",
+			"double",
+			"implements",
+			"protected",
+			"throw",
+			"byte",
+			"else",
+			"import",
+			"public",
+			"throws",
+			"case",
+			"enum",
+			"instanceof",
+			"return",
+			"transient",
+			"catch",
+			"extends",
+			"int",
+			"short",
+			"try",
+			"char",
+			"final",
+			"interface",
+			"static",
+			"void",
+			"class",
+			"finally",
+			"long",
+			"strictfp",
+			"volatile",
+			"const",
+			"float",
+			"native",
+			"super",
+			"while",
+			
+			"wait" // not allowed for function names
+	));
+	//static String keywords = " true false double float wait new null boolean return class public protected private ";
 	public String getValidJavaArgumentName(String name) {
 		return getValidJavaIdentifier(name);
 	}
@@ -1116,9 +1187,12 @@ public class TypeConversion {
 		return getValidJavaIdentifier(name);
 	}
 	public static boolean isValidJavaIdentifier(String name) {
-		return !keywords.contains(" " + name + " ");
+		return !INVALID_JAVA_IDENTIFIERS.contains(name);
 	}
 	public static String getValidJavaIdentifier(String name) {
+		if (name == null)
+			return null;
+		
 		if (!isValidJavaIdentifier(name))
 			name += "_";
 		

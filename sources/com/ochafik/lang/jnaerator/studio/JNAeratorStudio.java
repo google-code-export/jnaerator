@@ -329,7 +329,7 @@ public class JNAeratorStudio extends JPanel {
 		errorsPane.add("Center", new JScrollPane(errorsArea));
 		
 		resultTabs.add("JNAeration Results", resultPane);
-		resultTabs.add("Errors", errorsPane);
+		resultTabs.add("Logs", errorsPane);
 		add("Center", sp);
 		//add("Center", new JSplitPane(JSplitPane.VERTICAL_SPLIT, sp, new JScrollPane(errorsArea)));
 
@@ -440,7 +440,7 @@ public class JNAeratorStudio extends JPanel {
 						System.setOut(out);
 						System.setErr(err);
 						classCountLabel.setText("JNAerated classes (" + results.size() + ") :");
-						setTabTitle(resultTabs, errorsPane, "Errors (" + (errorsArea.getLineCount() - 1) + ")");
+						setTabTitle(resultTabs, errorsPane, "Logs (" + (errorsArea.getLineCount() - 1) + " lines)");
 					}});	
 				}
 				try {
