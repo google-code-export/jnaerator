@@ -63,7 +63,7 @@ public class GlobalsGenerator {
 	
 	public void convertGlobals(VariablesDeclaration globals, Set<String> signatures, DeclarationsHolder out, String callerLibraryName) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
-			String name = d.resolveName();
+			String name = result.typeConverter.getValidJavaArgumentName(d.resolveName());
 			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
 			if (type.getModifiers().contains(Modifier.Const) && d.getDefaultValue() != null) {
 				//result.declarationsConverter.convertCon
