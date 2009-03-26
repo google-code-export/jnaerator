@@ -1,5 +1,4 @@
 #summary Simple Meaningful Example : C header with its JNAerated interface.
-#labels Featured
 
 = Input Header =
 
