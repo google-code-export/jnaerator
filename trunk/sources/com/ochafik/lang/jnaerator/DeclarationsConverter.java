@@ -173,7 +173,7 @@ public class DeclarationsConverter {
 		List<String> mess = new ArrayList<String>();
 		if (preMessages != null)
 			mess.addAll(Arrays.asList(preMessages));
-		mess.addAll(Arrays.asList("SKIPPED:", e.formatComments("", true, true, false), getFileCommentContent(e), e.toString()));
+		mess.addAll(Arrays.asList("SKIPPED:", e.formatComments("", true, true, false), getFileCommentContent(e), e.toString().replace("*/", "* /")));
 		return new EmptyDeclaration(mess.toArray(new String[0]));
 	}
 	
@@ -322,7 +322,7 @@ public class DeclarationsConverter {
 			return;
 		}
 		
-		if (" new null class void public package extends boolean ".contains(" " + functionName + " "))
+		if (!TypeConversion.isValidJavaIdentifier(functionName))
 			return;
 		
 		Function natFunc = new Function();
@@ -372,16 +372,14 @@ public class DeclarationsConverter {
 				if (arg.isVarArg() && arg.getValueType() == null) {
 					//TODO choose vaname dynamically !
 					String vaType = isObjectiveC ? "NSObject" : "Object";
-					String argName = chooseJavaArg("varargs", iArg, names);
+					String argName = chooseJavaArgName("varargs", iArg, names);
 					natFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
 					if (alternativeOutputs) {
 						primFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
 						bufFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
 					}
 				} else {
-					String argName = arg.getName();
-					if (argName == null)
-						argName = chooseJavaArg(arg.getName(), iArg, names);
+					String argName = chooseJavaArgName(arg.getName(), iArg, names);
 					
 					TypeRef mutType = arg.createMutatedType();
 					
@@ -540,6 +538,7 @@ public class DeclarationsConverter {
 			TypeConversion.TypeConversionMode.FieldType,
 			callerLibraryName
 		);
+		mutatedType = result.typeConverter.resolveTypeDef(mutatedType, callerLibraryName);
 		
 		VariablesDeclaration convDecl = new VariablesDeclaration();
 		convDecl.addModifiers(Modifier.Public);
@@ -548,7 +547,7 @@ public class DeclarationsConverter {
 			ArrayRef mr = (ArrayRef)mutatedType;
 			ArrayRef jr = (ArrayRef)javaType;
 			Expression mul = null;
-			List<Expression> dims = mr.getDimensions();
+			List<Expression> dims = mr.flattenDimensions();
 			for (int i = dims.size(); i-- != 0;) {
 				Expression x = dims.get(i);
 			
@@ -769,7 +768,8 @@ public class DeclarationsConverter {
 			}
 		});
 	}
-	private String chooseJavaArg(String name, int iArg, Set<String> names) {
+	
+	private String chooseJavaArgName(String name, int iArg, Set<String> names) {
 		String baseArgName = result.typeConverter.getValidJavaArgumentName(name);
 		int i = 1;
 		if (baseArgName == null)
@@ -777,9 +777,9 @@ public class DeclarationsConverter {
 		
 		String argName;
 		do {
-			argName = "arg" + iArg + (i == 1 ? "" : i + "");
+			argName = baseArgName + iArg + (i == 1 ? "" : i + "");
 			i++;
-		} while (names.contains(argName));
+		} while (names.contains(argName) || !TypeConversion.isValidJavaIdentifier(argName));
 		return argName;
 	}
 

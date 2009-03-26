@@ -456,6 +456,19 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			setTarget(target);
 		}
 		
+		public void flattenDimensions(List<Expression> out) {
+			out.addAll(dimensions);
+		}
+			
+		public List<Expression> flattenDimensions() {
+			List<Expression> dims = new ArrayList<Expression>();
+			if (getTarget() instanceof ArrayRef) {
+				((ArrayRef)getTarget()).flattenDimensions(dims);
+			}
+			flattenDimensions(dims);
+			return dims;
+		}
+		
 		public boolean hasStaticStorageSize() {
 			if (dimensions.isEmpty())
 				return false;
@@ -506,6 +519,13 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		@Override
 		public void accept(Visitor visitor) {
 			visitor.visitArray(this);
+		}
+		public void addDimension(Expression x) {
+			if (x == null)
+				return;
+			
+			x.setParentElement(this);
+			dimensions.add(x);
 		}
 	}
 
