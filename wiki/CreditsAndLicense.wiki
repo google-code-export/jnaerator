@@ -1,11 +1,12 @@
 #summary Credits, included libraries and licenses
+#labels Featured
 
 = Overview =
 
 JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2009 (everything that lies in the com.ochafik.`*` packages).
 
 JNAerator ships with the following libraries :
- * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : slightly patched
+ * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : [http://code.google.com/p/jnaerator/source/browse/trunk/#trunk/libraries/anarres patched wit a few fixes and enhancements]
  * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license, Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others) : unmodified
  * [https://rococoa.dev.java.net/ Rococoa] (LGPL license, Copyright... TODO) : unmodified
  * [http://www.antlr.org/ ANTLR's runtime] (BSD license, Copyright (c) 2003-2008, Terence Parr) : unmodified
