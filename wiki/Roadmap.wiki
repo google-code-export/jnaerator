@@ -4,6 +4,7 @@
 = New features =
 
   # include libraries to generated JARs, w/ auto extract
+  # allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
   # create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
   # make jnaeration features selectable from the GUI & CLI
   # text / xml format for jnaerator config (w/ variables, so that users might contribute configs for well-known libraries)
