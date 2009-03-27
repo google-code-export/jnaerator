@@ -11,7 +11,7 @@
   # include jna.jar & rococoa.jar to generated JARs (optional, otherwise link to them in classpath)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
-
+  # défile source annotations in c comments to alter jmaerator behaviour
 = Enhancements =
 
   # OK cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
