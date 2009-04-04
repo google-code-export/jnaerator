@@ -18,11 +18,11 @@
 
  * [http://en.wikibooks.org/wiki/Reverse_Engineering/Calling_Conventions#THISCALL]
  * [http://en.wikipedia.org/wiki/X86_calling_conventions#optlink]
- * [http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html#export]
 
 = Name Mangling =
 
  * [http://en.wikipedia.org/wiki/Name_mangling#How_different_compilers_mangle_the_same_functions]
+ * [http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html#export]
 
 = Objective-C =
 
