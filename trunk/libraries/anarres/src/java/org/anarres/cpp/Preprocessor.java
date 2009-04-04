@@ -1077,7 +1077,7 @@ public class Preprocessor implements Closeable {
 								LexerException {
 		VirtualFile	pdir = null;
 		if (quoted) {
-			if (!inIncludeNext) {
+			if (!inIncludeNext && parent != null) {
 				VirtualFile	pfile = filesystem.getFile(parent);
 				pdir = pfile.getParentFile();
 				VirtualFile	ifile = pdir.getChildFile(name);
@@ -1187,7 +1187,7 @@ public class Preprocessor implements Closeable {
 			}
 
 			/* Do the inclusion. */
-			include(source.getPath(), tok.getLine(), name, quoted);
+			include(source == null ? null : source.getPath(), tok == null ? -1 : tok.getLine(), name, quoted);
 
 			/* 'tok' is the 'nl' after the include. We use it after the
 			 * #line directive. */
