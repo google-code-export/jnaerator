@@ -27,8 +27,4 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Mangling {
 	String[] value();
-	/*String value();
-	String[] namespace();
-	String[] mangling();
-	boolean classMember() default false;*/
 }
