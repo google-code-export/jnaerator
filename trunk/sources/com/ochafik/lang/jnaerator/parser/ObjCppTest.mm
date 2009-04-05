@@ -59,6 +59,10 @@ typedef struct {
 --
 string name = "ok";
 --
+class CPPClass {
+	static void f();
+};
+--
 extern void **const GC_objfreelist_ptr;
 --
 typedef struct _NSSize {

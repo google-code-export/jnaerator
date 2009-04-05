@@ -572,11 +572,14 @@ functionDeclaration returns [Function function]
 		/* functionPreModifier? { 
 			$function.addModifiers($functionPreModifier.modifier); 
 		}*/
+		preMods1=exportationModifiers {
+			$function.addModifiers($preMods1.modifiers);
+		}
 		returnTypeRef=typeRef? { 
 			$function.setValueType($typeRef.type); 
 		}
-		preMods=exportationModifiers {
-			$function.addModifiers($preMods.modifiers);
+		preMods2=exportationModifiers {
+			$function.addModifiers($preMods2.modifiers);
 		}
 		n=IDENTIFIER { 
 			$function.setName($n.text); 
