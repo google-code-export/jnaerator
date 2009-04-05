@@ -340,7 +340,7 @@ public class TypeConversion {
 						fieldName = ((FieldRef) expression).getName();
 					
 					if (fieldName != null && !fieldName.equals(name)) {
-						simpleTypeRef.replaceBy(resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName), callerLibraryClass));
+						simpleTypeRef.replaceBy(resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName), callerLibraryClass, true));
 						return;
 					}
 				}
