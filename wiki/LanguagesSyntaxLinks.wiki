@@ -19,9 +19,10 @@
  * [http://en.wikibooks.org/wiki/Reverse_Engineering/Calling_Conventions#THISCALL]
  * [http://en.wikipedia.org/wiki/X86_calling_conventions#optlink]
 
-= Name Mangling =
+= C++ Name Mangling =
 
  * [http://en.wikipedia.org/wiki/Name_mangling#How_different_compilers_mangle_the_same_functions]
+ * [http://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B_Name_Mangling]
  * [http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html#export]
 
 = Objective-C =
