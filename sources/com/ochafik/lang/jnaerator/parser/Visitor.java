@@ -135,5 +135,7 @@ public interface Visitor {
 	void visitNullExpression(NullExpression nullExpression);
 
 	void visitReturn(Return return1);
+
+	void visitExternDeclarations(ExternDeclarations externDeclarations);
 	
 }

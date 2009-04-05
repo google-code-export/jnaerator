@@ -109,7 +109,10 @@ public class Enum extends TaggedTypeRef {
 		Element e = super.getNextChild(child);
 		if (e != null)
 			return e;
-		return getNextSibling(items, child);
+		e = getNextSibling(items, child);
+		if (e != null)
+			return e;
+		return super.getNextChild(child);
 	}
 
 	@Override
@@ -117,7 +120,10 @@ public class Enum extends TaggedTypeRef {
 		Element e = super.getPreviousChild(child);
 		if (e != null)
 			return e;
-		return getPreviousSibling(items, child);
+		e = getPreviousSibling(items, child);
+		if (e != null)
+			return e;
+		return super.getPreviousChild(child);
 	}
 
 	@Override
@@ -125,7 +131,10 @@ public class Enum extends TaggedTypeRef {
 		if (super.replaceChild(child, by))
 			return true;
 		
-		return replaceChild(items, EnumItem.class, this, child, by);
+		if (replaceChild(items, EnumItem.class, this, child, by))
+			return true;
+		
+		return super.replaceChild(child, by);
 	}
 
 

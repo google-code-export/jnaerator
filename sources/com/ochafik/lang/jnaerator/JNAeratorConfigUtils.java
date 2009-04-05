@@ -36,6 +36,7 @@ import com.ochafik.admin.visualstudio.Configuration;
 import com.ochafik.admin.visualstudio.Project;
 import com.ochafik.admin.visualstudio.Solution;
 import com.ochafik.admin.visualstudio.VisualStudioUtils;
+import com.ochafik.lang.jnaerator.cplusplus.GCC4Mangler;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.util.SystemUtils;
@@ -233,6 +234,8 @@ public class JNAeratorConfigUtils {
 	 * TODO move this to a .h resource file
 	 */
 	public static void autoConfigure(final JNAeratorConfig config) {
+		config.cPlusPlusManglers.add(new GCC4Mangler());
+		
 		config.preprocessorConfig.includes.addAll(getDefaultIncludePath());//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
 		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath());//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {

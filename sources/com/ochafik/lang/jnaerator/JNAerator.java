@@ -396,7 +396,7 @@ public class JNAerator {
 		sourceFiles.accept(new MissingNamesChooser(result));
 		
 		/// Build JavaDoc comments where applicable
-		sourceFiles.accept(new JavaDocCreator());
+		sourceFiles.accept(new JavaDocCreator(result));
 		
 		//##################################################################
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######

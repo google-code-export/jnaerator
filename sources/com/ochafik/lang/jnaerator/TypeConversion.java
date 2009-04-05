@@ -287,7 +287,7 @@ public class TypeConversion {
 		
 	}
 	
-	public TypeRef resolveTypeDef(TypeRef valueType, final String callerLibraryClass) {
+	public TypeRef resolveTypeDef(TypeRef valueType, final String callerLibraryClass, final boolean convertToJavaRef) {
 		if (valueType == null)
 			return null;
 		
@@ -303,7 +303,8 @@ public class TypeConversion {
 				Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
 				if (p != null) {
 					TypeRef tr = as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
-					if (tr instanceof Struct) {
+					
+					if (convertToJavaRef && tr instanceof Struct) {
 						Struct s = (Struct)tr;
 						if (s.isForwardDeclaration())
 							return;
@@ -367,7 +368,7 @@ public class TypeConversion {
 		
 	JavaPrim getPrimitive(TypeRef valueType, String callerLibraryClass) {
 		
-		valueType = resolveTypeDef(valueType, callerLibraryClass);
+		valueType = resolveTypeDef(valueType, callerLibraryClass, true);
 		String name = null;
 		if (valueType instanceof SimpleTypeRef)
 			name = ((SimpleTypeRef) valueType).getName();
@@ -581,7 +582,7 @@ public class TypeConversion {
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, String callerLibraryClass) throws UnsupportedConversionException {
 		
 		TypeRef original = valueType; 
-		valueType =  resolveTypeDef(valueType, callerLibraryClass);
+		valueType =  resolveTypeDef(valueType, callerLibraryClass, true);
 		
 		String valueTypeString = String.valueOf(valueType);
 		if (valueTypeString.equals("void*"))
@@ -668,7 +669,7 @@ public class TypeConversion {
 				else if (target instanceof Struct) {
 					Struct struct = (Struct)target;
 					if (struct == null) {
-						valueType =  resolveTypeDef(original, callerLibraryClass);
+						valueType =  resolveTypeDef(original, callerLibraryClass, true);
 						struct = null;
 					} else {
 						name = result.declarationsConverter.getActualTaggedTypeName(struct);
@@ -1047,7 +1048,7 @@ public class TypeConversion {
 	}
 
 	private Expression sizeofToJava(TypeRef type, String callerLibraryClass) throws UnsupportedConversionException {
-		type = resolveTypeDef(type, callerLibraryClass);
+		type = resolveTypeDef(type, callerLibraryClass, true);
 //		type = type;
 		
 		Expression res = null;

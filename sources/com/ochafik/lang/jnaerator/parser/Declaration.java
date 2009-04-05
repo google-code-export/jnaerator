@@ -18,7 +18,6 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.ochafik.lang.jnaerator.parser.Struct.MemberVisibility;
 import com.ochafik.util.string.StringUtils;

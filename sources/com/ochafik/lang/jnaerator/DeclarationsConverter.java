@@ -21,17 +21,17 @@ package com.ochafik.lang.jnaerator;
 import static com.ochafik.lang.SyntaxUtils.as;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.*;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
-import com.ochafik.lang.jnaerator.mangling.Namespace;
+import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.*;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.ObjCppParser.Language;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 import com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import com.ochafik.lang.jnaerator.parser.Expression.*;
@@ -342,7 +342,6 @@ public class DeclarationsConverter {
 		Function natFunc = new Function();
 		
 		Element parent = function.getParentElement();
-		
 		List<String> ns = new ArrayList<String>(function.getNameSpace());
 		boolean isMethod = parent instanceof Struct;
 		if (isMethod) {
@@ -350,7 +349,7 @@ public class DeclarationsConverter {
 			ns.addAll(parent.getNameSpace());
 			ns.add(((Struct)parent).getTag());
 		}
-		String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";
+		//String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";
 		//if (!ns.isEmpty())
 		//	natFunc.addAnnotation(new Annotation(Namespace.class, "(value=" + namespaceArrayStr + (isMethod ? ", isClass=true" : "") + ")"));
 		
@@ -373,11 +372,25 @@ public class DeclarationsConverter {
 			if (isCallback) {
 				modifiedMethodName = "invoke";
 			} else {
-				modifiedMethodName = result.typeConverter.getValidJavaMethodName(StringUtils.implode(ns, "_") + (ns.isEmpty() ? "" : "_") + functionName);
-				
+				modifiedMethodName = result.typeConverter.getValidJavaMethodName(StringUtils.implode(ns, result.config.cPlusPlusNameSpaceSeparator) + (ns.isEmpty() ? "" : result.config.cPlusPlusNameSpaceSeparator) + functionName);
 			}
-			if (isCallback || !modifiedMethodName.equals(functionName))
-				natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
+			Set<String> names = new HashSet<String>();
+			//if (ns.isEmpty())
+			
+			if (function.getType() == Type.CppMethod && !function.getModifiers().contains(Modifier.Static))
+				return;
+			
+			if (result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
+				addCPlusPlusMangledNames(function, names);
+			
+			if (!modifiedMethodName.equals(functionName) && ns.isEmpty())
+				names.add(functionName);
+			
+			if (!names.isEmpty())
+				natFunc.addAnnotation(new Annotation(Name.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
+
+			//if (isCallback || !modifiedMethodName.equals(functionName))
+			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
 			
 			natFunc.setName(modifiedMethodName);
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass));
@@ -391,24 +404,24 @@ public class DeclarationsConverter {
 			Function primFunc = alternativeOutputs ? natFunc.clone() : null;
 			Function bufFunc = alternativeOutputs ? natFunc.clone() : null;
 			
-			Set<String> names = new TreeSet<String>();
+			Set<String> argNames = new TreeSet<String>();
 			for (Arg arg : function.getArgs())
 				if (arg.getName() != null) 
-					names.add(arg.getName());
+					argNames.add(arg.getName());
 				
 			int iArg = 1;
 			for (Arg arg : function.getArgs()) {
 				if (arg.isVarArg() && arg.getValueType() == null) {
 					//TODO choose vaname dynamically !
 					String vaType = isObjectiveC ? "NSObject" : "Object";
-					String argName = chooseJavaArgName("varargs", iArg, names);
+					String argName = chooseJavaArgName("varargs", iArg, argNames);
 					natFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
 					if (alternativeOutputs) {
 						primFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
 						bufFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
 					}
 				} else {
-					String argName = chooseJavaArgName(arg.getName(), iArg, names);
+					String argName = chooseJavaArgName(arg.getName(), iArg, argNames);
 					
 					TypeRef mutType = arg.createMutatedType();
 					
@@ -452,6 +465,33 @@ public class DeclarationsConverter {
 			}
 		} catch (UnsupportedConversionException ex) {
 			out.addDeclaration(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
+		}
+	}
+
+	protected boolean isCPlusPlusFileName(String file) {
+		if (file == null)
+			return true;
+			
+		file = file.toLowerCase();
+		return !file.endsWith(".c") && !file.endsWith(".m");
+	}
+	private void addCPlusPlusMangledNames(Function function, Set<String> names) {
+		if (function.getType() == Type.ObjCMethod)
+			return;
+		
+		ExternDeclarations externDeclarations = function.findParentOfType(ExternDeclarations.class);
+		if (externDeclarations != null && !"C++".equals(externDeclarations.getLanguage()))
+			return;
+		
+		if (!isCPlusPlusFileName(Element.getFileOfAscendency(function)))
+			return;
+		
+		for (CPlusPlusMangler mangler : result.config.cPlusPlusManglers) {
+			try {
+				names.add(mangler.mangle(function, result));
+			} catch (Exception ex) {
+				System.err.println("Error in mangling of '" + function.computeSignature(true) + "' : " + ex);
+			}
 		}
 	}
 
@@ -567,7 +607,7 @@ public class DeclarationsConverter {
 			TypeConversion.TypeConversionMode.FieldType,
 			callerLibraryName
 		);
-		mutatedType = result.typeConverter.resolveTypeDef(mutatedType, callerLibraryName);
+		mutatedType = result.typeConverter.resolveTypeDef(mutatedType, callerLibraryName, true);
 		
 		VariablesDeclaration convDecl = new VariablesDeclaration();
 		convDecl.addModifiers(Modifier.Public);

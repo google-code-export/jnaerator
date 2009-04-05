@@ -100,14 +100,10 @@ public class Scanner implements Visitor {
 	}
 	
 	protected void visitDeclaration(Declaration d) {
-		visitElement(d);
+		visitModifiableElement(d);
 		
 		if (d.getValueType() != null)
 			d.getValueType().accept(this);
-		
-		for (Annotation a : d.getAnnotations())
-			if (a != null)
-				a.accept(this);
 		
 		/*visitModifiers(d.getModifiers(), d);
 		
@@ -203,7 +199,7 @@ public class Scanner implements Visitor {
 	}
 
 	protected void visitTypeRef(TypeRef array) {
-		visitElement(array);
+		visitModifiableElement(array);
 	}
 
 	protected void visitTargettedTypeRef(TargettedTypeRef targettedTypeRef) {
@@ -402,6 +398,9 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitModifiableElement(ModifiableElement modifiableElement) {
 		visitElement(modifiableElement);
+		for (Annotation a : modifiableElement.getAnnotations())
+			if (a != null)
+				a.accept(this);
 	}
 
 	@Override
@@ -454,6 +453,14 @@ public class Scanner implements Visitor {
 		visitStatement(return1);
 		if (return1.getValue() != null)
 			return1.getValue().accept(this);
+	}
+
+	@Override
+	public void visitExternDeclarations(ExternDeclarations externDeclarations) {
+		visitDeclaration(externDeclarations);
+		for (Declaration d : externDeclarations.getDeclarations())
+			if (d != null)
+				d.accept(this);
 	}
 
 }

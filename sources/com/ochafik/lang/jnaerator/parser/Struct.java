@@ -175,6 +175,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		String javaExtension = getParents().isEmpty() ? "" : " extends " + StringUtils.implode(getParents(), ", ");
 		String javaImplements = getProtocols().isEmpty() ? "" : " implements " + StringUtils.implode(getProtocols(), ", ");
 		
+		if (getType() != null)
 		switch (getType()) {
 			case CPPClass:
 				return pre + "class" + nameStr + body;
@@ -192,7 +193,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 			default:
 				return pre + "struct" + nameStr + body;
 		}
-		
+		return null;
 	}
 	public void accept(Visitor visitor) {
 		visitor.visitStruct(this);

@@ -97,14 +97,7 @@ public abstract class Declarator extends ModifiableElement {
 		public void accept(Visitor visitor) {
 			visitor.visitDirectDeclarator(this);
 		}
-		@Override
-		public Element getNextChild(Element child) {
-			return null;
-		}
-		@Override
-		public Element getPreviousChild(Element child) {
-			return null;
-		}
+		
 		@Override
 		public boolean replaceChild(Element child, Element by) {
 			return super.replaceChild(child, by);
@@ -324,18 +317,26 @@ public abstract class Declarator extends ModifiableElement {
 		
 		@Override
 		public Element getNextChild(Element child) {
-			return getNextSibling(dimensions, child);
+			Element e = getNextSibling(dimensions, child);
+			if (e != null)
+				return null;
+			return super.getNextChild(child);
 		}
 		
 		@Override
 		public Element getPreviousChild(Element child) {
-			return getPreviousSibling(dimensions, child);
+			Element e = getPreviousSibling(dimensions, child);
+			if (e != null)
+				return null;
+			return super.getPreviousChild(child);
 		}
 		@Override
 		public boolean replaceChild(Element child, Element by) {
 			if (super.replaceChild(child, by))
 				return true;
-			return replaceChild(dimensions, Expression.class, this, child, by);
+			if (replaceChild(dimensions, Expression.class, this, child, by))
+				return true;
+			return super.replaceChild(child, by);
 		}
 		@Override
 		public String toCoreString(CharSequence indent) {
@@ -350,16 +351,6 @@ public abstract class Declarator extends ModifiableElement {
 		}
 	}
 	
-	@Override
-	public Element getNextChild(Element child) {
-		return null;
-	}
-	
-	@Override
-	public Element getPreviousChild(Element child) {
-		return null;
-	}
-
 	public void setDefaultValue(Expression defaultValue) {
 		this.defaultValue = changeValue(this, this.defaultValue, defaultValue);
 	}
@@ -374,7 +365,7 @@ public abstract class Declarator extends ModifiableElement {
 			return true;
 		}
 			
-		return false;
+		return super.replaceChild(child, by);
 	}
 	
 	public boolean isParenthesized() {

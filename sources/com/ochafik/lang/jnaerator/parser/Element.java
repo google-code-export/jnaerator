@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,6 +38,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
+import com.ochafik.lang.jnaerator.parser.ObjCppParser.Language;
 import com.ochafik.lang.reflect.GettersAndSettersHelper;
 import com.ochafik.lang.reflect.GettersAndSettersHelper.GetterAndSetterInfo;
 import com.ochafik.util.listenable.Pair;
@@ -51,6 +53,22 @@ public abstract class Element {
 	String commentBefore, commentAfter;
 	static int nextId = 1;
 	private int id = nextId++;
+	protected EnumSet<Language> possibleLanguages;
+	
+	public EnumSet<Language> getPossibleLanguages() {
+		return possibleLanguages;
+	}
+	public EnumSet<Language> resolvePossibleLanguages() {
+		if (possibleLanguages != null)
+			return possibleLanguages;
+		Element parent = getParentElement();
+		if (parent != null)
+			return parent.resolvePossibleLanguages();
+		return null;
+	}
+	public void setPossibleLanguages(EnumSet<Language> possibleLanguages) {
+		this.possibleLanguages = possibleLanguages;
+	}
 	
 	public int getId() {
 		return id;
@@ -285,8 +303,8 @@ public abstract class Element {
 				fieldName = e.getKey();
 				if (fieldName.equals("parentElement"))
 					continue;
-				if (fieldName.equals("parenthesis"))
-					fieldName = (String)fieldName;
+				if (fieldName.equals("possibleLanguages"))
+					fieldName = fieldName.toString();
 				
 				GetterAndSetterInfo p = e.getValue();
 				if (p.getter == null || p.setter == null)
@@ -310,6 +328,8 @@ public abstract class Element {
 		Class<?> type = value.getClass();
 		if (Element.class.isAssignableFrom(type))
 			return ((Element)value).clone();
+		else if (EnumSet.class.isAssignableFrom(type))
+			return ((EnumSet<?>)value).clone();
 		else if (Collection.class.isAssignableFrom(type))
 			return cloneElements((Collection<?>) value);
 		else if (Map.class.isAssignableFrom(type))
@@ -542,14 +562,18 @@ public abstract class Element {
 	public final String toString() {
 		return toString("");
 	}
+	/*
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
 	}
 	@Override
 	public boolean equals(Object obj) {
-		return toString().equals(String.valueOf(obj));
-	}
+		if (obj == null)
+			return false;
+		String str = toString(), oStr = obj.toString();
+		return str == null ? oStr == null : str.equals(oStr);
+	}*/
 	
 	public abstract String toString(CharSequence indent);
 	

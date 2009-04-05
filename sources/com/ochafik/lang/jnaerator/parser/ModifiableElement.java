@@ -23,14 +23,14 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class ModifiableElement extends Element {
-	protected List<Modifier> modifiers = new ArrayList<Modifier>();
+	protected final List<Modifier> modifiers = new ArrayList<Modifier>();
 	
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visitModifiableElement(this);
 	}
 	
-	final List<Annotation> annotations = new ArrayList<Annotation>();
+	protected final List<Annotation> annotations = new ArrayList<Annotation>();
 	public void addAnnotations(List<Annotation> as) {
 		for (Annotation a : as)
 			addAnnotation(a);

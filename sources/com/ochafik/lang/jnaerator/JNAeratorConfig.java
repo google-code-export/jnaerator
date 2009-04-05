@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.util.listenable.Adapter;
@@ -36,7 +37,7 @@ import com.ochafik.util.listenable.Filter;
 public class JNAeratorConfig {
 
 	public enum Compiler {
-		GCC, MSVC
+		GCC4, MSVC9
 	}
 	public enum Architecture {
 		x86_64, i386, PowerPC
@@ -50,11 +51,15 @@ public class JNAeratorConfig {
 		UsageComments,
 		EnumTypeLocationComments,
 		LibrariesAutoExtraction,
+		CPlusPlusMangling,
 		StructConstructors, 
-		TypedPointersForForwardDeclarations
+		TypedPointersForForwardDeclarations, 
+		OriginalFunctionSignatures, 
+		FunctionArgsJavaDoc
 	}
 	
 	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
+	public final List<CPlusPlusMangler> cPlusPlusManglers = new ArrayList<CPlusPlusMangler>();
 	
 	public static class PreprocessorConfig {
 
@@ -149,6 +154,7 @@ public class JNAeratorConfig {
 	};
 	
 	public String libraryForElementsInNullFile;
+	public String cPlusPlusNameSpaceSeparator = "_";
 	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)
