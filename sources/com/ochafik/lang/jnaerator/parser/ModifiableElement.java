@@ -31,6 +31,10 @@ public abstract class ModifiableElement extends Element {
 	}
 	
 	final List<Annotation> annotations = new ArrayList<Annotation>();
+	public void addAnnotations(List<Annotation> as) {
+		for (Annotation a : as)
+			addAnnotation(a);
+	}
 	public void addAnnotation(Annotation a) {
 		if (a != null) {
 			annotations.add(a);

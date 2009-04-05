@@ -15,7 +15,6 @@ import org.rococoa.NSClass;
 
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
-import com.ochafik.lang.jnaerator.mangling.Name;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.sun.jna.Pointer;
 

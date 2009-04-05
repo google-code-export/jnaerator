@@ -27,7 +27,7 @@ import java.util.*;
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
-import com.ochafik.lang.jnaerator.mangling.Name;
+import com.ochafik.lang.jnaerator.mangling.Namespace;
 import com.ochafik.lang.jnaerator.parser.*;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -38,6 +38,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.util.listenable.Pair;
+import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;
 import com.sun.jna.Pointer;
 
@@ -74,6 +75,13 @@ public class DeclarationsConverter {
 		callbackStruct.setTag(chosenName);
 		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
 		convertFunction(function, new TreeSet<String>(), true, callbackStruct, callerLibraryName);
+		for (Declaration d : callbackStruct.getDeclarations()) {
+			if (d instanceof Function) {
+				callbackStruct.addAnnotations(callbackStruct.getAnnotations());
+				callbackStruct.setAnnotations(null);
+				break;
+			}
+		}
 		out.addDeclaration(new TaggedTypeRefDeclaration(callbackStruct));
 	}
 
@@ -332,6 +340,20 @@ public class DeclarationsConverter {
 			return;
 		
 		Function natFunc = new Function();
+		
+		Element parent = function.getParentElement();
+		
+		List<String> ns = new ArrayList<String>(function.getNameSpace());
+		boolean isMethod = parent instanceof Struct;
+		if (isMethod) {
+			ns.clear();
+			ns.addAll(parent.getNameSpace());
+			ns.add(((Struct)parent).getTag());
+		}
+		String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";
+		//if (!ns.isEmpty())
+		//	natFunc.addAnnotation(new Annotation(Namespace.class, "(value=" + namespaceArrayStr + (isMethod ? ", isClass=true" : "") + ")"));
+		
 		natFunc.setType(Function.Type.JavaMethod);
 		try {
 			//StringBuilder outPrefix = new StringBuilder();
@@ -351,10 +373,11 @@ public class DeclarationsConverter {
 			if (isCallback) {
 				modifiedMethodName = "invoke";
 			} else {
-				modifiedMethodName = result.typeConverter.getValidJavaMethodName(functionName);
-				if (!modifiedMethodName.equals(functionName))
-					natFunc.addAnnotation(new Annotation(Name.class, "(name=\"" + functionName + "\")"));
+				modifiedMethodName = result.typeConverter.getValidJavaMethodName(StringUtils.implode(ns, "_") + (ns.isEmpty() ? "" : "_") + functionName);
+				
 			}
+			if (isCallback || !modifiedMethodName.equals(functionName))
+				natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
 			
 			natFunc.setName(modifiedMethodName);
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, callerLibraryClass));
