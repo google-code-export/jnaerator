@@ -23,7 +23,8 @@
 
  * [http://en.wikipedia.org/wiki/Name_mangling#How_different_compilers_mangle_the_same_functions]
  * [http://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B_Name_Mangling]
- * [http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html#export]
+ * [http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html]
+ * [http://mearie.org/documents/mscmangle]
 
 = Objective-C =
 
