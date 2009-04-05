@@ -1,5 +1,6 @@
 package com.ochafik.lang.jnaerator.cplusplus;
 
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.util.string.StringUtils;
 
@@ -9,6 +10,7 @@ public enum Primitive {
 	Bool, 
 	
 	Char, 
+	SChar, 
 	UChar, 
 	
 	Short, 
@@ -22,7 +24,8 @@ public enum Primitive {
 	
 	Float, 
 	
-	Double;
+	Double, 
+	LongDouble;
 	
 //	LongDouble;
 	
@@ -31,13 +34,19 @@ public enum Primitive {
 	
 	static Primitive parsePrimitive(SimpleTypeRef tr) {
 		String name = tr.getName();
-		name = StringUtils.capitalize(name);
-		if (tr.isUnsigned())
-			name = "U" + name;
+		String basis = StringUtils.capitalize(name);
+		if (Modifier.Unsigned.isContainedBy(tr.getModifiers()))
+			name = "U" + basis;
+		if (Modifier.Signed.isContainedBy(tr.getModifiers()))
+			name = "S" + basis;
 		try {
 			return Primitive.valueOf(name);
 		} catch (Exception ex) {
-			return null;
+			try {
+				return Primitive.valueOf(basis);
+			} catch (Exception ex2) {
+				return null;
+			}
 		}
 	}
 	

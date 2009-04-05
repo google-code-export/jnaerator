@@ -49,14 +49,6 @@ public abstract class ModifiableElement extends Element {
 		changeValue(this, this.annotations, annotations);
 	}
 
-	public boolean isUnsigned() {
-		return (getModifiers().contains(Modifier.__unsigned) ||
-		getModifiers().contains(Modifier.Unsigned));
- 	}
-	public boolean isConst() {
-		return getModifiers().contains(Modifier.__const) ||
-			getModifiers().contains(Modifier.Const);
- 	}
 	@Override
 	public boolean replaceChild(Element child, Element by) {
 		if (replaceChild(annotations, Annotation.class, this, child, by))

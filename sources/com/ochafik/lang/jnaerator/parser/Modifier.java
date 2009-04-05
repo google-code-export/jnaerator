@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +27,12 @@ import java.util.Map;
  * @see http://msdn.microsoft.com/en-us/library/dabb5z75.aspx
  */
 public enum Modifier {
-	_cdecl(Kind.CallingConvention),
 	__cdecl(Kind.CallingConvention),
-	_stdcall(Kind.CallingConvention),
+	_cdecl(__cdecl, Kind.CallingConvention),
 	__stdcall(Kind.CallingConvention),
+	_stdcall(__stdcall, Kind.CallingConvention),
+	__fastcall(Kind.CallingConvention),
+	_fastcall(__fastcall, Kind.CallingConvention),
 	
 	/// VC++ annotations 
 	/// @see http://msdn.microsoft.com/en-us/library/cc264104.aspx
@@ -69,15 +72,15 @@ public enum Modifier {
 	Pascal(Kind.StorageClassSpecifier),
 	//TypeDef(Kind.StorageClassSpecifier), // TODO propagate this to everywhere : need to remove TypeDef class
 	
-	Const(Kind.TypeQualifier), 
 	__const(Kind.TypeQualifier), 
+	Const(__const, Kind.TypeQualifier), 
 	Volatile(Kind.TypeQualifier), 
 	Mutable(Kind.TypeQualifier),
 	
-	Unsigned(Kind.NumericTypeQualifier, Kind.SignModifier),
-	Signed(Kind.NumericTypeQualifier, Kind.SignModifier),
 	__unsigned(Kind.NumericTypeQualifier, Kind.SignModifier),
-	__Signed(Kind.NumericTypeQualifier, Kind.SignModifier),
+	__signed(Kind.NumericTypeQualifier, Kind.SignModifier),
+	Unsigned(__unsigned, Kind.NumericTypeQualifier, Kind.SignModifier),
+	Signed(__signed, Kind.NumericTypeQualifier, Kind.SignModifier),
 	Long(Kind.NumericTypeQualifier, Kind.SizeModifier),
 	Short(Kind.NumericTypeQualifier, Kind.SizeModifier),
 	
@@ -177,6 +180,19 @@ public enum Modifier {
 	Modifier(Modifier alias, Modifier.Kind... kinds) {
 		this(kinds);
 		this.alias = alias;
+	}
+	
+	public Modifier resolveAlias() {
+		if (alias == null)
+			return this;
+		return alias.resolveAlias();
+	}
+	public boolean isContainedBy(Collection<Modifier> modifiers) {
+		Modifier alias = resolveAlias();
+		for (Modifier modifier : modifiers)
+			if (modifier.resolveAlias().equals(alias))
+				return true;
+		return false;
 	}
 	public Modifier getAlias() {
 		return alias;
