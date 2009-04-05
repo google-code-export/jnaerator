@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface Name {
+public @interface Mangling {
 	String[] value();
 	/*String value();
 	String[] namespace();

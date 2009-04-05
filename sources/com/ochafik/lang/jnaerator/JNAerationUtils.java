@@ -47,7 +47,7 @@ public class JNAerationUtils {
 			}
 		});
 		
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", null, Pointer.class, JNAerator.class, NSClass.class, Name.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", null, Pointer.class, JNAerator.class, NSClass.class, Mangling.class);
 		return mfm;
 		/*if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();

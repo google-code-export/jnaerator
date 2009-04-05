@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ochafik.lang.jnaerator.Name;
+import com.ochafik.lang.jnaerator.Mangling;
 import com.sun.jna.FunctionMapper;
 import com.sun.jna.Library;
 import com.sun.jna.NativeLibrary;
@@ -24,7 +24,7 @@ public class MangledFunctionMapper implements FunctionMapper {
 	}
 	@Override
 	public String getFunctionName(NativeLibrary library, Method method) {
-		Name name = method.getAnnotation(Name.class);
+		Mangling name = method.getAnnotation(Mangling.class);
 		if (name != null) {
 			for (String n : name.value()) {
 				try {

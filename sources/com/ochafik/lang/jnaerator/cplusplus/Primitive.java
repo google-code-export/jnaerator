@@ -25,7 +25,11 @@ public enum Primitive {
 	Float, 
 	
 	Double, 
-	LongDouble;
+
+	LongDouble, 
+	
+	LongLong,
+	ULongLong;
 	
 //	LongDouble;
 	
@@ -35,6 +39,8 @@ public enum Primitive {
 	static Primitive parsePrimitive(SimpleTypeRef tr) {
 		String name = tr.getName();
 		String basis = StringUtils.capitalize(name);
+		if (Modifier.Long.isContainedBy(tr.getModifiers()))
+			basis = "Long" + basis;
 		if (Modifier.Unsigned.isContainedBy(tr.getModifiers()))
 			name = "U" + basis;
 		if (Modifier.Signed.isContainedBy(tr.getModifiers()))

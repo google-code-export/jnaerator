@@ -124,6 +124,8 @@ public class GCC4Mangler implements CPlusPlusMangler {
 		signatures.put(Primitive.SChar, 	"c"); 
 		signatures.put(Primitive.UChar,	 	"h"); 
 		signatures.put(Primitive.Long, 		"l"); 
+		signatures.put(Primitive.LongLong,	"x"); 
+		signatures.put(Primitive.ULongLong, "y");
 		signatures.put(Primitive.ULong,	 	"m"); 
 		signatures.put(Primitive.Int, 		"i"); 
 		signatures.put(Primitive.UInt, 		"j"); 
@@ -131,6 +133,8 @@ public class GCC4Mangler implements CPlusPlusMangler {
 		signatures.put(Primitive.UShort, 	"t"); 
 		signatures.put(Primitive.Bool, 		"b"); 
 		signatures.put(Primitive.Float, 	"f"); 
-		signatures.put(Primitive.Double, 	"d");
+		signatures.put(Primitive.Double, 	"d"); 
+		signatures.put(Primitive.LongDouble,"e");
+		
 	}
 }

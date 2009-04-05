@@ -33,6 +33,10 @@ public enum Modifier {
 	_stdcall(__stdcall, Kind.CallingConvention),
 	__fastcall(Kind.CallingConvention),
 	_fastcall(__fastcall, Kind.CallingConvention),
+	__thiscall(Kind.CallingConvention),
+	_thiscall(__thiscall, Kind.CallingConvention),
+	__pascal(Kind.CallingConvention),
+	_pascal(__pascal, Kind.CallingConvention),
 	
 	/// VC++ annotations 
 	/// @see http://msdn.microsoft.com/en-us/library/cc264104.aspx

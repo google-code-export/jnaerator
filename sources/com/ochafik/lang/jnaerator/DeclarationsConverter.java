@@ -374,7 +374,7 @@ public class DeclarationsConverter {
 			} else {
 				modifiedMethodName = result.typeConverter.getValidJavaMethodName(StringUtils.implode(ns, result.config.cPlusPlusNameSpaceSeparator) + (ns.isEmpty() ? "" : result.config.cPlusPlusNameSpaceSeparator) + functionName);
 			}
-			Set<String> names = new HashSet<String>();
+			Set<String> names = new LinkedHashSet<String>();
 			//if (ns.isEmpty())
 			
 			if (function.getType() == Type.CppMethod && !function.getModifiers().contains(Modifier.Static))
@@ -387,7 +387,7 @@ public class DeclarationsConverter {
 				names.add(functionName);
 			
 			if (!names.isEmpty())
-				natFunc.addAnnotation(new Annotation(Name.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
+				natFunc.addAnnotation(new Annotation(Mangling.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
 
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
