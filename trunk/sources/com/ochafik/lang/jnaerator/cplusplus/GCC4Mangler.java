@@ -161,7 +161,7 @@ public class GCC4Mangler implements CPlusPlusMangler {
 		if (name == null)
 			return null;
 		
-		StringBuilder b = new StringBuilder("__Z");
+		StringBuilder b = new StringBuilder("_Z");
 		
 		Element parent = function.getParentElement();
 		List<String> ns = new ArrayList<String>(function.getNameSpace());

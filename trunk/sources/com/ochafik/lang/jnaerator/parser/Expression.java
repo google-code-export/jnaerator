@@ -33,6 +33,46 @@ public abstract class Expression extends Element {
 	
 	
 
+	public static class OpaqueExpression extends Expression {
+		String opaqueString;
+		public void setOpaqueString(String opaqueString) {
+			this.opaqueString = opaqueString;
+		}
+		public String getOpaqueString() {
+			return opaqueString;
+		}
+		public OpaqueExpression() {
+		}
+		public OpaqueExpression(String opaqueString) {
+			setOpaqueString(opaqueString);
+		}
+		
+		@Override
+		protected String toInnerString(CharSequence indent) {
+			return getOpaqueString();
+		}
+
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitOpaqueExpression(this);
+		}
+
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			return false;
+		}
+
+	}
 	boolean parenthesis;
 	public Expression setParenthesis(boolean parenthesis) {
 		this.parenthesis = parenthesis;
