@@ -14,13 +14,13 @@
   # défile source annotations in c comments to alter jmaerator behaviour
 = Enhancements =
 
-  # OK cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
+  # *OK* cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
   # add option to switch NativeLong off : on MSVC++ 64bits, long is 32 bits !
-  # prefer simple names for structs and enums (S typedef instead of `_`S tag)
+  # *OK* prefer simple names for structs and enums (S typedef instead of `_`S tag)
   # add progression bar to studio
   # select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
   # add option not to keep comments (then by default, do not include sources in generated JAR)
-  # automated tests for Objective-C (long time no try !)
+  # *~* automated tests for Objective-C (long time no try !)
   # enhance test coverage of JNAerator with the new JNAerationTests infrastructure
   # enhance the error reporting of parsing (work on antlr grammar) and of compilation
   # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)

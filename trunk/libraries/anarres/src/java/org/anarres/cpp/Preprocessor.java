@@ -1,7 +1,6 @@
 /*
  * Anarres C Preprocessor
  * Copyright (c) 2007-2008, Shevek
- * Copyright (c) 2009, Olivier Chafik (changes/additions flagged with ochafik)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -382,7 +381,7 @@ public class Preprocessor implements Closeable {
 	public void setQuoteIncludePath(List<String> path) {
 		this.quoteincludepath = path;
 	}
-	
+
 	/**
 	 * Returns the user include-path of this Preprocessor.
 	 *
@@ -391,7 +390,7 @@ public class Preprocessor implements Closeable {
 	public List<String> getQuoteIncludePath() {
 		return quoteincludepath;
 	}
-	
+
 	/**
 	 * Sets the system include path used by this Preprocessor.
 	 */
@@ -408,7 +407,7 @@ public class Preprocessor implements Closeable {
 	public List<String> getSystemIncludePath() {
 		return sysincludepath;
 	}
-	
+
 	/**
 	 * Sets the Objective-C frameworks path used by this Preprocessor.
 	 */
@@ -416,7 +415,7 @@ public class Preprocessor implements Closeable {
 	public void setFrameworksPath(List<String> path) {
 		this.frameworkspath = path;
 	}
-	
+
 	/**
 	 * Returns the Objective-C frameworks path used by this
 	 * Preprocessor.
@@ -426,7 +425,7 @@ public class Preprocessor implements Closeable {
 	public List<String> getFrameworksPath() {
 		return frameworkspath;
 	}
-	
+
 	/**
 	 * Returns the Map of Macros parsed during the run of this
 	 * Preprocessor.
@@ -434,7 +433,7 @@ public class Preprocessor implements Closeable {
 	public Map<String,Macro> getMacros() {
 		return macros;
 	}
-	
+
 	/**
 	 * Returns the named macro.
 	 *
@@ -604,22 +603,8 @@ public class Preprocessor implements Closeable {
 	private Token source_skipline(boolean white)
 						throws IOException,
 								LexerException {
-		Source s = source;
-		Token tok = s.skipline(white);
-		if (tok.getType() == EOF && s.isAutopop()) {
-			// System.out.println("Autopop " + s);
-			pop_source();
-			Source	t = getSource();
-			if (getFeature(Feature.LINEMARKERS)
-					&& s.isNumbered()
-					&& t != null) {
-				/* We actually want 'did the nested source
-				 * contain a newline token', which isNumbered()
-				 * approximates. This is not perfect, but works. */
-				return line_token(t.getLine() + 1, t.getName(), " 2");
-			}
-		}
-		return tok;
+		// (new Exception("skipping line")).printStackTrace(System.out);
+		return source.skipline(white);
 	}
 
 	/* processes and expands a macro. */
@@ -840,7 +825,7 @@ public class Preprocessor implements Closeable {
 
 		return expansion;
 	}
-	
+
 	/* processes a #define directive */
 	private Token define()
 						throws IOException,
@@ -1201,7 +1186,7 @@ public class Preprocessor implements Closeable {
 			lexer.setInclude(false);
 		}
 	}
-	
+
 	protected void pragma(Token name, List<Token> value)
 						throws IOException,
 								LexerException {
