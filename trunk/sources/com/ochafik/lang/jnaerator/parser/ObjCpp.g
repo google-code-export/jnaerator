@@ -53,6 +53,7 @@ options {
 
 package com.ochafik.lang.jnaerator.parser;
 import java.util.Arrays;
+import java.util.EnumSet;
 import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
 import static com.ochafik.lang.jnaerator.parser.Declaration.*;
@@ -61,12 +62,37 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 }
 
 @members {
+	public enum Language {
+		C, CPlusPlus, ObjectiveC
+	}
+	public EnumSet<Language> possibleLanguages = EnumSet.allOf(Language.class);
+	
 	String lastComment;
 	String file;
 	int sourceLineDelta = 0; // line(token) = token.line - lastLineToken.line + lastLine; sourceLineDelta = lastLine - lastLineToken.line
 	//String pack;
-	public void setFile(String file) { 
-		this.file = file; 
+	public void setFile(String file) {
+		this.file = file;
+		possibleLanguages = guessPossibleLanguages(file);
+	}
+	
+	public EnumSet<Language> guessPossibleLanguages(String file) {
+		int i = file.lastIndexOf(".");
+		if (i > 0) {
+			String ext = file.substring(i + 1).toLowerCase();
+		
+			if (ext.equals("h"))
+				return EnumSet.allOf(Language.class);
+			else if (ext.equals("c"))
+				return EnumSet.of(Language.C);
+			else if (ext.startsWith("c") || ext.startsWith("h")) // cxx, hxx
+				return EnumSet.of(Language.C, Language.CPlusPlus);
+			else if (ext.equals("m"))
+				return EnumSet.of(Language.C, Language.ObjectiveC);
+			else if (ext.equals("mm"))
+				return EnumSet.allOf(Language.class);
+		}
+		return EnumSet.allOf(Language.class);
 	}
 	public String getFile() { 
 		return file; 
@@ -82,7 +108,8 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	
 	protected <T extends Element> T mark(T element, int tokenLine) {
 		element.setElementFile(getFile());
-		element.setElementLine(tokenLine + sourceLineDelta);
+		if (tokenLine >= 0)
+			element.setElementLine(tokenLine + sourceLineDelta);
 		return element;
 	}
 	protected String getCommentBefore() {
@@ -214,17 +241,19 @@ sourceFile returns [SourceFile sourceFile]
 	 	EOF
 	;
 
-externDeclarations returns [List<Declaration> declarations]
-	:	{ $declarations = new ArrayList<Declaration>(); }
-		{ next("extern") }? IDENTIFIER
-		STRING 
+externDeclarations returns [ExternDeclarations declarations]
+	:	{ next("extern") }? IDENTIFIER
+		STRING {
+			$declarations = mark(new ExternDeclarations(), getLine($STRING));
+			$declarations.setLanguage($STRING.text);
+		}
 		'{' 
 			(
 				ed=declaration { 
-					$declarations.addAll($ed.declarations); 
+					$declarations.addDeclarations($ed.declarations); 
 				}
 			)* 
-		'}' 
+		'}'
 	;
 
 declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex]
@@ -245,6 +274,9 @@ declaration returns [List<Declaration> declarations, List<Modifier> modifiers, S
 				//'#import' '<' 
 				functionDeclaration {
 					$declarations.add($functionDeclaration.function);
+				} |
+				externDeclarations {
+					$declarations.add($externDeclarations.declarations); 
 				} |
 				varDecl { 
 					$declarations.add($varDecl.decl); 
@@ -517,14 +549,24 @@ structCore	returns [Struct struct, List<Modifier> modifiers]
 						$struct.addDeclarations($declaration.declarations);
 					}
 				)*
-			'}'
-		)
+			'}' {
+				Function.Type forcedType = null;
+				if ($struct.getType() == Struct.Type.CPPClass)
+					forcedType = Function.Type.CppMethod;
+				
+				if (forcedType != null)
+				for (Declaration d : $struct.getDeclarations()) {
+					if (d instanceof Function)
+						((Function)d).setType(forcedType);
+				}
+			}
+		)	
 	;
 
 //structInsides returns [List<Declaration> declarations, Struct.MemberVisibility
 functionDeclaration returns [Function function]
 	:	{ 	
-			$function = new Function();
+			$function = mark(new Function(), -1);
 			$function.setType(Function.Type.CFunction);
 		}
 		/* functionPreModifier? { 

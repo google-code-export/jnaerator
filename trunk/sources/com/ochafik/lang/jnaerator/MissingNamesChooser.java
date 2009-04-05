@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -40,7 +39,6 @@ import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
-import com.ochafik.swing.syntaxcoloring.SyntaxUtilities;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 

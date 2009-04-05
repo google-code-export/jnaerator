@@ -18,8 +18,6 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-import com.ochafik.util.string.StringUtils;
-
 public class EmptyDeclaration extends Declaration {
 
 	public EmptyDeclaration() {}

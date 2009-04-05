@@ -31,14 +31,21 @@ import com.ochafik.util.string.StringUtils;
 public abstract class TypeRef extends ModifiableElement implements Declarator.MutableByDeclarator {
 	
 	public static abstract class TaggedTypeRef extends TypeRef {
-		String tag;
+		String tag, originalTag;
 		public String getTag() {
 			return tag;
 		}
 		public void setTag(String tag) {
 			this.tag = tag;
+			if (originalTag == null)
+				setOriginalTag(tag);
 		}
-		
+		public void setOriginalTag(String originalTag) {
+			this.originalTag = originalTag;
+		}
+		public String getOriginalTag() {
+			return originalTag;
+		}
 		public boolean isForwardDeclaration() {
 			return forwardDeclaration;
 		}
@@ -58,21 +65,6 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 	@Override
 	public TypeRef clone() {
 		return (TypeRef) super.clone();
-	}
-	
-	@Override
-	public Element getNextChild(Element child) {
-		return null;
-	}
-	
-	@Override
-	public Element getPreviousChild(Element child) {
-		return null;
-	}
-	
-	@Override
-	public boolean replaceChild(Element child, Element by) {
-		return false;
 	}
 	
 	public static class SimpleTypeRef extends TypeRef {
@@ -169,22 +161,12 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		}
 
 		@Override
-		public Element getNextChild(Element child) {
-			return null;
-		}
-
-		@Override
-		public Element getPreviousChild(Element child) {
-			return null;
-		}
-
-		@Override
 		public boolean replaceChild(Element child, Element by) {
 			if (getFunction() == child) {
 				setFunction((Function) by);
 				return true;
 			}
-			return false;
+			return super.replaceChild(child, by);
 		}
 	}
 	
@@ -439,7 +421,7 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 				setTarget((TypeRef) by);
 				return true;
 			}
-			return false;
+			return super.replaceChild(child, by);
 		}
 
 			
@@ -482,12 +464,18 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 
 		@Override
 		public Element getNextChild(Element child) {
-			return getNextSibling(dimensions, child);
+			Element e = getNextSibling(dimensions, child);
+			if (e != null)
+				return e;
+			return super.getNextChild(child);
 		}
 		
 		@Override
 		public Element getPreviousChild(Element child) {
-			return getPreviousSibling(dimensions, child);
+			Element e = getPreviousSibling(dimensions, child);
+			if (e != null)
+				return e;
+			return super.getPreviousChild(child);
 		}
 		
 		@Override
@@ -495,7 +483,10 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			if (super.replaceChild(child, by))
 				return true;
 			
-			return replaceChild(dimensions, Expression.class, this, child, by);
+			if (replaceChild(dimensions, Expression.class, this, child, by))
+				return true;
+			
+			return super.replaceChild(child, by);
 		}
 		
 		public List<Expression> getDimensions() {

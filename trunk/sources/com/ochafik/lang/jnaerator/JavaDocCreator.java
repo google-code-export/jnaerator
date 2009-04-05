@@ -1,5 +1,6 @@
 package com.ochafik.lang.jnaerator;
 
+import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -8,9 +9,15 @@ import com.ochafik.util.string.StringUtils;
 
 public class JavaDocCreator extends Scanner {
 	
+	Result result;
+	public JavaDocCreator(Result result) {
+		this.result = result;
+	}
+	
 	@Override
 	public void visitFunction(Function function) {
-		function.addToCommentBefore("Original signature : <code>" + function.computeSignature(true) + "</code>");
+		if (result.config.features.contains(GenFeatures.OriginalFunctionSignatures))
+			function.addToCommentBefore("Original signature : <code>" + function.computeSignature(true) + "</code>");
 //		function.addToCommentBefore("File : " + Element.getFileOfAscendency(function));
 		super.visitFunction(function);
 //		if (function.getValueType() != null && !function.getValueType().toString().equals("void"))
@@ -30,6 +37,9 @@ public class JavaDocCreator extends Scanner {
 		super.visitArg(arg);
 		if (arg.getName() == null)
 			return;
+		if (!result.config.features.contains(GenFeatures.FunctionArgsJavaDoc))
+			return;
+			
 		String ca = arg.getCommentAfter(), cb = arg.getCommentBefore();
 		if (ca == null && cb == null)
 			return;

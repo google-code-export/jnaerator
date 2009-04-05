@@ -24,13 +24,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
-
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Modifier;
-import com.ochafik.lang.jnaerator.parser.PrintScanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
@@ -39,7 +36,6 @@ import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
-import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.util.CompoundCollection;
 
 class ObjCClass {

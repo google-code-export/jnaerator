@@ -193,9 +193,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		}
 		b.append(getName());
 		boolean first = true;
+		b.append('(');
 		for (Arg arg : getArgs()) {
 			if (first) {
-				b.append('(');
 				first = false;
 			} else 
 				b.append(", ");
