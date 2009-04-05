@@ -27,28 +27,30 @@ import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 
 public class GCC4Mangler implements CPlusPlusMangler {
 	
-	protected void mangleArgType(TypeRef tr, StringBuilder b, Result result) {
+	protected void mangleType(TypeRef tr, StringBuilder b, Result result) {
 		if (tr instanceof TypeRef.TargettedTypeRef) {
 			if (tr instanceof TypeRef.Pointer && ((TypeRef.Pointer)tr).getPointerStyle() == PointerStyle.Reference)
 				b.append("R");
 			else
 				b.append("P");
-			if (tr.isConst())
+			if (Modifier.Const.isContainedBy(tr.getModifiers()))
 				b.append("K");
-			mangleArgType(((TypeRef.TargettedTypeRef)tr).getTarget(), b, result);
+			mangleType(((TypeRef.TargettedTypeRef)tr).getTarget(), b, result);
 		} else if (tr instanceof TypeRef.SimpleTypeRef) {
 			SimpleTypeRef str = (SimpleTypeRef) tr;
 			TypeRef resolved = result.typeConverter.resolveTypeDef(str, null, false);
 			if (resolved != null && !resolved.toString().equals(str.toString())) {
-				mangleArgType(resolved, b, result);
+				mangleType(resolved, b, result);
 				return;
 			}
 			Primitive p = Primitive.parsePrimitive(str);
@@ -60,6 +62,12 @@ public class GCC4Mangler implements CPlusPlusMangler {
 			}
 		} else if (tr instanceof TaggedTypeRef) {
 			lenghtedName(((TaggedTypeRef)tr).getOriginalTag(), b);
+		} else if (tr instanceof FunctionSignature) {
+			FunctionSignature fs = (FunctionSignature) tr;
+			b.append("PF");
+			mangleType(fs.getFunction().getValueType(), b, result);
+			mangleArgs(fs.getFunction().getArgs(), b, result);
+			b.append("E");
 		} else {
 			throw new UnsupportedOperationException("Cannot mangle type references of class " + tr.getClass().getName() + " : '" + tr + "'");
 		}
@@ -95,20 +103,25 @@ public class GCC4Mangler implements CPlusPlusMangler {
 				b.append("E");
 		}
 		
-		if (function.getArgs().isEmpty())
+		mangleArgs(function.getArgs(), b, result);
+		return b.toString();
+	}
+	private void mangleArgs(List<Arg> args, StringBuilder b, Result result) {
+
+		if (args.isEmpty())
 			b.append("v");
 		else {
-			for (Arg arg : function.getArgs()) {
+			for (Arg arg : args) {
 				TypeRef tr = arg.createMutatedType();
-				mangleArgType(tr, b, result);
+				mangleType(tr, b, result);
 			}
 		}
-		return b.toString();
 	}
 	static Map<Primitive, String> signatures = new HashMap<Primitive, String>();
 	static {
 		signatures.put(Primitive.Void, 		"v");
 		signatures.put(Primitive.Char, 		"c"); 
+		signatures.put(Primitive.SChar, 	"c"); 
 		signatures.put(Primitive.UChar,	 	"h"); 
 		signatures.put(Primitive.Long, 		"l"); 
 		signatures.put(Primitive.ULong,	 	"m"); 
