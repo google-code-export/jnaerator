@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.ochafik.lang.jnaerator.mangling;
+package com.ochafik.lang.jnaerator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,5 +27,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Name {
 	String value();
-	//String manglingScheme();
+	String[] namespace();
+	boolean classMember() default false;
 }

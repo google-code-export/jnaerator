@@ -45,6 +45,7 @@ import com.ochafik.util.string.StringUtils;
 public abstract class Element {
 	//List<Element> parentElements = new ArrayList<Element>(); 
 	Element parentElement;
+	protected List<String> nameSpace = new ArrayList<String>();
 	String elementFile;
 	int elementLine = -1;
 	String commentBefore, commentAfter;
@@ -60,9 +61,23 @@ public abstract class Element {
 		setElementFile(null);
 		setElementLine(-1);
 	}
+	public void addNameSpace(String nameSpace) {
+		this.nameSpace.add(0, nameSpace);
+	}
+	public List<String> getNameSpace() {
+		return unmodifiableList(nameSpace);
+	}
+	public void setNameSpace(List<String> nameSpace) {
+		this.nameSpace.clear();
+		this.nameSpace.addAll(nameSpace);
+	}
+	
 	public Element importDetails(Element from, boolean move) {
 		if (from == null)
 			return this;
+		
+		if (!from.getNameSpace().isEmpty())
+			setNameSpace(from.getNameSpace());
 		
 		if (from.getElementFile() != null)
 			setElementFile(from.getElementFile());
@@ -526,6 +541,14 @@ public abstract class Element {
 	@Override
 	public final String toString() {
 		return toString("");
+	}
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		return toString().equals(String.valueOf(obj));
 	}
 	
 	public abstract String toString(CharSequence indent);

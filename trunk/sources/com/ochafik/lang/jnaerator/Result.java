@@ -250,7 +250,7 @@ public class Result extends Scanner {
 			if (parent instanceof Struct) {
 				Struct parentStruct = (Struct)parent;
 				switch (parentStruct.getType()) {
-					case CPPClass:
+					//case CPPClass:
 					case JavaClass:
 					case JavaInterface:
 					case ObjCClass:

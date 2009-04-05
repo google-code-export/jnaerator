@@ -24,7 +24,6 @@ import com.ochafik.lang.jnaerator.parser.Struct.MemberVisibility;
 import com.ochafik.util.string.StringUtils;
 
 public abstract class Declaration extends ModifiableElement {
-	protected List<String> nameSpace = new ArrayList<String>();
 	protected String name;
 	protected TypeRef valueType;
 	public MemberVisibility visibility;
@@ -66,16 +65,6 @@ public abstract class Declaration extends ModifiableElement {
 			name = null;
 		
 		this.name = name;
-	}
-	public void addNameSpace(String nameSpace) {
-		this.nameSpace.add(0, nameSpace);
-	}
-	public List<String> getNameSpace() {
-		return unmodifiableList(nameSpace);
-	}
-	public void setNameSpace(List<String> nameSpace) {
-		this.nameSpace.clear();
-		this.nameSpace.addAll(nameSpace);
 	}
 	public void setVisibility(MemberVisibility visibility) {
 		this.visibility = visibility;

@@ -73,6 +73,8 @@ public class ObjCppElementsTests {
 		fieldsExcludedFromGetterSetterChecks.add("previousSibling"); 
 		fieldsExcludedFromGetterSetterChecks.add("nextSibling"); 
 		fieldsExcludedFromGetterSetterChecks.add("class");
+		fieldsExcludedFromGetterSetterChecks.add("const");
+		fieldsExcludedFromGetterSetterChecks.add("unsigned");
 		fieldsExcludedFromGetterSetterChecks.add("gettersAndSetters");
 		fieldsExcludedFromGetterSetterChecks.add("modifiersStringPrefix");
 		fieldsExcludedFromGetterSetterChecks.add("id");
