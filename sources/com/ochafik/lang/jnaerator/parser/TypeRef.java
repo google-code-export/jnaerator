@@ -188,8 +188,8 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		}
 	}
 	
-	public static class Primitive extends TypeRef {
-		protected String name;
+	public static class Primitive extends SimpleTypeRef {//TypeRef {
+		//protected String name;
 		
 		static Set<String> cPrimitiveTypes = new HashSet<String>();
 		static {
@@ -230,12 +230,12 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			return (Primitive)super.addModifiers(mds);
 		}
 
-		public String getName() {
+		/*public String getName() {
 			return name;
 		}
 		public void setName(String name) {
 			this.name = name;
-		}
+		}*/
 		@Override
 		public String toString(CharSequence indent) {
 			return getModifiersStringPrefix() + name;

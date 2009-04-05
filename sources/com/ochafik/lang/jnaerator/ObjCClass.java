@@ -85,8 +85,10 @@ class ObjCClass {
 			out.println("import " + pn + ".*;");
 		}
 		out.println("import org.rococoa.ID;");
-		out.println("import org.rococoa.NSObject;");
-		out.println("import org.rococoa.NSClass;");
+		if (!"NSObject".equals(type.getTag()))
+			out.println("import org.rococoa.NSObject;");
+		if (!"NSClass".equals(type.getTag()))
+			out.println("import org.rococoa.NSClass;");
 		out.println(toRococoaHeaderDOMWithCategories(fullClassName));
 		//out.println(toRococoaHeaderWithCategories());
 		out.close();

@@ -15,6 +15,7 @@ import org.rococoa.NSClass;
 
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
+import com.ochafik.lang.jnaerator.mangling.Name;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.sun.jna.Pointer;
 
@@ -47,7 +48,7 @@ public class JNAerationUtils {
 			}
 		});
 		
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", null, Pointer.class, JNAerator.class, NSClass.class, RenameSymbol.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", null, Pointer.class, JNAerator.class, NSClass.class, Name.class);
 		return mfm;
 		/*if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();

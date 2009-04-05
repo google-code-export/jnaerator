@@ -324,6 +324,14 @@ public class JNAerator {
 					continue;
 				out.println("import " + pn + ".*;");
 			}
+			for (String otherLibrary : result.libraries) {
+				if (otherLibrary == null)
+					continue;
+				
+				String otherJavaPackage = result.javaPackageByLibrary.get(otherLibrary);
+				String otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
+				out.println("import static " + (otherJavaPackage == null  || otherJavaPackage.length() == 0 ? "" : otherJavaPackage + ".") + otherLibraryClassName + ".*;");
+			}
 			if (!result.objCClasses.isEmpty())
 				out.println("import org.rococoa.ID;");
 			

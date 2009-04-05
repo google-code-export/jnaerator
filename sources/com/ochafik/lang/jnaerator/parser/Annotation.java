@@ -18,31 +18,50 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-/// TODO implement me better !
 public class Annotation extends Element {
 
-	public Annotation(String string) {
-		super();
-		this.string = string;
-	}
-
-	String string;
+	Class<? extends java.lang.annotation.Annotation> annotationClass;
+	String arguments;
 	
 	public Annotation() {
 		
 	}
 	
-	@Override
-	public String toString(CharSequence indent) {
-		return indent + getString();
+	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass, String arguments) {
+		setAnnotationClass(annotationClass);
+		setArguments(arguments);
+	}
+	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass) {
+		setAnnotationClass(annotationClass);
+	}
+
+	public void setArguments(String arguments) {
+		this.arguments = arguments;
+	}
+	public String getArguments() {
+		return arguments;
 	}
 	
-	public String getString() {
+	public Class<? extends java.lang.annotation.Annotation> getAnnotationClass() {
+		return annotationClass;
+	}
+	public void setAnnotationClass(
+			Class<? extends java.lang.annotation.Annotation> annotationClass) {
+		this.annotationClass = annotationClass;
+	}
+	
+	@Override
+	public String toString(CharSequence indent) {
+		return indent + "@" + getAnnotationClass().getName() + (getArguments() != null ? getArguments() : "");
+	}
+	
+	/*public String getString() {
 		return string;
 	}
 	public void setString(String string) {
 		this.string = string;
-	}
+	}*/
+	
 	
 	@Override
 	public void accept(Visitor visitor) {

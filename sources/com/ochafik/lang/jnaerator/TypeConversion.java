@@ -38,6 +38,7 @@ import org.rococoa.NSObject;
 
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
+
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -286,7 +287,7 @@ public class TypeConversion {
 		
 	}
 	
-	TypeRef resolveTypeDef(TypeRef valueType, final String callerLibraryClass) {
+	public TypeRef resolveTypeDef(TypeRef valueType, final String callerLibraryClass) {
 		if (valueType == null)
 			return null;
 		
@@ -350,7 +351,20 @@ public class TypeConversion {
 	public static boolean resolvesToPrimitive(String name) {
 		return javaPrims.containsKey(name);
 	}
-	
+//	TypeRef getPrimitiveRef(TypeRef valueType, String callerLibraryClass) {
+//		JavaPrim prim = getPrimitive(valueType, callerLibraryClass);
+//		if (prim == null)
+//			return null;
+//		
+//		TypeRef tr = typeRef(prim);
+//		if (valueType.isUnsigned())
+//			tr.addAnnotation(new Annotation(Unsigned.class));
+//		if (valueType.isUnsigned())
+//			tr.addAnnotation(new Annotation(Unsigned.class));
+//		
+//		return tr;
+//	}
+		
 	JavaPrim getPrimitive(TypeRef valueType, String callerLibraryClass) {
 		
 		valueType = resolveTypeDef(valueType, callerLibraryClass);
@@ -425,7 +439,8 @@ public class TypeConversion {
 		//return new SimpleTypeRef(SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name);
 		
 		SimpleTypeRef tr = new SimpleTypeRef("int");
-		tr.setCommentBefore("@see " + (SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "#" + name));
+		if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
+			tr.setCommentBefore("@see " + (SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "#" + name));
 //		if (s.getTag() != null)
 //			tr.setCommentBefore("@see enums in " + s.getTag());
 		return tr;
@@ -634,7 +649,8 @@ public class TypeConversion {
 				return typeRef(((FunctionSignature)valueType).getFunction().getName());
 		}
 		if (valueType instanceof TargettedTypeRef) {
-			TypeRef target = resolveTypeDef(((TargettedTypeRef) valueType).getTarget(), callerLibraryClass);
+			//TypeRef target = resolveTypeDef(((TargettedTypeRef) valueType).getTarget(), callerLibraryClass);
+			TypeRef target = ((TargettedTypeRef) valueType).getTarget();
 			
 			boolean staticallySized = valueType instanceof ArrayRef && ((ArrayRef)valueType).hasStaticStorageSize();
 			
@@ -678,8 +694,7 @@ public class TypeConversion {
 						TypeRef structRef = findStructRef(name, callerLibraryClass);
 						if (structRef != null) {//result.cStructNames.contains(name)) {
 			 				switch (conversionMode) {
-								case NativeParameter:
-								case PrimitiveParameter:
+								case ExpressionType:
 								case FieldType:
 									convArgType = typeRef(structRef, SubTypeRef.Style.Dot, "ByReference");
 									if (valueType instanceof Pointer)
