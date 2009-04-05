@@ -28,18 +28,8 @@ public abstract class Declaration extends ModifiableElement {
 	protected String name;
 	protected TypeRef valueType;
 	public MemberVisibility visibility;
-	
-	final List<Annotation> annotations = new ArrayList<Annotation>();
-	
-	@Override
-	public Element getNextChild(Element child) {
-		return getNextSibling(annotations, child);
-	}
-	@Override
-	public Element getPreviousChild(Element child) {
-		return getPreviousSibling(annotations, child);
-	}
 
+	
 	@Override
 	public Declaration clone() {
 		return (Declaration) super.clone();
@@ -60,27 +50,9 @@ public abstract class Declaration extends ModifiableElement {
 			setValueType((TypeRef) by);
 			return true;
 		}
-		if (replaceChild(annotations, Annotation.class, this, child, by))
-			return true;
+		return super.replaceChild(child, by);
+	}
 		
-		return false;
-	}
-	
-	public void addAnnotation(Annotation a) {
-		if (a != null) {
-			annotations.add(a);
-			a.setParentElement(this);
-		}
-	}
-
-	public List<Annotation> getAnnotations() {
-		return unmodifiableList(annotations);
-	}
-	public void setAnnotations(List<Annotation> annotations) {
-		changeValue(this, this.annotations, annotations);
-	}
-
-	
 	public String getModifiersStringPrefix() {
 		List<Modifier> mods = getModifiers();
 		return StringUtils.implode(mods, " ") + (mods.isEmpty() ? "" : " ");

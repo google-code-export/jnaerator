@@ -76,7 +76,7 @@ public enum Modifier {
 	
 	Unsigned(Kind.NumericTypeQualifier, Kind.SignModifier),
 	Signed(Kind.NumericTypeQualifier, Kind.SignModifier),
-	__Unsigned(Kind.NumericTypeQualifier, Kind.SignModifier),
+	__unsigned(Kind.NumericTypeQualifier, Kind.SignModifier),
 	__Signed(Kind.NumericTypeQualifier, Kind.SignModifier),
 	Long(Kind.NumericTypeQualifier, Kind.SizeModifier),
 	Short(Kind.NumericTypeQualifier, Kind.SizeModifier),

@@ -82,8 +82,8 @@ import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
-import com.ochafik.lang.jnaerator.RenameSymbol;
 import com.ochafik.lang.jnaerator.SourceFiles;
+import com.ochafik.lang.jnaerator.mangling.Name;
 import com.ochafik.swing.UndoRedoUtils;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
@@ -467,7 +467,7 @@ public class JNAeratorStudio extends JPanel {
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
 			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", getDir("cache"), Pointer.class, JNAerator.class, NSClass.class, RenameSymbol.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", getDir("cache"), Pointer.class, JNAerator.class, NSClass.class, Name.class);
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {

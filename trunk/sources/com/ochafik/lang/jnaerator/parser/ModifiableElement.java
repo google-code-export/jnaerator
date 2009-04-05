@@ -29,6 +29,48 @@ public abstract class ModifiableElement extends Element {
 	public void accept(Visitor visitor) {
 		visitor.visitModifiableElement(this);
 	}
+	
+	final List<Annotation> annotations = new ArrayList<Annotation>();
+	public void addAnnotation(Annotation a) {
+		if (a != null) {
+			annotations.add(a);
+			a.setParentElement(this);
+		}
+	}
+
+	public List<Annotation> getAnnotations() {
+		return unmodifiableList(annotations);
+	}
+	public void setAnnotations(List<Annotation> annotations) {
+		changeValue(this, this.annotations, annotations);
+	}
+
+	public boolean isUnsigned() {
+		return (getModifiers().contains(Modifier.__unsigned) ||
+		getModifiers().contains(Modifier.Unsigned));
+ 	}
+	public boolean isConst() {
+		return getModifiers().contains(Modifier.__const) ||
+			getModifiers().contains(Modifier.Const);
+ 	}
+	@Override
+	public boolean replaceChild(Element child, Element by) {
+		if (replaceChild(annotations, Annotation.class, this, child, by))
+			return true;
+		
+		return false;
+	}
+	
+
+	@Override
+	public Element getNextChild(Element child) {
+		return getNextSibling(annotations, child);
+	}
+	@Override
+	public Element getPreviousChild(Element child) {
+		return getPreviousSibling(annotations, child);
+	}
+
 	public ModifiableElement addModifiers(List<Modifier> mods) {
 		if (mods != null)
 			for (Modifier mod : mods) {

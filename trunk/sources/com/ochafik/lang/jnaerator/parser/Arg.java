@@ -18,6 +18,8 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import com.ochafik.util.string.StringUtils;
+
 public class Arg extends Declaration {
 	String selector;
 	boolean varArg;
@@ -108,14 +110,18 @@ public class Arg extends Declaration {
 	public String toString(CharSequence indent) {
 		//if (isVarArg())
 		//	return "...";
-		///else 
+		///else
+		String ann = "";
+		if (!getAnnotations().isEmpty())
+			ann = StringUtils.implode(getAnnotations(), "\n" + indent) + "\n" + indent;
+		
 		if (getValueType() == null)
 			return null;
 		else if (getValueType() != null) {
 			if (getName() != null)
-				return getValueType().variableDeclarationToString(getName(), isVarArg());
+				return ann + getValueType().variableDeclarationToString(getName(), isVarArg());
 			else
-				return getValueType().toString() + (isVarArg() ? "..." : "");
+				return ann + getValueType().toString() + (isVarArg() ? "..." : "");
 		} else
 			return "...";
 	}

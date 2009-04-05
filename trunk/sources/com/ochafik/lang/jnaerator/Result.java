@@ -47,16 +47,16 @@ import com.sun.jna.Platform;
 
 public class Result extends Scanner {
 
-	final JNAeratorConfig config;
-	final ClassOutputter classOutputter;
-	final TypeConversion typeConverter = new TypeConversion(this);
-	final DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
-	final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
+	public final JNAeratorConfig config;
+	public final ClassOutputter classOutputter;
+	public final TypeConversion typeConverter = new TypeConversion(this);
+	public final DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
+	public final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
 	
 	/**
 	 * @param aerator
 	 */
-	Result(JNAeratorConfig config, ClassOutputter classOutputter) {
+	public Result(JNAeratorConfig config, ClassOutputter classOutputter) {
 		this.config = config;
 		this.classOutputter = classOutputter;
 	}

@@ -46,6 +46,9 @@ public class JNAeratorConfig {
 	}
 	public enum GenFeatures {
 		Compile,
+		FileComments,
+		UsageComments,
+		EnumTypeLocationComments,
 		LibrariesAutoExtraction,
 		StructConstructors, 
 		TypedPointersForForwardDeclarations
@@ -74,7 +77,7 @@ public class JNAeratorConfig {
 	public Map<File, String> libraryByFile = new HashMap<File, String>();
 	public void addFile(File file, String library) throws IOException {
 		if (file.isFile()) {
-			if (fileFilter.accept(file)) {
+			if (fileFilter == null || fileFilter.accept(file)) {
 				libraryByFile.put(file.getCanonicalFile(), library);
 			}
 		} else {

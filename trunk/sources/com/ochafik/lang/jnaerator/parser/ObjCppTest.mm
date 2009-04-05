@@ -66,15 +66,17 @@ typedef struct _NSSize {
 	CGFloat height; /* height should never be negative */
 } NSSize;
 --
+void f() {}
+--
 /// Struct comment
 struct ParamBlockRec {
 	int ok; // comment after ok
 };
 --
 /// these are comments...
-void *CreateHandle(int size);
+void* CreateHandle(int size);
 --
-void **ResizeHandle(void** h, int size);
+void** ResizeHandle(void** h, int size);
 --
 BOOL (*isEqual)(NSMapTable* table, const void*, const void*);
 --

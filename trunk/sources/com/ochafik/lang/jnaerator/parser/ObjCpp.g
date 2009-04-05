@@ -317,23 +317,30 @@ enumCore returns [Enum e]
 		t='enum' { 
 			$e = mark(new Enum(), getLine($t));
 			$e.setCommentBefore(getCommentBefore($t.getTokenIndex()));
-		} (
+			$e.setForwardDeclaration(true);
+		} 
+		(
 			n1=IDENTIFIER {
 				$e.setTag($n1.text);
 			}
 		)? 
-		'{'
-			i1=enumItem { 
-				$e.addItem($i1.item); 
-			}
-			(
-				',' 
-				(ix=enumItem { 
-					if ($ix.text != null)
-						$e.addItem($ix.item); 
-				})?
-			)*
-		'}'
+		(
+			'{' { $e.setForwardDeclaration(false); }
+				(  
+					i1=enumItem { 
+						if ($i1.text != null)
+							$e.addItem($i1.item); 
+					}
+					(
+						',' 
+						(ix=enumItem { 
+							if ($ix.text != null)
+								$e.addItem($ix.item); 
+						})?
+					)*
+				)?
+			'}'
+		)?
 	;
 		
 /*
@@ -536,10 +543,10 @@ functionDeclaration returns [Function function]
 		argList {
 			$function.setArgs($argList.args);
 		}
-		{ next("const", "__const") }? ct=IDENTIFIER?{
+		({ next("const", "__const") }? ct=IDENTIFIER {
 			if ($ct.text != null)
 				$function.addModifiers(Modifier.Const);
-		} 
+		} |)
 		postMods=exportationModifiers {
 			for (Modifier m : $postMods.modifiers)
 				$function.addModifiers(m);
@@ -550,10 +557,6 @@ functionDeclaration returns [Function function]
 			
 			}
 		)
-	;
-
-functionDefinition
-	:	functionDeclaration '{' '}'
 	;
 	
 exportationModifiers returns [List<Modifier> modifiers]
@@ -744,7 +747,7 @@ typeRefCore returns [TypeRef type]
 
 templateDef
 	:	'template' '<' (templateArgDecl (',' templateArgDecl)* )? '>'
-		structCore | functionDefinition
+		structCore | functionDeclaration
 	;
 	
 templateArgDecl

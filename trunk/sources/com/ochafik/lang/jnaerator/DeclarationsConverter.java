@@ -21,11 +21,13 @@ package com.ochafik.lang.jnaerator;
 import static com.ochafik.lang.SyntaxUtils.as;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.*;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
+import com.ochafik.lang.jnaerator.mangling.Name;
 import com.ochafik.lang.jnaerator.parser.*;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -178,6 +180,9 @@ public class DeclarationsConverter {
 	}
 	
 	private void convertEnum(Enum e, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+		if (e.isForwardDeclaration())
+			return;
+		
 		DeclarationsHolder localOut = out;
 		Set<String> localSignatures = signatures;
 		
@@ -186,7 +191,8 @@ public class DeclarationsConverter {
 		if (enumName != null) {
 			
 			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
-			enumInterf.addToCommentBefore("enum values");
+			if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
+				enumInterf.addToCommentBefore("enum values");
 			out.addDeclaration(new TaggedTypeRefDeclaration(enumInterf));
 			
 			localSignatures = new HashSet<String>();
@@ -347,7 +353,7 @@ public class DeclarationsConverter {
 			} else {
 				modifiedMethodName = result.typeConverter.getValidJavaMethodName(functionName);
 				if (!modifiedMethodName.equals(functionName))
-					natFunc.addAnnotation(new Annotation("@" + RenameSymbol.class.getName() + "(name=\"" + functionName + "\")"));
+					natFunc.addAnnotation(new Annotation(Name.class, "(name=\"" + functionName + "\")"));
 			}
 			
 			natFunc.setName(modifiedMethodName);
@@ -405,7 +411,7 @@ public class DeclarationsConverter {
 						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primSign + "} instead"));
 					else
 						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primSign + "} and {@link #" + bufSign + "} instead"));
-					natFunc.setAnnotations(Arrays.asList(new Annotation("@Deprecated")));
+					natFunc.addAnnotation(new Annotation(Deprecated.class));
 				}
 				collectParamComments(natFunc);
 				out.addDeclaration(natFunc);
