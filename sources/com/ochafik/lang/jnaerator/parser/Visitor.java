@@ -34,6 +34,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
 import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
 import com.ochafik.lang.jnaerator.parser.Expression.NullExpression;
+import com.ochafik.lang.jnaerator.parser.Expression.OpaqueExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
@@ -137,5 +138,7 @@ public interface Visitor {
 	void visitReturn(Return return1);
 
 	void visitExternDeclarations(ExternDeclarations externDeclarations);
+
+	void visitOpaqueExpression(OpaqueExpression opaqueExpression);
 	
 }

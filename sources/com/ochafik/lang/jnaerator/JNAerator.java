@@ -36,6 +36,7 @@ import org.junit.runner.JUnitCore;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
+import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Expression;
@@ -44,6 +45,10 @@ import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
+import com.ochafik.lang.jnaerator.parser.Struct.Type;
+import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
@@ -335,26 +340,44 @@ public class JNAerator {
 			if (!result.objCClasses.isEmpty())
 				out.println("import org.rococoa.ID;");
 			
-			out.println();
-			out.println(Element.formatComments("", null, null, false, true, true, "JNA Wrapper for library <b>" + library + "</b>", 
-					result.declarationsConverter.getFileCommentContent(result.config.libraryProjectSources.get(library), null)));
-			out.println("public interface " + libraryClassName + " extends " + Library.class.getName() + "\n{");
 			
-			String libraryNameExpression = result.getLibraryFileExpression(library);
-			out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
-			out.println();
+			Struct interf = new Struct();
+			interf.addToCommentBefore("JNA Wrapper for library <b>" + library + "</b>",
+					result.declarationsConverter.getFileCommentContent(result.config.libraryProjectSources.get(library), null)
+			);
+			interf.setType(Type.JavaInterface);
+			interf.addModifiers(Modifier.Public);
+			interf.setTag(libraryClassName);
+			interf.setParents(Library.class.getName());
+			
+			Expression libNameExpr = new Expression.OpaqueExpression(result.getLibraryFileExpression(library));
+			TypeRef libTypeRef = new TypeRef.SimpleTypeRef(libraryClassName);
+			VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator("INSTANCE",
+				new Expression.Cast(
+					libTypeRef, 
+					new Expression.FunctionCall(
+						new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(Native.class.getName())),
+						"loadLibrary",
+						MemberRefStyle.Dot,
+						libNameExpr,
+						new Expression.FieldRef(new Expression.TypeRefExpression(libTypeRef), "class", MemberRefStyle.Dot),
+						new Expression.FieldRef(new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(MangledFunctionMapper.class.getName())), "DEFAULT_OPTIONS", MemberRefStyle.Dot)
+						
+					)
+				)
+			));
+			interf.addDeclaration(instanceDecl);
+			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
 			
 			Set<String> signatures = result.getSignaturesForOutputClass(libraryClassName);
 			
-			DeclarationsHolder children = new DeclarationsHolder.ListWrapper(new ArrayList<Declaration>());
-			
-			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, children, libraryClassName);
-			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, children, libraryClassName);
-			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, children, libraryClassName);
-			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, children, libraryClassName);
-			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, children, libraryClassName);
+			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, libraryClassName);
+			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, interf, libraryClassName);
+			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, libraryClassName);
+			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, libraryClassName);
+			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, libraryClassName);
 
-			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, children, libraryClassName);
+			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName);
 			
 			for (String fakePointer : result.typeConverter.fakePointersSink) {
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, Pointer.class.getName(), Struct.Type.JavaClass, null);
@@ -363,16 +386,11 @@ public class JNAerator {
 				).addModifiers(Modifier.Public).setBody(new Statement.Block(
 					new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer")))
 				)));
-				children.addDeclaration(result.declarationsConverter.decl(ptClass));
+				interf.addDeclaration(result.declarationsConverter.decl(ptClass));
 			}
 			result.typeConverter.fakePointersSink = null;
 			
-			for (Declaration d : children.getDeclarations()) {
-				out.println();
-				out.println("\t" + d.toString("\t"));
-			}
-			
-			out.println("}");
+			out.println(interf);
 			out.close();
 		}
 	}
