@@ -40,7 +40,6 @@ public class MangledFunctionMapper implements FunctionMapper {
 	public MangledFunctionMapper(FunctionMapper linked ) {
 		this.linked = linked;
 	}
-	@Override
 	public String getFunctionName(NativeLibrary library, Method method) {
 		Mangling name = method.getAnnotation(Mangling.class);
 		if (name != null) {

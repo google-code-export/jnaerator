@@ -238,6 +238,8 @@ public class JNAeratorConfigUtils {
 		config.cPlusPlusManglers.add(new GCC4Mangler());
 		config.cPlusPlusManglers.add(new VC9Mangler());
 		
+		addCPlusPlus(config.preprocessorConfig);
+		
 		config.preprocessorConfig.includes.addAll(getDefaultIncludePath());//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
 		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath());//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
