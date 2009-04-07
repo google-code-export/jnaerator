@@ -13,6 +13,20 @@ import com.ochafik.util.listenable.Filter;
 
 public class URLUtils {
 
+	public static URL getResource(Class<?> cl, String path) throws IOException {
+		String clp = cl.getName().replace('.', '/') + ".class";
+		URL clu = cl.getClassLoader().getResource(clp);
+		String s = clu.toString();
+		if (s.endsWith(clp))
+			return new URL(s.substring(0, s.length() - clp.length()) + path);
+		
+		if (s.startsWith("jar:")) {
+			String[] ss = s.split("!");
+			return new URL(ss[1] + "!/" + path);
+		}
+		return null;
+	}
+	
 	public static List<URL> listFiles(URL directory, Filter<String> pathAccepter) throws IOException {
 		List<URL> ret = new ArrayList<URL>();
 		String s = directory.toString();
