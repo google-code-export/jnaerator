@@ -131,6 +131,7 @@ public abstract class Element {
 			s = s.replaceAll("^/\\*++!?", "").replaceAll("\\*/$", "");
 			s = s.replaceAll("\n\\s+", "\n").replaceAll("\n\\*\\s?+", "\n");
 		}
+		s = s.replaceAll("\\*/", "* /");
 		s = s.replaceAll("<br/?>\n", "\n");
 		s = s.replaceAll("<br/?>$", "");
 		return s.trim();

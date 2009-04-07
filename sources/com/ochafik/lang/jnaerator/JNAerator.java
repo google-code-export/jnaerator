@@ -20,19 +20,32 @@ package com.ochafik.lang.jnaerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
+import org.rococoa.NSClass;
 
+import com.ochafik.lang.compiler.CompilerUtils;
+import com.ochafik.lang.compiler.MemoryFileManager;
+import com.ochafik.lang.compiler.MemoryFileObject;
+import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
@@ -48,8 +61,11 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
+import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
+import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
+import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -169,7 +185,8 @@ public class JNAerator {
 			
 			List<String> frameworks = new ArrayList<String>();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
-//			boolean auto = false;
+			boolean auto = false;
+			File outputJar = null;
 			String currentLibrary = null;
 			for (int iArg = 0, len = args.length; iArg < len; iArg++) {
 				String arg = args[iArg];
@@ -192,6 +209,8 @@ public class JNAerator {
 					config.verbose = true;
 				else if (arg.equals("-package"))
 					config.packageName = args[++iArg];
+				else if (arg.equals("-jar"))
+					outputJar = new File(args[++iArg]);
 				else if (arg.equals("-test")) {
 					try {
 						JUnitCore.main(JNAeratorTests.class.getName());
@@ -259,11 +278,72 @@ public class JNAerator {
 			
 			//if (auto)
 			JNAeratorConfigUtils.autoConfigure(config);
-			new JNAerator(config).jnaerate();
+			
+			JNAerator jnaerator = new JNAerator(config);
+			
+			if (outputJar == null)
+				jnaerator.jnaerate();
+			else
+				createJar(jnaerator, outputJar, getDir("cache"));
+			//mapLibraryName
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	private static void createJar(JNAerator jnaerator, File outputJar, File cacheDir) throws IOException, LexerException, RecognitionException, SyntaxException {
+		SourceFiles sourceFiles = jnaerator.parse();
+		
+		JavaCompiler c = CompilerUtils.getJavaCompiler();
+		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+		final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
+		
+		jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
+			@Override
+			public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
+				MemoryJavaFile c = new MemoryJavaFile(className.replace('.', '/') + ".java", (String)null, JavaFileObject.Kind.SOURCE);
+				mfm.inputs.put(c.getPath().toString(), c);
+				return new PrintWriter(c.openWriter());
+			}
+		});
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", cacheDir, Pointer.class, JNAerator.class, NSClass.class, Mangling.class);
+		if (!diagnostics.getDiagnostics().isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(Locale.getDefault()));//.toUri());
+			}
+			System.out.println(sb);
+			throw new SyntaxException(sb.toString());
+		}
+		List<Pair<String, File>> additionalFiles = new ArrayList<Pair<String,File>>();
+		for (String library : new HashSet<String>(jnaerator.config.libraryByFile.values())) {
+			String libraryFileName = System.mapLibraryName(library);
+			File libraryFile = new File(libraryFileName); 
+			//TODO lookup in library path
+			if (!libraryFile.exists() && libraryFileName.endsWith(".jnilib"))
+				libraryFile = new File(libraryFileName = libraryFileName.substring(0, libraryFileName.length() - ".jnilib".length()) + ".dylib");
+				
+			if (libraryFile.exists()) {
+				System.out.println("Bundling " + libraryFile);
+				additionalFiles.add(new Pair<String, File>("libraries/" + libraryFileName, libraryFile));
+			} else {
+				System.out.println("File " + libraryFileName + " not found");
+				
+			}
+		}
+		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
+	}
+	public static File getDir(String name) {
+		File dir = new File(getDir(), name);
+		dir.mkdirs();
+		return dir;
+	}
+	public static File getDir() {
+		File dir = new File(System.getProperty("user.home"));
+		dir = new File(dir, ".jnaerator");
+		dir = new File(dir, "temp");
+		dir.mkdirs();
+		return dir;
 	}
 	
 	public void jnaerate() throws IOException, LexerException, RecognitionException {
@@ -352,6 +432,8 @@ public class JNAerator {
 			
 			Expression libNameExpr = new Expression.OpaqueExpression(result.getLibraryFileExpression(library));
 			TypeRef libTypeRef = new TypeRef.SimpleTypeRef(libraryClassName);
+			Expression libClassLiteral = new Expression.FieldRef(new Expression.TypeRefExpression(libTypeRef), "class", MemberRefStyle.Dot);
+			
 			VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator("INSTANCE",
 				new Expression.Cast(
 					libTypeRef, 
@@ -359,8 +441,15 @@ public class JNAerator {
 						new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(Native.class.getName())),
 						"loadLibrary",
 						MemberRefStyle.Dot,
-						libNameExpr,
-						new Expression.FieldRef(new Expression.TypeRefExpression(libTypeRef), "class", MemberRefStyle.Dot),
+						new Expression.FunctionCall(
+								new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(LibraryExtractor.class.getName())),
+								"getLibraryPath",
+								MemberRefStyle.Dot,
+								libNameExpr,
+								new Expression.Constant(Expression.Constant.Type.Bool, true),
+								libClassLiteral//new Expression.FunctionCall(libClassLitteral, "getClassLoader", MemberRefStyle.Dot)
+						),
+						libClassLiteral,
 						new Expression.FieldRef(new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(MangledFunctionMapper.class.getName())), "DEFAULT_OPTIONS", MemberRefStyle.Dot)
 						
 					)

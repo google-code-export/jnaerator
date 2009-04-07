@@ -43,6 +43,8 @@ extern long long int llrint(double);
 typedef int I; 
 I register i; 
 --
+char* initstate(unsigned, char*, size_t); /* no  __DARWIN_ALIAS needed */
+--
 int register unsigned g;
 --
 /**

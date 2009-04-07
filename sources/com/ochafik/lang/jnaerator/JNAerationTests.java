@@ -111,7 +111,7 @@ public class JNAerationTests {
 		//List<URL> list = URLUtils.listFiles(new URL("jar:file:/Users/ochafik/Prog/Java/bin/jnaerator.jar!/com/ochafik/lang/jnaerator"), null);
 		List<Object[]> data = new ArrayList<Object[]>();
 		
-		URL dir = JNAerationTests.class.getClassLoader().getResource("tests");
+		URL dir = JNAerationTests.class.getClassLoader().getResource("/com/ochafik/lang/jnaerator/tests");
 		File debugLocalDir = new File("/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/tests");
 		if (debugLocalDir.exists())
 			dir = debugLocalDir.toURI().toURL();

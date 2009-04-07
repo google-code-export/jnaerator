@@ -166,8 +166,14 @@ public class MissingNamesChooser extends Scanner {
 	private boolean chooseNameIfMissing(FunctionSignature functionSignature) {
 		Function function = functionSignature.getFunction();
 		if (function != null && function.getName() == null) {// || parent instanceof VariablesDeclaration) {
-			List<String> ownerNames = JNAeratorUtils.guessOwnerName(function);
-			String name = chooseName(functionSignature, ownerNames);
+			String name = null;
+			String exact = JNAeratorUtils.getExactTypeDefName(functionSignature);
+			if (exact != null)
+				name = exact;
+			else {
+				List<String> ownerNames = JNAeratorUtils.guessOwnerName(function);
+				name = chooseName(functionSignature, ownerNames);
+			}
 			if (name != null) {
 				function.setName(name);
 				function.accept(this);
