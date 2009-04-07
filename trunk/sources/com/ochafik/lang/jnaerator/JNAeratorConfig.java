@@ -96,8 +96,8 @@ public class JNAeratorConfig {
 	}
 
 	public JNAeratorConfig() {
-		if (System.getenv("POINTER_CLASSES") == null)
-			features.remove(GenFeatures.TypedPointersForForwardDeclarations);
+//		if (System.getenv("POINTER_CLASSES") == null)
+//			features.remove(GenFeatures.TypedPointersForForwardDeclarations);
 	}
 	public boolean verbose = false;
 	public File outputDir = new File(".");

@@ -459,7 +459,7 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitExternDeclarations(ExternDeclarations externDeclarations) {
 		visitDeclaration(externDeclarations);
-		for (Declaration d : externDeclarations.getDeclarations())
+		for (Declaration d : new ArrayList<Declaration>(externDeclarations.getDeclarations()))
 			if (d != null)
 				d.accept(this);
 	}

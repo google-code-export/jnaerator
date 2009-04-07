@@ -30,8 +30,16 @@ import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 
 public class JNAeratorUtils {
+	static String getExactTypeDefName(Element e) {
+		Element parent = e.getParentElement();
+		if (parent == null || !(parent instanceof TypeDef))
+			return null;
+		TypeDef td = (TypeDef) parent;
+		return findBestPlainStorageName(td);
+	}
 	static List<String> guessOwnerName(Element e) {
 		Element parent = e.getParentElement();
 		if (parent == null)
@@ -59,6 +67,7 @@ public class JNAeratorUtils {
 				String bestName = findBestPlainStorageName(sd);
 				if (bestName != null) {
 					ns.add(0, bestName);
+					
 				}
 			} else if (parent instanceof Expression) {
 				if (!ns.contains("expression"))

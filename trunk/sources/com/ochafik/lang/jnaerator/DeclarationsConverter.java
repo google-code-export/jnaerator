@@ -380,13 +380,13 @@ public class DeclarationsConverter {
 			if (function.getType() == Type.CppMethod && !function.getModifiers().contains(Modifier.Static))
 				return;
 			
-			if (result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
+			if (!isCallback && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
 				addCPlusPlusMangledNames(function, names);
 			
 			if (!modifiedMethodName.equals(functionName) && ns.isEmpty())
 				names.add(functionName);
 			
-			if (!names.isEmpty())
+			if (!isCallback && !names.isEmpty())
 				natFunc.addAnnotation(new Annotation(Mangling.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
 
 			//if (isCallback || !modifiedMethodName.equals(functionName))
@@ -405,9 +405,9 @@ public class DeclarationsConverter {
 			Function bufFunc = alternativeOutputs ? natFunc.clone() : null;
 			
 			Set<String> argNames = new TreeSet<String>();
-			for (Arg arg : function.getArgs())
-				if (arg.getName() != null) 
-					argNames.add(arg.getName());
+//			for (Arg arg : function.getArgs())
+//				if (arg.getName() != null) 
+//					argNames.add(arg.getName());
 				
 			int iArg = 1;
 			for (Arg arg : function.getArgs()) {
@@ -424,6 +424,8 @@ public class DeclarationsConverter {
 					String argName = chooseJavaArgName(arg.getName(), iArg, argNames);
 					
 					TypeRef mutType = arg.createMutatedType();
+					if (mutType == null)
+						throw new UnsupportedConversionException(function, "Argument " + arg.getName() + " cannot be converted");
 					
 					if (mutType.toString().contains("NSOpenGLContextParameter")) {
 						argName = argName.toString();
@@ -846,7 +848,7 @@ public class DeclarationsConverter {
 		
 		String argName;
 		do {
-			argName = baseArgName + iArg + (i == 1 ? "" : i + "");
+			argName = baseArgName + (i == 1 ? "" : i + "");
 			i++;
 		} while (names.contains(argName) || !TypeConversion.isValidJavaIdentifier(argName));
 		return argName;

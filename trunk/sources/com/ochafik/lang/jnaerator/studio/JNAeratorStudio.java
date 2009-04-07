@@ -399,7 +399,7 @@ public class JNAeratorStudio extends JPanel {
 					jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 						@Override
 						public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
-							final ResultContent c = new ResultContent(className);
+							ResultContent c = new ResultContent(className);
 							results.add(c);
 							return c.getPrintWriter();
 						}
@@ -478,7 +478,7 @@ public class JNAeratorStudio extends JPanel {
 			System.out.println(sb);
 			throw new SyntaxException(sb.toString());
 		}
-		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true);
+		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true, null);
 		showJarButton.setEnabled(true);
 	}
 //	private void displayError(Exception e) {

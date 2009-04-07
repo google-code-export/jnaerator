@@ -39,6 +39,7 @@ import org.rococoa.NSObject;
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
+import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -321,18 +322,24 @@ public class TypeConversion {
 				
 				TypeRef manualTypeRef = manualTypeDefs.get(name);
 				if (manualTypeRef != null) {
+					if (!convertToJavaRef)
+						return;
 					simpleTypeRef.replaceBy(manualTypeRef);
 					return;
 				}
 				
 				TypeRef structRef = result.typeConverter.findStructRef(name, callerLibraryClass);
 				if (structRef != null) {
+					if (!convertToJavaRef)
+						return;
 					simpleTypeRef.replaceBy(structRef);
 				}
 				
 				Define define = result.defines.get(name);
 				Expression expression = define == null ? null : define.getValue();
 				if (expression != null) {
+					if (!convertToJavaRef)
+						return;
 					String fieldName = null;
 					if (expression instanceof Expression.VariableRef) 
 						fieldName = ((Expression.VariableRef) expression).getName();
@@ -584,10 +591,22 @@ public class TypeConversion {
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType, callerLibraryClass, true);
 		
+//		if (original.toString().contains("CvArr"))
+//			original = original;
 		String valueTypeString = String.valueOf(valueType);
-		if (valueTypeString.equals("void*"))
-			valueType = (TypeRef)valueType;
-		else {
+		if (valueTypeString.matches("void\\s*\\*") || valueTypeString.matches("const\\s*void\\s*\\*")) {
+			//valueType = (TypeRef)valueType;
+			if (original instanceof Pointer && result.config.features.contains(GenFeatures.TypedPointersForForwardDeclarations) && fakePointersSink != null) {
+				Pointer p = (Pointer) original;
+				if (p.getTarget() instanceof SimpleTypeRef) {
+					String name = ((SimpleTypeRef)p.getTarget()).getName();
+					if (!"void".equals(name)) {
+						fakePointersSink.add(name);
+						return typeRef(name);
+					}
+				}
+			}
+		} else {
 			if (conversionMode == TypeConversionMode.BufferParameter ||
 					conversionMode == TypeConversionMode.PrimitiveParameter) 
 			{
@@ -717,7 +736,7 @@ public class TypeConversion {
 										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations) &&
 										fakePointersSink != null) {
 									fakePointersSink.add(name);
-									return new TypeRef.SimpleTypeRef(name);
+									return typeRef(name);
 								} else {
 									return typeRef(com.sun.jna.Pointer.class);
 								}

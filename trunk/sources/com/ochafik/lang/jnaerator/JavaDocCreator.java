@@ -5,6 +5,7 @@ import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.util.string.StringUtils;
 
 public class JavaDocCreator extends Scanner {
@@ -16,7 +17,7 @@ public class JavaDocCreator extends Scanner {
 	
 	@Override
 	public void visitFunction(Function function) {
-		if (result.config.features.contains(GenFeatures.OriginalFunctionSignatures))
+		if (!(function.getParentElement() instanceof FunctionSignature) && result.config.features.contains(GenFeatures.OriginalFunctionSignatures))
 			function.addToCommentBefore("Original signature : <code>" + function.computeSignature(true) + "</code>");
 //		function.addToCommentBefore("File : " + Element.getFileOfAscendency(function));
 		super.visitFunction(function);

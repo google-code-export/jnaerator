@@ -920,7 +920,7 @@ public abstract class Expression extends Element {
 
 	public static class Constant extends Expression {
 		public enum Type {
-			Int, String, Char, IntegerString, Float, Short, Byte, Long, UInt, Double, LongString, ULong
+			Int, String, Char, IntegerString, Float, Short, Byte, Long, UInt, Double, LongString, ULong, Bool
 		}
 		public enum IntForm {
 			Hex, Octal, String
@@ -968,6 +968,8 @@ public abstract class Expression extends Element {
 			case String:
 				value = (String)value;
 				break;
+			case Bool:
+				value = (Boolean)value;
 			}
 		}
 		
@@ -1079,6 +1081,11 @@ public abstract class Expression extends Element {
 					b.append(intStr((int)((longVal >>> 32) & 0xffffffffL)));
 					b.append('\'');
 					break;
+				case Bool:
+					b.append(((Boolean)value).toString());
+					break;
+				default:
+					throw new UnsupportedOperationException("toInnerString not implemented for constqnt type " + getType());	
 				}
 			}
 			return b.toString();
