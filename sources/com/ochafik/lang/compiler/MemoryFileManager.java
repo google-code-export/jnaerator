@@ -18,10 +18,13 @@
 */
 package com.ochafik.lang.compiler;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -31,18 +34,31 @@ import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
+import com.ochafik.io.IOUtils;
+import com.ochafik.util.listenable.Pair;
+
 
 public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 	public final Map<String, MemoryJavaFile> inputs = new HashMap<String, MemoryJavaFile>();
 	public final Map<String, MemoryFileObject> outputs = new HashMap<String, MemoryFileObject>();
 
-	public void writeJar(OutputStream out, boolean outputSources) throws IOException {
+	public void writeJar(OutputStream out, boolean outputSources, List<Pair<String, File>> additionalFiles) throws IOException {
 		JarOutputStream jout = new JarOutputStream(out);
 		if (outputSources)
 			for (MemoryFileObject o : inputs.values())
 				writeEntry(o, jout);
 		for (MemoryFileObject o : outputs.values())
 			writeEntry(o, jout);
+		
+		if (additionalFiles != null)
+			for (Pair<String, File> additionalFile : additionalFiles) {
+				FileInputStream in = new FileInputStream(additionalFile.getSecond());
+				JarEntry e = new JarEntry(additionalFile.getFirst());
+				jout.putNextEntry(e);
+				IOUtils.readWrite(in, jout);
+				in.close();
+				jout.closeEntry();
+			}
 		jout.close();
 	}
 	protected void writeEntry(MemoryFileObject o, JarOutputStream jout) throws IOException {

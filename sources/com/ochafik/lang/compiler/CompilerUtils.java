@@ -169,7 +169,7 @@ public class CompilerUtils {
 
 			boolean outputSources = true;
 			System.out.println("Writing " + jarOut + (outputSources ? " with" : " without") + " sources");
-			fileManager.writeJar(new FileOutputStream(jarOut), outputSources);
+			fileManager.writeJar(new FileOutputStream(jarOut), outputSources, null);
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
