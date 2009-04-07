@@ -32,6 +32,11 @@ import java.util.List;
 import com.ochafik.net.URLUtils;
 import com.sun.jna.Platform;
 
+/**
+ * @see http://landonf.bikemonkey.org/static/soylatte/
+ * @author ochafik
+ *
+ */
 public class LibraryExtractor {
 	public static String getLibraryPath(String libraryName, boolean extractAllLibraries, Class<?> cl) {
 		try {
