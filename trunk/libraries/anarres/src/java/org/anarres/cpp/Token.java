@@ -39,6 +39,7 @@ public final class Token {
 		this.column = column;
 		this.text = text;
 		this.value = value;
+		
 	}
 
 	public Token(int type, int line, int column, String text) {

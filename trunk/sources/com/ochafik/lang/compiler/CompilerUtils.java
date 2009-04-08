@@ -23,6 +23,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 
 import javax.tools.*;
 
@@ -76,7 +77,7 @@ public class CompilerUtils {
 	static Map<String, File> localURLCaches = new HashMap<String, File>();
 	static File getLocalFile(URL remoteFile, File cacheDirectory) throws IOException {
 		if ("file".equals(remoteFile.getProtocol()))
-			return new File(remoteFile.getFile());
+			return new File(URLDecoder.decode(remoteFile.getFile(), "utf-8"));
 		
 		String remoteStr = remoteFile.toString();
 		File f = localURLCaches.get(remoteStr);
