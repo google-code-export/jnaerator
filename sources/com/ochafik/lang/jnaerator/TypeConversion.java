@@ -601,6 +601,9 @@ public class TypeConversion {
 				if (p.getTarget() instanceof SimpleTypeRef) {
 					String name = ((SimpleTypeRef)p.getTarget()).getName();
 					if (!"void".equals(name)) {
+						int i = name.lastIndexOf('.');
+						if (i >= 0)
+							name = name.substring(i + 1);
 						fakePointersSink.add(name);
 						return typeRef(name);
 					}

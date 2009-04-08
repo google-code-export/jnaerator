@@ -326,6 +326,7 @@ public class LexerSource extends Source {
 
 			default:
 				warning("Unnecessary escape character " + (char)d);
+			case 'p':
 				text.append((char)d);
 				return d;
 		}

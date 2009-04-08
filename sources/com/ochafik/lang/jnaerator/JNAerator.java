@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -42,6 +43,8 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 import org.rococoa.NSClass;
 
+import com.ochafik.io.FileListUtils;
+import com.ochafik.io.ReadText;
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryFileObject;
@@ -125,10 +128,10 @@ public class JNAerator {
 		System.out.println("\t-frameworksPath");
 		System.out.println("\t\tBy default: " + JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 	}
-	public static void main(String[] args) {
-		if (args.length == 0) {
+	public static void main(String[] argsArray) {
+		if (argsArray.length == 0) {
 			if (new File("/Users/ochafik").exists()) {
-				args = new String[] {
+				argsArray = new String[] {
 						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSURL.h",
 						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers",
 						
@@ -181,6 +184,30 @@ public class JNAerator {
 			}
 		}
 		try {
+			List<String> args = new ArrayList<String>(Arrays.asList(argsArray));
+			for (int i = args.size(); i-- != 0;) {
+				String arg = args.get(i);
+				if (arg.startsWith("@")) {
+					List<String> lines = ReadText.readLines(arg.substring(1));
+					args.remove(i);
+					int iAdd = i;
+					for (Iterator<String> it = lines.iterator(); it.hasNext();) {
+						String trl = it.next().trim();
+						if (trl.length() == 0 || trl.matches("^(//|#)"))
+							continue;
+						for (String s : trl.split("\\s+")) {
+							if (s.contains("*"))
+								for (String r : FileListUtils.resolveShellLikeFileList(s))
+									args.add(iAdd++, r);
+							else
+								args.add(iAdd++, s);
+						}
+					}
+					
+				}
+			}
+			System.out.println(StringUtils.implode(args));
+			
 			final JNAeratorConfig config = new JNAeratorConfig();
 			
 			List<String> frameworks = new ArrayList<String>();
@@ -188,8 +215,8 @@ public class JNAerator {
 			boolean auto = false;
 			File outputJar = null;
 			String currentLibrary = null;
-			for (int iArg = 0, len = args.length; iArg < len; iArg++) {
-				String arg = args[iArg];
+			for (int iArg = 0, len = args.size(); iArg < len; iArg++) {
+				String arg = args.get(iArg);
 				if (arg.startsWith("-I")) {
 					config.preprocessorConfig.includes.add(arg.substring("-I".length()));
 				} else if (arg.startsWith("-D")) {
@@ -201,16 +228,16 @@ public class JNAerator {
 //					auto = true;
 					//JNAeratorConfigUtils.autoConfigure(config);
 				} else if (arg.equals("-root"))
-					config.rootPackageName = args[++iArg];
+					config.rootPackageName = args.get(++iArg);
 				else if (arg.equals("-frameworksPath")) {
 					config.preprocessorConfig.frameworksPath.clear();
-					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args[++iArg].split(":")));
+					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args.get(++iArg).split(":")));
 				} else if (arg.equals("-v"))
 					config.verbose = true;
 				else if (arg.equals("-package"))
-					config.packageName = args[++iArg];
+					config.packageName = args.get(++iArg);
 				else if (arg.equals("-jar"))
-					outputJar = new File(args[++iArg]);
+					outputJar = new File(args.get(++iArg));
 				else if (arg.equals("-test")) {
 					try {
 						JUnitCore.main(JNAeratorTests.class.getName());
@@ -230,21 +257,21 @@ public class JNAerator {
 					}
 				}
 				else if (arg.equals("-project")) {
-					File projectFile = new File(args[++iArg]);
+					File projectFile = new File(args.get(++iArg));
 					String configName = null;
 					if (iArg < len)
-						configName = args[++iArg];
+						configName = args.get(++iArg);
 					
 					JNAeratorConfigUtils.readProjectConfig(projectFile, configName, config);
 				}
 				else if (arg.equals("-library"))
-					currentLibrary = args[++iArg];
+					currentLibrary = args.get(++iArg);
 				else if (arg.equals("-defaultLibrary"))
-					config.defaultLibrary = args[++iArg];
+					config.defaultLibrary = args.get(++iArg);
 				else if (arg.equals("-framework"))
-					frameworks.add(args[++iArg]);
+					frameworks.add(args.get(++iArg));
 				else if (arg.equals("-o"))
-					config.outputDir = new File(args[++iArg]);
+					config.outputDir = new File(args.get(++iArg));
 				else if (arg.equals("-h") || arg.equals("-help") || arg.equals("--h")) {
 					displayHelp();
 					System.exit(0);

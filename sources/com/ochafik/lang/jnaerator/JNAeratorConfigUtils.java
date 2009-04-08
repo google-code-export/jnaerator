@@ -240,13 +240,16 @@ public class JNAeratorConfigUtils {
 		
 		addCPlusPlus(config.preprocessorConfig);
 		
+		//prevent a jcpp bug to happen when expanding assert(...) :
+		config.preprocessorConfig.macros.put("NDEBUG", null);
+		
 		config.preprocessorConfig.includes.addAll(getDefaultIncludePath());//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
 		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath());//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
 			//http://msdn.microsoft.com/en-us/library/b0084kay(VS.80).aspx
 			
 			//http://support.microsoft.com/kb/65472
-			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);;
+			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);
 			config.preprocessorConfig.macros.put("_MSC_VER", "800");
 			config.functionsAccepter = new Adapter<Function, Boolean>() {
 	
