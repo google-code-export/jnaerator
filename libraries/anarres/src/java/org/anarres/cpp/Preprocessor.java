@@ -332,6 +332,7 @@ public class Preprocessor implements Closeable {
 	 * and the expansion.
 	 */
 	public void addMacro(Macro m) throws LexerException {
+		// System.out.println("Macro " + m);
 		String	name = m.getName();
 		/* Already handled as a source error in macro(). */
 		if ("defined".equals(name))
@@ -1649,10 +1650,13 @@ public class Preprocessor implements Closeable {
 				case '^': case '{': case '|':
 				case '}': case '~': case '.':
 
-				//ochafik:added two tokens
-				case '@': // Objective-C's inline NString prefix
+				/* From Olivier Chafik for Objective C? */
+				case '@':	
+				/* The one remaining ASCII, might as well. */
+				case '`':
+
 				case '#':
-	
+
 				case AND_EQ:
 				case ARROW:
 				case CHARACTER:
