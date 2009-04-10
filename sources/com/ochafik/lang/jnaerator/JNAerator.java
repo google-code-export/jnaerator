@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -73,7 +74,7 @@ import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 /*
 //include com/ochafik/lang/jnaerator/parser/*.mm
 //include com/ochafik/lang/jnaerator/parser/ObjCpp.g
@@ -212,7 +213,7 @@ public class JNAerator {
 			
 			List<String> frameworks = new ArrayList<String>();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
-			boolean auto = false;
+			boolean auto = true;
 			File outputJar = null;
 			String currentLibrary = null;
 			for (int iArg = 0, len = args.size(); iArg < len; iArg++) {
@@ -234,6 +235,8 @@ public class JNAerator {
 					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args.get(++iArg).split(":")));
 				} else if (arg.equals("-v"))
 					config.verbose = true;
+				else if (arg.equals("-noauto"))
+					auto = false;
 				else if (arg.equals("-package"))
 					config.packageName = args.get(++iArg);
 				else if (arg.equals("-jar"))
@@ -303,8 +306,8 @@ public class JNAerator {
 				} catch (Exception ex) {}
 			}
 			
-			//if (auto)
-			JNAeratorConfigUtils.autoConfigure(config);
+			if (auto)
+				JNAeratorConfigUtils.autoConfigure(config);
 			
 			JNAerator jnaerator = new JNAerator(config);
 			
@@ -457,28 +460,27 @@ public class JNAerator {
 			interf.setTag(libraryClassName);
 			interf.setParents(Library.class.getName());
 			
-			Expression libNameExpr = new Expression.OpaqueExpression(result.getLibraryFileExpression(library));
-			TypeRef libTypeRef = new TypeRef.SimpleTypeRef(libraryClassName);
-			Expression libClassLiteral = new Expression.FieldRef(new Expression.TypeRefExpression(libTypeRef), "class", MemberRefStyle.Dot);
+			Expression libNameExpr = opaqueExpr(result.getLibraryFileExpression(library));
+			TypeRef libTypeRef = typeRef(libraryClassName);
+			Expression libClassLiteral = memberRef(expr(libTypeRef), MemberRefStyle.Dot, "class");
 			
 			VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator("INSTANCE",
-				new Expression.Cast(
+				cast(
 					libTypeRef, 
-					new Expression.FunctionCall(
-						new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(Native.class.getName())),
-						"loadLibrary",
+					methodCall(
+						expr(typeRef(Native.class)),
 						MemberRefStyle.Dot,
-						new Expression.FunctionCall(
-								new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(LibraryExtractor.class.getName())),
-								"getLibraryPath",
-								MemberRefStyle.Dot,
-								libNameExpr,
-								new Expression.Constant(Expression.Constant.Type.Bool, true),
-								libClassLiteral//new Expression.FunctionCall(libClassLitteral, "getClassLoader", MemberRefStyle.Dot)
+						"loadLibrary",
+						methodCall(
+							expr(typeRef(LibraryExtractor.class)),
+							MemberRefStyle.Dot,
+							"getLibraryPath",
+							libNameExpr,
+							expr(Expression.Constant.Type.Bool, true),
+							libClassLiteral
 						),
 						libClassLiteral,
-						new Expression.FieldRef(new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(MangledFunctionMapper.class.getName())), "DEFAULT_OPTIONS", MemberRefStyle.Dot)
-						
+						memberRef(expr(typeRef(MangledFunctionMapper.class)), MemberRefStyle.Dot, "DEFAULT_OPTIONS")
 					)
 				)
 			));
@@ -498,11 +500,11 @@ public class JNAerator {
 			for (String fakePointer : result.typeConverter.fakePointersSink) {
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, Pointer.class.getName(), Struct.Type.JavaClass, null);
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
-					new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
-				).addModifiers(Modifier.Public).setBody(new Statement.Block(
-					new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer")))
-				)));
-				interf.addDeclaration(result.declarationsConverter.decl(ptClass));
+					new Arg("pointer", typeRef(Pointer.class))
+				).addModifiers(Modifier.Public).setBody(
+					block(stat(methodCall("super", varRef("pointer")))))
+				);
+				interf.addDeclaration(decl(ptClass));
 			}
 			result.typeConverter.fakePointersSink = null;
 			

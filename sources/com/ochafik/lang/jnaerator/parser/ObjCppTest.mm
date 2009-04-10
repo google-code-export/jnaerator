@@ -116,6 +116,10 @@ int x[4];
 --
 bool (*)(const void* buffer, unsigned int length) x;
 --
+unsigned long long int d;
+--
+unsigned *pa[4];
+--
 unsigned short x, *px, **ppx, **&rppx = a, *pa[4];
 --
 pair<int, map<long*, string> > x;

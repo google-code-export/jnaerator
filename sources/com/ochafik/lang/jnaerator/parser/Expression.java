@@ -31,8 +31,41 @@ import com.ochafik.util.string.StringUtils;
 
 public abstract class Expression extends Element {
 	
-	
-
+	public static class ExpressionSequence extends Expression {
+		final List<Expression> sequence = new ArrayList<Expression>();
+		public List<Expression> getSequence() {
+			return sequence;
+		}
+		public ExpressionSequence() {
+			
+		}
+		public ExpressionSequence(List<Expression> sequence) {
+			setSequence(sequence);
+		}
+		public void setSequence(List<Expression> sequence) {
+			changeValue(this, this.sequence, sequence);
+		}
+		@Override
+		protected String toInnerString(CharSequence indent) {
+			return implode(getSequence(), ", ", indent);
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitExpressionSequence(this);
+		}
+		@Override
+		public Element getNextChild(Element child) {
+			return getNextSibling(getSequence(), child);
+		}
+		@Override
+		public Element getPreviousChild(Element child) {
+			return getPreviousSibling(getSequence(), child);
+		}
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			return replaceChild(getSequence(), Expression.class, this, child, by);
+		}
+	}
 	public static class OpaqueExpression extends Expression {
 		String opaqueString;
 		public void setOpaqueString(String opaqueString) {
@@ -108,7 +141,6 @@ public abstract class Expression extends Element {
 		TypeRef type;
 		
 		public TypeRefExpression(TypeRef type) {
-			this();
 			setType(type);
 		}
 		public TypeRefExpression() {}
@@ -172,13 +204,36 @@ public abstract class Expression extends Element {
 		}
 	}
 	
-	public static abstract class MemberRef extends Expression {
+	public static class MemberRef extends Expression {
 		MemberRefStyle memberRefStyle;
 		Expression target;
 		
-		public MemberRef() {
-			
+		String name; 
+		
+		public MemberRef(String name) {
+			setName(name);
 		}
+		public MemberRef(Expression target, MemberRefStyle memberRefStyle, String name) {
+			setTarget(target);
+			setName(name);
+			setMemberRefStyle(memberRefStyle);
+		}
+
+		public MemberRef() {
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		@Override
+		public String toInnerString(CharSequence indent) {
+			String pref = getTargetPrefix();
+			return (pref == null ? "" : pref) + getName();
+		}
+		
 		public void setTarget(Expression target) {
 			this.target = changeValue(this, this.target, target);
 		}
@@ -225,6 +280,20 @@ public abstract class Expression extends Element {
 				b.append(sep);
 			}
 			return b.toString();
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitMemberRef(this);
+		}
+		@Override
+		public Element getNextChild(Element child) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public Element getPreviousChild(Element child) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}
@@ -334,7 +403,8 @@ public abstract class Expression extends Element {
 		}
 	}
 	public static class FunctionCall extends MemberRef {
-		String functionName;
+		Expression function;
+		//String functionName;
 		List<Pair<String, Expression>> arguments = new ArrayList<Pair<String, Expression>>(); 
 		
 		public List<Pair<String, Expression>> getArguments() {
@@ -348,22 +418,19 @@ public abstract class Expression extends Element {
 				addArgument(p.getFirst(), p.getSecond());
 		}
 
-		public FunctionCall(String functionName) {
-			this();
-			setFunctionName(functionName);
+		public FunctionCall(Expression function) {
+			setFunction(function);
 		}
-		public FunctionCall(String functionName, Expression... unnamedArgs) {
-			this();
-			setFunctionName(functionName);
+		public FunctionCall(Expression function, Expression... unnamedArgs) {
+			setFunction(function);
 			for (Expression x : unnamedArgs)
 				if (x != null)
 					addArgument(x);
 		}
 		
-		public FunctionCall(Expression target, String functionName, MemberRefStyle memberRefStyle, Expression... unnamedArgs) {
-			this();
+		public FunctionCall(Expression target, Expression function, MemberRefStyle memberRefStyle, Expression... unnamedArgs) {
 			setTarget(target);
-			setFunctionName(functionName);
+			setFunction(function);
 			setMemberRefStyle(memberRefStyle);
 			for (Expression x : unnamedArgs)
 				addArgument(x);
@@ -381,14 +448,12 @@ public abstract class Expression extends Element {
 			ex.setParentElement(this);
 			arguments.add(new Pair<String, Expression>(argumentSelector, ex));
 		}
-		
-		public String getFunctionName() {
-			return functionName;
+		public Expression getFunction() {
+			return function;
 		}
-		public void setFunctionName(String functionName) {
-			this.functionName = functionName;
+		public void setFunction(Expression function) {
+			this.function = changeValue(this, this.function, function);
 		}
-
 		@Override
 		public void accept(Visitor visitor) {
 			visitor.visitFunctionCall(this);
@@ -428,6 +493,10 @@ public abstract class Expression extends Element {
 				setTarget((Expression) by);
 				return true;
 			}
+			if (child == getFunction()) {
+				setFunction((Expression) by);
+				return true;
+			}
 			
 			//return replaceChild(arguments, Expression.class, this, child, by);
 			int i = indexOf(child, arguments);
@@ -458,9 +527,9 @@ public abstract class Expression extends Element {
 				/// Objective-C method call
 				b.append('[');
 				b.append(getTarget());
-				if (getFunctionName() != null) {
+				if (getFunction() != null) {
 					b.append(' ');
-					b.append(getFunctionName());
+					b.append(getFunction().toString(indent));
 				}
 				List<Pair<String, Expression>> args = getArguments();
 				for (int i = 0, len = args.size(); i < len; i++) {
@@ -477,8 +546,8 @@ public abstract class Expression extends Element {
 				String pref = getTargetPrefix();
 				if (pref != null)
 					b.append(pref);
-				if (getFunctionName() != null)
-					b.append(getFunctionName());
+				if (getFunction() != null)
+					b.append(getFunction().toString(indent));
 				b.append("(" + StringUtils.implode(ListenableCollections.adapt(arguments, new Adapter<Pair<String, Expression>, Expression>() {
 	
 					public Expression adapt(Pair<String, Expression> value) {
@@ -490,59 +559,68 @@ public abstract class Expression extends Element {
 			return b.toString();
 		}
 	}
-	
-	public static class FieldRef extends MemberRef {
-		String name;
-		
-		public FieldRef(String name) {
-			this();
-			setName(name);
-		}
-		public FieldRef(Expression target, String name, MemberRefStyle memberRefStyle) {
-			this();
+	public static class ArrayAccess extends Expression {
+		Expression target, index;
+		public ArrayAccess() {}
+		public ArrayAccess(Expression target, Expression index) {
 			setTarget(target);
-			setName(name);
-			setMemberRefStyle(memberRefStyle);
+			setIndex(index);
 		}
-
-		public FieldRef() {
+		public Expression getTarget() {
+			return target;
 		}
-
-		public void setName(String name) {
-			this.name = name;
+		public void setTarget(Expression target) {
+			this.target = changeValue(this, this.target, target);
 		}
-		public String getName() {
-			return name;
+		public void setIndex(Expression index) {
+			this.index = changeValue(this, this.index, index);
 		}
-
+		public Expression getIndex() {
+			return index;
+		}
+		@Override
+		protected String toInnerString(CharSequence indent) {
+			StringBuilder b = new StringBuilder();
+			if (getTarget() != null)
+				b.append(getTarget().toString(indent));
+			b.append("[");
+			if (getIndex() != null)
+				b.append(getIndex().toString(indent));
+			b.append("]");
+			return b.toString();
+		}
 		@Override
 		public void accept(Visitor visitor) {
-			visitor.visitFieldRef(this);
+			visitor.visitArrayAccess(this);
 		}
-
 		@Override
 		public Element getNextChild(Element child) {
 			return null;
 		}
-
 		@Override
 		public Element getPreviousChild(Element child) {
 			return null;
 		}
-		
 		@Override
-		public String toInnerString(CharSequence indent) {
-			String pref = getTargetPrefix();
-			return (pref == null ? "" : pref) + getName();
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getTarget()) {
+				setTarget((Expression)by);
+				return true;
+			}
+			if (child == getIndex()) {
+				setIndex((Expression)by);
+				return true;
+			}
+			return false;
 		}
 	}
+	
 	public static class VariableRef extends Expression {
 		String name;
 		
 		
 		public VariableRef(String name) {
-			this();
-			this.name = name;
+			setName(name);
 		}
 		
 		public VariableRef() {
@@ -583,41 +661,69 @@ public abstract class Expression extends Element {
 	}
 
 	public enum BinaryOperator {
-		Plus, Minus, Divide, Multiply, Modulo, LeftShift, RightShift, SignedRightShift, XOR, 
-		LessEqual, GreaterEqual, Less, Greater, IsEqual, IsDifferent, BitOr, Or, BitAnd, And
+		Plus("+"), Minus("-"), Divide("/"), Multiply("*"), Modulo("%"), LeftShift("<<"), RightShift(">>"), SignedRightShift(">>>"), XOR("^"), 
+		LessEqual("<="), GreaterEqual(">="), Less("<"), Greater(">"), IsEqual("=="), IsDifferent("!="), BitOr("|"), Or("||"), BitAnd("&"), And("&&");
+		
+		String s;
+		BinaryOperator(String s) {
+			this.s = s;
+		}
+		@Override
+		public String toString() {
+			return s;
+		}
 	};
+	public enum AssignmentOperator {
+		Set("="),
+		MultiplySet("*="),
+		DivideSet("/="),
+		ModuloSet("%="),
+		PlusSet("+="),
+		MinusSet("-="),
+		LeftShiftSet("<<="),
+		RightShiftSet(">>="),
+		BitAndSet("&="),
+		XORSet("^="),
+		BitOrSet("|=");
+		
+		String s;
+		AssignmentOperator(String s) {
+			this.s = s;
+		}
+		@Override
+		public String toString() {
+			return s;
+		}
+	}
 	public enum UnaryOperator {
-		Not, Complement
+		Not("!"), Complement("~"),
+		PreIncr("++"), PreDecr("--"),
+		PostIncr("++"), PostDecr("--");
+		
+		String s;
+		UnaryOperator(String s) {
+			this.s = s;
+		}
+		@Override
+		public String toString() {
+			return s;
+		}
 	};
 	
+	private static final Map<String, AssignmentOperator> assignOps = new HashMap<String, AssignmentOperator>();
 	private static final Map<String, BinaryOperator> binOps = new HashMap<String, BinaryOperator>();
 	private static final Map<String, UnaryOperator> unOps = new HashMap<String, UnaryOperator>();
+	private static final Map<AssignmentOperator, String> assignOpsRev = new HashMap<AssignmentOperator, String>();
 	private static final Map<BinaryOperator, String> binOpsRev = new HashMap<BinaryOperator, String>();
 	private static final Map<UnaryOperator, String> unOpsRev = new HashMap<UnaryOperator, String>();
 	//public static final Expression EMPTY_EXPRESSION = new Constant(null, null, "");
 	static {
-		map(unOps, unOpsRev, "!", UnaryOperator.Not);
-		map(unOps, unOpsRev, "~", UnaryOperator.Complement);
-
-		map(binOps, binOpsRev,"+", BinaryOperator.Plus            );
-		map(binOps, binOpsRev,"-", BinaryOperator.Minus           );
-		map(binOps, binOpsRev,"/", BinaryOperator.Divide          );
-		map(binOps, binOpsRev,"*", BinaryOperator.Multiply        );
-		map(binOps, binOpsRev,"%", BinaryOperator.Modulo          );
-		map(binOps, binOpsRev,"|", BinaryOperator.BitOr           );
-		map(binOps, binOpsRev,"||", BinaryOperator.Or             );
-		map(binOps, binOpsRev,"&", BinaryOperator.BitAnd          );
-		map(binOps, binOpsRev,"&&", BinaryOperator.And            );
-		map(binOps, binOpsRev,"<<", BinaryOperator.LeftShift       );
-		map(binOps, binOpsRev,">>", BinaryOperator.RightShift      );
-		map(binOps, binOpsRev,">>>", BinaryOperator.SignedRightShift);
-		map(binOps, binOpsRev,"^", BinaryOperator.XOR             );
-		map(binOps, binOpsRev,"<=", BinaryOperator.LessEqual       );
-		map(binOps, binOpsRev,">=", BinaryOperator.GreaterEqual    );
-		map(binOps, binOpsRev,"<", BinaryOperator.Less            );
-		map(binOps, binOpsRev,">", BinaryOperator.Greater         );
-		map(binOps, binOpsRev,"==", BinaryOperator.IsEqual         );
-		map(binOps, binOpsRev,"!=", BinaryOperator.IsDifferent     );
+		for (AssignmentOperator op : AssignmentOperator.values())
+			map(assignOps, assignOpsRev, op.toString(), op);
+		for (UnaryOperator op : UnaryOperator.values())
+			map(unOps, unOpsRev, op.toString(), op);
+		for (BinaryOperator op : BinaryOperator.values())
+			map(binOps, binOpsRev, op.toString(), op);
 	}
 	static <K, V> void map(Map<K, V> m, Map<V, K> r, K k, V v) {
 		m.put(k, v);
@@ -625,6 +731,11 @@ public abstract class Expression extends Element {
 	}
 	public static BinaryOperator getBinaryOperator(String s) {
 		return binOps.get(s);
+	}
+	
+
+	public static AssignmentOperator getAssignmentOperator(String s) {
+		return assignOps.get(s);
 	}
 	
 	public static UnaryOperator getUnaryOperator(String s) {
@@ -659,12 +770,76 @@ public abstract class Expression extends Element {
 		}
 		
 	}
+	public static class ConditionalExpression extends Expression {
+		Expression test, thenValue, elseValue;
+
+		public Expression getTest() {
+			return test;
+		}
+
+		public void setTest(Expression test) {
+			this.test = changeValue(this, this.test, test);
+		}
+
+		public Expression getThenValue() {
+			return thenValue;
+		}
+
+		public void setThenValue(Expression thenValue) {
+			this.thenValue = changeValue(this, this.thenValue, thenValue);
+		}
+
+		public Expression getElseValue() {
+			return elseValue;
+		}
+
+		public void setElseValue(Expression elseValue) {
+			this.elseValue = changeValue(this, this.elseValue, elseValue);
+		}
+
+		@Override
+		protected String toInnerString(CharSequence indent) {
+			return getTest() + " ? " + getThenValue() + " : " + getElseValue();
+		}
+
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitConditionalExpression(this);
+		}
+
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getTest()) {
+				setTest((Expression)by);
+				return true;
+			}
+			if (child == getThenValue()) {
+				setThenValue((Expression)by);
+				return true;
+			}
+			if (child == getElseValue()) {
+				setElseValue((Expression)by);
+				return true;
+			}
+			return false;
+		}
+		
+	}
 	public static class Cast extends Expression {
 		TypeRef type;
 		Expression target;
 		
 		public Cast(TypeRef type, Expression target) {
-			this();
 			setTarget(target);
 			setType(type);
 		}
@@ -715,17 +890,27 @@ public abstract class Expression extends Element {
 			return "(" + type + ")" + target;
 		}
 	}
-	public static class Assignment extends Expression {
+	public static class AssignmentOp extends Expression {
 		Expression target, value;
+		AssignmentOperator operator;
 		
-		public Assignment() {
+		public AssignmentOp() {
 		}
-		public Assignment(Expression target, Expression value) {
-			this();
+		public AssignmentOp(Expression target, AssignmentOperator operator, Expression value) {
+			if (operator == null)
+				throw new NullPointerException();
+			
 			setValue(value);
 			setTarget(target);
+			setOperator(operator);
 		}
 
+		public AssignmentOperator getOperator() {
+			return operator;
+		}
+		public void setOperator(AssignmentOperator operator) {
+			this.operator = operator;
+		}
 		public Expression getValue() {
 			return value;
 		}
@@ -741,7 +926,7 @@ public abstract class Expression extends Element {
 		
 		@Override
 		public void accept(Visitor visitor) {
-			visitor.visitAssignment(this);
+			visitor.visitAssignmentOp(this);
 		}
 
 		@Override
@@ -773,19 +958,21 @@ public abstract class Expression extends Element {
 			return false;
 		}
 
+
 		@Override
 		public String toInnerString(CharSequence indent) {
-			return getTarget() + " = " + getValue();
+			String opStr = assignOpsRev.get(getOperator());
+			return  
+				getTarget() + " " + opStr + " " + getValue();
 		}
+
 	}
 	
 	public static class BinaryOp extends Expression {
 		BinaryOperator operator;
 		Expression firstOperand, secondOperand;
 		
-		public BinaryOp(BinaryOperator operator, Expression firstOperand,
-				Expression secondOperand) {
-			this();
+		public BinaryOp(Expression firstOperand, BinaryOperator operator, Expression secondOperand) {
 			if (operator == null)
 				throw new NullPointerException();
 			
@@ -862,10 +1049,9 @@ public abstract class Expression extends Element {
 		UnaryOperator operator;
 		Expression operand;
 
-		public UnaryOp(UnaryOperator operator, Expression operand) {
-			this();
-			this.operator = operator;
-			this.operand = operand;
+		public UnaryOp(Expression operand, UnaryOperator operator) {
+			setOperand(operand);
+			setOperator(operator);
 		}
 
 		public UnaryOp() {
@@ -931,7 +1117,6 @@ public abstract class Expression extends Element {
 
 		
 		public Constant(Type type, IntForm intForm, Object value) {
-			this();
 			if (value == null)
 				throw new NullPointerException();
 			setType(type);
@@ -974,7 +1159,6 @@ public abstract class Expression extends Element {
 		}
 		
 		public Constant(Type type, Object value) {
-			this();
 			setType(type);
 			setValue(value);
 			

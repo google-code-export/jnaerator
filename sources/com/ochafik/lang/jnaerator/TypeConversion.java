@@ -55,11 +55,11 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
-import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
+import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOp;
+import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
-import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
@@ -92,6 +92,8 @@ import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.ptr.ShortByReference;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class TypeConversion {
 	Result result;
@@ -343,8 +345,8 @@ public class TypeConversion {
 					String fieldName = null;
 					if (expression instanceof Expression.VariableRef) 
 						fieldName = ((Expression.VariableRef) expression).getName();
-					else if (expression instanceof Expression.FieldRef)
-						fieldName = ((FieldRef) expression).getName();
+					else if (expression instanceof MemberRef)
+						fieldName = ((MemberRef) expression).getName();
 					
 					if (fieldName != null && !fieldName.equals(name)) {
 						simpleTypeRef.replaceBy(resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName), callerLibraryClass, true));
@@ -453,14 +455,14 @@ public class TypeConversion {
 //			tr.setCommentBefore("@see enums in " + s.getTag());
 		return tr;
 	}
-	public static FieldRef javaStaticFieldRef(String javaClass, String fieldName) {
-		return new FieldRef(
-				new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(javaClass)),
-				fieldName, 
-				MemberRefStyle.Dot
+	public static Expression javaStaticFieldRef(String javaClass, String fieldName) {
+		return memberRef(
+				expr(typeRef(javaClass)),
+				MemberRefStyle.Dot,
+				fieldName
 			);
 	}
-	public FieldRef findDefine(String name) {
+	public Expression findDefine(String name) {
 		Define s = result.defines.get(name);
 		String library = s == null ? null : result.getLibrary(s);
 		return library == null ? null : javaStaticFieldRef(result.getLibraryClassSimpleName(library), name);
@@ -567,25 +569,9 @@ public class TypeConversion {
 		}
 		return typeRef(libTypeRef(result.getLibraryClassSimpleName(library), callerLibraryClass), inferCallBackName(s, true));	
 	}
-	
-	static TypeRef typeRef(Class<?> jc) {
-		return new SimpleTypeRef(jc.getName());
-	}
-	static TypeRef typeRef(String s) {
-		return new SimpleTypeRef(s);
-	}
-	static TypeRef typeRef(JavaPrim p) {
+	static TypeRef primRef(JavaPrim p) {
 		return new SimpleTypeRef(toString(p));
 	}
-	private TypeRef typeRef(TypeRef parentTypeRef, Style style, String subName) {
-		if (parentTypeRef == null)
-			return typeRef(subName);
-		return new SubTypeRef(parentTypeRef, style, subName);
-	}
-	private TypeRef typeRef(TypeRef parentTypeRef, String subName) {
-		return typeRef(parentTypeRef, Style.Dot, subName);
-	}
-	
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, String callerLibraryClass) throws UnsupportedConversionException {
 		
 		TypeRef original = valueType; 
@@ -627,7 +613,7 @@ public class TypeConversion {
 		if (valueType instanceof Primitive) {
 			JavaPrim prim = getPrimitive(valueType, callerLibraryClass);
 			if (prim != null)
-				return typeRef(prim);
+				return primRef(prim);
 			
 //			if (!valueType.getModifiers().contains("long"))
 //				return valueType.toString();
@@ -638,7 +624,7 @@ public class TypeConversion {
 				if (valueType instanceof Enum) {
 					TypeRef tr = findEnum(name, callerLibraryClass);
 					if (tr != null) {
-						TypeRef intRef = typeRef(JavaPrim.Int);
+						TypeRef intRef = primRef(JavaPrim.Int);
 						intRef.setCommentBefore(tr.getCommentBefore());
 						return intRef;
 					}
@@ -683,7 +669,7 @@ public class TypeConversion {
 				if (prim == JavaPrim.Void)
 					return typeRef(com.sun.jna.Pointer.class);
 				else
-					convArgType = typeRef(prim);
+					convArgType = primRef(prim);
 			} else {
 				String name = null;
 				if (target instanceof SimpleTypeRef)
@@ -738,6 +724,10 @@ public class TypeConversion {
 										target instanceof TypeRef.SimpleTypeRef &&
 										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations) &&
 										fakePointersSink != null) {
+
+									int i = name.lastIndexOf('.');
+									if (i >= 0)
+										name = name.substring(i + 1);
 									fakePointersSink.add(name);
 									return typeRef(name);
 								} else {
@@ -827,7 +817,7 @@ public class TypeConversion {
 		
 		JavaPrim prim = getPrimitive(valueType, callerLibraryClass);
 		if (prim != null)
-			return typeRef(prim);
+			return primRef(prim);
 		
 		unknownTypes.add(String.valueOf(valueType));
 		throw new UnsupportedConversionException(valueType, null);
@@ -885,8 +875,8 @@ public class TypeConversion {
 	}*/
 	
 	public TypeRef inferJavaType(Expression x) throws UnsupportedConversionException {
-		if (x instanceof Assignment)
-			return inferJavaType(((Assignment)x).getTarget());
+		if (x instanceof AssignmentOp)
+			return inferJavaType(((AssignmentOp)x).getTarget());
 		if (x instanceof BinaryOp) {
 			TypeRef i1 = inferJavaType(((BinaryOp) x).getFirstOperand()), i2 = inferJavaType(((BinaryOp) x).getSecondOperand());
 			String s1 = String.valueOf(i1), s2 = String.valueOf(i2);
@@ -993,15 +983,16 @@ public class TypeConversion {
 	
 	public Expression convertExpressionToJava(Expression x, String callerLibraryClass) throws UnsupportedConversionException {
 		Expression res = null;
-		if (x instanceof Assignment)
-			res = new Assignment(convertExpressionToJava(((Assignment) x).getTarget(), callerLibraryClass), ((Assignment) x).getValue());
+		if (x instanceof AssignmentOp)
+			res = expr(convertExpressionToJava(((AssignmentOp) x).getTarget(), callerLibraryClass), AssignmentOperator.Set, ((AssignmentOp) x).getValue());
 		else if (x instanceof BinaryOp) {
-			res = new Expression.BinaryOp(((BinaryOp) x).getOperator(), 
+			res = expr(
 				convertExpressionToJava(((BinaryOp) x).getFirstOperand(), callerLibraryClass),
+				((BinaryOp) x).getOperator(),
 				convertExpressionToJava(((BinaryOp) x).getSecondOperand(), callerLibraryClass)
 			);
 		} else if (x instanceof UnaryOp) {
-			res = new Expression.UnaryOp(((UnaryOp) x).getOperator(), 
+			res = expr(((UnaryOp) x).getOperator(), 
 				convertExpressionToJava(((UnaryOp) x).getOperand(), callerLibraryClass)
 			);
 		} else if (x instanceof Cast) {
@@ -1028,34 +1019,32 @@ public class TypeConversion {
 				res = new Expression.Constant(((Constant) x).getType(), v);
 			}*/
 		} else if (x instanceof MemberRef) {
-			if (x instanceof FieldRef) {
-				FieldRef fr = (FieldRef) x;
-				String name = fr.getName();
-				Define define = result.defines.get(name);
-				if (define != null && define.getValue() != null) {
-					if (x.toString().equals(define.getValue().toString()))
-						res = null; // avoid some nasty loops
-					else {
-						Expression defineValue = define.getValue();
-						if (defineValue instanceof Constant)
-							res = findDefine(name);
-						
-						if (res == null)
-							res = convertExpressionToJava(defineValue, callerLibraryClass);
-					}
-				} else {
+			MemberRef fr = (MemberRef) x;
+			String name = fr.getName();
+			Define define = result.defines.get(name);
+			if (define != null && define.getValue() != null) {
+				if (x.toString().equals(define.getValue().toString()))
+					res = null; // avoid some nasty loops
+				else {
+					Expression defineValue = define.getValue();
+					if (defineValue instanceof Constant)
+						res = findDefine(name);
 					
-					EnumItem enumItem = result.enumItems.get(name);
-					if (enumItem != null)
-						res = findEnumItem(enumItem);
+					if (res == null)
+						res = convertExpressionToJava(defineValue, callerLibraryClass);
 				}
-			} else if (x instanceof FunctionCall) {
-				FunctionCall fc = (FunctionCall) x;
-				if ("sizeof".equals(fc.getFunctionName()) && fc.getArguments().size() == 1) {
-					TypeRefExpression typeEx =  SyntaxUtils.as(fc.getArguments().get(0).getValue(), TypeRefExpression.class);
-					if (typeEx != null) {
-						res = sizeofToJava(typeEx.getType(), callerLibraryClass);
-					}
+			} else {
+				
+				EnumItem enumItem = result.enumItems.get(name);
+				if (enumItem != null)
+					res = findEnumItem(enumItem);
+			}
+		} else if (x instanceof FunctionCall) {
+			FunctionCall fc = (FunctionCall) x;
+			if ("sizeof".equals(String.valueOf(fc.getFunction())) && fc.getArguments().size() == 1) {
+				TypeRefExpression typeEx =  SyntaxUtils.as(fc.getArguments().get(0).getValue(), TypeRefExpression.class);
+				if (typeEx != null) {
+					res = sizeofToJava(typeEx.getType(), callerLibraryClass);
 				}
 			}
 		} else if (x instanceof VariableRef) {
@@ -1075,7 +1064,7 @@ public class TypeConversion {
 		
 		Expression res = null;
 		if (type instanceof Pointer) 
-			res = new Expression.FieldRef(com.sun.jna.Pointer.class.getName() + ".SIZE");
+			res = memberRef(expr(typeRef(Pointer.class)), MemberRefStyle.Dot, "SIZE");
 		else if (type instanceof ArrayRef) {
 			res = sizeofToJava(((ArrayRef) type).getTarget(), callerLibraryClass);
 			if (res == null)
@@ -1084,7 +1073,7 @@ public class TypeConversion {
 			ArrayRef ar = (ArrayRef) type;
 			for (Expression x : ar.getDimensions()) {
 				Expression c = convertExpressionToJava(x, callerLibraryClass);
-				res = new Expression.BinaryOp(Expression.BinaryOperator.Multiply, res, c);
+				res = expr(res, Expression.BinaryOperator.Multiply, c);
 			}
 		} else if (type instanceof SimpleTypeRef || type instanceof Primitive) {
 			JavaPrim prim = getPrimitive(type, callerLibraryClass);
@@ -1093,7 +1082,7 @@ public class TypeConversion {
 			} else {
 				TypeRef structRef = findStructRef(((SimpleTypeRef) type).getName(), callerLibraryClass);
 				if (structRef != null)
-					return new Expression.FunctionCall(new New(structRef), "size", MemberRefStyle.Dot);
+					return methodCall(new New(structRef), MemberRefStyle.Dot, "size");
 			}
 		} else if (type instanceof Struct) {
 			Struct s = (Struct)type;
@@ -1101,7 +1090,7 @@ public class TypeConversion {
 				String structName = result.declarationsConverter.getActualTaggedTypeName(s);
 				TypeRef structRef = findStructRef(structName, callerLibraryClass);
 				if (structRef != null)
-					return new Expression.FunctionCall(new New(structRef), "size", MemberRefStyle.Dot);
+					return methodCall(new New(structRef), MemberRefStyle.Dot, "size");
 				else
 					for (Declaration d : s.getDeclarations()) {
 						if (d instanceof VariablesDeclaration) {
@@ -1114,7 +1103,7 @@ public class TypeConversion {
 								if (res == null)
 									res = so;
 								else
-									res = new Expression.BinaryOp(Expression.BinaryOperator.Plus, res, so);
+									res = expr(res, Expression.BinaryOperator.Plus, so);
 							}
 						}
 					}
@@ -1126,7 +1115,7 @@ public class TypeConversion {
 	private Expression sizeof(JavaPrim prim) {
 		switch (prim) {
 		case NativeLong:
-			return new FieldRef(NativeLong.class.getName() + ".SIZE");
+			return memberRef(expr(typeRef(NativeLong.class)), MemberRefStyle.Dot, "SIZE");
 		case Boolean:
 		case Byte:
 			return new Constant(Constant.Type.Int, 1);
@@ -1153,10 +1142,10 @@ public class TypeConversion {
 			return null;
 		
 		Enum e = (Enum)parent;
-		return new Expression.FieldRef(result.getLibraryClassSimpleName(library) + "." +
-			(e.getTag() == null ? "" : e.getTag() + ".") +
-			enumItem.getName()
-		);
+		Expression cl = expr(typeRef(result.getLibraryClassSimpleName(library)));
+		if (e.getTag() != null)
+			cl = memberRef(cl, MemberRefStyle.Dot, e.getTag());
+		return memberRef(cl, MemberRefStyle.Dot, enumItem.getName());
 	}
 	/// @see http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
 	public static Set<String> INVALID_JAVA_IDENTIFIERS = new HashSet<String>(Arrays.asList(
