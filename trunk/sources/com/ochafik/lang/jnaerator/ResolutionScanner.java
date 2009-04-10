@@ -25,7 +25,7 @@ import gnu.trove.TIntObjectHashMap;
 
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Scanner;
-import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
+import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.DefinitionsVisitor.Environment;
 
@@ -41,8 +41,8 @@ public class ResolutionScanner extends Scanner {
 	}
 
 	@Override
-	public void visitFieldRef(FieldRef element) {
-		super.visitFieldRef(element);
+	public void visitMemberRef(MemberRef element) {
+		super.visitMemberRef(element);
 		Environment env = definitions.getEnvironment(element);
 		if (element.getTarget() == null) {
 			Element resolved = env.get(element.getName(), DefinitionsVisitor.Environment.Space.Variables, DefinitionsVisitor.Environment.Space.Constants);

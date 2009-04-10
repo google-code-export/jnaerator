@@ -18,6 +18,7 @@
 package com.ochafik.lang.jnaerator;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class GlobalsGenerator {
 	public GlobalsGenerator(Result result) {
 		this.result = result;
@@ -112,54 +113,55 @@ public class GlobalsGenerator {
 					);
 					hasOffset = false;
 					pointerConstructor.setBody(new Statement.Block(
-							new Statement.ExpressionStatement(new Expression.FunctionCall("super")),
-							new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.Constant(Expression.Constant.Type.Int, 0))),
-							new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
+							new Statement.ExpressionStatement(methodCall("super")),
+							new Statement.ExpressionStatement(methodCall("useMemory", varRef("pointer"), expr(Expression.Constant.Type.Int, 0))),
+							new Statement.ExpressionStatement(methodCall("read"))
 					));
 					holderStruct.addDeclaration(pointerConstructor);
 					
 					//holderStruct.addDeclaration(new VariablesDeclaration(convType, new Declarator.DirectDeclarator("value")).addModifiers(Modifier.Public));
 					instType = new TypeRef.SimpleTypeRef(instTypeName);
-					struct.addDeclaration(result.declarationsConverter.decl(holderStruct));
+					struct.addDeclaration(decl(holderStruct));
 				}
 			}
 			String instName = name;//"_";
 			struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName)).addModifiers(Modifier.Private, Modifier.Static));
 			VariableRef instRef = new VariableRef(instName);
-			Expression ptrExpr = new Expression.FunctionCall(
-				new Expression.Cast(
-					TypeConversion.typeRef(NativeLibrary.class),
-					new Expression.FieldRef(
-						new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef(callerLibraryName)), 
-						"INSTANCE", 
-						MemberRefStyle.Dot
+			Expression ptrExpr = methodCall(
+				cast(
+					typeRef(NativeLibrary.class),
+					memberRef(
+						expr(typeRef(callerLibraryName)), 
+						MemberRefStyle.Dot, 
+						"INSTANCE"
 					)
 				).setParenthesis(true),
-				"getGlobalVariableAddress",
 				MemberRefStyle.Dot,
-				new Expression.Constant(Expression.Constant.Type.String, name)
+				"getGlobalVariableAddress",
+				expr(Expression.Constant.Type.String, name)
 			);
 			List<Statement> initStats = new ArrayList<Statement>();
 			initStats.add(new Statement.ExpressionStatement(
-				new Expression.Assignment(
+				expr(
 					instRef.clone(),
+					Expression.AssignmentOperator.Set,
 					isPtr ? ptrExpr :
 					isByRef ? new Expression.New(instType) :
-					new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? new Expression.Constant(Expression.Constant.Type.Int, 0) : null))
+					new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? expr(Expression.Constant.Type.Int, 0) : null))
 				)
 			));
 			if (isByRef)
-				initStats.add(new Statement.ExpressionStatement(new Expression.FunctionCall(instRef, "setPointer", MemberRefStyle.Dot, ptrExpr)));
+				initStats.add(new Statement.ExpressionStatement(methodCall(instRef, MemberRefStyle.Dot, "setPointer", ptrExpr)));
 
 			struct.addDeclaration(new Function(Function.Type.JavaMethod, "get", instType).setBody(new Statement.Block(
 				new Statement.If(
-					new Expression.BinaryOp(Expression.BinaryOperator.IsEqual, instRef, new Expression.NullExpression()),
+					expr(instRef, Expression.BinaryOperator.IsEqual, nullExpr()),
 					initStats.size() == 1 ? initStats.get(0) : new Statement.Block(initStats),
 					null
 				),
 				new Statement.Return(instRef.clone())
 			)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Synchronized));
-			out.addDeclaration(result.declarationsConverter.decl(struct));
+			out.addDeclaration(decl(struct));
 		}
 	}
 

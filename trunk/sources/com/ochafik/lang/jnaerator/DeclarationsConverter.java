@@ -20,6 +20,7 @@ package com.ochafik.lang.jnaerator;
 
 import static com.ochafik.lang.SyntaxUtils.as;
 
+
 import java.io.File;
 import java.util.*;
 
@@ -41,6 +42,8 @@ import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;
 import com.sun.jna.Pointer;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class DeclarationsConverter {
 	public DeclarationsConverter(Result result) {
@@ -217,11 +220,11 @@ public class DeclarationsConverter {
 					if (lastRefValue == null) {
 						if (lastAdditiveValue != null) {
 							lastAdditiveValue++;
-							resultingExpression = new Expression.Constant(Constant.Type.Int, lastAdditiveValue);
+							resultingExpression = expr(Constant.Type.Int, lastAdditiveValue);
 						} else {
 							if (item == e.getItems().get(0)) {
 								lastAdditiveValue = 0;
-								resultingExpression = new Expression.Constant(Constant.Type.Int, lastAdditiveValue);
+								resultingExpression = expr(Constant.Type.Int, lastAdditiveValue);
 							} else
 								resultingExpression = null;
 						}
@@ -233,10 +236,10 @@ public class DeclarationsConverter {
 							lastAdditiveValue = 1;
 						
 						resultingExpression = //result.typeConverter.convertExpressionToJava(
-							new Expression.BinaryOp(
-								Expression.BinaryOperator.Plus, 
+							expr(
 								lastRefValue.clone(), 
-								new Expression.Constant(Constant.Type.Int, lastAdditiveValue)
+								Expression.BinaryOperator.Plus, 
+								expr(Constant.Type.Int, lastAdditiveValue)
 							//)
 						);
 					}
@@ -623,7 +626,7 @@ public class DeclarationsConverter {
 				Expression x = dims.get(i);
 			
 				if (x == null || x instanceof EmptyArraySize) {
-					javaType = jr = new ArrayRef(TypeConversion.typeRef(Pointer.class));
+					javaType = jr = new ArrayRef(typeRef(Pointer.class));
 					break;
 				} else {
 					Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
@@ -631,7 +634,7 @@ public class DeclarationsConverter {
 					if (mul == null)
 						mul = c;
 					else
-						mul = new Expression.BinaryOp(BinaryOperator.Multiply, c, mul);
+						mul = expr(c, BinaryOperator.Multiply, mul);
 				}
 			}
 			initVal = new Expression.NewArray(jr.getTarget(), mul);
@@ -682,6 +685,9 @@ public class DeclarationsConverter {
 			out.addDeclaration(new EmptyDeclaration(e.toString()));
 		}
 	}
+	TaggedTypeRefDeclaration publicStaticClassDecl(String name, String parentName, Struct.Type type, Element toCloneCommentsFrom, String... interfaces) {
+		return decl(publicStaticClass(name, parentName, type, toCloneCommentsFrom, interfaces));
+	}
 	Struct publicStaticClass(String name, String parentName, Struct.Type type, Element toCloneCommentsFrom, String... interfaces) {
 		Struct cl = new Struct();
 		cl.setType(type);
@@ -704,7 +710,7 @@ public class DeclarationsConverter {
 	private void addStructConstructors(String structName, Struct structJavaClass, Struct byRef,
 			Struct byVal) {
 		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName, null).addModifiers(Modifier.Public);
-		emptyConstructor.setBody(new Statement.Block());
+		emptyConstructor.setBody(block());
 		
 		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
 		addConstructor(byRef, emptyConstructor);
@@ -719,8 +725,8 @@ public class DeclarationsConverter {
 		).addModifiers(Modifier.Public);
 		
 		//pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByRef struct");
-		pointerConstructor.setBody(new Statement.Block(
-				new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset")))
+		pointerConstructor.setBody(block(
+				stat(methodCall("super", varRef("pointer"), varRef("offset")))
 		).setCompact(true));
 		//byRef.addDeclaration(pointerConstructor);
 		//pointerConstructor = pointerConstructor.clone();
@@ -731,8 +737,8 @@ public class DeclarationsConverter {
 			new Arg("struct", new TypeRef.SimpleTypeRef(structName))
 		).addModifiers(Modifier.Public);
 		
-		shareMemConstructor.setBody(new Statement.Block(
-			new Statement.ExpressionStatement(new Expression.FunctionCall("super", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
+		shareMemConstructor.setBody(block(
+			stat(methodCall("super", methodCall(varRef("struct"), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
 		).setCompact(true));
 		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
 		addConstructor(byRef, shareMemConstructor);
@@ -745,15 +751,15 @@ public class DeclarationsConverter {
 		
 		pointerConstructor = pointerConstructor.clone();
 		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + " struct");
-		pointerConstructor.setBody(new Statement.Block(
-				new Statement.ExpressionStatement(new Expression.FunctionCall("super")),
-				new Statement.ExpressionStatement(new Expression.FunctionCall("useMemory", new Expression.VariableRef("pointer"), new Expression.VariableRef("offset"))),
-				new Statement.ExpressionStatement(new Expression.FunctionCall("read"))
+		pointerConstructor.setBody(block(
+				stat(methodCall("super")),
+				stat(methodCall("useMemory", varRef("pointer"), varRef("offset"))),
+				stat(methodCall("read"))
 		));
 		addConstructor(structJavaClass, pointerConstructor);
 		shareMemConstructor = shareMemConstructor.clone();
-		shareMemConstructor.setBody(new Statement.Block(
-			new Statement.ExpressionStatement(new Expression.FunctionCall("this", new Expression.FunctionCall(new Expression.VariableRef("struct"), "getPointer", MemberRefStyle.Dot), new Expression.Constant(Constant.Type.Int, 0)))
+		shareMemConstructor.setBody(block(
+			stat(methodCall("this", methodCall(varRef("struct"), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
 		).setCompact(true));
 		addConstructor(structJavaClass, shareMemConstructor);
 	}
@@ -854,11 +860,4 @@ public class DeclarationsConverter {
 		return argName;
 	}
 
-	TaggedTypeRefDeclaration publicStaticClassDecl(String name, String parentName, Struct.Type type, Element toCloneCommentsFrom, String... interfaces) {
-		return decl(publicStaticClass(name, parentName, type, toCloneCommentsFrom, interfaces));
-	}
-	TaggedTypeRefDeclaration decl(TaggedTypeRef tr) {
-		return new TaggedTypeRefDeclaration(tr);
-	}
-	
 }

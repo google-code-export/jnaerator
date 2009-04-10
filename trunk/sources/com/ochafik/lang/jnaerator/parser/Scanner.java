@@ -27,12 +27,14 @@ import com.ochafik.lang.jnaerator.parser.Declarator.FunctionDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.TargettedDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
-import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
+import com.ochafik.lang.jnaerator.parser.Expression.ArrayAccess;
+import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOp;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
+import com.ochafik.lang.jnaerator.parser.Expression.ConditionalExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
-import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
+import com.ochafik.lang.jnaerator.parser.Expression.ExpressionSequence;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
@@ -266,6 +268,8 @@ public class Scanner implements Visitor {
 		visitMemberRef(functionCall);
 		if (functionCall.getTarget() != null)
 			functionCall.getTarget().accept(this);
+		if (functionCall.getFunction() != null)
+			functionCall.getFunction().accept(this);
 		
 		for (Pair<String, Expression> x : copy(functionCall.getArguments())) {
 			if (x != null && x.getSecond() != null)
@@ -273,16 +277,12 @@ public class Scanner implements Visitor {
 		}
 	}
 
-	public void visitAssignment(Assignment assignment) {
+	/*public void visitAssignment(Assignment assignment) {
 		visitExpression(assignment);
 		visitExpression(assignment.getTarget());
 		visitExpression(assignment.getValue());
-	}
-
-	public void visitFieldRef(FieldRef fieldRef) {
-		visitMemberRef(fieldRef);
-	}
-
+	}*/
+	@Override
 	public void visitMemberRef(MemberRef memberRef) {
 		visitExpression(memberRef);
 
@@ -469,4 +469,43 @@ public class Scanner implements Visitor {
 		visitExpression(opaqueExpression);
 	}
 
+	@Override
+	public void visitArrayAccess(ArrayAccess arrayAccess) {
+		visitExpression(arrayAccess);
+		if (arrayAccess.getTarget() != null)
+			arrayAccess.getTarget().accept(this);
+		if (arrayAccess.getIndex() != null)
+			arrayAccess.getIndex().accept(this);
+	}
+
+	@Override
+	public void visitAssignmentOp(AssignmentOp assignment) {
+		visitExpression(assignment);
+		if (assignment.getTarget() != null)
+			assignment.getTarget().accept(this);
+		
+		if (assignment.getValue() != null)
+			assignment.getValue().accept(this);
+	}
+
+	@Override
+	public void visitConditionalExpression(
+			ConditionalExpression conditionalExpression) {
+		visitExpression(conditionalExpression);
+		if (conditionalExpression.getTest() != null)
+			conditionalExpression.getTest().accept(this);
+		if (conditionalExpression.getThenValue() != null)
+			conditionalExpression.getThenValue().accept(this);
+		if (conditionalExpression.getElseValue() != null)
+			conditionalExpression.getElseValue().accept(this);
+		
+	}
+
+	@Override
+	public void visitExpressionSequence(ExpressionSequence expressionSequence) {
+		visitExpression(expressionSequence);
+		for (Expression x : expressionSequence.getSequence())
+			if (x != null)
+				x.accept(this);
+	}
 }

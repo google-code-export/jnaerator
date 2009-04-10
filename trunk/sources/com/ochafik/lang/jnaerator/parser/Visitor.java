@@ -21,16 +21,19 @@ package com.ochafik.lang.jnaerator.parser;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.FunctionDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator;
-import com.ochafik.lang.jnaerator.parser.Expression.Assignment;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
 import com.ochafik.lang.jnaerator.parser.Statement.If;
 import com.ochafik.lang.jnaerator.parser.Statement.Return;
+import com.ochafik.lang.jnaerator.parser.Expression.ArrayAccess;
+import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOp;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
+import com.ochafik.lang.jnaerator.parser.Expression.ConditionalExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
-import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
+import com.ochafik.lang.jnaerator.parser.Expression.ExpressionSequence;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
+import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
 import com.ochafik.lang.jnaerator.parser.Expression.NewArray;
 import com.ochafik.lang.jnaerator.parser.Expression.NullExpression;
@@ -87,10 +90,6 @@ public interface Visitor {
 
 	void visitFunctionCall(FunctionCall functionCall);
 
-	void visitAssignment(Assignment assignment);
-
-	void visitFieldRef(FieldRef fieldRef);
-
 	void visitCast(Cast cast);
 
 	void visitDeclarator(Declarator variableStorage);
@@ -140,5 +139,15 @@ public interface Visitor {
 	void visitExternDeclarations(ExternDeclarations externDeclarations);
 
 	void visitOpaqueExpression(OpaqueExpression opaqueExpression);
+
+	void visitArrayAccess(ArrayAccess arrayIncr);
+
+	void visitMemberRef(MemberRef memberRef);
+
+	void visitAssignmentOp(AssignmentOp assignment);
+
+	void visitConditionalExpression(ConditionalExpression conditionalExpression);
+
+	void visitExpressionSequence(ExpressionSequence expressionSequence);
 	
 }

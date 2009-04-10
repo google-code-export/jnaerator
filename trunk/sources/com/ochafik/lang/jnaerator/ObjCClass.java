@@ -19,11 +19,15 @@
 package com.ochafik.lang.jnaerator;
 
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.rococoa.Rococoa;
+
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -37,6 +41,8 @@ import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.util.CompoundCollection;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 class ObjCClass {
 	/**
@@ -267,9 +273,9 @@ class ObjCClass {
 		//classStruct.setName(superType)
 		StoredDeclarations classHolder = new VariablesDeclaration();
 		classHolder.setValueType(new TypeRef.SimpleTypeRef("_Class"));
-		Expression.FunctionCall call = new Expression.FunctionCall(new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef("org.rococoa.Rococoa")), "createClass", MemberRefStyle.Dot);
-		call.addArgument(new Expression.Constant(Constant.Type.String, type.getTag()));
-		call.addArgument(new Expression.FieldRef(new Expression.TypeRefExpression(new TypeRef.SimpleTypeRef("_Class")), "class", MemberRefStyle.Dot));
+		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
+		call.addArgument(expr(Constant.Type.String, type.getTag()));
+		call.addArgument(memberRef(expr(typeRef("_Class")), MemberRefStyle.Dot, "class"));
 		classHolder.addDeclarator(new Declarator.DirectDeclarator("CLASS", call));
 		
 		instanceStruct.addDeclaration(classHolder);

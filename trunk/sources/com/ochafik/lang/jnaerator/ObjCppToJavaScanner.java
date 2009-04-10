@@ -28,11 +28,13 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
-import com.ochafik.lang.jnaerator.parser.Expression.FieldRef;
+import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.DefinitionsVisitor.Environment;
 import com.ochafik.util.string.StringUtils;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class ObjCppToJavaScanner extends Scanner {
 	DefinitionsVisitor originalDefinitions = new DefinitionsVisitor();
@@ -114,7 +116,7 @@ public class ObjCppToJavaScanner extends Scanner {
 					if (library == null)
 						throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, "struct " + structName + " is not bound to a library"));
 					
-					TypeRef tr = new SimpleTypeRef(getLibraryClassSimpleName(library) + "." + structName);
+					TypeRef tr = typeRef(getLibraryClassSimpleName(library) + "." + structName);
 					simpleTypeRef.replaceBy(tr);
 					tr.accept(this);
 				}
@@ -123,10 +125,9 @@ public class ObjCppToJavaScanner extends Scanner {
 			Define define = (Define) element;
 			if (define.getValue() != null) {
 				Expression expression = define.getValue().clone();
-				if (expression instanceof FieldRef) {
-					FieldRef fr = (FieldRef) expression;
-					TypeRef tr = new SimpleTypeRef(fr.getName());
-					simpleTypeRef.replaceBy(tr);
+				if (expression instanceof MemberRef) {
+					MemberRef fr = (MemberRef) expression;
+					simpleTypeRef.replaceBy(typeRef(fr.getName()));
 				} else
 					throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, "no support for complex define expressions as of yet"));
 			}

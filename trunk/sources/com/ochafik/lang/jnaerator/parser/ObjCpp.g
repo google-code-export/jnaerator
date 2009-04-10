@@ -17,6 +17,7 @@
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 /**
 	This grammar is by no mean complete.
 	It is able to parse preprocessed C & Objective-C files and can tolerate some amount of C++. 
@@ -57,6 +58,7 @@ import java.util.EnumSet;
 import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
 import static com.ochafik.lang.jnaerator.parser.Declaration.*;
+import static com.ochafik.lang.jnaerator.parser.Statement.*;
 import static com.ochafik.lang.jnaerator.parser.Declarator.*;
 import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 }
@@ -239,7 +241,7 @@ sourceFile returns [SourceFile sourceFile]
 			}
 		)* 
 	 	EOF
-	;
+	 ;
 
 externDeclarations returns [ExternDeclarations declarations]
 	:	{ next("extern") }? IDENTIFIER
@@ -572,6 +574,11 @@ functionDeclaration returns [Function function]
 		/* functionPreModifier? { 
 			$function.addModifiers($functionPreModifier.modifier); 
 		}*/
+		( 
+			{ next("extern") }? IDENTIFIER STRING { 
+				$function.addModifiers(Modifier.Extern); 
+			} |
+		)?
 		preMods1=exportationModifiers {
 			$function.addModifiers($preMods1.modifiers);
 		}
@@ -599,7 +606,7 @@ functionDeclaration returns [Function function]
 		(	
 			';' |
 			statementsBlock {
-			
+				
 			}
 		)
 	;
@@ -1141,26 +1148,21 @@ primitiveTypeRef returns [TypeRef type, int line, List<Modifier> modifiers]
 			)**/
 			(
 				//{ TypeRef.Primitive.isACPrimitive(next()) }?
-				//name=IDENTIFIER
 				name=primitiveTypeName
 				{
 					$type = mark(new Primitive($name.text), $line);
-					//$type.addModifiers($modifiers);
+				}/* |
+				{ $mod1.text != null }? 
+				{
+					$type = mark(new Primitive("int"), $line);
+				}*/
+			) {
+				if ($type != null) {
 					$type.addModifiers(Modifier.parseModifier($mod1.text));
 					$type.addModifiers(Modifier.parseModifier($mod2.text));
 					$type.addModifiers(Modifier.parseModifier($mod3.text));
-
-				}/* |
-				//{ !$modifiers.isEmpty() }? 
-				{
-					if (!$modifiers.isEmpty() && ($modifiers.get($modifiers.size() - 1).isA(Modifier.Kind.SizeModifier))) {
-						$type = mark(new Primitive($modifiers.get($modifiers.size() - 1).toString()), $line);
-						$modifiers.remove($modifiers.size() - 1);
-					} else
-						$type = mark(new Primitive("int"), $line);
-					$type.addModifiers($modifiers);
-				}*/
-			)
+				}
+			}
 				/*
 			{ next(Modifier.Kind.SignModifier) }? 
 			//{ next("long", "short", "signed", "unsigned", "__signed", "__unsigned") }? 
@@ -1174,7 +1176,8 @@ primitiveTypeRef returns [TypeRef type, int line, List<Modifier> modifiers]
 objCMethodCall returns [FunctionCall expr]
 	:
 		'[' target=expression methodName=IDENTIFIER {
-			$expr = new FunctionCall($methodName.text);
+			$expr = new FunctionCall();
+			$expr.setFunction(new VariableRef($methodName.text));
 			$expr.setTarget($target.expr);
 			$expr.setMemberRefStyle(MemberRefStyle.SquareBrackets);
 		}
@@ -1193,12 +1196,14 @@ objCMethodCall returns [FunctionCall expr]
 		
 functionCall returns [FunctionCall expr]
 	:	
-		'sizeof' '(' typeRef ')' {
+		/*'sizeof' '(' typeRef ')' {
 			$expr = new FunctionCall("sizeof");
 			$expr.addArgument(new TypeRefExpression($typeRef.type));
-		} |
+		} |*/
 		IDENTIFIER '(' {
-			$expr = new FunctionCall($IDENTIFIER.text);
+			FunctionCall fc = new FunctionCall();
+			fc.setFunction(new VariableRef($IDENTIFIER.text));
+			$expr = fc;
 		}
 		(
 			a1=expression {
@@ -1217,7 +1222,8 @@ binaryOp	:	'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' 
 		'<=' | '>=' | '<' | '>' | '==' | '!='
 	;
 
-expression returns [Expression expr]
+/*
+expressionOld returns [Expression expr]
 	:	(
 			id=IDENTIFIER {
 				$expr = new VariableRef($id.text);
@@ -1252,43 +1258,283 @@ expression returns [Expression expr]
 			'=' val=expression {
 				$expr = new Assignment($expr, $val.expr);
 			} |
-			'.' fieldName=IDENTIFIER {
-				$expr = new FieldRef($expr, $fieldName.text, MemberRefStyle.Dot);
-			} |
-			refStyle=(':' ':' | '-' '>' | '.') fc2=functionCall {
-				if ($fc2.expr != null) {
-					$fc2.expr.setTarget($expr);
-					$fc2.expr.setMemberRefStyle(parseMemberRefStyle($refStyle.text));
-					$expr = $fc2.expr;
+			refStyle=('::' | '->' | '.')
+			(
+				fc2=functionCall {
+					if ($fc2.expr != null) {
+						$fc2.expr.setTarget($expr);
+						$fc2.expr.setMemberRefStyle(parseMemberRefStyle($refStyle.text));
+						$expr = $fc2.expr;
+					}
+				} |
+				fieldName=IDENTIFIER {
+					$expr = new MemberRef($expr, $fieldName.text, parseMemberRefStyle($refStyle.text));
 				}
-			} |
-						'?' xif=expression ':' xelse=expression {
+			)
+			'?' xif=expression ':' xelse=expression {
 				//TODO
 			}
 		
 				)*
 	;
+*/
 
-statementsBlock
-	:	'{' statement* '}'
-	;
-statement	
+baseExpression returns [Expression expr]
 	:
-		statementsBlock |
-		declaration |
-		expression ('=' expression )? ';' |
-		'return' expression ';' |
-		'if' '(' expression ')' statement ('else' statement)? |
-		'while' '(' expression ')' statement |
-		'do' statement 'while' '(' expression ')' ';' |
-		'for' '(' statement? ';' expression? ';' statement? ')' statement |
-		'switch' '(' expression ')' '{'
+		IDENTIFIER { $expr = new VariableRef($IDENTIFIER.text); } |
+		constant { $expr = $constant.constant; } |
+		'(' expression ')' { 
+			$expr = $expression.expr; 
+			if ($expr != null)
+				$expr.setParenthesis(true);
+		} |
+		messageExpr |
+		selectorExpr |
+		protocolExpr |
+		encodingExpr//|
+	;
+	
+messageExpr returns [Expression expr]
+	:	'['
+		expression messageSelector 
+		']'
+	;
+
+messageSelector
+	:	IDENTIFIER | 
+		(IDENTIFIER? ':' expression)+
+	;
+
+selectorExpr returns [Expression expr]
+	:	'@selector' 
+		'(' 
+		selectorName 
+		')'
+	;
+
+selectorName
+	:	IDENTIFIER | 
+		(IDENTIFIER? ':')+
+	;
+
+protocolExpr
+	:	'@protocol'
+		'('
+		IDENTIFIER
+		')'
+	;
+
+encodingExpr
+	:	'@encode' 
+		'('
+		IDENTIFIER 
+		')'
+	;
+
+assignmentExpr returns [Expression expr]
+	:	e=inlineCondExpr  { $expr = $e.expr; } 
+		( 
+			op=assignmentOp f=assignmentExpr { $expr = new AssignmentOp($expr, $op.op, $f.expr); }
+		)?
+	;
+	
+assignmentOp returns [Expression.AssignmentOperator op]
+	: 	o=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') {
+			$op = getAssignmentOperator($o.text);
+		}
+	;
+
+inlineCondExpr returns [Expression expr]
+	:	e=logOrExpr { $expr = $e.expr; } 
+		(
+			'?'
+			logOrExpr 
+			':'
+			logOrExpr
+		)*
+	;
+
+addExpr returns [Expression expr]
+	:	e=multExpr { $expr = $e.expr; }
+		(
+			op=('+' | '-')
+			f=multExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+multExpr returns [Expression expr]
+	:	e=castExpr  { $expr = $e.expr; }
+		(
+			op=('%' | '*' | '/') 
+			f=castExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+bitOrExpr returns [Expression expr]
+	:	e=xorExpr  { $expr = $e.expr; }
+		(
+			op='|'
+			f=xorExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+bitAndExpr returns [Expression expr]
+	:	e=equalExpr { $expr = $e.expr; }
+		(
+			op='&'
+			f=equalExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+
+shiftExpr returns [Expression expr]
+	:	e=addExpr { $expr = $e.expr; }
+		(
+			op=('>>' | '<<')
+			f=addExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+xorExpr returns [Expression expr]
+	:	e=bitAndExpr { $expr = $e.expr; }
+		(
+			op='^'
+			f=bitAndExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+logOrExpr returns [Expression expr]
+	:	e=logAndExpr { $expr = $e.expr; }
+		(
+			op='||'
+			f=logAndExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+logAndExpr returns [Expression expr]
+	:	e=bitOrExpr { $expr = $e.expr; }
+		(
+			op='&&'
+			f=bitOrExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+equalExpr returns [Expression expr]
+	:	e=compareExpr { $expr = $e.expr; }
+		(
+			op=('!=' | '==')
+			f=compareExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+compareExpr returns [Expression expr]
+	:	e=shiftExpr { $expr = $e.expr; }
+		(
+			op=('<' | '<=' | '>' | '>=') 
+			f=shiftExpr { $expr = new BinaryOp($expr, getBinaryOperator($op.text), $f.expr); }
+		)*
+	;
+
+castExpr returns [Expression expr]
+	:	'(' typeRef ')' inner=castExpr { $expr = new Cast($typeRef.type, $inner.expr); } | 
+		e=unaryExpr { $expr = $e.expr; }
+	;
+
+unaryExpr returns [Expression expr] 
+	:
+		p=postfixExpr { $expr = $p.expr; } |
+		unaryOp castExpr { $expr = new UnaryOp($castExpr.expr, Expression.getUnaryOperator($unaryOp.text)); } |
+		'sizeof' (
+			'(' typeRef ')' | 
+			unaryExpr // TODO check this !!!
+		)
+	;
+
+unaryOp : '++' | '--' | '&' | '*' | '-' | '~' | '!' ;
+
+postfixExpr returns [Expression expr] 
+	: 
+		baseExpression { $expr = $baseExpression.expr; }
+		(
+			'[' expression ']' { 
+				$expr = new ArrayAccess($expr, $expression.expr); 
+			} |
+			'(' topLevelExprList? ')' {
+				FunctionCall fc = new FunctionCall($expr);
+				if ($topLevelExprList.exprs != null)
+					for (Expression x : $topLevelExprList.exprs)
+						fc.addArgument(x);
+				$expr = fc;
+			} |
+			'.' di=IDENTIFIER { 
+				$expr = new MemberRef($expr, MemberRefStyle.Dot, $di.text); 
+			} |
+			'->' ai=IDENTIFIER { 
+				$expr = new MemberRef($expr, MemberRefStyle.Arrow, $ai.text); 
+			} |
+			'++' { 
+				$expr = new UnaryOp($expr, UnaryOperator.PostIncr); 
+			} |
+			'--' { 
+				$expr = new UnaryOp($expr, UnaryOperator.PostDecr); 
+			}
+		)*
+	;
+
+topLevelExpr returns [Expression expr]
+	:	e=assignmentExpr { $expr = $e.expr; }
+	;
+topLevelExprList returns [List<Expression> exprs]
+	:	
+		{ $exprs = new ArrayList<Expression>(); }
+		e=topLevelExpr { $exprs.add($e.expr); }
+		(
+			','
+			f=topLevelExpr { $exprs.add($f.expr); }
+		)*
+	;
+
+expression returns [Expression expr]
+	:	l=topLevelExprList {
+			if ($l.exprs != null) {
+				if ($l.exprs.size() == 1)
+					$expr = $l.exprs.get(0);
+				else
+					$expr = new ExpressionSequence($l.exprs);
+			}
+		}
+	;
+
+	
+statementsBlock returns [Block stat]
+	:	{ $stat = new Block(); }
+		'{' 
+		(
+			statement {
+				$stat.addStatement($statement.stat);
+			}
+		)* 
+		'}' 
+	;
+statement	returns [Statement stat]
+	:
+		b=statementsBlock { $stat = $b.stat; } |
+		declaration | // TODO
+		es=expression ';' { $stat = new ExpressionStatement($es.expr); } |
+		rt='return' rex=expression ';' { 
+			$stat = mark(new Return($rex.expr), getLine($rt));
+		} |
+		'if' '(' expression ')' statement ('else' statement)? | // TODO
+		'while' '(' expression ')' statement | // TODO
+		'do' statement 'while' '(' expression ')' ';' | // TODO
+		'for' '(' statement? ';' expression? ';' statement? ')' statement | // TODO
+		'switch' '(' expression ')' '{' // TODO
 		(	'case' expression ':' |
 			statement
 		)*
 		'}' |
 		';' |
-		{ next("foreach") }? IDENTIFIER '(' varDecl ':' expression ')' statement
+		{ next("foreach") }? IDENTIFIER '(' varDecl ':' expression ')' statement // TODO
 	;
 	
 constant returns [Constant constant]
