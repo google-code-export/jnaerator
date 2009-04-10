@@ -284,7 +284,30 @@ typedef struct {
 - (id)awakeAfterUsingCoder:(NSCoder *)aDecoder;
 
 @end
-
+--
+extern "C"  void   cvReleaseMat( CvMat** mat );
+--
+/* Decrements CvMat data reference counter and deallocates the data if
+   it reaches 0 */
+inline  void  cvDecRefData( CvArr* arr )
+{
+    if( (((arr) != 0 && (((const CvMat*)(arr))->type & 0xFFFF0000) == 0x42420000 && ((const CvMat*)(arr))->cols > 0 && ((const CvMat*)(arr))->rows > 0) && ((const CvMat*)(arr))->data.ptr != 0))
+    {
+        CvMat* mat = (CvMat*)arr;
+        mat->data.ptr = 0;
+        if( mat->refcount != 0 && --*mat->refcount == 0 )
+            (cvFree_(*(&mat->refcount)), *(&mat->refcount)=0);
+        mat->refcount = 0;
+    }
+    else if( (((arr) != 0 && (((const CvMatND*)(arr))->type & 0xFFFF0000) == 0x42430000) && ((const CvMatND*)(arr))->data.ptr != 0))
+    {
+        CvMatND* mat = (CvMatND*)arr;
+        mat->data.ptr = 0;
+        if( mat->refcount != 0 && --*mat->refcount == 0 )
+            (cvFree_(*(&mat->refcount)), *(&mat->refcount)=0);
+        mat->refcount = 0;
+    }
+}
 --
 extern TestMe();
 --

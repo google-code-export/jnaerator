@@ -233,8 +233,10 @@ public abstract class Statement extends Element {
 			setStatements(statements);
 		}
 		public void addStatement(Statement statement) {
-			statement.setParentElement(this);
-			statements.add(statement);
+			if (statement != null) {
+				statement.setParentElement(this);
+				statements.add(statement);
+			}
 		}
 		public void setStatements(List<Statement> statements) {
 			changeValue(this, this.statements, statements);
