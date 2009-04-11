@@ -58,6 +58,7 @@ import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOp;
 import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
+import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
@@ -66,6 +67,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
+import com.ochafik.lang.jnaerator.parser.Expression.UnaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
@@ -79,6 +81,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SubTypeRef.Style;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.NativeLong;
@@ -984,7 +987,7 @@ public class TypeConversion {
 	public Expression convertExpressionToJava(Expression x, String callerLibraryClass) throws UnsupportedConversionException {
 		Expression res = null;
 		if (x instanceof AssignmentOp)
-			res = expr(convertExpressionToJava(((AssignmentOp) x).getTarget(), callerLibraryClass), AssignmentOperator.Set, ((AssignmentOp) x).getValue());
+			res = expr(convertExpressionToJava(((AssignmentOp) x).getTarget(), callerLibraryClass), AssignmentOperator.Equal, ((AssignmentOp) x).getValue());
 		else if (x instanceof BinaryOp) {
 			res = expr(
 				convertExpressionToJava(((BinaryOp) x).getFirstOperand(), callerLibraryClass),
@@ -1211,6 +1214,24 @@ public class TypeConversion {
 		return getValidJavaIdentifier(name);
 	}
 	public String getValidJavaMethodName(String name) {
+		if (name.matches("operator[^\\w]+")) {
+			String op = name.substring("operator".length());
+			//int nArgs = method.getArgs().size();
+			String suffix = null;
+			java.lang.Enum<?> e = Expression.getAnyOperator(op);
+			if (e == null) {
+				if (op.equals("()"))
+					suffix = "parenthesis";
+				else if (op.equals("[]"))
+					suffix = "brackets";
+				else if (op.equals("->"))
+					suffix = "arrow";
+			} else
+				suffix = e.name();
+			
+			if (suffix != null)
+				return "operator" + StringUtils.capitalize(suffix);
+		}
 		return getValidJavaIdentifier(name);
 	}
 	public static boolean isValidJavaIdentifier(String name) {

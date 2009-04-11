@@ -19,6 +19,7 @@
 package com.ochafik.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -37,8 +38,11 @@ public class CompoundCollection<U> implements Collection<U> {
 	public CompoundCollection() {
 		collections=new LinkedList<Collection<? extends U> >();
 	}
-    public CompoundCollection(Collection<Collection<? extends U>> lists) {
+	public CompoundCollection(Collection<Collection<? extends U>> lists) {
 		collections = new ArrayList<Collection<? extends U>>(lists);
+	}
+	public CompoundCollection(Collection<? extends U>... lists) {
+		this(Arrays.asList(lists));
 	}
 	public void addComponent(Collection<U> col) {
         collections.add(col);

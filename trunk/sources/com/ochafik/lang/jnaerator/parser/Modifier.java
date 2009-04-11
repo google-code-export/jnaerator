@@ -72,6 +72,7 @@ public enum Modifier {
 	Auto(Kind.StorageClassSpecifier),
 	Register(Kind.StorageClassSpecifier),
 	Static(Kind.StorageClassSpecifier), 
+	Virtual(Kind.StorageClassSpecifier), 
 	Extern(Kind.StorageClassSpecifier),
 	Pascal(Kind.StorageClassSpecifier),
 	//TypeDef(Kind.StorageClassSpecifier), // TODO propagate this to everywhere : need to remove TypeDef class

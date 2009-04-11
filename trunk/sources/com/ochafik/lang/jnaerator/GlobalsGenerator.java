@@ -144,7 +144,7 @@ public class GlobalsGenerator {
 			initStats.add(new Statement.ExpressionStatement(
 				expr(
 					instRef.clone(),
-					Expression.AssignmentOperator.Set,
+					Expression.AssignmentOperator.Equal,
 					isPtr ? ptrExpr :
 					isByRef ? new Expression.New(instType) :
 					new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? expr(Expression.Constant.Type.Int, 0) : null))
