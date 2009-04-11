@@ -120,6 +120,8 @@ unsigned long long int d;
 --
 unsigned *pa[4];
 --
+unsigned int a = a, *pa[4];
+--
 unsigned short x, *px, **ppx, **&rppx = a, *pa[4];
 --
 pair<int, map<long*, string> > x;

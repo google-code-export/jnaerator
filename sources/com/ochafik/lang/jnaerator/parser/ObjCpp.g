@@ -565,6 +565,24 @@ structCore	returns [Struct struct, List<Modifier> modifiers]
 		)	
 	;
 
+functionName returns [String name, String file, int line]
+	:
+		n=IDENTIFIER { 
+			$name = $n.text;
+			$file = getFile();
+			$line = getLine($n);
+		} 
+		(
+			{ $IDENTIFIER.text.equals("operator") }? 
+			(
+				op=(binaryOp | unaryOp) { $name += $op.text; } | 
+				assignmentOp { $name += $assignmentOp.op.toString(); } 
+				'(' ')' { $name += "()"; } |
+				'[' ']' { $name += "[]"; } |
+				'->' { $name += "->"; }
+			) | 
+		)
+	;
 //structInsides returns [List<Declaration> declarations, Struct.MemberVisibility
 functionDeclaration returns [Function function]
 	:	{ 	
@@ -588,10 +606,11 @@ functionDeclaration returns [Function function]
 		preMods2=exportationModifiers {
 			$function.addModifiers($preMods2.modifiers);
 		}
-		n=IDENTIFIER { 
-			$function.setName($n.text); 
-			$function = mark($function, getLine($n));
-		} 
+		functionName {
+			$function.setName($functionName.name); 
+			$function.setElementFile($functionName.file);
+			$function.setElementLine($functionName.line);
+		}
 		argList {
 			$function.setArgs($argList.args);
 		}
@@ -606,7 +625,7 @@ functionDeclaration returns [Function function]
 		(	
 			';' |
 			statementsBlock {
-				
+				$function.setBody($statementsBlock.stat);
 			}
 		)
 	;
@@ -913,8 +932,8 @@ declarator  returns [Declarator declarator, List<Modifier> modifiers]
 			)
 			(	
 				'=' 
-				expression {
-					$declarator.setDefaultValue($expression.expr);
+				dv=topLevelExpr {
+					$declarator.setDefaultValue($dv.expr);
 				}
 			)?
 		) {
@@ -1288,23 +1307,12 @@ baseExpression returns [Expression expr]
 			if ($expr != null)
 				$expr.setParenthesis(true);
 		} |
-		messageExpr |
+		objCMethodCall { $expr = $objCMethodCall.expr; } |
 		selectorExpr |
 		protocolExpr |
 		encodingExpr//|
 	;
 	
-messageExpr returns [Expression expr]
-	:	'['
-		expression messageSelector 
-		']'
-	;
-
-messageSelector
-	:	IDENTIFIER | 
-		(IDENTIFIER? ':' expression)+
-	;
-
 selectorExpr returns [Expression expr]
 	:	'@selector' 
 		'(' 
@@ -1313,8 +1321,7 @@ selectorExpr returns [Expression expr]
 	;
 
 selectorName
-	:	IDENTIFIER | 
-		(IDENTIFIER? ':')+
+	:	IDENTIFIER (IDENTIFIER ':')*
 	;
 
 protocolExpr

@@ -674,17 +674,18 @@ public abstract class Expression extends Element {
 		}
 	};
 	public enum AssignmentOperator {
-		Set("="),
-		MultiplySet("*="),
-		DivideSet("/="),
-		ModuloSet("%="),
-		PlusSet("+="),
-		MinusSet("-="),
-		LeftShiftSet("<<="),
-		RightShiftSet(">>="),
-		BitAndSet("&="),
-		XORSet("^="),
-		BitOrSet("|=");
+		Equal("="),
+		MultiplyEqual("*="),
+		DivideEqual("/="),
+		ModuloEqual("%="),
+		PlusEqual("+="),
+		MinusEqual("-="),
+		LeftShiftEqual("<<="),
+		RightShiftEqual(">>="),
+		BitAndEqual("&="),
+		XOREqual("^="),
+		ComplementEqual("~="),
+		BitOrEqual("|=");
 		
 		String s;
 		AssignmentOperator(String s) {
@@ -740,6 +741,16 @@ public abstract class Expression extends Element {
 	
 	public static UnaryOperator getUnaryOperator(String s) {
 		return unOps.get(s);
+	}
+	public static java.lang.Enum<?> getAnyOperator(String s) {
+
+		java.lang.Enum<?> e = Expression.getBinaryOperator(s);
+		if (e != null)
+			return e;
+		e = Expression.getUnaryOperator(s);
+		if (e != null)
+			return e;
+		return Expression.getAssignmentOperator(s);
 	}
 	
 	public static class NullExpression extends Expression {
