@@ -47,6 +47,11 @@ public class MangledFunctionMapper implements FunctionMapper {
 				try {
 					if (library.getGlobalVariableAddress(n) != null)
 						return n;
+					if (n.startsWith("_")) {
+						n = n.substring(1);
+						if (library.getGlobalVariableAddress(n) != null)
+							return n;
+					}
 				} catch (Exception ex) {
 					ex = null;
 				}

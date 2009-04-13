@@ -85,6 +85,8 @@ public abstract class Declarator extends ModifiableElement {
 			return getName();
 		}
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			if (type == null)
+				return null;
 			type = type.clone();
 			((Element)type).importDetails(this, false);
 			return type;
@@ -157,6 +159,9 @@ public abstract class Declarator extends ModifiableElement {
 		}
 		@Override
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			if (type == null)
+				return null;
+			
 			type = type.clone();
 			if (type instanceof Function) {
 				type = (MutableByDeclarator)new TypeRef.FunctionSignature((Function)type).importDetails((Element)type, true);
@@ -302,6 +307,9 @@ public abstract class Declarator extends ModifiableElement {
 		}
 		
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
+			if (type == null)
+				return null;
+			
 			type = type.clone();
 			if (type instanceof TypeRef)
 				type = new TypeRef.ArrayRef((TypeRef)type, deepClone(getDimensions()));

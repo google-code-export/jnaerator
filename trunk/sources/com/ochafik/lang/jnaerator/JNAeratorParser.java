@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -113,7 +116,7 @@ public class JNAeratorParser {
 		return slices;
 	}
 
-	private static void parseSlices(JNAeratorConfig config, SourceFiles sourceFilesOut, List<Slice> slices, PrintStream originalOut, PrintStream originalErr) throws InterruptedException {
+	private static void parseSlices(JNAeratorConfig config, SourceFiles sourceFilesOut, List<Slice> slices, PrintStream originalOut, PrintStream originalErr, boolean multithreaded) throws InterruptedException {
 	
 			class ResultCountHolder {
 				volatile int nSlicesParsed = 0;
@@ -122,14 +125,16 @@ public class JNAeratorParser {
 			final ResultCountHolder resultCountHolder = new ResultCountHolder();
 			
 			List<Pair<Slice, Future<SourceFile>>> sourceFileFutures = new ArrayList<Pair<Slice, Future<SourceFile>>>(slices.size());
+			final Set<String> topLevelTypeDefs = Collections.synchronizedSet(new HashSet<String>());
 			
-			ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);//, daemonThreadFactory );//Executors.newCachedThreadPool();
+			ExecutorService executorService = Executors.newFixedThreadPool(multithreaded ? Runtime.getRuntime().availableProcessors() * 2 : 1);
 			for (final Slice slice : slices) {
 				sourceFileFutures.add(new Pair<Slice, Future<SourceFile>>(slice, executorService.submit(new Callable<SourceFile>() {
 	
 					public SourceFile call() throws Exception {
 						try {
 							ObjCppParser parser = newObjCppParser(slice.text);
+							parser.topLevelTypeIdentifiers = topLevelTypeDefs;
 							SourceFile sourceFile = parser.sourceFile().sourceFile;
 							//sourceFile.setElementFile(slice.file);
 							return sourceFile;
@@ -201,7 +206,7 @@ public class JNAeratorParser {
 				List<Slice> slices = cutSourceContentInSlices(sourceContent, originalOut);
 				if (config.verbose)
 					originalOut.println("Now parsing " + slices.size() + " text blocks");
-				parseSlices(config, sourceFiles, slices, originalOut, originalErr);
+				parseSlices(config, sourceFiles, slices, originalOut, originalErr, false);
 			} 
 		} catch (InterruptedException e) {
 			e.printStackTrace();

@@ -171,8 +171,10 @@ public class JNAerator {
 //						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
-						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
-						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
+						"@/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
+						"-o", "/Users/ochafik/src/opencv-1.1.0",
+//						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
+//						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
 						
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
@@ -487,7 +489,7 @@ public class JNAerator {
 			interf.addDeclaration(instanceDecl);
 			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
 			
-			Set<String> signatures = result.getSignaturesForOutputClass(libraryClassName);
+			Signatures signatures = result.getSignaturesForOutputClass(libraryClassName);
 			
 			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, libraryClassName);
 			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, interf, libraryClassName);

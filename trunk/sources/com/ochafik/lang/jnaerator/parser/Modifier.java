@@ -105,8 +105,8 @@ public enum Modifier {
 	Protected(Kind.Publicity),
 	
 	Inline,
-	__inline,
-	__inline__,
+	__inline(Inline),
+	__inline__(Inline),
 
 	Align(Kind.Declspec, Kind.HasArguments),
 	Allocate(Kind.Declspec, Kind.HasArguments),
@@ -201,6 +201,16 @@ public enum Modifier {
 	}
 	public Modifier getAlias() {
 		return alias;
+	}
+	
+	public enum ArgsType {
+		None,
+		SingleString,
+		KeyValues
+	}
+	
+	public ArgsType getArgsType() {
+		return ArgsType.None;
 	}
 	
 	public enum Kind {

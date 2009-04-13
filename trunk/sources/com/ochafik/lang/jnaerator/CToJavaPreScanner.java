@@ -30,6 +30,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.Declarator.MutableByDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 
@@ -92,8 +93,13 @@ public class CToJavaPreScanner extends Scanner {
 	public void visitArg(Arg arg) {
 		Declarator d = arg.getDeclarator();
 		if (d != null && !(d instanceof DirectDeclarator)) {
-			arg.setValueType((TypeRef)d.mutateType(arg.getValueType()));
-			arg.setDeclarator(new DirectDeclarator(d.resolveName()));
+			MutableByDeclarator type = d.mutateType(arg.getValueType());
+			if (type instanceof TypeRef) {
+				arg.setValueType((TypeRef)type);
+				arg.setDeclarator(new DirectDeclarator(d.resolveName()));
+			} else {
+				type = null;
+			}
 		}
 		super.visitArg(arg);
 	}

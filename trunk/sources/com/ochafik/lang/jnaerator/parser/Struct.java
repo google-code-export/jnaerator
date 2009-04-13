@@ -39,6 +39,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		CStruct, CPPClass, ObjCClass, ObjCProtocol, CUnion, JavaClass, JavaInterface
 	}
 
+	
 	@Override
 	public Element getNextChild(Element child) {
 		Element e = super.getNextChild(child);
@@ -186,7 +187,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 			case JavaInterface:
 				return pre + "interface" + nameStr + javaExtension + javaImplements + body;
 			case ObjCClass:
-				return pre + "@class" + nameStr + body;
+				return pre + (isForwardDeclaration() ? "@class" : "@interface") + nameStr + (getCategoryName() == null ? "" : " (" + getCategoryName() + ")") + body;
 			case ObjCProtocol:
 				return pre + "@protocol" + nameStr + body; // TODO check this ???
 			case CStruct:

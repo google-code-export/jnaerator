@@ -96,6 +96,6 @@ public class MemoryFileObject implements FileObject {
 	}
 	@Override
 	public String toString() {
-		return getPath();
+		return getPath() + ":\n" + getCharContent(true);
 	}
 }

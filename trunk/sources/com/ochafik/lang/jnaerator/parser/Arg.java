@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import com.ochafik.lang.jnaerator.parser.Declarator.MutableByDeclarator;
 import com.ochafik.util.string.StringUtils;
 
 public class Arg extends Declaration {
@@ -45,8 +46,15 @@ public class Arg extends Declaration {
 		TypeRef vt = getValueType();
 		if (vt == null)
 			return null;
-		if (getDeclarator() != null)
-			return (TypeRef)getDeclarator().mutateType(vt);
+		if (getDeclarator() != null) {
+			MutableByDeclarator type = getDeclarator().mutateType(vt);
+			if (type instanceof TypeRef)
+				return (TypeRef)getDeclarator().mutateType(vt);
+			else {
+				assert false;
+				return null;
+			}
+		}
 		return vt;
 	}
 	

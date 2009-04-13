@@ -129,6 +129,9 @@ public class TypeConversion {
 		javaPrims.put(from, to);
 	}
 	
+	public static boolean isObjCppPrimitive(String s) {
+		return javaPrims.containsKey(s);
+	}
 	enum JavaPrim {
 		Void, 
 		Char, 
@@ -160,6 +163,7 @@ public class TypeConversion {
 		prim("UInt64", JavaPrim.Long);
 		prim("SInt64", JavaPrim.Long);
 		prim("__int64", JavaPrim.Long);
+		prim("__int64_t", JavaPrim.Long);
 		
 		prim("int32_t", JavaPrim.Int);
 		prim("uint32_t", JavaPrim.Int);
@@ -382,10 +386,20 @@ public class TypeConversion {
 		
 		valueType = resolveTypeDef(valueType, callerLibraryClass, true);
 		String name = null;
-		if (valueType instanceof SimpleTypeRef)
-			name = ((SimpleTypeRef) valueType).getName();
-		else if (valueType instanceof Primitive)
+		if (valueType instanceof Primitive) {
 			name = ((Primitive)valueType).getName();
+			if (name == null) {
+				List<Modifier> mods = valueType.getModifiers();
+				if (Modifier.Long.isContainedBy(mods))
+					name = "long";
+				else if (Modifier.Short.isContainedBy(mods))
+					name = "short";
+				else
+					name = "int";
+			}
+		} else if (valueType instanceof SimpleTypeRef)
+			name = ((SimpleTypeRef) valueType).getName();
+		
 		
 		if (name == null)
 			return null;

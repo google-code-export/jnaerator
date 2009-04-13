@@ -46,11 +46,11 @@ public abstract class StoredDeclarations extends Declaration {
 		@Override
 		public String toString(CharSequence indent) {
 			String p = formatComments(indent, false, true, true) + getModifiersStringPrefix();
-			return p + "typedef " + getValueTypeAndStorageSuffix();
+			return p + "typedef " + getValueTypeAndStorageSuffix(indent);
 		}
 	}
 	
-	protected String getValueTypeAndStorageSuffix() {
+	protected String getValueTypeAndStorageSuffix(CharSequence indent) {
 		if (getValueType() instanceof FunctionSignature) {
 			FunctionSignature sig = (FunctionSignature) getValueType();
 			if (sig.getFunction() != null) {
@@ -62,16 +62,16 @@ public abstract class StoredDeclarations extends Declaration {
 				}
 			}
 		}
-		String stoStr = StringUtils.implode(declarators, ", ").trim();
+		String stoStr = implode(declarators, ", ", indent).trim();
 		return 
-			getValueType() + 
+			(getValueType() == null ? "" : getValueType().toString(indent)) + 
 			(stoStr.length() == 0 ? "" : " " + stoStr) + 
 		";" + (commentAfter == null ? "" : " " + commentAfter.trim());
 	}
 	@Override
 	public String toString(CharSequence indent) {
 		return formatComments(indent, false, true, true) +
-			getModifiersStringPrefix() + getValueTypeAndStorageSuffix()
+			getModifiersStringPrefix() + getValueTypeAndStorageSuffix(indent)
 			//+ (commentAfter == null ? "" : " " + commentAfter.trim())
 			;
 	}
@@ -83,7 +83,11 @@ public abstract class StoredDeclarations extends Declaration {
 	public void setDeclarators(List<Declarator> declarator) {
 		changeValue(this, this.declarators, declarator);
 	}
-	
+	public void addDeclarators(List<Declarator> declarators) {
+		for (Declarator d : declarators)
+			addDeclarator(d);
+	}
+		
 	public void addDeclarator(Declarator declarator) {
 		if (declarator == null)
 			return;

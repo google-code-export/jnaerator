@@ -85,7 +85,7 @@ public class Result extends Scanner {
 	
 	Map<String, List<Function>> functionsByLibrary = new HashMap<String, List<Function>>();
 	//Map<String, Expression> defines = new LinkedHashMap<String, Expression>();
-	Map<String, Set<String>> signaturesByOutputClass = new HashMap<String, Set<String>>();
+	Map<String, Signatures> signaturesByOutputClass = new HashMap<String, Signatures>();
 	
 	Map<String, Pair<TypeDef, Declarator>> typeDefs = new HashMap<String, Pair<TypeDef, Declarator>>();
 	
@@ -96,10 +96,10 @@ public class Result extends Scanner {
 		return list;
 	}
 	
-	public Set<String> getSignaturesForOutputClass(String name) {
-		Set<String> s = signaturesByOutputClass.get(name);
+	public Signatures getSignaturesForOutputClass(String name) {
+		Signatures s = signaturesByOutputClass.get(name);
 		if (s == null)
-			signaturesByOutputClass.put(name, s = new HashSet<String>());
+			signaturesByOutputClass.put(name, s = new Signatures());
 		return s;
 	}
 	/*

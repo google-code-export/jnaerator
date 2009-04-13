@@ -58,7 +58,12 @@ public class MissingNamesChooser extends Scanner {
 	
 	public String chooseArgNameFromType(TypeRef tr) throws UnsupportedConversionException {
 		if (tr instanceof TypeRef.SimpleTypeRef) {
-			return ((TypeRef.SimpleTypeRef)tr).getName();
+			String name = ((TypeRef.SimpleTypeRef)tr).getName();
+			if (name == null) {
+				name = StringUtils.implode(tr.getModifiers(), "");
+				name = name.length() > 0 ? name.substring(0, 1) : name;
+			}
+			return name;
 		} else if (tr instanceof TypeRef.Pointer) {
 			return chooseArgNameFromType(((TypeRef.Pointer)tr).getTarget()) + "Ptr";
 		} else if (tr instanceof TypeRef.ArrayRef) {
@@ -122,9 +127,14 @@ public class MissingNamesChooser extends Scanner {
 			if (d instanceof TypeDef)
 				return;
 			
-			if (d != null && d.getDeclarators().isEmpty())
-				d.replaceBy(null); // special case of C++-like struct sub-type definition 
-			else
+			if (d != null && d.getDeclarators().isEmpty()) {
+				if (d instanceof VariablesDeclaration) {
+					VariablesDeclaration pvd = (VariablesDeclaration) d;
+					pvd.addDeclarator(new DirectDeclarator(f.getName()));
+					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
+				} else
+					d.replaceBy(null); // special case of C++-like struct sub-type definition 
+			} else
 				functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
 			TypeDef td = new TypeDef();
 			td.importDetails(functionSignature, true);
