@@ -20,12 +20,16 @@
 --
 void f(void (*g)());
 --
+void (*fptr)();
+--
 int val = (1 << 16) - 2;
 --
 typedef void *__ptr64 PVOID64;
 --
+typedef char CHAR;
 typedef CHAR *PCHAR, *LPCH, *PCH;
 --
+typedef char CHAR;
 typedef const CHAR *LPCCH, *PCCH;
 --
 long value = (int)(__u.__u >> 31);
@@ -40,12 +44,14 @@ extern long int llrint(double);
 --
 extern long long int llrint(double);
 --
-typedef int I; 
-I register i; 
+typedef int I;
+register I i;
 --
 char* initstate(unsigned, char*, size_t); /* no  __DARWIN_ALIAS needed */
 --
-int register unsigned g;
+register unsigned int g;
+--
+void srand(unsigned);
 --
 /**
  * Need to see public final ByteByReference[] data = new ByteByReference[3]; in results<br>
@@ -59,6 +65,7 @@ typedef struct {
 	unsigned char *data[3];
 } ImageTransfer;
 --
+class string;
 string name = "ok";
 --
 class CPPClass {
@@ -84,12 +91,16 @@ void* CreateHandle(int size);
 --
 void** ResizeHandle(void** h, int size);
 --
+/// typedef bool BOOL;
+class NSMapTable;
 BOOL (*isEqual)(NSMapTable* table, const void*, const void*);
 --
 const void *x;
 --
+typedef void *GC_thread;
 extern volatile GC_thread GC_threads[THREAD_TABLE_SZ];
 --
+typedef bool GC_bool;
 extern GC_bool GC_thr_initialized;
 --
 void const *x;
@@ -124,8 +135,14 @@ unsigned int a = a, *pa[4];
 --
 unsigned short x, *px, **ppx, **&rppx = a, *pa[4];
 --
+class pair;
+class map;
+class string;
 pair<int, map<long*, string> > x;
 --
+class pair;
+class map;
+class string;
 pair<int, map<long*, string>*> x;
 --
 enum {
@@ -138,6 +155,7 @@ typedef const struct __NSAppleEventManagerSuspension *NSAppleEventManagerSuspens
 --
 extern const double NSAppleEventTimeOutNone;
 --
+class NSString;
 extern NSString *NSAppleEventManagerWillProcessFirstEventNotification;
 --
 int i = 10;
@@ -159,6 +177,12 @@ union short_or_long {
 	long l;
 } a_number, *p_anumber = NULL;
 --
+struct IOParam;
+struct FileParam;
+struct VolumeParam;
+struct CntrlParam;
+struct SlotDevParam;
+struct MultiDevParam;
 /// Test of comments before
 union ParamBlockRec {
 	IOParam ioParam;
@@ -169,7 +193,21 @@ union ParamBlockRec {
 	MultiDevParam multiDevParam;
 };
 --
+typedef void *AVLTreePtr;
+typedef void *AVLNodeType;
 typedef SInt32 (__cdecl *AVLCompareItemsProcPtr)(AVLTreePtr tree, const void* i1, const void* i2, AVLNodeType nd_typ);
+--
+void ComplexArgFunction(struct {
+	union {
+		enum {
+			A,
+			B
+		} e;
+		float f;
+	} u;
+	long v;
+	void (*fptr)();
+}* pArg);
 --
 typedef struct {
 	float *re;
@@ -180,6 +218,7 @@ typedef char *byteptr;
 --
 typedef int (*fncptr)(int);
 --
+struct GC_thread;
 extern volatile GC_thread GC_threads[];
 --
 #pragma parse
@@ -310,6 +349,12 @@ inline  void  cvDecRefData( CvArr* arr )
         mat->refcount = 0;
     }
 }
+--
+@class Categ;
+@interface Base (Categ)
+	- (Base*)merge:(Base*)f;
+@end
+--
 --
 extern TestMe();
 --

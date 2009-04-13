@@ -62,16 +62,16 @@ public class GlobalsGenerator {
 //		}
 //	}
 	
-	public void convertGlobals(VariablesDeclaration globals, Set<String> signatures, DeclarationsHolder out, String callerLibraryName) throws UnsupportedConversionException {
+	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, String callerLibraryName) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
 			String name = result.typeConverter.getValidJavaArgumentName(d.resolveName());
 			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
-			if (type.getModifiers().contains(Modifier.Const) && d.getDefaultValue() != null) {
+			if (type == null || type.getModifiers().contains(Modifier.Const) && d.getDefaultValue() != null) {
 				//result.declarationsConverter.convertCon
 				continue;
 			}
 			
-			if (!signatures.add(name))
+			if (!signatures.classSignatures.add(name))
 				continue;
 			
 			Struct struct = result.declarationsConverter.publicStaticClass(name, null, Struct.Type.JavaClass, null);
@@ -165,7 +165,7 @@ public class GlobalsGenerator {
 		}
 	}
 
-	public void convertGlobals(List<VariablesDeclaration> list, Set<String> signatures, DeclarationsHolder out, String libraryNameExpression) {		
+	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, String libraryNameExpression) {		
 		if (list == null)
 			return;
 		

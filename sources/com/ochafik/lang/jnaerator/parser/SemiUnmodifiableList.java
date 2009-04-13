@@ -152,5 +152,8 @@ public class SemiUnmodifiableList<T> implements List<T> {
 	public <U> U[] toArray(U[] a) {
 		return list.toArray(a);
 	}
-	
+	@Override
+	public String toString() {
+		return list.toString();
+	}
 }

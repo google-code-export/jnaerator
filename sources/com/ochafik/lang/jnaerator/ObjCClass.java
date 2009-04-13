@@ -296,7 +296,7 @@ class ObjCClass {
 		for (Struct c : protocols)
 			declarations.addComponent(c.getDeclarations());
 	
-		Set<String> signatures = new HashSet<String>();
+		Signatures signatures = new Signatures();
 		
 		for (Declaration d : declarations) {
 			if (d instanceof Function) {

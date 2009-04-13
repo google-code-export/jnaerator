@@ -75,14 +75,15 @@ public class ObjCppParsingTests {
 		System.setErr(pout);
 		
 		boolean ok = false;
-		List<? extends Declaration> decls = null;
+		//List<? extends Declaration> decls = null;
+		SourceFile sourceFile = null;
 		
 		try {
 			
 			switch (testOption) {
 			case ParseMustFail:
 				try {
-					decls = newParser(string).declaration().declarations;
+					sourceFile = newParser(string).sourceFile().sourceFile;
 					assertTrue("Expression should not have been parsed : " + string, false);
 				} catch (Throwable t) {
 					ok = true;
@@ -90,22 +91,22 @@ public class ObjCppParsingTests {
 				break;
 			case ParseOnly:
 			case ParseAndPrettyPrint:
-				decls = newParser(string).declaration().declarations;
-				assertNotNull(string, decls);
+				sourceFile = newParser(string).sourceFile().sourceFile;
+				assertNotNull(string, sourceFile);
 				if (testOption == TestOption.ParseAndPrettyPrint) {
-					assertEquals(string, 1, decls.size());
-					Declaration firstDecl = decls.get(0);
-					assertNotNull(string, firstDecl);
-					if (!SyntaxUtils.equal(string, firstDecl == null ? null : firstDecl.toString()))
-						decls = newParser(string).declaration().declarations;
+					//assertEquals(string, 1, decls.size());
+					//Declaration firstDecl = decls.get(0);
+					//assertNotNull(string, firstDecl);
+					if (!SyntaxUtils.equal(string, sourceFile == null ? null : sourceFile.toString()))
+						sourceFile = newParser(string).sourceFile().sourceFile;
 					
-					assertEquals(string, string.trim(), firstDecl == null ? null : firstDecl.toString().trim());
+					assertEquals(string, string.trim(), sourceFile == null ? null : sourceFile.toString().trim());
 				}
 				ok = true;
 				break;
 			}
 			
-			for (Declaration decl : decls) {
+			for (Declaration decl : sourceFile.getDeclarations()) {
 				if (decl == null)
 					continue;
 					
@@ -126,7 +127,7 @@ public class ObjCppParsingTests {
 			if (!ok) {
 				System.out.println("IN:  " + string);
 				try {
-					System.out.println("OUT: " + decls);
+					System.out.println("OUT: " + sourceFile);
 					System.out.write(bout.toByteArray());
 					System.out.println();
 				} catch (Throwable t) {

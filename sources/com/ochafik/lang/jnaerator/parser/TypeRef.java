@@ -220,7 +220,10 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		}*/
 		@Override
 		public String toString(CharSequence indent) {
-			return getModifiersStringPrefix() + name;
+			if (name != null)
+				return getModifiersStringPrefix() + name;
+			else
+				return getModifiersStringPrefix().trim();
 		}
 
 		@Override

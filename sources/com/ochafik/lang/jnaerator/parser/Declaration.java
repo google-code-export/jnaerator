@@ -25,8 +25,15 @@ import com.ochafik.util.string.StringUtils;
 public abstract class Declaration extends ModifiableElement {
 	protected String name;
 	protected TypeRef valueType;
-	public MemberVisibility visibility;
-
+	protected MemberVisibility visibility;
+	/*protected int bits = -1;
+	
+	public void setBits(int bits) {
+		this.bits = bits;
+	}
+	public int getBits() {
+		return bits;
+	}*/
 	
 	@Override
 	public Declaration clone() {

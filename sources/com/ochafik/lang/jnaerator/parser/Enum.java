@@ -140,12 +140,13 @@ public class Enum extends TaggedTypeRef {
 
 	@Override
 	public String toString(CharSequence indent) {
-		String indentt = "\n" + indent + "\t";
+		String nindent = indent + "\t";
+		String indentt = "\n" + nindent;
 		return 
 			"enum " +
 			(getTag() != null ? getTag() + " " : "")+ 
 			"{" + 
-			indentt + StringUtils.implode(items, indentt) + "\n" + indent + "}";
+			indentt + implode(items, ",\n" + nindent, nindent) + "\n" + indent + "}";
 	}
 
 }

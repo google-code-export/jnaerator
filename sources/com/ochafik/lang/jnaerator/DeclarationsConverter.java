@@ -53,7 +53,7 @@ public class DeclarationsConverter {
 	final Result result;
 	
 	
-	void convertCallback(FunctionSignature functionSignature, Set<String> signatures, DeclarationsHolder out, String callerLibraryName) {
+	void convertCallback(FunctionSignature functionSignature, Signatures signatures, DeclarationsHolder out, String callerLibraryName) {
 		String name = result.typeConverter.inferCallBackName(functionSignature, false);
 		if (name == null)
 			return;
@@ -64,7 +64,7 @@ public class DeclarationsConverter {
 		
 		int i = 1;
 		String chosenName = name;
-		while (!(signatures.add(chosenName))) {
+		while (!(signatures.classSignatures.add(chosenName))) {
 			chosenName = name + (++i);
 		}
 		
@@ -77,7 +77,7 @@ public class DeclarationsConverter {
 		callbackStruct.setParents(Arrays.asList(Callback.class.getName()));
 		callbackStruct.setTag(chosenName);
 		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
-		convertFunction(function, new TreeSet<String>(), true, callbackStruct, callerLibraryName);
+		convertFunction(function, new Signatures(), true, callbackStruct, callerLibraryName);
 		for (Declaration d : callbackStruct.getDeclarations()) {
 			if (d instanceof Function) {
 				callbackStruct.addAnnotations(callbackStruct.getAnnotations());
@@ -88,7 +88,7 @@ public class DeclarationsConverter {
 		out.addDeclaration(new TaggedTypeRefDeclaration(callbackStruct));
 	}
 
-	void convertCallbacks(List<FunctionSignature> functionSignatures, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+	void convertCallbacks(List<FunctionSignature> functionSignatures, Signatures signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (functionSignatures != null) {
 			for (FunctionSignature functionSignature : functionSignatures) {
 				if (functionSignature.findParentOfType(Struct.class) != null)
@@ -109,7 +109,7 @@ public class DeclarationsConverter {
 			
 		}
 	}
-	void convertConstants(List<Define> defines, Element sourcesRoot, final Set<String> signatures, final DeclarationsHolder out, final String callerLibraryClass) {
+	void convertConstants(List<Define> defines, Element sourcesRoot, final Signatures signatures, final DeclarationsHolder out, final String callerLibraryClass) {
 		//final List<Define> defines = new ArrayList<Define>();
 		sourcesRoot.accept(new Scanner() {
 //			@Override
@@ -135,8 +135,7 @@ public class DeclarationsConverter {
 						continue; // TODO provide a mapping of exported values
 					
 					TypeRef mutatedType = (TypeRef) vs.mutateType(v.getValueType());
-					
-					if (!mutatedType.getModifiers().contains(Modifier.Const))
+					if (mutatedType == null || !mutatedType.getModifiers().contains(Modifier.Const))
 						return;
 					
 					//TypeRef type = v.getValueType();
@@ -149,7 +148,7 @@ public class DeclarationsConverter {
 						DirectDeclarator dd = (DirectDeclarator)vs;
 						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), callerLibraryClass);
 						
-						if (!signatures.add(vs.resolveName()))
+						if (!signatures.variablesSignatures.add(vs.resolveName()))
 							continue;
 						
 						TypeRef tr = result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass);
@@ -190,12 +189,12 @@ public class DeclarationsConverter {
 		return new EmptyDeclaration(mess.toArray(new String[0]));
 	}
 	
-	private void convertEnum(Enum e, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+	private void convertEnum(Enum e, Signatures signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (e.isForwardDeclaration())
 			return;
 		
 		DeclarationsHolder localOut = out;
-		Set<String> localSignatures = signatures;
+		Signatures localSignatures = signatures;
 		
 		Struct enumInterf = null;
 		String enumName = getActualTaggedTypeName(e);
@@ -206,7 +205,7 @@ public class DeclarationsConverter {
 				enumInterf.addToCommentBefore("enum values");
 			out.addDeclaration(new TaggedTypeRefDeclaration(enumInterf));
 			
-			localSignatures = new HashSet<String>();
+			localSignatures = new Signatures();
 			localOut = enumInterf;
 		}
 		Integer lastAdditiveValue = null;
@@ -278,7 +277,7 @@ public class DeclarationsConverter {
 	}
 
 	@SuppressWarnings("static-access")
-	private Declaration outputConstant(String name, Expression x, Set<String> signatures, Element element, String elementTypeDescription, String callerLibraryClass, boolean addFileComment) throws UnsupportedConversionException {
+	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, String callerLibraryClass, boolean addFileComment) throws UnsupportedConversionException {
 		try {
 			if (!result.typeConverter.isValidJavaIdentifier(name))
 				throw new UnsupportedConversionException(element, "The name '" + name + "' is invalid for a Java field.");
@@ -289,7 +288,7 @@ public class DeclarationsConverter {
 			if (prim == null) {
 				return new EmptyDeclaration("Failed to infer type of " + converted);
 			} else if (prim != JavaPrim.Void) {
-				if (signatures.add(name)) {
+				if (signatures.variablesSignatures.add(name)) {
 					String t = converted.toString();
 					if (t.contains("sizeof")) {
 						converted = result.typeConverter.convertExpressionToJava(x, callerLibraryClass);
@@ -312,7 +311,7 @@ public class DeclarationsConverter {
 		
 	} 
 
-	void convertEnums(List<Enum> enums, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+	void convertEnums(List<Enum> enums, Signatures signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (enums != null) {
 			//out.println("public static class ENUMS {");
 			for (com.ochafik.lang.jnaerator.parser.Enum e : enums) {
@@ -325,7 +324,7 @@ public class DeclarationsConverter {
 		}
 	}
 
-	void convertFunction(Function function, Set<String> signatures, boolean isCallback, DeclarationsHolder out, String callerLibraryClass) {
+	void convertFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, String callerLibraryClass) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
 		String functionName = function.getName();
@@ -388,6 +387,8 @@ public class DeclarationsConverter {
 			
 			if (!modifiedMethodName.equals(functionName) && ns.isEmpty())
 				names.add(functionName);
+			if (function.getAsmName() != null)
+				names.add(function.getAsmName());
 			
 			if (!isCallback && !names.isEmpty())
 				natFunc.addAnnotation(new Annotation(Mangling.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
@@ -446,7 +447,7 @@ public class DeclarationsConverter {
 				primSign = alternativeOutputs ? primFunc.computeSignature(false) : null,
 				bufSign = alternativeOutputs ? bufFunc.computeSignature(false) : null;
 				
-			if (signatures.add(natSign)) {
+			if (signatures.methodsSignatures.add(natSign)) {
 				if (alternativeOutputs && !primSign.equals(natSign)) {
 					if (primSign.equals(bufSign))
 						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primSign + "} instead"));
@@ -459,11 +460,11 @@ public class DeclarationsConverter {
 			}
 			
 			if (alternativeOutputs) {
-				if (signatures.add(primSign)) {
+				if (signatures.methodsSignatures.add(primSign)) {
 					collectParamComments(primFunc);
 					out.addDeclaration(primFunc);
 				}
-				if (signatures.add(bufSign)) {
+				if (signatures.methodsSignatures.add(bufSign)) {
 					collectParamComments(bufFunc);
 					out.addDeclaration(bufFunc);
 				}
@@ -516,7 +517,7 @@ public class DeclarationsConverter {
 		}
 	}
 
-	void convertFunctions(List<Function> functions, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+	void convertFunctions(List<Function> functions, Signatures signatures, DeclarationsHolder out, String callerLibraryClass) {
 		if (functions != null) {
 			//System.err.println("FUNCTIONS " + functions);
 			for (Function function : functions) {
@@ -538,7 +539,7 @@ public class DeclarationsConverter {
 			structName = tag;
 		return structName;
 	}
-	void convertStruct(Struct struct, Set<String> signatures, DeclarationsHolder out, String callerLibraryClass) {
+	void convertStruct(Struct struct, Signatures signatures, DeclarationsHolder out, String callerLibraryClass) {
 		String structName = getActualTaggedTypeName(struct);
 		if (structName == null)
 			return;
@@ -546,8 +547,9 @@ public class DeclarationsConverter {
 		if (struct.isForwardDeclaration() && !result.structsByName.get(structName).isForwardDeclaration())
 			return;
 		
-		String signature = "struct " + structName;
-		if (!signatures.add(signature))
+		String signature = //"struct " + 
+			structName;
+		if (!signatures.classSignatures.add(signature))
 			return;
 		
 		String baseClass = (struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class).getName();
@@ -565,7 +567,7 @@ public class DeclarationsConverter {
 		final int iChild[] = new int[] {0};
 		
 		//cl.addDeclaration(new EmptyDeclaration())
-		Set<String> childSignatures = new TreeSet<String>();
+		Signatures childSignatures = new Signatures();
 		//List<Declaration> children = new ArrayList<Declaration>();
 		for (Declaration d : struct.getDeclarations()) {
 			if (d instanceof VariablesDeclaration) {
@@ -591,7 +593,7 @@ public class DeclarationsConverter {
 		out.addDeclaration(decl(structJavaClass));
 	}
 
-	public void convertStructs(List<Struct> structs, Set<String> signatures, DeclarationsHolder out, String libraryClassName) {
+	public void convertStructs(List<Struct> structs, Signatures signatures, DeclarationsHolder out, String libraryClassName) {
 		if (structs != null) {
 			for (Struct struct : structs) {
 				if (struct.findParentOfType(Struct.class) != null)

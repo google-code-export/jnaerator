@@ -36,6 +36,13 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		CFunction, ObjCMethod, CppMethod, JavaMethod
 	}
 
+	String asmName;
+	public void setAsmName(String asmName) {
+		this.asmName = asmName;
+	}
+	public String getAsmName() {
+		return asmName;
+	}
 	@Override
 	public Element getNextChild(Element child) {
 		Element e = super.getNextChild(child);
@@ -132,8 +139,8 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 			return "<no function type>";
 		
 		String pre = formatComments(indent, false, true, true);
-		String //pre = commentBefore == null ? "" : commentBefore + "\n" + indent, 
-				post = commentAfter == null ? "" : commentAfter;//" /*" + commentAfter + " */";
+		String post = (asmName == null ? "" : "__asm(\"" + asmName + "\") ") +
+			(commentAfter == null ? "" : " " + commentAfter);//" /*" + commentAfter + " */";
 		
 		if (!getAnnotations().isEmpty())
 			pre += StringUtils.implode(getAnnotations(), "\n" + indent) + "\n" + indent;
