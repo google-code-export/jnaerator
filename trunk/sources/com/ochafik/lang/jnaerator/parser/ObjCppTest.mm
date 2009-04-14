@@ -86,6 +86,10 @@ struct ParamBlockRec {
 	int ok; // comment after ok
 };
 --
+static inline int isascii(int _c) {
+	return (_c & ~0x7F) == 0;
+}
+--
 /// these are comments...
 void* CreateHandle(int size);
 --
@@ -103,17 +107,17 @@ extern volatile GC_thread GC_threads[THREAD_TABLE_SZ];
 typedef bool GC_bool;
 extern GC_bool GC_thr_initialized;
 --
-void const *x;
+const void *x;
+--
+const void *const x;
 --
 int *const a = (int*)10;
 --
 int *const *aa = (int**)10;
 --
-const void const *x;
---
 const void x[];
 --
-const void const *&*x[];
+const void *const &volatile *register x[];
 --
 #// Only comments here !
 --
@@ -146,6 +150,9 @@ class string;
 pair<int, map<long*, string>*> x;
 --
 enum {
+	a = 1,
+	b = 2 + 4,
+	c = 55,
 	rAliasType = 'alis' /* Aliases are stored as resources of this type */
 };
 --
@@ -355,6 +362,14 @@ inline  void  cvDecRefData( CvArr* arr )
 	- (Base*)merge:(Base*)f;
 @end
 --
+struct {
+	int i:13;
+	unsigned j:1;
+	signed k:2;
+	long l:3;
+	short m:2;
+	float f;
+} a;
 --
 extern TestMe();
 --

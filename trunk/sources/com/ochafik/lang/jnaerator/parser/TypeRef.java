@@ -97,8 +97,8 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		
 	}
 
-	public String variableDeclarationToString(String varName, boolean isVarArg) {
-		return toString() + (isVarArg ? "... " : " ") + varName;
+	public String variableDeclarationToString(String varName, boolean isVarArg, CharSequence indent) {
+		return toString(indent) + (isVarArg ? "... " : " ") + varName;
 	}
 	public boolean acceptsModifier(Modifier modifier) {
 		return modifier.isAnyOf(Kind.NumericTypeQualifier, Kind.TypeQualifier);
@@ -155,6 +155,13 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			return getModifiersStringPrefix() + s;
 		}
 
+		@Override
+		public String variableDeclarationToString(String varName, boolean isVarArg, CharSequence indent) {
+			if (isVarArg || getFunction() == null | getFunction().getName() == null)
+				return super.variableDeclarationToString(varName, isVarArg, indent);
+			else
+				return toString(indent);
+		}
 		@Override
 		public void accept(Visitor visitor) {
 			visitor.visitFunctionSignature(this);
@@ -507,8 +514,8 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		}
 	
 		@Override
-		public String variableDeclarationToString(String varName, boolean isVarArg) {
-			return getTarget() + (isVarArg ? "... " : " ") + varName + bracketsToString();
+		public String variableDeclarationToString(String varName, boolean isVarArg, CharSequence indent) {
+			return (getTarget() == null ? "" : getTarget().toString(indent)) + (isVarArg ? "... " : " ") + varName + bracketsToString();
 		}
 		@Override
 		public void accept(Visitor visitor) {
