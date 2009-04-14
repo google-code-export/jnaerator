@@ -127,7 +127,7 @@ public class Arg extends Declaration {
 			return null;
 		else if (getValueType() != null) {
 			if (getName() != null)
-				return ann + getValueType().variableDeclarationToString(getName(), isVarArg());
+				return ann + getValueType().variableDeclarationToString(getName(), isVarArg(), indent);
 			else
 				return ann + getValueType().toString() + (isVarArg() ? "..." : "");
 		} else

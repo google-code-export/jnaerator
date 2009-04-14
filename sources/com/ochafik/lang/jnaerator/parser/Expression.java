@@ -697,9 +697,12 @@ public abstract class Expression extends Element {
 		}
 	}
 	public enum UnaryOperator {
-		Not("!"), Complement("~"),
-		PreIncr("++"), PreDecr("--"),
-		PostIncr("++"), PostDecr("--");
+		Not("!"), 
+		Complement("~"),
+		PreIncr("++"), 
+		PreDecr("--"),
+		PostIncr("++"), 
+		PostDecr("--");
 		
 		String s;
 		UnaryOperator(String s) {
@@ -1120,7 +1123,7 @@ public abstract class Expression extends Element {
 			Int, String, Char, IntegerString, Float, Short, Byte, Long, UInt, Double, LongString, ULong, Bool
 		}
 		public enum IntForm {
-			Hex, Octal, String
+			Hex, Octal, String, Decimal
 		}
 		Type type;
 		IntForm intForm;
@@ -1232,6 +1235,11 @@ public abstract class Expression extends Element {
 		@Override
 		public String toInnerString(CharSequence indent) {
 			StringBuffer b = new StringBuffer();
+			
+			if (intForm == IntForm.Hex)
+				return "0x" + Long.toHexString(value instanceof Long ? ((Long)value).longValue() : ((Integer)value).longValue());
+			else if (intForm == IntForm.Octal)
+				return Long.toOctalString(value instanceof Long ? ((Long)value).longValue() : ((Integer)value).longValue());
 			
 			if (getType() == null)
 				b.append("");
@@ -1438,10 +1446,10 @@ public abstract class Expression extends Element {
 		}
 
 		public static Constant parseDecimal(String string) {
-			return parseDecimal(string, 10);
+			return parseDecimal(string, 10, IntForm.Decimal);
 		}
 		
-		public static Constant parseDecimal(String string, int radix) {
+		public static Constant parseDecimal(String string, int radix, IntForm form) {
 			string = string.trim().toLowerCase();
 			int len = string.length();
 			boolean unsigned = false;
@@ -1473,9 +1481,9 @@ public abstract class Expression extends Element {
 			
 			//TODO handle unsigned properly !
 			if (val > Integer.MIN_VALUE && val < Integer.MAX_VALUE)
-				return new Constant(unsigned ? Type.UInt : Type.Int, (int)val);
+				return new Constant(unsigned ? Type.UInt : Type.Int, form, (int)val);
 			else
-				return new Constant(unsigned ? Type.ULong : Type.Long, val);
+				return new Constant(unsigned ? Type.ULong : Type.Long, form, val);
 			
 		}
 
@@ -1485,7 +1493,7 @@ public abstract class Expression extends Element {
 				throw new IllegalArgumentException("Expected hex literal, got " + string);
 			
 			try {
-				return parseDecimal(string.substring(2), 16);
+				return parseDecimal(string.substring(2), 16, IntForm.Hex);
 			} catch (NumberFormatException ex) {
 				throw new NumberFormatException("Parsing hex : \"" + string +"\"");
 			}
@@ -1496,7 +1504,7 @@ public abstract class Expression extends Element {
 			if (!string.startsWith("\\"))
 				throw new IllegalArgumentException("Expected octal literal, got " + string);
 			
-			return parseDecimal(string.substring(2), 8);
+			return parseDecimal(string.substring(2), 8, IntForm.Octal);
 		}
 
 		public static Constant parseFloat(String string) {

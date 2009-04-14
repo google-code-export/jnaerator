@@ -11,7 +11,7 @@
 	JNAerator is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+	GNU Lesser General Public Lticense for more details.
 	
 	You should have received a copy of the GNU Lesser General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
@@ -30,7 +30,7 @@ options {
 	backtrack = true;
 	output = AST;
 	// memoize=true;
-	k = 3;
+	//k = 3;
 }
 
 scope Symbols {
@@ -146,7 +146,7 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	}
 	
 	public int getLine(Token token) {
-		return token.getLine();// + sourceLineDelta;
+		return token.getLine(); //+ sourceLineDelta;
 	}
 	
 	protected <T extends Element> T mark(T element, int tokenLine) {
@@ -215,12 +215,46 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 		return Modifier.parseModifier(next(), anyModKind) != null;
 	} 
 	protected boolean next(String... ss) {
-		String n = next();
+		return next(1, ss);
+	}
+	protected boolean next(int i, String... ss) {
+		String n = next(i);
 		for (String s : ss)
 			if (s.equals(n))
 				return true;
 				
 		return false;
+	}
+	
+	String getSurroundings(Token t, int width) {
+		if (t == null)
+			return null;
+		int x = t.getTokenIndex();
+		List<String> strs = new ArrayList<String>();
+		int size = getTokenStream().size();
+		for (int i = x - width; i < x + width + 1; i++) {
+			if (i < 0 || i >= size)
+				continue;
+
+			strs.add(getTokenStream().get(i).getText());
+		}
+		return com.ochafik.util.string.StringUtils.implode(strs, " ");
+	}
+	@Override
+	public String getErrorMessage(RecognitionException e, String[] tokenNames) {
+		if (e instanceof NoViableAltException) {
+			NoViableAltException ne = (NoViableAltException)e;
+			return "Failed to match any alternative with token " + ne.token + "\n\t" +
+				" File: " + getFile() + ":" + (ne.line + sourceLineDelta) + "\n\t" +
+				"Input: " + getSurroundings(ne.token, 5).replace('\n', ' ') + "\n\t" +
+				" Rule: " + ne.grammarDecisionDescription + "\n\t" +
+				"Stack: " + getRuleInvocationStack(e, getClass().getName()) + "\n";
+		} else
+			return super.getErrorMessage(e, tokenNames);
+	}
+	@Override
+	public String getTokenErrorDisplay(Token t) {
+		return t.toString();	
 	}
 }
 
@@ -292,7 +326,7 @@ scope Symbols;
 	 ;
 
 externDeclarations returns [ExternDeclarations declarations]
-	:	{ next("extern") }? IDENTIFIER
+	:	{ next("extern") }?=> IDENTIFIER
 		STRING {
 			$declarations = mark(new ExternDeclarations(), getLine($STRING));
 			$declarations.setLanguage($STRING.text);
@@ -378,17 +412,17 @@ forwardClassDecl returns [List<Declaration> declarations]
 	;
 	
 functionPointerVarDecl  returns [List<? extends Declaration> declarations]
-	:	mutableTypeRef {
-			($mutableTypeRef.type instanceof FunctionSignature) && 
-			((FunctionSignature)$mutableTypeRef.type).getFunction().getName() != null
+	:	tr=mutableTypeRef {
+			($tr.type instanceof FunctionSignature) && 
+			((FunctionSignature)$tr.type).getFunction().getName() != null
 		}? {
-			$declarations = Arrays.asList(new FunctionPointerDeclaration(((FunctionSignature)$mutableTypeRef.type)));
+			$declarations = Arrays.asList(new FunctionPointerDeclaration(((FunctionSignature)$tr.type)));
 		}
 		';'
 	;
 	
 enumItem returns [Enum.EnumItem item]
-	:	n=IDENTIFIER ('=' v=expression)? {
+	:	n=IDENTIFIER ('=' v=topLevelExpr)? {
 			$item = mark(new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr), getLine($n));
 			$item.setCommentBefore(getCommentBefore($n.getTokenIndex()));
 			$item.setCommentAfter(getCommentAfterOnSameLine($n.getTokenIndex() - 1));
@@ -453,7 +487,7 @@ enumCore returns [Enum e]
 	;
 		
 /*
-BINARY_OPERATOR
+binaryOpERATOR
 	:	'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' |
 		'<=' | '>=' | '<' | '>' | '==' | '!='
 	;
@@ -614,7 +648,9 @@ scope Symbols;
 					$struct = $ab.struct;
 					$struct.setForwardDeclaration(false);
 				} |
-				tag=IDENTIFIER 
+				tag=IDENTIFIER {
+					defineTypeIdentifierInParentScope($tag.text);
+				}
 				(
 					(
 						m2=modifiers { modifiers.addAll($m2.modifiers); }
@@ -656,14 +692,23 @@ scope Symbols;
 				if (d instanceof Function)
 					((Function)d).setType(forcedType);
 			}
-			defineTypeIdentifierInParentScope($struct.getTag());
 		}
+	;
+
+anyOp returns [java.lang.Enum<?> op]
+	:	binaryOp { $op = $binaryOp.op; } | 
+		unaryOp { $op = $unaryOp.op; } | 
+		assignmentOp { $op = $assignmentOp.op; } 
 	;
 
 functionName returns [String name, String file, int line]
 	:
-		pre='~'? n=IDENTIFIER post=(binaryOp | unaryOp | assignmentOp)? { 
+		pre='~'? n=IDENTIFIER anyOp? { 
 			$name = $n.text;
+			if ($pre.text != null)
+				$name = $pre.text + $name;
+			if ($anyOp.text != null)
+				$name += $anyOp.text;
 			$file = getFile();
 			$line = getLine($n);
 		} 
@@ -689,11 +734,6 @@ scope Symbols;
 			$function = mark(new Function(), -1);
 			$function.setType(Function.Type.CFunction);
 		}
-		/*( 
-			{ next("extern") }? IDENTIFIER STRING { 
-				$function.addModifiers(Modifier.Extern); 
-			} |
-		)?*/
 		preMods1=modifiers { $function.addModifiers($preMods1.modifiers); }
 		returnTypeRef=mutableTypeRef? { 
 			$function.setValueType($returnTypeRef.type); 
@@ -707,10 +747,10 @@ scope Symbols;
 		argList {
 			$function.setArgs($argList.args);
 		}
-		({ next("const", "__const") }? ct=IDENTIFIER {
+		({ next("const", "__const") }?=> (ct=IDENTIFIER {
 			if ($ct.text != null)
 				$function.addModifiers(Modifier.Const);
-		} |)
+		} ) |)
 		postMods=modifiers {
 			for (Modifier m : $postMods.modifiers)
 				$function.addModifiers(m);
@@ -723,69 +763,51 @@ scope Symbols;
 		)
 	;
 
-modifier returns [Modifier modifier]
-	:	{ Modifier.parseModifier(next()) != null }? m=IDENTIFIER {
-			$modifier = Modifier.parseModifier($m.text);
-		}/* |
-		t=(
-			'signed' | 'unsigned' | '__signed' | '__unsigned' |
-			'long' | 'short'
-		) {
-			$modifier = Modifier.parseModifier($t.text);
-		}*/
-	;
-	
 modifiers returns [List<Modifier> modifiers]
-	: 	anyModifier {
-			$modifiers = $anyModifier.modifiers;
-		} |
-		{
-			$modifiers = new ArrayList<Modifier>();
-		}
+@init { $modifiers = new ArrayList<Modifier>(); }
+	: 	( modifier { $modifiers.addAll($modifier.modifiers); } )*
 	;
 
-anyModifier returns [List<Modifier> modifiers, String asmName]
+modifier returns [List<Modifier> modifiers, String asmName]
+@init { $modifiers = new ArrayList<Modifier>(); }
 	:
-		{ $modifiers = new ArrayList<Modifier>(); }
-		(
-			{ next("extern") }? IDENTIFIER ex=STRING {
-				$modifiers.add(Modifier.Extern); // TODO
-			} |
-			modifier {
-				$modifiers.add($modifier.modifier);
-			} |
-			{ next("__success") }? 
-			IDENTIFIER '(' 'return' binaryOp expression  ')' |
-			
-			// TODO handle it properly @see http://blogs.msdn.com/staticdrivertools/archive/2008/11/06/annotating-for-success.aspx
-			{ next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) }?  
-			IDENTIFIER '(' expression ')' |
-			
-			{ next("__declspec", "__attribute__", "__asm") }?
-			IDENTIFIER
-			'(' (
-				( an=STRING { 
-					String s = String.valueOf(Constant.parseString($an.text).getValue());
-					if ($asmName == null) 
-						$asmName = s; 
-					else 
-						$asmName += s; 
-				} )* |
-				extendedModifiers {
-					$modifiers.addAll($extendedModifiers.modifiers);
-				}
-			) ')'
-		)
+		{ next("extern") }?=> IDENTIFIER ex=STRING {
+			$modifiers.add(Modifier.Extern); // TODO
+		} |
+		{ Modifier.parseModifier(next()) != null }? m=IDENTIFIER {
+			$modifiers.add(Modifier.parseModifier($m.text));
+		} |
+		{ next("__success") }?=>
+		IDENTIFIER '(' 'return' binaryOp expression  ')' |
+		
+		// TODO handle it properly @see http://blogs.msdn.com/staticdrivertools/archive/2008/11/06/annotating-for-success.aspx
+		{ next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) }?=>
+		IDENTIFIER '(' expression ')' |
+		
+		{ next("__declspec", "__attribute__", "__asm") }?=>
+		IDENTIFIER
+		'(' (
+			( an=STRING { 
+				String s = String.valueOf(Constant.parseString($an.text).getValue());
+				if ($asmName == null) 
+					$asmName = s; 
+				else 
+					$asmName += s; 
+			} )* |
+			extendedModifiers {
+				$modifiers.addAll($extendedModifiers.modifiers);
+			}
+		) ')'
 	;
 
 //http://msdn.microsoft.com/en-us/library/dabb5z75.aspx
 extendedModifiers returns [List<Modifier> modifiers]
 	:	{ $modifiers = new ArrayList<Modifier>(); }
 		(
-			{ next(Modifier.Kind.Extended) }? m=modifier
+			{ next(Modifier.Kind.Extended) }? m=IDENTIFIER
 			(
 				{
-					$modifiers.add($m.modifier);
+					$modifiers.add(Modifier.parseModifier($m.text));
 				}/* |
 				{ $IDENTIFIER.text.equals("align") }? DECIMAL_NUMBER |
 				{ $IDENTIFIER.text.equals("allocate") }?  '(' STRING ')' |
@@ -795,45 +817,35 @@ extendedModifiers returns [List<Modifier> modifiers]
 		)*
 	;
 argDef	returns [Arg arg]
-@init {
-	List<Modifier> stoMods = new ArrayList<Modifier>(), typMods = new ArrayList<Modifier>();
-}	
-	:	{ 
-			$arg = new Arg(); 
-			int i = getTokenStream().index() + 1;
-			$arg.setCommentBefore(getCommentBefore(i));
-			$arg.setCommentAfter(getCommentAfterOnSameLine(i));
-		}
-		(
-			{ next(Modifier.Kind.StorageClassSpecifier) }? 
-			sm=modifier { stoMods.add($sm.modifier); } |
-			{ next(Modifier.Kind.TypeQualifier) }? 
-			tm=modifier { typMods.add($tm.modifier); }
-		)*
-		(
+	:	(
 			tr=mutableTypeRef { 
 				if ($tr.type != null) {
-					$tr.type.addModifiers(typMods);
-					$tr.type.addModifiers(stoMods);
+					$arg = new Arg(); 
 					$arg.setValueType($tr.type); 
+					int i = getTokenStream().index() + 1;
+					$arg.setCommentBefore(getCommentBefore(i));
+					$arg.setCommentAfter(getCommentAfterOnSameLine(i));
 				}
 			}
 		)
 		(
 			declarator? { 
-				if ($declarator.declarator != null)
-					$arg.setDeclarator($declarator.declarator); 
-				else if ($arg.getValueType() instanceof FunctionSignature) {
-					FunctionSignature fs = (FunctionSignature)$arg.getValueType();
-					if (fs != null && fs.getFunction() != null) {
-						$arg.setName(fs.getFunction().getName());
-						fs.getFunction().setName(null);
-					}
+				if ($arg != null) {
+					if ($declarator.declarator != null)
+						$arg.setDeclarator($declarator.declarator); 
+					/*else if ($arg.getValueType() instanceof FunctionSignature) {
+						FunctionSignature fs = (FunctionSignature)$arg.getValueType();
+						if (fs != null && fs.getFunction() != null) {
+							//$arg.setName(fs.getFunction().getName());
+							//fs.getFunction().setName(null);
+						}
+					}*/
 				}
 			}
 		)
-		('=' expression {
-			$arg.setDefaultValue($expression.expr);
+		('=' dv=topLevelExpr {
+			if ($arg != null)
+				$arg.setDefaultValue($dv.expr);
 		})? 
 		| 
 		'...' { 
@@ -908,29 +920,30 @@ functionSignatureSuffixNoName returns [FunctionSignature signature]
 	;
 
 mutableTypeRef returns [TypeRef type]
-options { k = 4; }
 	:	
 		( typeRefCore { 
 			$type = $typeRefCore.type; 
 		} )
 		(
 			(
-				typeMutator {
-					$type = $typeMutator.mutator.mutateType($type);
+				m1=typeMutator {
+					$type = $m1.mutator.mutateType($type);
 				}
 			) |
 			(
-				functionSignatureSuffix { 
-					$functionSignatureSuffix.signature.getFunction().setValueType($type); 
-					$type = $functionSignatureSuffix.signature;
+				f1=functionSignatureSuffix { 
+					assert $f1.signature != null && $f1.signature.getFunction() != null;
+					if ($f1.signature != null && $f1.signature.getFunction() != null) {
+						$f1.signature.getFunction().setValueType($type); 
+						$type = $f1.signature;
+					}
 				}
 			)
 		)*
 	;
-	
+
 nonMutableTypeRef returns [TypeRef type]
-//options { k = 4; }
-	:	
+	:
 		typeRefCore { 
 			$type = $typeRefCore.type; 
 		}
@@ -941,14 +954,17 @@ nonMutableTypeRef returns [TypeRef type]
 				}
 			)*
 			(
-				functionSignatureSuffix { 
-					$functionSignatureSuffix.signature.getFunction().setValueType($type); 
-					$type = $functionSignatureSuffix.signature;
+				fs=functionSignatureSuffix { 
+					assert $fs.signature != null && $fs.signature.getFunction() != null;
+					if ($fs.signature != null && $fs.signature.getFunction() != null) {
+						$fs.signature.getFunction().setValueType($type); 
+						$type = $functionSignatureSuffix.signature;
+					}
 				}
 			)
 		)*
 	;
-	
+
 declarator  returns [Declarator declarator]
 	:	
 		modifiers
@@ -1029,7 +1045,7 @@ declaratorsList returns [List<Declarator> declarators]
 directDeclarator  returns [Declarator declarator]
 	:	
 		(
-			IDENTIFIER {
+			{ Modifier.parseModifier(next()) == null }?=> IDENTIFIER {
 				$declarator = mark(new DirectDeclarator($IDENTIFIER.text), getLine($IDENTIFIER));
 				if (isTypeDef()) {
 					$Symbols::typeIdentifiers.add($IDENTIFIER.text);
@@ -1107,49 +1123,56 @@ primitiveTypeName returns [String name, int line]
 		}
 	;
 //*/
+
 typeRefCore returns [TypeRef type]
 @init {
 	List<Modifier> modifiers = new ArrayList<Modifier>();
 	//TypeRef ref = null;
 	int line = -1;
 }
+@after {
+	if ($type == null && !modifiers.isEmpty()) {
+		$type = new Primitive(null);
+	}
+	if ($type != null) {
+		$type.addModifiers(modifiers);
+		mark($type, line);
+	}
+}
 	:	
+		preMods=modifiers { modifiers.addAll($preMods.modifiers); }
 		(
-			mods=anyModifier { modifiers.addAll($mods.modifiers); } |
-			(
+			'typename' pn=typeName { $type = $pn.type; } |
+			{ 
+				isTypeIdentifier(next()) || 
 				(
-					('typename' | { isTypeIdentifier(next()) }? ) i=IDENTIFIER {
-						$type = mark(isPrimitiveType($i.text) ? new Primitive($i.text) : new SimpleTypeRef($i.text), getLine($i));
-						$Symbols::typeIdentifiers.add($i.text);
-					} /* |
-					p=primitiveTypeName {
-						$type = mark(new Primitive($p.text), $p.line);
-					}//*/
-				)
-				( 
-					'<' { $type = new TemplateRef($i.text); }
-						(
-							t1=mutableTypeRef { ((TemplateRef)$type).addParameter($t1.type); }
-							(
-								',' 
-								tx=mutableTypeRef { ((TemplateRef)$type).addParameter($tx.type); }
-							)*
-						)?
-					'>'
-				)? 
-			) |
+					Modifier.parseModifier(next(1)) == null && 
+					!next(2, "=", ",", ";", ":", "[", "(")
+				) 
+			}?=> an=typeName { $type = $an.type; } |
 			structCore { $type = $structCore.struct; } |
 			enumCore { $type = $enumCore.e; }
-		)+ 
-		{
-			if ($type == null && !modifiers.isEmpty()) {
-				$type = new Primitive(null);
-			}
-			if ($type != null) {
-				$type.addModifiers(modifiers);
-				mark($type, line);
-			}
+		)?
+		postMods=modifiers { modifiers.addAll($postMods.modifiers); }
+	;
+	
+typeName returns [TypeRef type]
+	:
+		i=IDENTIFIER {
+			$type = mark(isPrimitiveType($i.text) ? new Primitive($i.text) : new SimpleTypeRef($i.text), getLine($i));
+			$Symbols::typeIdentifiers.add($i.text);
 		}
+		( 
+			'<' { $type = new TemplateRef($i.text); }
+				(
+					t1=mutableTypeRef { ((TemplateRef)$type).addParameter($t1.type); }
+					(
+						',' 
+						tx=mutableTypeRef { ((TemplateRef)$type).addParameter($tx.type); }
+					)*
+				)?
+			'>'
+		)? 
 	;
 	
 objCMethodCall returns [FunctionCall expr]
@@ -1193,8 +1216,16 @@ functionCall returns [FunctionCall expr]
 		')'
 	;
 
-binaryOp	:	'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' |
+
+binaryOp returns [Expression.BinaryOperator op]
+	: 	t=(
+		'+' | '-' | '*' | '/' | '%' | 
+		'<<' | '>>>' | '>>' | 
+		'^' | '||' | '|' | '&&' | '&' |
 		'<=' | '>=' | '<' | '>' | '==' | '!='
+		) {
+			$op = Expression.getBinaryOperator($t.text);
+		}
 	;
 
 baseExpression returns [Expression expr]
@@ -1240,13 +1271,13 @@ encodingExpr
 assignmentExpr returns [Expression expr]
 	:	e=inlineCondExpr  { $expr = $e.expr; } 
 		( 
-			op=assignmentOp f=assignmentExpr { $expr = new AssignmentOp($expr, $op.op, $f.expr); }
+			op=assignmentOp f=assignmentExpr { $expr = new AssignmentOp($expr, getAssignmentOperator($op.text), $f.expr); }
 		)?
 	;
 	
 assignmentOp returns [Expression.AssignmentOperator op]
-	: 	o=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') {
-			$op = getAssignmentOperator($o.text);
+	: 	t=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') {
+			$op = getAssignmentOperator($t.text);
 		}
 	;
 
@@ -1349,14 +1380,18 @@ castExpr returns [Expression expr]
 unaryExpr returns [Expression expr] 
 	:
 		p=postfixExpr { $expr = $p.expr; } |
-		unaryOp castExpr { $expr = new UnaryOp($castExpr.expr, Expression.getUnaryOperator($unaryOp.text)); } |
+		uo=unaryOp castExpr { $expr = new UnaryOp($castExpr.expr, $uo.op); } |
 		'sizeof' (
 			'(' tr=mutableTypeRef ')' | 
 			unaryExpr // TODO check this !!!
 		)
 	;
 
-unaryOp : '++' | '--' | '&' | '*' | '-' | '~' | '!' ;
+unaryOp returns [Expression.UnaryOperator op]
+	: 	t=('++' | '--' | '&' | '*' | '-' | '~' | '!') {
+			$op = Expression.getUnaryOperator($t.text);
+		}
+	;
 
 postfixExpr returns [Expression expr] 
 	: 
@@ -1420,7 +1455,7 @@ scope Symbols;
 	:	{ $stat = new Block(); }
 		'{' 
 		(
-					statement {
+			statement {
 				$stat.addStatement($statement.stat);
 			}
 		)* 
@@ -1434,25 +1469,28 @@ statement	returns [Statement stat]
 		rt='return' rex=expression ';' { 
 			$stat = mark(new Return($rex.expr), getLine($rt));
 		} |
-		'if' '(' expression ')' statement ('else' statement)? | // TODO
-		'while' '(' expression ')' statement | // TODO
-		'do' statement 'while' '(' expression ')' ';' | // TODO
-		'for' '(' statement? ';' expression? ';' statement? ')' statement | // TODO
+		IDENTIFIER ':' | // label
+		'break' ';' |
+		'if' '(' topLevelExpr ')' statement ('else' statement)? | // TODO
+		'while' '(' topLevelExpr ')' statement | // TODO
+		'do' statement 'while' '(' topLevelExpr ')' ';' | // TODO
+		'for' '(' expression? ';' expression? ';' expression? ')' statement | // TODO
 		'switch' '(' expression ')' '{' // TODO
-		(	'case' expression ':' |
-			statement
-		)*
+			(	
+				'case' topLevelExpr ':' |
+				statement
+			)*
 		'}' |
 		';' |
 		{ next("foreach") }? IDENTIFIER '(' varDecl ':' expression ')' statement // TODO
 	;
 	
 constant returns [Constant constant]
-	:	DECIMAL_NUMBER { $constant =  Constant.parseDecimal($DECIMAL_NUMBER.text); } |
+	:	s=('-' | '+')? DECIMAL_NUMBER { $constant =  Constant.parseDecimal(($s.text == null ? "" : $s.text) + $DECIMAL_NUMBER.text); } |
 		HEXADECIMAL_NUMBER { $constant = Constant.parseHex($HEXADECIMAL_NUMBER.text); } |
 		OCTAL_NUMBER { $constant = Constant.parseOctal($OCTAL_NUMBER.text); } |
 		CHARACTER { $constant =  Constant.parseCharOrStringInteger($CHARACTER.text); } |
-		FLOAT_NUMBER { $constant = Constant.parseFloat($FLOAT_NUMBER.text); } |
+		s2=('-' | '+')? FLOAT_NUMBER { $constant = Constant.parseFloat(($s2.text == null ? "" : $s2.text) + $FLOAT_NUMBER.text); } |
 		//CHARACTER { $constant =  Constant.parseChar($CHARACTER.text); } |
 		STRING { $constant =  Constant.parseString($STRING.text); }
 	;
@@ -1570,7 +1608,7 @@ HEXADECIMAL_NUMBER
 	;
 
 DECIMAL_NUMBER
-	:	('-' | '+')?
+	:	//('-' | '+')?
 		('0' | '1'..'9' '0'..'9'*)
 		IntegerConstantSuffix?
 	;
@@ -1582,7 +1620,7 @@ OCTAL_NUMBER
 	;
 
 FLOAT_NUMBER
-	:	('-' | '+')?
+	:	//('-' | '+')?
 		('0'..'9')+
 		(
 			'.'

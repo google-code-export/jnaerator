@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
-import com.ochafik.util.string.StringUtils;
 
 public class Enum extends TaggedTypeRef {
 	public static class EnumItem extends Element {
@@ -136,7 +135,6 @@ public class Enum extends TaggedTypeRef {
 		
 		return super.replaceChild(child, by);
 	}
-
 
 	@Override
 	public String toString(CharSequence indent) {
