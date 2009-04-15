@@ -99,6 +99,12 @@ void** ResizeHandle(void** h, int size);
 class NSMapTable;
 BOOL (*isEqual)(NSMapTable* table, const void*, const void*);
 --
+void operator()(signed&);
+--
+void operator+=(long long*, const signed&);
+--
+void A<T*>::~A();
+--
 const void *x;
 --
 typedef void *GC_thread;

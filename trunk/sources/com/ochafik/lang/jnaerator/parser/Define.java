@@ -22,7 +22,13 @@ package com.ochafik.lang.jnaerator.parser;
 public class Define extends Declaration {
 
 	Expression value;
-	
+	String name;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public Define(String name, Expression value) {
 		this();
 		setName(name);

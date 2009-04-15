@@ -32,6 +32,7 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 public class JNAeratorUtils {
 	static String getExactTypeDefName(Element e) {
 		Element parent = e.getParentElement();
@@ -60,7 +61,7 @@ public class JNAeratorUtils {
 			} else if (parent instanceof Function) {
 				Function f = (Function)parent;
 				if (f.getName() != null)
-					ns.add(0, f.getName());
+					ns.add(0, f.getName().toString());
 				return ns;
 			} else if (parent instanceof StoredDeclarations) {
 				StoredDeclarations sd = (StoredDeclarations)parent;
@@ -72,32 +73,11 @@ public class JNAeratorUtils {
 			} else if (parent instanceof Expression) {
 				if (!ns.contains("expression"))
 					ns.add("expression");
-			} else if (parent instanceof Declaration) {
-				Declaration d = (Declaration)parent;
-				if (d.getName() != null) {
-					ns.add(0, d.getName());
-				}
 			}
 			parent = parent.getParentElement();
 		}
 		return ns;
-		/*
 		
-		Arg arg = e.findParentOfType(Arg.class);
-		if (arg != null) {
-			Function f = as(arg.getParentElement(), Function.class);
-			if (f != null && f.getName() != null)
-				return Arrays.asList(f.getName(), arg.getName());
-			else
-				return Arrays.asList(arg.getName());
-		} 
-		
-		StoredDeclarations sd = e.findParentOfType(StoredDeclarations.class);
-		String bestName = findBestPlainStorageName(sd);
-		if (bestName != null)
-				return Arrays.asList(bestName);
-		
-		return null;*/
 	}
 	
 	public static String findBestPlainStorageName(StoredDeclarations sd) {

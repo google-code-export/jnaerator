@@ -23,7 +23,6 @@ import com.ochafik.lang.jnaerator.parser.Struct.MemberVisibility;
 import com.ochafik.util.string.StringUtils;
 
 public abstract class Declaration extends ModifiableElement {
-	protected String name;
 	protected TypeRef valueType;
 	protected MemberVisibility visibility;
 	/*protected int bits = -1;
@@ -61,16 +60,6 @@ public abstract class Declaration extends ModifiableElement {
 	public String getModifiersStringPrefix() {
 		List<Modifier> mods = getModifiers();
 		return StringUtils.implode(mods, " ") + (mods.isEmpty() ? "" : " ");
-	}
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		if (name == null)
-			name = null;
-		
-		this.name = name;
 	}
 	public void setVisibility(MemberVisibility visibility) {
 		this.visibility = visibility;

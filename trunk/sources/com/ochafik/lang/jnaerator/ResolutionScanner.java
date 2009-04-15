@@ -20,10 +20,13 @@ package com.ochafik.lang.jnaerator;
 
 import java.io.PrintStream;
 
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
+
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 
 import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
@@ -45,7 +48,7 @@ public class ResolutionScanner extends Scanner {
 		super.visitMemberRef(element);
 		Environment env = definitions.getEnvironment(element);
 		if (element.getTarget() == null) {
-			Element resolved = env.get(element.getName(), DefinitionsVisitor.Environment.Space.Variables, DefinitionsVisitor.Environment.Space.Constants);
+			Element resolved = env.get(element.getName().toString(), DefinitionsVisitor.Environment.Space.Variables, DefinitionsVisitor.Environment.Space.Constants);
 			if (resolved != null)
 				resolutions.put(element.getId(), resolved);
 			else
@@ -60,11 +63,11 @@ public class ResolutionScanner extends Scanner {
 	public void visitSimpleTypeRef(SimpleTypeRef element) {
 		super.visitSimpleTypeRef(element);
 		Environment env = definitions.getEnvironment(element);
-		String name = element.getName();
-		if (TypeConversion.resolvesToPrimitive(name))
+		Identifier name = element.getName();
+		if (TypeConversion.resolvesToPrimitive(name.toString()))
 			return;
 		
-		Element resolved = env == null ? null : env.get(element.getName());
+		Element resolved = env == null ? null : env.get(element.getName().toString());
 		if (resolved != null)
 			resolutions.put(element.getId(), resolved);
 		else {

@@ -192,12 +192,21 @@ public enum Modifier {
 			return this;
 		return alias.resolveAlias();
 	}
+	
 	public boolean isContainedBy(Collection<Modifier> modifiers) {
 		Modifier alias = resolveAlias();
 		for (Modifier modifier : modifiers)
 			if (modifier.resolveAlias().equals(alias))
 				return true;
 		return false;
+	}
+	public int countIn(Collection<Modifier> modifiers) {
+		Modifier alias = resolveAlias();
+		int c = 0;
+		for (Modifier modifier : modifiers)
+			if (modifier.resolveAlias().equals(alias))
+				c++;
+		return c;
 	}
 	public Modifier getAlias() {
 		return alias;

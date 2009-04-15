@@ -29,6 +29,7 @@ import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -41,6 +42,8 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class MissingNamesChooser extends Scanner {
 	public enum NameGenerationStyle {
@@ -58,12 +61,14 @@ public class MissingNamesChooser extends Scanner {
 	
 	public String chooseArgNameFromType(TypeRef tr) throws UnsupportedConversionException {
 		if (tr instanceof TypeRef.SimpleTypeRef) {
-			String name = ((TypeRef.SimpleTypeRef)tr).getName();
+			Identifier name = ((TypeRef.SimpleTypeRef)tr).getName();
+			String out;
 			if (name == null) {
-				name = StringUtils.implode(tr.getModifiers(), "");
-				name = name.length() > 0 ? name.substring(0, 1) : name;
-			}
-			return name;
+				out = StringUtils.implode(tr.getModifiers(), "");
+				out = out.length() > 0 ? out.substring(0, 1) : out;
+			} else
+				out = name.toString();
+			return out;
 		} else if (tr instanceof TypeRef.Pointer) {
 			return chooseArgNameFromType(((TypeRef.Pointer)tr).getTarget()) + "Ptr";
 		} else if (tr instanceof TypeRef.ArrayRef) {
@@ -130,7 +135,7 @@ public class MissingNamesChooser extends Scanner {
 			if (d != null && d.getDeclarators().isEmpty()) {
 				if (d instanceof VariablesDeclaration) {
 					VariablesDeclaration pvd = (VariablesDeclaration) d;
-					pvd.addDeclarator(new DirectDeclarator(f.getName()));
+					pvd.addDeclarator(new DirectDeclarator(f.getName().toString()));
 					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
 				} else
 					d.replaceBy(null); // special case of C++-like struct sub-type definition 
@@ -139,7 +144,7 @@ public class MissingNamesChooser extends Scanner {
 			TypeDef td = new TypeDef();
 			td.importDetails(functionSignature, true);
 			td.setValueType(functionSignature);
-			td.addDeclarator(new DirectDeclarator(f.getName()));
+			td.addDeclarator(new DirectDeclarator(f.getName().toString()));
 			holder.addDeclaration(td);
 			td.accept(this);
 		}
@@ -185,7 +190,7 @@ public class MissingNamesChooser extends Scanner {
 				name = chooseName(functionSignature, ownerNames);
 			}
 			if (name != null) {
-				function.setName(name);
+				function.setName(ident(name));
 				function.accept(this);
 				return true;
 			}
@@ -205,10 +210,10 @@ public class MissingNamesChooser extends Scanner {
 //		}
 		//String betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
 		if (taggedTypeRef.getTag() == null) {
-			String betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
+			Identifier betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
 			if (betterTag == null) {
 				List<String> ownerNames = JNAeratorUtils.guessOwnerName(taggedTypeRef);//.getParentElement() instanceof StructTypeRef ? struct.getParentElement() : struct);
-				betterTag = chooseName(taggedTypeRef, ownerNames);
+				betterTag = ident(chooseName(taggedTypeRef, ownerNames));
 			}
 			if (betterTag != null) {
 				taggedTypeRef.setTag(betterTag);

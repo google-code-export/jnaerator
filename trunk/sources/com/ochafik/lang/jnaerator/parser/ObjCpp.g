@@ -28,8 +28,8 @@
 grammar ObjCpp;
 options {
 	backtrack = true;
-	output = AST;
-	// memoize=true;
+	//output = AST;
+	memoize = true;
 	//k = 3;
 }
 
@@ -68,6 +68,7 @@ import java.util.HashSet;
 import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
 import static com.ochafik.lang.jnaerator.parser.Declaration.*;
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 import static com.ochafik.lang.jnaerator.parser.Statement.*;
 import static com.ochafik.lang.jnaerator.parser.Declarator.*;
 import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
@@ -93,6 +94,10 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 			return false;
 		IsTypeDef_scope scope = (IsTypeDef_scope)IsTypeDef_stack.get(IsTypeDef_stack.size() - 1);
 		return scope.isTypeDef;
+	}
+	void defineTypeIdentifierInParentScope(Identifier i) {
+		if (i != null && i.isPlain())
+			defineTypeIdentifierInParentScope(i.toString());
 	}
 	void defineTypeIdentifierInParentScope(String name) {
 		if (name == null || Symbols_stack.isEmpty())
@@ -350,7 +355,8 @@ scope IsTypeDef;
 		}
 		(
 			(
-				//'#import' '<' 
+				{ next("__pragma") }?=> pragmaContent |
+				templateDef | //TODO
 				functionDeclaration {
 					$declarations.add($functionDeclaration.function);
 				} |
@@ -399,12 +405,12 @@ forwardClassDecl returns [List<Declaration> declarations]
 	: 	{ $declarations = new ArrayList<Declaration>(); }
 		'@class' 
 		n1=IDENTIFIER { 
-			$declarations.add(decl(Struct.forwardDecl($n1.text, Struct.Type.ObjCClass))); 
+			$declarations.add(decl(Struct.forwardDecl(new SimpleIdentifier($n1.text), Struct.Type.ObjCClass))); 
 			defineTypeIdentifierInParentScope($n1.text);
 		}
 		(',' 
 		nx=IDENTIFIER { 
-			$declarations.add(decl(Struct.forwardDecl($nx.text, Struct.Type.ObjCClass))); 
+			$declarations.add(decl(Struct.forwardDecl(new SimpleIdentifier($nx.text), Struct.Type.ObjCClass))); 
 			defineTypeIdentifierInParentScope($nx.text);
 		}
 		)*
@@ -464,7 +470,7 @@ enumCore returns [Enum e]
 					$e = $ab.e;
 					$e.setForwardDeclaration(false);
 				} |
-				tag=IDENTIFIER 
+				tag=qualifiedIdentifier
 				(
 					m2=modifiers { modifiers.addAll($m2.modifiers); }
 					nb=enumBody {
@@ -475,7 +481,7 @@ enumCore returns [Enum e]
 						$e.setForwardDeclaration(true);
 					}
 				) {
-					$e.setTag($tag.text);
+					$e.setTag($tag.identifier);
 				}
 			)
 		) {
@@ -485,13 +491,7 @@ enumCore returns [Enum e]
 			defineTypeIdentifierInParentScope($e.getTag());
 		}
 	;
-		
-/*
-binaryOpERATOR
-	:	'+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' |
-		'<=' | '>=' | '<' | '>' | '==' | '!='
-	;
-*/
+	
 		
 objCClassDef returns [Struct struct]
 	:	
@@ -504,13 +504,13 @@ objCClassDef returns [Struct struct]
 				Struct.Type.ObjCClass :
 				Struct.Type.ObjCProtocol
 			);
-			$struct.setTag($className.text);
+			$struct.setTag(new SimpleIdentifier($className.text));
 		}
 		(
 			(	
 				':' parentClass=IDENTIFIER {
 				if ($parentClass.text != null)
-					$struct.addParent($parentClass.text);
+					$struct.addParent(new SimpleIdentifier($parentClass.text));
 				}
 			)? |
 			'(' categoryName=IDENTIFIER ')' {
@@ -519,10 +519,10 @@ objCClassDef returns [Struct struct]
 		)
 		(	
 			'<' (
-				p1=IDENTIFIER { $struct.addProtocol($p1.text); }
+				p1=IDENTIFIER { $struct.addProtocol(new SimpleIdentifier($p1.text)); }
 				(
 					',' 
-					px=IDENTIFIER { $struct.addProtocol($px.text); }
+					px=IDENTIFIER { $struct.addProtocol(new SimpleIdentifier($px.text)); }
 				)*
 			)? '>'
 		)?
@@ -586,7 +586,7 @@ objCMethodDecl returns [Function function]
 			')'
 		)?
 		methodName=IDENTIFIER { 
-			$function.setName($methodName.text); 
+			$function.setName(new SimpleIdentifier($methodName.text)); 
 			$function.setCommentAfter(getCommentAfterOnSameLine($methodName.getTokenIndex()));
 		} 
 		(
@@ -639,6 +639,24 @@ scope Symbols;
 	$Symbols::typeIdentifiers = new HashSet<String>();
 	List<Modifier> modifiers = new ArrayList<Modifier>();
 }
+@after {
+	$struct = mark($struct, getLine($typeToken)); 
+	$struct.setType(
+		$typeToken.text.equals("struct") ?	Struct.Type.CStruct :
+		$typeToken.text.equals("union") ?	Struct.Type.CUnion :
+						Struct.Type.CPPClass
+	);
+	
+	Function.Type forcedType = null;
+	if ($struct.getType() == Struct.Type.CPPClass)
+		forcedType = Function.Type.CppMethod;
+	
+	if (forcedType != null)
+	for (Declaration d : $struct.getDeclarations()) {
+		if (d instanceof Function)
+			((Function)d).setType(forcedType);
+	}
+}
 	:	
 		typeToken=('struct' | 'class' | 'union')
 		(
@@ -648,8 +666,8 @@ scope Symbols;
 					$struct = $ab.struct;
 					$struct.setForwardDeclaration(false);
 				} |
-				tag=IDENTIFIER {
-					defineTypeIdentifierInParentScope($tag.text);
+				tag=qualifiedIdentifier {
+					defineTypeIdentifierInParentScope($tag.identifier);
 				}
 				(
 					(
@@ -657,42 +675,23 @@ scope Symbols;
 						(
 							':'
 							'public'?//m3=modifiers
-							parent=IDENTIFIER
+							parent=qualifiedIdentifier
 						)? 
 						nb=structBody {
 							$struct = $nb.struct;
 							$struct.setForwardDeclaration(false);
 							if ($parent.text != null)
-								$struct.addParent($parent.text);
+								$struct.addParent($parent.identifier);
 						} 
 					) | {
 						$struct = new Struct();
 						$struct.setForwardDeclaration(true);
 					}
 				) {
-					$struct.setTag($tag.text);
+					$struct.setTag($tag.identifier);
 				}
 			)
-		)  {
-			//$struct.setCommentBefore(getCommentBefore($typeToken.getTokenIndex()));
-			$struct = mark($struct, getLine($typeToken)); 
-			$struct.setType(
-				$typeToken.text.equals("struct") ?	Struct.Type.CStruct :
-				$typeToken.text.equals("union") ?	Struct.Type.CUnion :
-								Struct.Type.CPPClass
-			);
-			//$struct.setForwardDeclaration(true); // until proven wrong
-			
-			Function.Type forcedType = null;
-			if ($struct.getType() == Struct.Type.CPPClass)
-				forcedType = Function.Type.CppMethod;
-			
-			if (forcedType != null)
-			for (Declaration d : $struct.getDeclarations()) {
-				if (d instanceof Function)
-					((Function)d).setType(forcedType);
-			}
-		}
+		)  
 	;
 
 anyOp returns [java.lang.Enum<?> op]
@@ -701,29 +700,6 @@ anyOp returns [java.lang.Enum<?> op]
 		assignmentOp { $op = $assignmentOp.op; } 
 	;
 
-functionName returns [String name, String file, int line]
-	:
-		pre='~'? n=IDENTIFIER anyOp? { 
-			$name = $n.text;
-			if ($pre.text != null)
-				$name = $pre.text + $name;
-			if ($anyOp.text != null)
-				$name += $anyOp.text;
-			$file = getFile();
-			$line = getLine($n);
-		} 
-		/*(
-			{ $IDENTIFIER.text.equals("operator") }? 
-			(
-				op=(binaryOp | unaryOp) { $name += $op.text; } | 
-				assignmentOp { $name += $assignmentOp.op.toString(); } 
-				'(' ')' { $name += "()"; } |
-				'[' ']' { $name += "[]"; } |
-				'->' { $name += "->"; }
-			) | 
-		)*/
-	;
-	
 //structInsides returns [List<Declaration> declarations, Struct.MemberVisibility
 functionDeclaration returns [Function function]
 scope Symbols;
@@ -739,22 +715,23 @@ scope Symbols;
 			$function.setValueType($returnTypeRef.type); 
 		}
 		preMods2=modifiers { $function.addModifiers($preMods2.modifiers); }
-		functionName {
-			$function.setName($functionName.name); 
-			$function.setElementFile($functionName.file);
-			$function.setElementLine($functionName.line);
+		name=qualifiedCppFunctionName {
+			$function.setName($name.identifier); 
+			mark($function, getLine($start));
+			//$function.setElementFile($functionName.file);
+			//$function.setElementLine($functionName.line);
 		}
 		argList {
 			$function.setArgs($argList.args);
 		}
-		({ next("const", "__const") }?=> (ct=IDENTIFIER {
-			if ($ct.text != null)
-				$function.addModifiers(Modifier.Const);
-		} ) |)
-		postMods=modifiers {
-			for (Modifier m : $postMods.modifiers)
-				$function.addModifiers(m);
-		}
+		postMods=modifiers { $function.addModifiers($postMods.modifiers); }
+		(
+			':'
+			i1=constructorInitializer { $function.addInitializer($i1.init); }
+			(
+				',' ix=constructorInitializer { $function.addInitializer($ix.init); }
+			)*
+		)?
 		(	
 			';' |
 			statementsBlock {
@@ -763,14 +740,35 @@ scope Symbols;
 		)
 	;
 
+constructorInitializer returns [FunctionCall init]
+	:	qn=qualifiedCppFunctionName {
+			$init = new FunctionCall(new TypeRefExpression(new SimpleTypeRef($qn.identifier)));
+		}  
+		'(' (
+			el=topLevelExprList { $init.addArguments($el.exprs); }
+		)? ')'
+	;
+	
 modifiers returns [List<Modifier> modifiers]
 @init { $modifiers = new ArrayList<Modifier>(); }
 	: 	( modifier { $modifiers.addAll($modifier.modifiers); } )*
 	;
 
+pragmaContent	:	
+		//{ next("__pragma") }?=> pragmaContent
+			// MSVC-specific : parse as token soup for now
+			IDENTIFIER '('
+				(IDENTIFIER | constant | ',' | ':' | '(' (IDENTIFIER | constant | ',' | ':')* ')')*
+			')'
+			';'?
+		//) 
+	;
+
 modifier returns [List<Modifier> modifiers, String asmName]
 @init { $modifiers = new ArrayList<Modifier>(); }
 	:
+		
+		{ next("__pragma") }?=> pragmaContent | 
 		{ next("extern") }?=> IDENTIFIER ex=STRING {
 			$modifiers.add(Modifier.Extern); // TODO
 		} |
@@ -870,17 +868,24 @@ arrayTypeMutator returns [TypeMutator mutator]
 	;
 
 templateDef
+scope Symbols; 
+scope IsTypeDef;
+@init {
+	$IsTypeDef::isTypeDef = true;
+	$Symbols::typeIdentifiers = new HashSet<String>();
+}
 	:	'template' '<' (templateArgDecl (',' templateArgDecl)* )? '>'
-		structCore | functionDeclaration
+		declaration
+		//(structCore ';' | functionDeclaration)
 	;
 	
 templateArgDecl
-	:	mutableTypeRef ('=' constant)?
-	;
+	:	argDef //mutableTypeRef ('=' constant)?
+	;	
 	
 functionSignatureSuffix returns [FunctionSignature signature]
 	:	tk='(' m1=modifiers '*' m2=modifiers IDENTIFIER? ')' { 
-			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, $IDENTIFIER.text, null)), getLine($tk));
+			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, new SimpleIdentifier($IDENTIFIER.text), null)), getLine($tk));
 			$signature.getFunction().setType(Function.Type.CFunction);
 			$signature.getFunction().addModifiers($m1.modifiers);
 			$signature.getFunction().addModifiers($m2.modifiers);
@@ -993,6 +998,7 @@ declarator  returns [Declarator declarator]
 	;
 
 typeDef returns [TypeDef typeDef]
+scope IsTypeDef;
 @init {
 	$IsTypeDef::isTypeDef = true;
 }
@@ -1015,6 +1021,7 @@ varDecl returns [VariablesDeclaration decl]
 	:	
 		tr=nonMutableTypeRef { 
 			$decl = new VariablesDeclaration($tr.type); 
+			//$decl.addModifiers($modifiers.modifiers);
 		}
 		(
 			d1=declaratorsList {
@@ -1147,7 +1154,7 @@ typeRefCore returns [TypeRef type]
 				isTypeIdentifier(next()) || 
 				(
 					Modifier.parseModifier(next(1)) == null && 
-					!next(2, "=", ",", ";", ":", "[", "(")
+					!next(2, "=", ",", ";", ":", "[", "(", ")")
 				) 
 			}?=> an=typeName { $type = $an.type; } |
 			structCore { $type = $structCore.struct; } |
@@ -1158,28 +1165,21 @@ typeRefCore returns [TypeRef type]
 	
 typeName returns [TypeRef type]
 	:
-		i=IDENTIFIER {
-			$type = mark(isPrimitiveType($i.text) ? new Primitive($i.text) : new SimpleTypeRef($i.text), getLine($i));
-			$Symbols::typeIdentifiers.add($i.text);
+		i=qualifiedIdentifier {
+			if ($i.identifier.isPlain() && isPrimitiveType($i.identifier.toString()))
+				$type = new Primitive($i.identifier.toString());
+			else
+				$type = new SimpleTypeRef($i.identifier);
+			if ($i.identifier.isPlain())
+				$Symbols::typeIdentifiers.add($i.identifier.toString());
 		}
-		( 
-			'<' { $type = new TemplateRef($i.text); }
-				(
-					t1=mutableTypeRef { ((TemplateRef)$type).addParameter($t1.type); }
-					(
-						',' 
-						tx=mutableTypeRef { ((TemplateRef)$type).addParameter($tx.type); }
-					)*
-				)?
-			'>'
-		)? 
 	;
 	
 objCMethodCall returns [FunctionCall expr]
 	:
 		'[' target=expression methodName=IDENTIFIER {
 			$expr = new FunctionCall();
-			$expr.setFunction(new VariableRef($methodName.text));
+			$expr.setFunction(new VariableRef(new SimpleIdentifier($methodName.text)));
 			$expr.setTarget($target.expr);
 			$expr.setMemberRefStyle(MemberRefStyle.SquareBrackets);
 		}
@@ -1195,27 +1195,6 @@ objCMethodCall returns [FunctionCall expr]
 		)?
 		']'
 	;
-		
-functionCall returns [FunctionCall expr]
-	:	
-		IDENTIFIER '(' {
-			FunctionCall fc = new FunctionCall();
-			fc.setFunction(new VariableRef($IDENTIFIER.text));
-			$expr = fc;
-		}
-		(
-			a1=expression {
-				$expr.addArgument($a1.expr);
-			}
-			(	',' 
-				ax=expression {
-					$expr.addArgument($ax.expr);
-				}
-			)* 
-		)?
-		')'
-	;
-
 
 binaryOp returns [Expression.BinaryOperator op]
 	: 	t=(
@@ -1228,9 +1207,55 @@ binaryOp returns [Expression.BinaryOperator op]
 		}
 	;
 
+typeRefOrExpression returns [Expression expr]
+	:	tr=mutableTypeRef {
+			$expr = new Expression.TypeRefExpression($tr.type);
+		} | 
+		e=topLevelExpr {
+			$expr = $e.expr;
+		}
+	;
+
+simpleIdentifier returns [SimpleIdentifier identifier]
+	:	i=IDENTIFIER { $identifier = new SimpleIdentifier($i.text); }
+		(
+			'<' (
+				a1=typeRefOrExpression { $identifier.addTemplateArgument($a1.expr); }
+				(
+					',' 
+					ax=typeRefOrExpression  { $identifier.addTemplateArgument($ax.expr); }
+				)* 
+			)? '>'
+		)?
+	;
+
+qualifiedIdentifier returns [Identifier identifier]
+	:	i1=simpleIdentifier { $identifier = $i1.identifier; }
+		(
+			'::' ix=simpleIdentifier { $identifier = $identifier.derive(QualificationSeparator.Colons, $ix.identifier); }
+		)*
+	;
+	
+qualifiedCppFunctionName returns [Identifier identifier]
+	:	i1=simpleCppFunctionName { $identifier = $i1.identifier; }
+		(
+			'::' ix=simpleCppFunctionName { $identifier = $identifier.derive(QualificationSeparator.Colons, $ix.identifier); }
+		)*
+	;
+	
+simpleCppFunctionName returns [SimpleIdentifier identifier]
+	:
+		pre='~'? //n=IDENTIFIER anyOp? { 
+		i=simpleIdentifier {
+			if ($pre.text != null)
+				$i.identifier.setName($pre.text + $i.identifier.getName());
+			$identifier = $i.identifier;
+		}
+	;
+	
 baseExpression returns [Expression expr]
 	:
-		IDENTIFIER { $expr = new VariableRef($IDENTIFIER.text); } |
+		i=simpleIdentifier { $expr = new VariableRef($i.identifier); }  |
 		constant { $expr = $constant.constant; } |
 		'(' expression ')' { 
 			$expr = $expression.expr; 
@@ -1276,7 +1301,7 @@ assignmentExpr returns [Expression expr]
 	;
 	
 assignmentOp returns [Expression.AssignmentOperator op]
-	: 	t=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') {
+	: 	t=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=') {
 			$op = getAssignmentOperator($t.text);
 		}
 	;
@@ -1407,11 +1432,14 @@ postfixExpr returns [Expression expr]
 						fc.addArgument(x);
 				$expr = fc;
 			} |
-			'.' di=IDENTIFIER { 
-				$expr = new MemberRef($expr, MemberRefStyle.Dot, $di.text); 
+			'::' ao=simpleIdentifier {
+				$expr = new MemberRef($expr, MemberRefStyle.Colons, $ao.identifier); 
 			} |
-			'->' ai=IDENTIFIER { 
-				$expr = new MemberRef($expr, MemberRefStyle.Arrow, $ai.text); 
+			'.' di=simpleIdentifier { 
+				$expr = new MemberRef($expr, MemberRefStyle.Dot, $di.identifier); 
+			} |
+			'->' ai=simpleIdentifier { 
+				$expr = new MemberRef($expr, MemberRefStyle.Arrow, $ai.identifier); 
 			} |
 			'++' { 
 				$expr = new UnaryOp($expr, UnaryOperator.PostIncr); 
@@ -1505,11 +1533,34 @@ Letter
 	;
 
 IDENTIFIER
-	:	Letter 
+	:	
 		(
-			Letter |
-			'0'..'9'
-		)*
+			(
+				Letter 
+				(
+					Letter |
+					'0'..'9'
+				)*
+			) |
+			(
+				'operator'
+				(
+					'+' '+'? '='? |
+					'-' '-'? '='? |
+					'*' '='? | 
+					'/' '='? | 
+					'%' '='? | 
+					'<' '<'? '='? | 
+					'>' ('>' '>'?)? '='? | 
+					'^' '='? | 
+					'|' '|'? '='? | 
+					'&' '&'? '='? | 
+					'=' '='? |
+					'!' '='? |
+					'~' '='?
+				)
+			)
+		)
 	;
 
 fragment

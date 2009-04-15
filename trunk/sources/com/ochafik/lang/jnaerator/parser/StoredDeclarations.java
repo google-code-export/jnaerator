@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
-import com.ochafik.util.string.StringUtils;
 
 public abstract class StoredDeclarations extends Declaration {
 	final List<Declarator> declarators = new ArrayList<Declarator>();
@@ -54,7 +53,7 @@ public abstract class StoredDeclarations extends Declaration {
 		if (getValueType() instanceof FunctionSignature) {
 			FunctionSignature sig = (FunctionSignature) getValueType();
 			if (sig.getFunction() != null) {
-				String name = sig.getFunction().getName();
+				Identifier name = sig.getFunction().getName();
 				if (name != null && declarators.size() == 1) {
 					String stoName = declarators.get(0).resolveName();
 					if (name.equals(stoName) || stoName == null)

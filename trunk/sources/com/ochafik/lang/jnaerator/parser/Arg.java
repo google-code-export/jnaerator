@@ -64,11 +64,9 @@ public class Arg extends Declaration {
 	public void setDeclarator(Declarator declarator) {
 		this.declarator = changeValue(this, this.declarator, declarator);
 	}
-	@Override
 	public String getName() {
 		return declarator == null ? null : declarator.resolveName();
 	}
-	@Override
 	public void setName(String name) {
 		if (declarator == null)
 			setDeclarator(new Declarator.DirectDeclarator(name));

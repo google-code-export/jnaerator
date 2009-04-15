@@ -20,10 +20,13 @@ package com.ochafik.lang.jnaerator;
 
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 /**
  * <ul>
@@ -49,7 +52,7 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 				TypeDef typeDef = (TypeDef) nextDeclaration;
 				TypeRef type = typeDef.getValueType();
 				if (type instanceof TypeRef.SimpleTypeRef) {
-					String simpleType = ((TypeRef.SimpleTypeRef)type).getName();
+					Identifier simpleType = ((TypeRef.SimpleTypeRef)type).getName();
 					if (simpleType.equals("NSUInteger") || 
 							simpleType.equals("NSInteger") ||
 							simpleType.equals("CFIndex")) 
@@ -68,7 +71,7 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 						if (bestPlainStorage != null) {
 							String name = bestPlainStorage.resolveName();
 							System.err.println("Automatic struct name matching : " + name);
-							e.setTag(name);
+							e.setTag(ident(name));
 							bestPlainStorage.replaceBy(null);
 							if (typeDef.getDeclarators().isEmpty())
 								typeDef.replaceBy(null);

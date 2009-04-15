@@ -25,10 +25,13 @@ import java.util.regex.Pattern;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.util.string.StringUtils;
+
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 
 public class RococoaUtils {
 	static TypeRef ROCOCOA_ID_TYPEREF = new TypeRef.SimpleTypeRef("id");
@@ -37,7 +40,7 @@ public class RococoaUtils {
 	static Pattern shortNamesPattern = Pattern.compile("([A-Z]+?[a-z]*)(?:[A-Z][a-z]|$)");
 	
 	public static List<String> getShortNames(Struct type) {
-		String name = type.getTag();
+		String name = type.getTag().toString();
 		List<String> shortNames = new ArrayList<String>();
 		String base = name.startsWith("NS") ? name.substring(2) : name;
 	
@@ -67,12 +70,13 @@ public class RococoaUtils {
 		}
 		return nb.toString();
 	}
-	public static boolean methodNameMatchesObjcStaticConstructor(Struct type, String methodName) {
+	public static boolean methodNameMatchesObjcStaticConstructor(Struct type, Identifier identifier) {
+		String name = identifier.toString();
 		for (String shortName : getShortNames(type)) {
-			if (methodName.matches(StringUtils.uncapitalize(shortName) + "(With.*)?"))//"([A-Z]\\w*)?"))
+			if (name.matches(StringUtils.uncapitalize(shortName) + "(With.*)?"))//"([A-Z]\\w*)?"))
 				return true;
 			
-			if (methodName.matches("[a-z]+" + StringUtils.capitalize(shortName) + "(With.*)?"))//"([A-Z]\\w*)?"))
+			if (name.matches("[a-z]+" + StringUtils.capitalize(shortName) + "(With.*)?"))//"([A-Z]\\w*)?"))
 				return true;
 		}
 		return false;
@@ -86,8 +90,8 @@ public class RococoaUtils {
 		Struct declaringClass = function.findParentOfType(Struct.class);
 		if (returnType.toString().equals("id")) {
 			String pointedClassName;
-			if (function.getName().matches("^(alloc|(init|copy|mutableCopy)([A-Z].*)?)$") || RococoaUtils.methodNameMatchesObjcStaticConstructor(declaringClass, function.getName()))
-				pointedClassName = declaringClass.getTag();
+			if (function.getName().toString().matches("^(alloc|(init|copy|mutableCopy)([A-Z].*)?)$") || RococoaUtils.methodNameMatchesObjcStaticConstructor(declaringClass, function.getName()))
+				pointedClassName = declaringClass.getTag().toString();
 			else
 				/// Lets subclasses redefine method return type when parent method return type is ID
 				pointedClassName = "NSObject";

@@ -22,13 +22,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.util.string.StringUtils;
 
 public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder {//extends StoredDeclarations  {
 	Type type;
 	MemberVisibility nextMemberVisibility = MemberVisibility.Public;
-	final List<String> parents = new ArrayList<String>();
-	final List<String> protocols = new ArrayList<String>();
+	final List<Identifier> parents = new ArrayList<Identifier>();
+	final List<Identifier> protocols = new ArrayList<Identifier>();
 	String categoryName;
 	final List<Declaration> declarations = new ArrayList<Declaration>();
 	
@@ -65,7 +67,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 	}
 
 	
-	public static Struct forwardDecl(String name, Type type) {
+	public static Struct forwardDecl(SimpleIdentifier name, Type type) {
 		Struct s = new Struct();
 		s.setForwardDeclaration(true);
 		s.setTag(name);
@@ -80,25 +82,29 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		return categoryName;
 	}
 	
-	public List<String> getParents() {
+	public List<Identifier> getParents() {
 		return unmodifiableList(parents);
 	}
-	public void addParent(String parent) {
-		this.parents.add(parent);
+	public void addParent(Identifier parent) {
+		if (parent == null)
+			return;
+		parent.setParentElement(this);
+		parents.add(parent);
 	}
-	public void setParents(List<String> parents) {
-		this.parents.clear();
-		this.parents.addAll(parents);
+	public void setParents(List<Identifier> parents) {
+		changeValue(this, this.parents, parents);
 	}
-	public List<String> getProtocols() {
+	public List<Identifier> getProtocols() {
 		return unmodifiableList(protocols);
 	}
-	public void addProtocol(String protocol) {
-		this.protocols.add(protocol);
+	public void addProtocol(Identifier protocol) {
+		if (protocol == null)
+			return;
+		protocol.setParentElement(this);
+		protocols.add(protocol);
 	}
-	public void setProtocols(List<String> parents) {
-		this.protocols.clear();
-		this.protocols.addAll(parents);
+	public void setProtocols(List<Identifier> protocols) {
+		changeValue(this, this.protocols, protocols);
 	}
 	public void setType(Type type) {
 		this.type = type;
@@ -200,7 +206,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		visitor.visitStruct(this);
 	}
 
-	public void setParents(String... ns) {
+	public void setParents(Identifier... ns) {
 		setParents(Arrays.asList(ns));
 	}
 }

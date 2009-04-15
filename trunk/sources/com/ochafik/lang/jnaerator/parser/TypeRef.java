@@ -31,19 +31,19 @@ import com.ochafik.util.string.StringUtils;
 public abstract class TypeRef extends ModifiableElement implements Declarator.MutableByDeclarator {
 	
 	public static abstract class TaggedTypeRef extends TypeRef {
-		String tag, originalTag;
-		public String getTag() {
+		Identifier tag, originalTag;
+		public Identifier getTag() {
 			return tag;
 		}
-		public void setTag(String tag) {
-			this.tag = tag;
+		public void setTag(Identifier tag) {
+			this.tag = changeValue(this, this.tag, tag);
 			if (originalTag == null)
 				setOriginalTag(tag);
 		}
-		public void setOriginalTag(String originalTag) {
-			this.originalTag = originalTag;
+		public void setOriginalTag(Identifier originalTag) {
+			this.originalTag = changeValue(this, this.originalTag, originalTag);
 		}
-		public String getOriginalTag() {
+		public Identifier getOriginalTag() {
 			return originalTag;
 		}
 		public boolean isForwardDeclaration() {
@@ -68,19 +68,23 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 	}
 	
 	public static class SimpleTypeRef extends TypeRef {
-		protected String name;
+		protected Identifier name;
 
 		public SimpleTypeRef(String name) {
+			this();
+			setName(new Identifier.SimpleIdentifier(name));
+		}
+		public SimpleTypeRef(Identifier name) {
 			this();
 			setName(name);
 		}
 		public SimpleTypeRef() {
 		}
 		
-		public String getName() {
+		public Identifier getName() {
 			return name;
 		}
-		public void setName(String name) {
+		public void setName(Identifier name) {
 			this.name = name;
 		}
 		
@@ -204,15 +208,11 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		public static boolean isACPrimitive(String s) {
 			return cPrimitiveTypes.contains(s);
 		}
-		public Primitive(String name) {//, String... modifiers) {
-			//this();
-			setName(name);
-//			for (String modifier : modifiers)
-//				addModifier(modifier);
+		public Primitive(String name) {
+			setName(name == null ? null : new Identifier.SimpleIdentifier(name));
 		}
 
-		public Primitive() {
-		}
+		public Primitive() {}
 		
 		@Override
 		public Primitive addModifiers(Modifier... mds) {
@@ -304,6 +304,7 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			visitor.visitEnumTypeRef(this);
 		}
 	}*/
+	/*
 	public static class SubTypeRef extends TargettedTypeRef {
 		public enum Style { 
 			Dot { public String toString() { return "."; } }, 
@@ -340,7 +341,7 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		public void accept(Visitor visitor) {
 			visitor.visitSubTypeRef(this);
 		}
-	}
+	}*/
 	public static class Pointer extends TargettedTypeRef {
 		Declarator.PointerStyle pointerStyle;
 		
@@ -366,53 +367,6 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		@Override
 		public void accept(Visitor visitor) {
 			visitor.visitPointer(this);
-		}
-	}
-	
-	public static class TemplateRef extends SimpleTypeRef {
-		protected final List<TypeRef> parameters = new ArrayList<TypeRef>();
-		public TemplateRef(String name) {
-			this();
-			setName(name);
-		}
-		public TemplateRef() {
-		}
-		public List<TypeRef> getParameters() {
-			return unmodifiableList(parameters);
-		}
-		public void setParameters(List<TypeRef> parameters) {
-			changeValue(this, this.parameters, parameters);
-		}
-		
-		@Override
-		public Element getNextChild(Element child) {
-			return getNextSibling(parameters, child);
-		}
-
-		@Override
-		public Element getPreviousChild(Element child) {
-			return getPreviousSibling(parameters, child);
-		}
-
-		@Override
-		public boolean replaceChild(Element child, Element by) {
-			if (super.replaceChild(child, by))
-				return true;
-			
-			return replaceChild(parameters, TypeRef.class, this, child, by);
-		}
-		
-		public void addParameter(TypeRef type) {
-			if (type == null)
-				return;
-				
-			parameters.add(type);
-			type.setParentElement(this);
-		}
-		@Override
-		public String toString(CharSequence indent) {
-			String s = super.toString(indent) + "<" + StringUtils.implode(parameters, ", ");
-			return s + (s.endsWith(">") ? " >" : ">");
 		}
 	}
 	

@@ -20,6 +20,8 @@ package com.ochafik.lang.jnaerator;
 
 import java.io.File;
 
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,13 +60,18 @@ import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
+import com.ochafik.lang.jnaerator.parser.ModifiableElement;
 import com.ochafik.lang.jnaerator.parser.Modifier;
+import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
@@ -423,10 +430,10 @@ public class JNAerator {
 				continue; // to handle code defined in macro-expanded expressions
 //				library = "";
 			
-			result.typeConverter.fakePointersSink = new TreeSet<String>();
+			result.typeConverter.fakePointersSink = new TreeSet<Identifier>();
 			
 			String javaPackage = result.javaPackageByLibrary.get(library);
-			String libraryClassName = result.getLibraryClassSimpleName(library);
+			Identifier libraryClassName = result.getLibraryClassSimpleName(library);
 			
 			final PrintWriter out = outputter.getClassSourceWriter((javaPackage == null ? "" : javaPackage + ".") + libraryClassName);
 			
@@ -446,7 +453,7 @@ public class JNAerator {
 					continue;
 				
 				String otherJavaPackage = result.javaPackageByLibrary.get(otherLibrary);
-				String otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
+				SimpleIdentifier otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
 				out.println("import static " + (otherJavaPackage == null  || otherJavaPackage.length() == 0 ? "" : otherJavaPackage + ".") + otherLibraryClassName + ".*;");
 			}
 			if (!result.objCClasses.isEmpty())
@@ -460,7 +467,7 @@ public class JNAerator {
 			interf.setType(Type.JavaInterface);
 			interf.addModifiers(Modifier.Public);
 			interf.setTag(libraryClassName);
-			interf.setParents(Library.class.getName());
+			interf.setParents(ident(Library.class));
 			
 			Expression libNameExpr = opaqueExpr(result.getLibraryFileExpression(library));
 			TypeRef libTypeRef = typeRef(libraryClassName);
@@ -499,8 +506,8 @@ public class JNAerator {
 
 			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName);
 			
-			for (String fakePointer : result.typeConverter.fakePointersSink) {
-				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, Pointer.class.getName(), Struct.Type.JavaClass, null);
+			for (Identifier fakePointer : result.typeConverter.fakePointersSink) {
+				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(Pointer.class), Struct.Type.JavaClass, null);
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
 					new Arg("pointer", typeRef(Pointer.class))
 				).addModifiers(Modifier.Public).setBody(
@@ -532,6 +539,35 @@ public class JNAerator {
 		
 		/// Give sensible names to anonymous function signatures, structs, enums, unions, and move them up one level as typedefs
 		sourceFiles.accept(new MissingNamesChooser(result));
+		
+		/// Move storage modifiers up to the storage
+		sourceFiles.accept(new Scanner() {
+			@Override
+			protected void visitTypeRef(TypeRef tr) {
+				super.visitTypeRef(tr);
+				Element parent = tr.getParentElement();
+				if (parent instanceof TypeRef) {// || parent instanceof VariablesDeclaration) {
+					List<Modifier> stoMods = getStoMods(tr.getModifiers());
+					if (stoMods != null) {
+						List<Modifier> newMods = new ArrayList<Modifier>(tr.getModifiers());
+						newMods.removeAll(stoMods);
+						tr.setModifiers(newMods);
+						((ModifiableElement)parent).addModifiers(stoMods);
+					}
+				}
+			}
+			public List<Modifier> getStoMods(List<Modifier> mods) {
+				List<Modifier> ret = null;
+				for (Modifier mod : mods) {
+					if (mod.isA(Modifier.Kind.StorageClassSpecifier)) {
+						if (ret == null)
+							ret = new ArrayList<Modifier>();
+						ret.add(mod);
+					}
+				}
+				return ret;
+			}
+		});
 		
 		/// Build JavaDoc comments where applicable
 		sourceFiles.accept(new JavaDocCreator(result));

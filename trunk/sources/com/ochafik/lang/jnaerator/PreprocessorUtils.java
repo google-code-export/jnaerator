@@ -168,7 +168,7 @@ public class PreprocessorUtils {
 			//	continue;
 			
 			try {
-				Expression expression = JNAeratorParser.newObjCppParser(macro.getText()).expression().expr;
+				Expression expression = JNAeratorParser.newObjCppParser(macro.getText()).expression();//.expr;
 				if (expression == null)
 					continue;
 			

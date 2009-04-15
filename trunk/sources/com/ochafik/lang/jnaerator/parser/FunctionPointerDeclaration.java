@@ -26,7 +26,7 @@ public class FunctionPointerDeclaration extends Declaration {
 	public FunctionPointerDeclaration(FunctionSignature functionSignature) {
 		this();
 		setValueType(functionSignature);
-		setName(functionSignature.getFunction().getName());
+		//setName(functionSignature.getFunction().getName());
 	}
 
 	public FunctionPointerDeclaration() {

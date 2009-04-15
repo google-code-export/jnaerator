@@ -41,6 +41,8 @@ import com.ochafik.lang.jnaerator.parser.Expression.OpaqueExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.ochafik.lang.jnaerator.parser.Identifier.QualifiedIdentifier;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Statement.ExpressionStatement;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
@@ -48,7 +50,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.SubTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 
 public interface Visitor {
@@ -128,8 +129,6 @@ public interface Visitor {
 
 	void visitExpressionStatement(ExpressionStatement expressionStatement);
 
-	void visitSubTypeRef(SubTypeRef subTypeRef);
-
 	void visitIf(If if1);
 
 	void visitNullExpression(NullExpression nullExpression);
@@ -149,5 +148,9 @@ public interface Visitor {
 	void visitConditionalExpression(ConditionalExpression conditionalExpression);
 
 	void visitExpressionSequence(ExpressionSequence expressionSequence);
+
+	void visitSimpleIdentifier(SimpleIdentifier simpleIdentifier);
+
+	void visitQualifiedIdentifier(QualifiedIdentifier qualifiedIdentifier);
 	
 }
