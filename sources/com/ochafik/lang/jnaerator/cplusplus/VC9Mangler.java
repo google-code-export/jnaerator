@@ -27,11 +27,13 @@ import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.ModifiableElement;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
@@ -74,7 +76,7 @@ public class VC9Mangler implements CPlusPlusMangler {
 			if (s != null)
 				b.append(s);
 			else {
-				lenghtedName(str.getName(), b);
+				lenghtedName(str.getName().toString(), b);
 			}
 		} else if (tr instanceof TaggedTypeRef) {
 			mangleTaggedTypeRef((TaggedTypeRef)tr, b, result);
@@ -109,9 +111,10 @@ public class VC9Mangler implements CPlusPlusMangler {
 		}
 		qualify(b, tr.getOriginalTag(), tr.getNameSpace());
 	}
-	private void qualify(StringBuilder b, String name, List<String> ns) {
-		b.append(name);
-		b.append("@");
+	private void qualify(StringBuilder b, Identifier identifier, List<String> ns) {
+		List<SimpleIdentifier> sis = identifier.getSimpleIdentifiers();
+		for (int i = sis.size(); i-- != 0;)
+			b.append(sis.get(i) + "@");
 		
 		for (int i = ns.size(); i-- != 0;)
 			b.append(ns.get(i) + "@");
@@ -124,7 +127,7 @@ public class VC9Mangler implements CPlusPlusMangler {
 	}
 	/// @see http://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B_Name_Mangling
 	public String mangle(Function function, Result result) {
-		String name = function.getName();
+		Identifier name = function.getName();
 		if (name == null)
 			return null;
 		
@@ -133,13 +136,13 @@ public class VC9Mangler implements CPlusPlusMangler {
 		b.append("@");
 		
 		Element parent = function.getParentElement();
-		List<String> ns;
+		List<Object> ns;
 		boolean isMethod = parent instanceof Struct;
 		if (isMethod) {
-			ns = new ArrayList<String>(parent.getNameSpace());
-			ns.add(((Struct)parent).getTag());
+			ns = new ArrayList<Object>(parent.getNameSpace());
+			ns.addAll(((Struct)parent).getTag().getSimpleIdentifiers());
 		} else {
-			ns = new ArrayList<String>(function.getNameSpace());
+			ns = new ArrayList<Object>(function.getNameSpace());
 		}
 		
 //		if (ns.isEmpty()) {

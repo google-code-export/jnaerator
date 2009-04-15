@@ -31,6 +31,7 @@ import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -39,11 +40,14 @@ import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Platform;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class Result extends Scanner {
 
@@ -63,7 +67,7 @@ public class Result extends Scanner {
 
 	Set<String> javaPackages = new TreeSet<String>();
 	
-	Map<String, ObjCClass> objCClasses = new HashMap<String, ObjCClass>();
+	Map<Identifier, ObjCClass> objCClasses = new HashMap<Identifier, ObjCClass>();
 	//Set<String> 
 		//cStructNames = new HashSet<String>(), 
 		//enumNames = new HashSet<String>();
@@ -74,18 +78,18 @@ public class Result extends Scanner {
 	
 	Map<String, List<VariablesDeclaration>> globalsByLibrary = new HashMap<String, List<VariablesDeclaration>>();
 	
-	Map<String, Struct> structsByName = new HashMap<String, Struct>();
-	Map<String, FunctionSignature> callbacksByName = new HashMap<String, FunctionSignature>();
+	Map<Identifier, Struct> structsByName = new HashMap<Identifier, Struct>();
+	Map<Identifier, FunctionSignature> callbacksByName = new HashMap<Identifier, FunctionSignature>();
 	
 	Map<String, List<Enum>> enumsByLibrary = new HashMap<String, List<Enum>>();
-	Map<String, Enum> enumsByName = new HashMap<String, Enum>();
+	Map<Identifier, Enum> enumsByName = new HashMap<Identifier, Enum>();
 	Map<String, EnumItem> enumItems = new HashMap<String, EnumItem>();
 	Map<String, Define> defines = new HashMap<String, Define>();
 	Map<String, List<Define>> definesByLibrary = new HashMap<String, List<Define>>();
 	
 	Map<String, List<Function>> functionsByLibrary = new HashMap<String, List<Function>>();
 	//Map<String, Expression> defines = new LinkedHashMap<String, Expression>();
-	Map<String, Signatures> signaturesByOutputClass = new HashMap<String, Signatures>();
+	Map<Identifier, Signatures> signaturesByOutputClass = new HashMap<Identifier, Signatures>();
 	
 	Map<String, Pair<TypeDef, Declarator>> typeDefs = new HashMap<String, Pair<TypeDef, Declarator>>();
 	
@@ -96,7 +100,7 @@ public class Result extends Scanner {
 		return list;
 	}
 	
-	public Signatures getSignaturesForOutputClass(String name) {
+	public Signatures getSignaturesForOutputClass(Identifier name) {
 		Signatures s = signaturesByOutputClass.get(name);
 		if (s == null)
 			signaturesByOutputClass.put(name, s = new Signatures());
@@ -119,7 +123,7 @@ public class Result extends Scanner {
 		getList(definesByLibrary, getLibrary(define)).add(define);
 	}
 	
-	ObjCClass getObjCClass(String name) {
+	ObjCClass getObjCClass(Identifier name) {
 		ObjCClass c = objCClasses.get(name);
 		if (c == null)
 			objCClasses.put(name, c = new ObjCClass(this));
@@ -163,10 +167,10 @@ public class Result extends Scanner {
 				TypeDef typeDef = (TypeDef) nextDeclaration;
 				TypeRef type = typeDef.getValueType();
 				if (type instanceof TypeRef.SimpleTypeRef) {
-					String simpleType = ((TypeRef.SimpleTypeRef)type).getName();
-					if (simpleType.equals("NSUInteger") || 
-							simpleType.equals("NSInteger") ||
-							simpleType.equals("CFIndex")) 
+					String simpleTypeStr = ((TypeRef.SimpleTypeRef)type).getName().toString();
+					if (simpleTypeStr.equals("NSUInteger") || 
+							simpleTypeStr.equals("NSInteger") ||
+							simpleTypeStr.equals("CFIndex")) 
 					{
 						Declarator bestPlainStorage = null;
 						for (Declarator st : typeDef.getDeclarators()) {
@@ -182,7 +186,7 @@ public class Result extends Scanner {
 						if (bestPlainStorage != null) {
 							String name = bestPlainStorage.resolveName();
 							System.err.println("Automatic struct name matching : " + name);
-							e.setTag(name);
+							e.setTag(ident(name));
 						}
 					}
 				}
@@ -268,7 +272,7 @@ public class Result extends Scanner {
 	public void visitStruct(Struct struct) {
 		super.visitStruct(struct);
 		
-		String name = struct.getTag();
+		Identifier name = struct.getTag();
 		if (name != null) {
 			switch (struct.getType()) {
 			case CStruct:
@@ -295,14 +299,14 @@ public class Result extends Scanner {
 		Function function = functionSignature.getFunction();
 		if (function != null) {
 			getList(callbacksByLibrary, getLibrary(functionSignature)).add(functionSignature);
-			String name = typeConverter.inferCallBackName(functionSignature, false);
+			Identifier name = typeConverter.inferCallBackName(functionSignature, false);
 			if (name != null)
 				callbacksByName.put(name, functionSignature);
 		}
 	}
 
-	public String getLibraryClassSimpleName(String library) {
-		return StringUtils.capitalize(library) + "Library";
+	public SimpleIdentifier getLibraryClassSimpleName(String library) {
+		return ident(StringUtils.capitalize(library) + "Library");
 	}
 	public String getLibraryFileExpression(String library) {
 		if (library.equals("c"))

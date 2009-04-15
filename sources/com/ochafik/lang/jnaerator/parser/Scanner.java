@@ -44,6 +44,8 @@ import com.ochafik.lang.jnaerator.parser.Expression.OpaqueExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.ochafik.lang.jnaerator.parser.Identifier.QualifiedIdentifier;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
 import com.ochafik.lang.jnaerator.parser.Statement.ExpressionStatement;
 import com.ochafik.lang.jnaerator.parser.Statement.If;
@@ -54,7 +56,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 import com.ochafik.lang.jnaerator.parser.TypeRef.Primitive;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.SubTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.util.listenable.Pair;
@@ -94,6 +95,8 @@ public class Scanner implements Visitor {
 		
 		if (function.getBody() != null)
 			function.getBody().accept(this);
+		if (function.getName() != null)
+			function.getName().accept(this);
 	}
 
 	public void visitFunctionPointerDeclaration(FunctionPointerDeclaration f) {
@@ -227,6 +230,9 @@ public class Scanner implements Visitor {
 
 	public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
 		visitTypeRef(simpleTypeRef);
+
+		if (simpleTypeRef.getName() != null)
+			simpleTypeRef.getName().accept(this);
 	}
 
 	static <T> Collection<T> copy(Collection<T> col) {
@@ -429,11 +435,6 @@ public class Scanner implements Visitor {
 	}
 
 	@Override
-	public void visitSubTypeRef(SubTypeRef subTypeRef) {
-		visitTargettedTypeRef(subTypeRef);
-	}
-
-	@Override
 	public void visitIf(If if1) {
 		visitStatement(if1);
 		if (if1.getCondition() != null)
@@ -508,4 +509,25 @@ public class Scanner implements Visitor {
 			if (x != null)
 				x.accept(this);
 	}
+
+	@Override
+	public void visitSimpleIdentifier(SimpleIdentifier simpleIdentifier) {
+		visitIdentifier(simpleIdentifier);
+		for (Expression x : simpleIdentifier.getTemplateArguments())
+			if (x != null)
+				x.accept(this);
+	}
+
+	private void visitIdentifier(Identifier identifier) {
+		visitElement(identifier);
+	}
+
+	@Override
+	public void visitQualifiedIdentifier(QualifiedIdentifier qualifiedIdentifier) {
+		visitIdentifier(qualifiedIdentifier);
+		for (SimpleIdentifier i : qualifiedIdentifier.getIdentifiers())
+			if (i != null)
+				i.accept(this);
+	}
+
 }

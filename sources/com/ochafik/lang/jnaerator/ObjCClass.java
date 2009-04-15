@@ -26,11 +26,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.rococoa.NSClass;
 import org.rococoa.Rococoa;
 
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -43,6 +45,8 @@ import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.util.CompoundCollection;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
+
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 
 class ObjCClass {
 	/**
@@ -75,7 +79,7 @@ class ObjCClass {
 		PrintWriter out = result.classOutputter.getClassSourceWriter(javaPackage + "." + type.getTag());
 		//this.result.javaPackages.add(javaPackage);
 		
-		String fullClassName = type.getTag();
+		Identifier fullClassName = type.getTag();
 		if (javaPackage != null && javaPackage.length() > 0) {
 			out.println("package " + javaPackage + ";");
 			//fullClassName = javaPackage + "." + type.getName();
@@ -194,33 +198,34 @@ class ObjCClass {
 	}*/
 	
 	
-	private Struct toRococoaHeaderDOMWithCategories(final String callerLibraryClass) {
+	private Struct toRococoaHeaderDOMWithCategories(final Identifier fullClassName) {
 //		StringBuilder s = new StringBuilder();
 //		if (type.getCategoryName() != null)
 //			s.append("/// @Protocol");
 		
-		List<String> extensions = new ArrayList<String>(), missingExtensions = new ArrayList<String>();
+		List<Identifier> extensions = new ArrayList<Identifier>(), 
+		missingExtensions = new ArrayList<Identifier>();
 		
-		String superType = null;
+		Identifier superType = null;
 		if (type.getParents().isEmpty()) {
 			if (!type.getTag().equals("NSObject"))
-				superType = "NSObject";
+				superType = ident("NSObject");
 		} else
 			superType = type.getParents().iterator().next();
 			
 		if (!result.objCClasses.containsKey(superType)) {
 			missingExtensions.add(superType);
 			if (!type.getTag().equals("NSObject"))
-				superType = "NSObject";
+				superType = ident("NSObject");
 		}
 		if (!extensions.contains(superType) && superType != null)
 			extensions.add(superType);
 		
 		//extensions.add(superType == null ? "NSObject" : superType);
-		for (String prot : type.getProtocols()) {
+		for (Identifier prot : type.getProtocols()) {
 			if (prot.equals(type.getTag()))
 				continue;
-			List<String> c = result.objCClasses.containsKey(prot) ? extensions : missingExtensions;
+			List<Identifier> c = result.objCClasses.containsKey(prot) ? extensions : missingExtensions;
 			if (!c.contains(prot))
 				c.add(prot);
 		}
@@ -242,7 +247,7 @@ class ObjCClass {
 				otherComments.add(ss.getCommentBefore());
 			}
 		
-		String className = type.getTag();
+		Identifier className = type.getTag();
 		final Struct instanceStruct = new Struct();
 		instanceStruct.setType(Struct.Type.JavaInterface);
 		instanceStruct.addModifiers(Modifier.Public);
@@ -274,7 +279,7 @@ class ObjCClass {
 		StoredDeclarations classHolder = new VariablesDeclaration();
 		classHolder.setValueType(new TypeRef.SimpleTypeRef("_Class"));
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
-		call.addArgument(expr(Constant.Type.String, type.getTag()));
+		call.addArgument(expr(Constant.Type.String, type.getTag().toString()));
 		call.addArgument(memberRef(expr(typeRef("_Class")), MemberRefStyle.Dot, "class"));
 		classHolder.addDeclarator(new Declarator.DirectDeclarator("CLASS", call));
 		
@@ -282,9 +287,9 @@ class ObjCClass {
 		//s.append("\tpublic static final _Class CLASS = org.rococoa.Rococoa.createClass(\"" + type.getName() + "\", _Class.class);\n");
 	
 		Struct classStruct = new Struct();
-		classStruct.setTag("_Class");
+		classStruct.setTag(ident("_Class"));
 		classStruct.setType(Struct.Type.JavaInterface);
-		classStruct.addParent("org.rococoa.NSClass");
+		classStruct.addParent(ident(NSClass.class));
 		classStruct.addModifiers(Modifier.Public);
 		
 		instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
@@ -301,7 +306,7 @@ class ObjCClass {
 		for (Declaration d : declarations) {
 			if (d instanceof Function) {
 				Function f = (Function)d;
-				result.declarationsConverter.convertFunction(f, signatures, false, f.getModifiers().contains(Modifier.Static) ? classStruct : instanceStruct, callerLibraryClass);
+				result.declarationsConverter.convertFunction(f, signatures, false, f.getModifiers().contains(Modifier.Static) ? classStruct : instanceStruct, fullClassName);
 			}
 		}
 		
@@ -316,7 +321,7 @@ class ObjCClass {
 			}
 		}
 		if (!hasAllocator) {
-			Function initMeth = new Function(Function.Type.JavaMethod, "alloc", new TypeRef.SimpleTypeRef(className));
+			Function initMeth = new Function(Function.Type.JavaMethod, ident("alloc"), new TypeRef.SimpleTypeRef(className));
 			//if (!signatures.contains(initMeth.computeSignature(false))) {
 				classStruct.addDeclaration(initMeth);
 			//}

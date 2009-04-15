@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.ListenableCollections;
 import com.ochafik.util.listenable.Pair;
@@ -208,12 +209,12 @@ public abstract class Expression extends Element {
 		MemberRefStyle memberRefStyle;
 		Expression target;
 		
-		String name; 
+		Identifier name; 
 		
-		public MemberRef(String name) {
+		public MemberRef(SimpleIdentifier name) {
 			setName(name);
 		}
-		public MemberRef(Expression target, MemberRefStyle memberRefStyle, String name) {
+		public MemberRef(Expression target, MemberRefStyle memberRefStyle, Identifier name) {
 			setTarget(target);
 			setName(name);
 			setMemberRefStyle(memberRefStyle);
@@ -222,10 +223,10 @@ public abstract class Expression extends Element {
 		public MemberRef() {
 		}
 
-		public void setName(String name) {
-			this.name = name;
+		public void setName(Identifier name2) {
+			this.name = name2;
 		}
-		public String getName() {
+		public Identifier getName() {
 			return name;
 		}
 		@Override
@@ -441,6 +442,10 @@ public abstract class Expression extends Element {
 		public void addArgument(Expression ex) {
 			addArgument(null, ex);
 		}
+		public void addArguments(List<Expression> ex) {
+			for (Expression x : ex)
+				addArgument(null, x);
+		}
 		public void addArgument(String argumentSelector, Expression ex) {
 			if (ex == null)
 				return;
@@ -616,21 +621,21 @@ public abstract class Expression extends Element {
 	}
 	
 	public static class VariableRef extends Expression {
-		String name;
+		Identifier name;
 		
 		
-		public VariableRef(String name) {
+		public VariableRef(Identifier name) {
 			setName(name);
 		}
 		
 		public VariableRef() {
 		}
 
-		public String getName() {
+		public Identifier getName() {
 			return name;
 		}
 		
-		public void setName(String name) {
+		public void setName(Identifier name) {
 			this.name = name;
 		}
 
@@ -656,7 +661,7 @@ public abstract class Expression extends Element {
 
 		@Override
 		public String toInnerString(CharSequence indent) {
-			return getName();
+			return getName() == null ? "" : getName().toString(indent);
 		}
 	}
 
@@ -682,6 +687,7 @@ public abstract class Expression extends Element {
 		MinusEqual("-="),
 		LeftShiftEqual("<<="),
 		RightShiftEqual(">>="),
+		SignedRightShiftEqual(">>>="),
 		BitAndEqual("&="),
 		XOREqual("^="),
 		ComplementEqual("~="),
@@ -1237,9 +1243,9 @@ public abstract class Expression extends Element {
 			StringBuffer b = new StringBuffer();
 			
 			if (intForm == IntForm.Hex)
-				return "0x" + Long.toHexString(value instanceof Long ? ((Long)value).longValue() : ((Integer)value).longValue());
+				return "0x" + Long.toHexString(value instanceof Long ? ((Long)value).longValue() : ((Integer)value).longValue()).toUpperCase();
 			else if (intForm == IntForm.Octal)
-				return Long.toOctalString(value instanceof Long ? ((Long)value).longValue() : ((Integer)value).longValue());
+				return Long.toOctalString(value instanceof Long ? ((Long)value).longValue() : ((Integer)value).longValue()).toUpperCase();
 			
 			if (getType() == null)
 				b.append("");
@@ -1254,7 +1260,7 @@ public abstract class Expression extends Element {
 					break;
 				case Float:
 					b.append(value);
-					b.append('f');
+					b.append('F');
 					break;
 				case ULong:
 				case Long:

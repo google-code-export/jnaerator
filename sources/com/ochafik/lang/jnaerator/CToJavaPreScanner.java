@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -126,7 +127,7 @@ public class CToJavaPreScanner extends Scanner {
 				decl.importDetails(tr, true);
 			} else if (type instanceof Function) {
 				Function f = (Function)type;
-				f.setName(vs.resolveName());
+				f.setName(new SimpleIdentifier(vs.resolveName()));
 				decl = (Function)type;
 				decl.importDetails(v, false);
 				decl.importDetails(vs, false);

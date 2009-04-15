@@ -28,6 +28,7 @@ import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -40,6 +41,8 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
+
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 public class GlobalsGenerator {
 	public GlobalsGenerator(Result result) {
 		this.result = result;
@@ -62,14 +65,22 @@ public class GlobalsGenerator {
 //		}
 //	}
 	
-	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, String callerLibraryName) throws UnsupportedConversionException {
+	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
-			String name = result.typeConverter.getValidJavaArgumentName(d.resolveName());
+			Identifier name = result.typeConverter.getValidJavaArgumentName(ident(d.resolveName()));
 			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
-			if (type == null || type.getModifiers().contains(Modifier.Const) && d.getDefaultValue() != null) {
+			if (type == null)
+				continue;
+			
+			List<Modifier> modifiers = type.getModifiers();
+			if (	type == null || 
+					!(Modifier.Extern.isContainedBy(modifiers) || Modifier.Dllexport.isContainedBy(modifiers) || Modifier.Dllimport.isContainedBy(modifiers))
+					//|| Modifier.Const.isContainedBy(modifiers) && d.getDefaultValue() != null
+					) {
 				//result.declarationsConverter.convertCon
 				continue;
 			}
+			
 			
 			if (!signatures.classSignatures.add(name))
 				continue;
@@ -98,8 +109,8 @@ public class GlobalsGenerator {
 				instType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.PointedValue, callerLibraryName);//convPointerType;
 				hasOffset = true;
 			} else {
-				String instTypeName = name + "_holder";
-				Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, Structure.class.getName(), Struct.Type.JavaClass, null);
+				Identifier instTypeName = ident(name + "_holder");
+				Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, ident(Structure.class), Struct.Type.JavaClass, null);
 				holderStruct.addModifiers(Modifier.Final);
 				VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclaration("value", type, new int[1], callerLibraryName);
 				if (vd.getValueType().toString().equals(Pointer.class.getName())) {
@@ -124,8 +135,8 @@ public class GlobalsGenerator {
 					struct.addDeclaration(decl(holderStruct));
 				}
 			}
-			String instName = name;//"_";
-			struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName)).addModifiers(Modifier.Private, Modifier.Static));
+			Identifier instName = name;//"_";
+			struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName.toString())).addModifiers(Modifier.Private, Modifier.Static));
 			VariableRef instRef = new VariableRef(instName);
 			Expression ptrExpr = methodCall(
 				cast(
@@ -138,7 +149,7 @@ public class GlobalsGenerator {
 				).setParenthesis(true),
 				MemberRefStyle.Dot,
 				"getGlobalVariableAddress",
-				expr(Expression.Constant.Type.String, name)
+				expr(Expression.Constant.Type.String, name.toString())
 			);
 			List<Statement> initStats = new ArrayList<Statement>();
 			initStats.add(new Statement.ExpressionStatement(
@@ -153,7 +164,7 @@ public class GlobalsGenerator {
 			if (isByRef)
 				initStats.add(new Statement.ExpressionStatement(methodCall(instRef, MemberRefStyle.Dot, "setPointer", ptrExpr)));
 
-			struct.addDeclaration(new Function(Function.Type.JavaMethod, "get", instType).setBody(new Statement.Block(
+			struct.addDeclaration(new Function(Function.Type.JavaMethod, ident("get"), instType).setBody(new Statement.Block(
 				new Statement.If(
 					expr(instRef, Expression.BinaryOperator.IsEqual, nullExpr()),
 					initStats.size() == 1 ? initStats.get(0) : new Statement.Block(initStats),
@@ -165,7 +176,7 @@ public class GlobalsGenerator {
 		}
 	}
 
-	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, String libraryNameExpression) {		
+	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, Identifier libraryNameExpression) {		
 		if (list == null)
 			return;
 		

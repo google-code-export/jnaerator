@@ -83,7 +83,7 @@ public class ObjCppParsingTests {
 			switch (testOption) {
 			case ParseMustFail:
 				try {
-					sourceFile = newParser(string).sourceFile().sourceFile;
+					sourceFile = newParser(string).sourceFile();//.sourceFile;
 					assertTrue("Expression should not have been parsed : " + string, false);
 				} catch (Throwable t) {
 					ok = true;
@@ -91,14 +91,14 @@ public class ObjCppParsingTests {
 				break;
 			case ParseOnly:
 			case ParseAndPrettyPrint:
-				sourceFile = newParser(string).sourceFile().sourceFile;
+				sourceFile = newParser(string).sourceFile();//.sourceFile;
 				assertNotNull(string, sourceFile);
 				if (testOption == TestOption.ParseAndPrettyPrint) {
 					//assertEquals(string, 1, decls.size());
 					//Declaration firstDecl = decls.get(0);
 					//assertNotNull(string, firstDecl);
 					if (!SyntaxUtils.equal(string, sourceFile == null ? null : sourceFile.toString()))
-						sourceFile = newParser(string).sourceFile().sourceFile;
+						sourceFile = newParser(string).sourceFile();//.sourceFile;
 					
 					assertEquals(string, string.trim(), sourceFile == null ? null : sourceFile.toString().trim());
 				}

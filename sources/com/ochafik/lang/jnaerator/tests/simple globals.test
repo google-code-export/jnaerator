@@ -1,7 +1,7 @@
-int *pInt;
-void *pVoid;
-int i;
-void (*fptr)(int);
+extern int *pInt;
+extern void *pVoid;
+extern int i;
+extern void (*fptr)(int);
 --
 IntByReference pInt = TestLibrary.pInt.get().value;
 PointerByReference pVoid = TestLibrary.pVoid.get();

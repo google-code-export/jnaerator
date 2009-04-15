@@ -135,7 +135,7 @@ public class Enum extends TaggedTypeRef {
 		
 		return super.replaceChild(child, by);
 	}
-
+	
 	@Override
 	public String toString(CharSequence indent) {
 		String nindent = indent + "\t";

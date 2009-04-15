@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Expression;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -35,6 +36,8 @@ import com.ochafik.lang.jnaerator.DefinitionsVisitor.Environment;
 import com.ochafik.util.string.StringUtils;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
+
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 
 public class ObjCppToJavaScanner extends Scanner {
 	DefinitionsVisitor originalDefinitions = new DefinitionsVisitor();
@@ -75,7 +78,7 @@ public class ObjCppToJavaScanner extends Scanner {
 	}
 	@Override
 	public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
-		String name = simpleTypeRef.getName();
+		Identifier name = simpleTypeRef.getName();
 		TypeRef manualTypeRef = TypeConversion.manualTypeDefs.get(name);
 		if (manualTypeRef != null) {
 			simpleTypeRef.replaceBy(manualTypeRef);
@@ -97,7 +100,7 @@ public class ObjCppToJavaScanner extends Scanner {
 				return resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName));
 		}*/
 
-		Element element = originalDefinitions.resolveElement(simpleTypeRef, name, null, Environment.Space.Types, Environment.Space.Enums, Environment.Space.Structs);
+		Element element = originalDefinitions.resolveElement(simpleTypeRef, name.toString(), null, Environment.Space.Types, Environment.Space.Enums, Environment.Space.Structs);
 		if (element instanceof DirectDeclarator) {
 			DirectDeclarator vs = (DirectDeclarator)element;
 			Element parent = vs.getParentElement();
@@ -110,13 +113,13 @@ public class ObjCppToJavaScanner extends Scanner {
 					}
 				} else if (parent instanceof Struct) {
 					Struct s = (Struct) parent;
-					String structName = s.getTag();
+					Identifier structName = s.getTag();
 					// TODO ensure all structs have names !
 					String library = getLibrary(s);
 					if (library == null)
 						throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, "struct " + structName + " is not bound to a library"));
 					
-					TypeRef tr = typeRef(getLibraryClassSimpleName(library) + "." + structName);
+					TypeRef tr = typeRef(ident(ident(getLibraryClassSimpleName(library)), structName));
 					simpleTypeRef.replaceBy(tr);
 					tr.accept(this);
 				}

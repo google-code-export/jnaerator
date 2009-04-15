@@ -23,19 +23,42 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.util.string.StringUtils;
 
 public class Function extends Declaration implements Declarator.MutableByDeclarator {
 	//private Struct owner;
 
 	final List<Arg> args = new ArrayList<Arg>();
+	final List<FunctionCall> initializers = new ArrayList<FunctionCall>();
 	Statement.Block body;
 	Type type;
 
+	Identifier name;
+	
+	public void setName(Identifier name) {
+		this.name = changeValue(this, this.name, name);
+	}
+	public Identifier getName() {
+		return name;
+	}
 	public enum Type {
 		CFunction, ObjCMethod, CppMethod, JavaMethod
 	}
 
+	public void setInitializers(List<FunctionCall> initializers) {
+		changeValue(this, this.initializers, initializers);
+	}
+	public void addInitializer(FunctionCall i) {
+		if (i == null)
+			return;
+		
+		i.setParentElement(this);
+		initializers.add(i);
+	}
+	public List<FunctionCall> getInitializers() {
+		return unmodifiableList(initializers);
+	}
 	String asmName;
 	public void setAsmName(String asmName) {
 		this.asmName = asmName;
@@ -107,16 +130,16 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	//public static class CFunction extends Function {
 	public Function() {}
 
-	public Function(Type type, String name, TypeRef returnType) {
+	public Function(Type type, Identifier name, TypeRef returnType) {
 		setType(type);
 		setName(name);
 		setValueType(returnType);
 	}
-	public Function(Type type, String name, TypeRef returnType, Arg... args) {
+	public Function(Type type, Identifier name, TypeRef returnType, Arg... args) {
 		this(type, name, returnType, Arrays.asList(args));
 	}
 		
-	public Function(Type type, String name, TypeRef returnType, List<Arg> args) {
+	public Function(Type type, Identifier name, TypeRef returnType, List<Arg> args) {
 		setType(type);
 		setName(name);
 		setValueType(returnType);
@@ -132,7 +155,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	public String toString(CharSequence indent) {
 		String s = "";
 		TypeRef valueType = getValueType();
-		String name = getName();
+		Identifier name = getName();
 		List<Modifier> modifiers = getModifiers();
 		
 		if (type == null)
@@ -140,6 +163,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		
 		String pre = formatComments(indent, false, true, true);
 		String post = (asmName == null ? "" : "__asm(\"" + asmName + "\") ") +
+			(initializers.isEmpty() ? "" : " : " + implode(initializers, ", ", indent)) +
 			(commentAfter == null ? "" : " " + commentAfter);//" /*" + commentAfter + " */";
 		
 		if (!getAnnotations().isEmpty())

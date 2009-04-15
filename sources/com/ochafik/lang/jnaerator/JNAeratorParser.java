@@ -135,7 +135,7 @@ public class JNAeratorParser {
 						try {
 							ObjCppParser parser = newObjCppParser(slice.text);
 							parser.topLevelTypeIdentifiers = topLevelTypeDefs;
-							SourceFile sourceFile = parser.sourceFile().sourceFile;
+							SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 							//sourceFile.setElementFile(slice.file);
 							return sourceFile;
 						} catch (Exception ex) {
@@ -196,7 +196,7 @@ public class JNAeratorParser {
 				// easier to debug but any error might ruin all the rest of the parsing
 				try {
 					ObjCppParser parser = newObjCppParser(sourceContent);
-					SourceFile sourceFile = parser.sourceFile().sourceFile;
+					SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 					sourceFiles.add(sourceFile);
 				} catch (Exception ex) {
 					ex.printStackTrace();

@@ -91,13 +91,13 @@ class ElementNode extends AbstractNode {
 	public String toString() {
 		String s = super.toString();
 		if (s == null) {
-			if (element instanceof Declaration) {
-				s = ((Declaration)element).getName();
-				if (s == null)
-					s = element.getClass().getSimpleName();
-				else
-					s += " (" + element.getClass().getSimpleName() + ")";
-			} else
+//			if (element instanceof Declaration) {
+//				s = ((Declaration)element).getName();
+//				if (s == null)
+//					s = element.getClass().getSimpleName();
+//				else
+//					s += " (" + element.getClass().getSimpleName() + ")";
+//			} else
 				s = element.getClass().getSimpleName();
 		} else
 			s += " (" + element.getClass().getSimpleName() + ")";

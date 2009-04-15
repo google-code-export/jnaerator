@@ -88,6 +88,9 @@ public abstract class Declarator extends ModifiableElement {
 			if (type == null)
 				return null;
 			type = type.clone();
+			if (type instanceof Function) {
+				((Function)type).setName(new Identifier.SimpleIdentifier(getName()));
+			}
 			((Element)type).importDetails(this, false);
 			return type;
 		}
@@ -201,13 +204,13 @@ public abstract class Declarator extends ModifiableElement {
 		
 		@Override
 		public MutableByDeclarator mutateType(MutableByDeclarator type) {
-			if (type == null) {
+			/*if (type == null) {
 				System.out.println("mutating null type : " + this);
 				return null;
-			}
-			type = type.clone();
+			}*/
+			type = type == null ? null : type.clone();
 			
-			if (type instanceof TypeRef) {
+			if (type == null || type instanceof TypeRef) {
 				Function f = new Function();
 				f.importDetails(this, false);
 				f.setValueType((TypeRef)type);

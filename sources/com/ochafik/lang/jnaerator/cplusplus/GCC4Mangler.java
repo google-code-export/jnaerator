@@ -27,6 +27,7 @@ import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
@@ -58,10 +59,10 @@ public class GCC4Mangler implements CPlusPlusMangler {
 			if (s != null)
 				b.append(s);
 			else {
-				lenghtedName(str.getName(), b);
+				lenghtedName(str.getName().toString(), b);
 			}
 		} else if (tr instanceof TaggedTypeRef) {
-			lenghtedName(((TaggedTypeRef)tr).getOriginalTag(), b);
+			lenghtedName(((TaggedTypeRef)tr).getOriginalTag().toString(), b);
 		} else if (tr instanceof FunctionSignature) {
 			FunctionSignature fs = (FunctionSignature) tr;
 			b.append("PF");
@@ -72,33 +73,33 @@ public class GCC4Mangler implements CPlusPlusMangler {
 			throw new UnsupportedOperationException("Cannot mangle type references of class " + tr.getClass().getName() + " : '" + tr + "'");
 		}
 	}
-	protected void lenghtedName(String name, StringBuilder out) {
-		out.append(name.length() + name);
+	protected void lenghtedName(String n, StringBuilder out) {
+		out.append(n.length() + n);
 	}
 	public String mangle(Function function, Result result) {
-		String name = function.getName();
+		Identifier name = function.getName();
 		if (name == null)
 			return null;
 		
 		StringBuilder b = new StringBuilder("_Z");
 		
 		Element parent = function.getParentElement();
-		List<String> ns;
+		List<Object> ns;
 		boolean isMethod = parent instanceof Struct;
 		if (isMethod) {
-			ns = new ArrayList<String>(parent.getNameSpace());
-			ns.add(((Struct)parent).getTag());
+			ns = new ArrayList<Object>(parent.getNameSpace());
+			ns.addAll(((Struct)parent).getTag().getSimpleIdentifiers());
 		} else {
-			ns = new ArrayList<String>(function.getNameSpace());
+			ns = new ArrayList<Object>(function.getNameSpace());
 		}
 		
 		if (ns.isEmpty()) {
-			lenghtedName(name, b);
+			lenghtedName(name.toString(), b);
 		} else {
 			b.append("N");
-			for (String n : ns)
-				lenghtedName(n, b);
-			lenghtedName(name, b);
+			for (Object n : ns)
+				lenghtedName(n.toString(), b);
+			lenghtedName(name.toString(), b);
 			if (isMethod)
 				b.append("E");
 		}

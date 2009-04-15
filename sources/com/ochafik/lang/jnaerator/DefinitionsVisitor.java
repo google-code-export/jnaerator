@@ -42,6 +42,7 @@ import com.ochafik.math.graph.BinaryEdgeSet;
 import com.ochafik.math.graph.impl.FastSparseBinaryEdgeSet;
 import com.ochafik.util.SortedIntArray;
 
+import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 public class DefinitionsVisitor extends Scanner {
 	BinaryEdgeSet elementsToChildren = new FastSparseBinaryEdgeSet(true);
 	TIntObjectHashMap<Element> elementsById = new TIntObjectHashMap<Element>();
@@ -156,7 +157,7 @@ public class DefinitionsVisitor extends Scanner {
 	public void visitFunction(Function function) {
 		Environment env = getEnvironment(function.getParentElement());
 		if (env != null && function.getName() != null)
-			env.set(function.getName(), function, Environment.Space.Functions);
+			env.set(function.getName().toString(), function, Environment.Space.Functions);
 		
 		super.visitFunction(function);
 	}
@@ -185,7 +186,7 @@ public class DefinitionsVisitor extends Scanner {
 		Environment env = getEnvironment(e.getParentElement());
 		if (env != null) {
 			if (e.getTag() != null)
-				env.set(e.getTag(), e, Environment.Space.Enums);
+				env.set(e.getTag().toString(), e, Environment.Space.Enums);
 		
 			for (EnumItem ei : e.getItems())
 				env.set(ei.getName(), ei, Environment.Space.Constants);
