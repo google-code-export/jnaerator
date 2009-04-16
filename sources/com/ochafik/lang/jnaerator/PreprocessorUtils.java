@@ -90,6 +90,7 @@ public class PreprocessorUtils {
 				super.pop_source();
 			}
 		};
+		preprocessor.setProperStringTokensInLinePragmas(true);
 		//preprocessor.addFeatures(EnumSet.allOf(Feature.class));
 		preprocessor.addFeature(Feature.KEEPCOMMENTS);
 		preprocessor.addFeature(Feature.DIGRAPHS);
