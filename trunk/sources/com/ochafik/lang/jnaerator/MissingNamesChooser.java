@@ -63,7 +63,7 @@ public class MissingNamesChooser extends Scanner {
 		if (tr instanceof TypeRef.SimpleTypeRef) {
 			Identifier name = ((TypeRef.SimpleTypeRef)tr).getName();
 			String out;
-			if (name == null) {
+			if (isNull(name)) {
 				out = StringUtils.implode(tr.getModifiers(), "");
 				out = out.length() > 0 ? out.substring(0, 1) : out;
 			} else
@@ -118,6 +118,10 @@ public class MissingNamesChooser extends Scanner {
 		super.visitFunction(function);
 	}
 	
+	static boolean isNull(Identifier i) {
+		return i == null ||  i.getLastSimpleIdentifier().getName() == null;
+	}
+	
 	@Override
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
 		if (chooseNameIfMissing(functionSignature))
@@ -127,7 +131,7 @@ public class MissingNamesChooser extends Scanner {
 		
 		DeclarationsHolder holder = functionSignature.findParentOfType(DeclarationsHolder.class);
 		Function f = functionSignature.getFunction();
-		if (holder != null && f != null && f.getName() != null) {
+		if (holder != null && f != null && !isNull(f.getName())) {
 			StoredDeclarations d = as(functionSignature.getParentElement(), StoredDeclarations.class);
 			if (d instanceof TypeDef)
 				return;
@@ -180,7 +184,7 @@ public class MissingNamesChooser extends Scanner {
 	 */
 	private boolean chooseNameIfMissing(FunctionSignature functionSignature) {
 		Function function = functionSignature.getFunction();
-		if (function != null && function.getName() == null) {// || parent instanceof VariablesDeclaration) {
+		if (function != null && isNull(function.getName())) {// || parent instanceof VariablesDeclaration) {
 			String name = null;
 			String exact = JNAeratorUtils.getExactTypeDefName(functionSignature);
 			if (exact != null)
@@ -209,13 +213,13 @@ public class MissingNamesChooser extends Scanner {
 //			return true;
 //		}
 		//String betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
-		if (taggedTypeRef.getTag() == null) {
+		if (isNull(taggedTypeRef.getTag())) {
 			Identifier betterTag = result.declarationsConverter.getActualTaggedTypeName(taggedTypeRef);
-			if (betterTag == null) {
+			if (isNull(betterTag)) {
 				List<String> ownerNames = JNAeratorUtils.guessOwnerName(taggedTypeRef);//.getParentElement() instanceof StructTypeRef ? struct.getParentElement() : struct);
 				betterTag = ident(chooseName(taggedTypeRef, ownerNames));
 			}
-			if (betterTag != null) {
+			if (!isNull(betterTag)) {
 				taggedTypeRef.setTag(betterTag);
 				taggedTypeRef.accept(this);
 				return true;
