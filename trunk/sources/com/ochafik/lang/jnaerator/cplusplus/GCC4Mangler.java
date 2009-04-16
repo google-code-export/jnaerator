@@ -39,13 +39,13 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 public class GCC4Mangler implements CPlusPlusMangler {
 	
 	protected void mangleType(TypeRef tr, StringBuilder b, Result result) {
+		if (Modifier.Const.isContainedBy(tr.getModifiers()))
+			b.append("K");
 		if (tr instanceof TypeRef.TargettedTypeRef) {
 			if (tr instanceof TypeRef.Pointer && ((TypeRef.Pointer)tr).getPointerStyle() == PointerStyle.Reference)
 				b.append("R");
 			else
 				b.append("P");
-			if (Modifier.Const.isContainedBy(tr.getModifiers()))
-				b.append("K");
 			mangleType(((TypeRef.TargettedTypeRef)tr).getTarget(), b, result);
 		} else if (tr instanceof TypeRef.SimpleTypeRef) {
 			SimpleTypeRef str = (SimpleTypeRef) tr;

@@ -111,9 +111,9 @@ public class Preprocessor implements Closeable {
 	private Set<Warning>			warnings;
 	private VirtualFileSystem		filesystem;
 	private PreprocessorListener	listener;
-	
 	//ochafik
-	private boolean 				inIncludeNext = false; // whether current include should ignore current file's directory in include paths
+	private boolean				properStringTokensInLinePragmas = false; 
+	private boolean 			inIncludeNext = false; // whether current include should ignore current file's directory in include paths
 	
 	public Preprocessor() {
 		this.inputs = new ArrayList<Source>();
@@ -152,6 +152,10 @@ public class Preprocessor implements Closeable {
 	 */
 	public void setFileSystem(VirtualFileSystem filesystem) {
 		this.filesystem = filesystem;
+	}
+	
+	public void setProperStringTokensInLinePragmas(boolean properStringTokensInLinePragmas) {
+		this.properStringTokensInLinePragmas = properStringTokensInLinePragmas;
 	}
 
 	/**
@@ -524,7 +528,7 @@ public class Preprocessor implements Closeable {
 	 * their own NL. */
 	private Token line_token(int line, String name, String extra) {
 		return new Token(P_LINE, line, 0,
-			"\n#line " + line + " \"" + name + "\"" + extra + "\n",
+			"\n#line " + line + " \"" + (properStringTokensInLinePragmas ? name.replace("\\", "\\\\") : name) + "\"" + extra + "\n",
 			null
 				);
 	}
