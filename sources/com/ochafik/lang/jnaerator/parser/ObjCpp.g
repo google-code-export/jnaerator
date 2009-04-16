@@ -379,6 +379,8 @@ scope IsTypeDef;
 					(
 						subD=declaration { 
 							for (Declaration d : $subD.declarations) {
+								if (d == null)
+									continue;
 								d.addNameSpace($ns.text);
 								$declarations.add(d);
 							}
@@ -989,11 +991,13 @@ declarator  returns [Declarator declarator]
 		(
 			'=' 
 			dv=topLevelExpr {
-				$declarator.setDefaultValue($dv.expr);
+				if ($declarator != null)
+					$declarator.setDefaultValue($dv.expr);
 			}
 		)?
 		{
-			$declarator.setModifiers($modifiers.modifiers);
+			if ($declarator != null)
+				$declarator.setModifiers($modifiers.modifiers);
 		}
 	;
 
@@ -1060,9 +1064,8 @@ directDeclarator  returns [Declarator declarator]
 			} | 
 			'(' inner=declarator ')' {
 				$declarator = $inner.declarator;
-				if ($declarator != null) {
+				if ($declarator != null)
 					$declarator.setParenthesized(true);
-				}
 			} 
 		)
 		(

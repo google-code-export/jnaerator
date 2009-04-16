@@ -393,6 +393,8 @@ public class TypeConversion {
 	JavaPrim getPrimitive(TypeRef valueType, Identifier libraryClassName) {
 		
 		valueType = resolveTypeDef(valueType, libraryClassName, true);
+		if (valueType == null)
+			return null;
 		Identifier name = null;
 		List<Modifier> mods = valueType.getModifiers();
 		int longCount = Modifier.Long.countIn(mods);
@@ -460,16 +462,16 @@ public class TypeConversion {
 //		return SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name;
 //	}
 	public Identifier libMember(SimpleIdentifier libClass, Identifier libraryClassName, Identifier member) {
-		return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
+		//return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
+		return member; //TODODODODODODODODOoOOOOO
 	}
 	public Identifier findRef(Identifier name, Element e, Identifier libraryClassName) {
 		if (e == null || !name.isPlain())
 			return null;
-		Identifier.SimpleIdentifier sname = (SimpleIdentifier) name;
 		String library = result.getLibrary(e);
 		if (library == null)
 			return null;
-		return libMember(result.getLibraryClassSimpleName(library), libraryClassName, sname);
+		return libMember(result.getLibraryClassSimpleName(library), libraryClassName, name);
 	}
 	public SimpleTypeRef findEnum(Identifier name, Identifier libraryClassName) {
 		Enum s = result.enumsByName.get(name);
@@ -581,7 +583,7 @@ public class TypeConversion {
 			return //result.result.getObjCClass(parentStruct.getName()).
 				typeRef(ident(structName, inferCallBackName(s, true)));
 		}
-		return typeRef(ident(ident(libraryClassName), result.getLibraryClassSimpleName(library), inferCallBackName(s, true)));
+		return typeRef(libMember(result.getLibraryClassSimpleName(library), libraryClassName, inferCallBackName(s, true)));
 	}
 	
 	public TypeRef findCallbackRef(FunctionSignature s, Identifier callerLibraryClass) {

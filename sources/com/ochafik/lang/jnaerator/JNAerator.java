@@ -248,9 +248,10 @@ public class JNAerator {
 					auto = false;
 				else if (arg.equals("-package"))
 					config.packageName = args.get(++iArg);
-				else if (arg.equals("-jar"))
-					outputJar = new File(args.get(++iArg));
-				else if (arg.equals("-test")) {
+				else if (arg.equals("-jar")) {
+					String j = args.get(++iArg);
+					outputJar = j.length() > 0 ? new File(j) : null;
+				} else if (arg.equals("-test")) {
 					try {
 						JUnitCore.main(JNAeratorTests.class.getName());
 						System.exit(0);
