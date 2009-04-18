@@ -325,11 +325,11 @@ public class TypeConversion {
 						}
 						if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
 							simpleTypeRef.replaceBy(tr);
-							//if (depth < 10) {
+							if (depth < 10) {
 								tr.accept(this);
-							/*} else {
+							} else {
 								System.err.println("Infinite loop in type conversion ? " + tr);
-							}*/
+							}
 						}
 						return;
 					}

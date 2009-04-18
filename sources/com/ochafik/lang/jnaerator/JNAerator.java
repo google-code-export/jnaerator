@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -224,6 +225,7 @@ public class JNAerator {
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 			boolean auto = true;
 			File outputJar = null;
+			String arch = null;
 			String currentLibrary = null;
 			for (int iArg = 0, len = args.size(); iArg < len; iArg++) {
 				String arg = args.get(iArg);
@@ -290,6 +292,10 @@ public class JNAerator {
 					System.exit(0);
 				} else if (arg.endsWith(".framework"))
 					frameworks.add(arg);
+				else if (arg.equals("-arch"))
+					arch = args.get(++iArg);
+				else if (isLibraryFile(arg))
+					config.addLibraryFile(new File(arg), arch);
 				else {
 					String lib = currentLibrary;
 					File f = new File(arg);
@@ -331,6 +337,12 @@ public class JNAerator {
 			e.printStackTrace();
 		}
 	}
+	private static boolean isLibraryFile(String arg) {
+		arg = arg.toLowerCase();
+		if (!new File(arg).exists())
+			return false;
+		return arg.endsWith(".dll") || arg.endsWith(".dylib") || arg.endsWith(".so") || arg.endsWith(".jnilib");
+	}
 	private static void createJar(JNAerator jnaerator, File outputJar, File cacheDir) throws IOException, LexerException, RecognitionException, SyntaxException {
 		SourceFiles sourceFiles = jnaerator.parse();
 		
@@ -370,6 +382,14 @@ public class JNAerator {
 				System.out.println("File " + libraryFileName + " not found");
 				
 			}
+		}
+		for (Map.Entry<String, List<File>> e : jnaerator.config.libraryFilesByArch.entrySet()) {
+			String arch = e.getKey();
+			for (File libraryFile : e.getValue())
+				additionalFiles.add(new Pair<String, File>(
+					(arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
+					libraryFile
+				));
 		}
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
 	}

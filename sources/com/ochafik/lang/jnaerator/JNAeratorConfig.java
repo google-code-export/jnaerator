@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -79,7 +81,16 @@ public class JNAeratorConfig {
 	
 	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
 	
+	public Map<String, List<File>> libraryFilesByArch = new HashMap<String, List<File>>();
+	
 	public Map<File, String> libraryByFile = new HashMap<File, String>();
+	public void addLibraryFile(File file, String arch) {
+		List<File> others = libraryFilesByArch.get(arch);
+		if (others == null)
+			libraryFilesByArch.put(arch, others = new ArrayList<File>());
+		
+		others.add(file);
+	}
 	public void addFile(File file, String library) throws IOException {
 		if (file.isFile()) {
 			if (fileFilter == null || fileFilter.accept(file)) {
