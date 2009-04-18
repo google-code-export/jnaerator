@@ -20,8 +20,6 @@ package com.ochafik.lang.jnaerator;
 
 import java.io.File;
 
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
@@ -51,11 +48,8 @@ import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
-import com.ochafik.lang.compiler.MemoryFileObject;
 import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.jnaerator.parser.Arg;
-import com.ochafik.lang.jnaerator.parser.Declaration;
-import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -65,14 +59,12 @@ import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.ModifiableElement;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
-import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
-import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
@@ -341,7 +333,12 @@ public class JNAerator {
 		arg = arg.toLowerCase();
 		if (!new File(arg).exists())
 			return false;
-		return arg.endsWith(".dll") || arg.endsWith(".dylib") || arg.endsWith(".so") || arg.endsWith(".jnilib");
+		return 
+			arg.endsWith(".dll") || 
+			arg.endsWith(".pdb") || 
+			arg.endsWith(".dylib") || 
+			arg.endsWith(".so") || 
+			arg.endsWith(".jnilib");
 	}
 	private static void createJar(JNAerator jnaerator, File outputJar, File cacheDir) throws IOException, LexerException, RecognitionException, SyntaxException {
 		SourceFiles sourceFiles = jnaerator.parse();

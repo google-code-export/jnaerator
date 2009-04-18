@@ -216,7 +216,7 @@ public abstract class Element {
 			" * " + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br>\n" + indent + " * ") + "\n" + indent : 
 			"\t" + StringUtils.implode(nakedComments, "\n").replaceAll("\n", "<br>" + LINE_SEPARATOR + indent + "\t");
 		
-		return "/**" + LINE_SEPARATOR + indent + content + " */" + suffix;
+		return "/**" + LINE_SEPARATOR + indent + content.replace("\\u", "\\\\u") + " */" + suffix;
 	}
 	static final boolean //allowSingleLineDoc = true, 
 		beginEachCommentLineWithStar = true;

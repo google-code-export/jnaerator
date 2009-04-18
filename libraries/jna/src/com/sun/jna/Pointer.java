@@ -52,7 +52,7 @@ public class Pointer {
     
     /** Pointer value of the real native pointer. Use long to be 64-bit safe. 
      */
-    protected long peer;
+    long peer;
 
     /** Derived class must assign peer pointer value. */
     Pointer() { }
@@ -60,6 +60,11 @@ public class Pointer {
     /** Create from native pointer. */
     Pointer(long peer) {
         this.peer = peer;
+    }
+
+    /** Copy peer from another pointer. */
+    public Pointer(Pointer pointer) {
+        this.peer = pointer.peer;
     }
 
     public Pointer share(long offset) {

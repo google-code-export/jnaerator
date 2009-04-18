@@ -179,6 +179,9 @@ public class Scanner implements Visitor {
 		for (Declaration m : copy(struct.getDeclarations()))
 			if (m != null)
 				m.accept(this);
+		for (Identifier i : struct.getProtocols())
+			if (i != null)
+				i.accept(this);
 	}
 
 	protected void visitCStruct(Struct struct) {
@@ -225,7 +228,7 @@ public class Scanner implements Visitor {
 	}
 
 	public void visitPrimitive(Primitive primitive) {
-		visitTypeRef(primitive);
+		visitSimpleTypeRef(primitive);
 	}
 
 	public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
@@ -259,6 +262,8 @@ public class Scanner implements Visitor {
 
 	public void visitVariableRef(VariableRef variableRef) {
 		visitExpression(variableRef);
+		if (variableRef.getName() != null)
+			variableRef.getName().accept(this);
 	}
 
 	public void visitBinaryOp(BinaryOp binaryOp) {
@@ -294,6 +299,9 @@ public class Scanner implements Visitor {
 
 		if (memberRef.getTarget() != null)
 			memberRef.getTarget().accept(this);
+		if (memberRef.getName() != null)
+			memberRef.getName().accept(this);
+		
 	}
 
 	public void visitCast(Cast cast) {
@@ -413,6 +421,11 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
 		visitTypeRef(taggedTypeRef);
+		if (taggedTypeRef.getTag() != null)
+			taggedTypeRef.getTag().accept(this);
+		if (taggedTypeRef.getOriginalTag() != null)
+			taggedTypeRef.getOriginalTag().accept(this);
+		
 	}
 
 	@Override
