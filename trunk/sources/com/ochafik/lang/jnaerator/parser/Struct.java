@@ -47,12 +47,18 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		Element e = super.getNextChild(child);
 		if (e != null)
 			return e;
+		e = getNextSibling(protocols, child);
+		if (e != null)
+			return e;
 		return getNextSibling(declarations, child);
 	}
 
 	@Override
 	public Element getPreviousChild(Element child) {
 		Element e = super.getPreviousChild(child);
+		if (e != null)
+			return e;
+		e = getPreviousSibling(protocols, child);
 		if (e != null)
 			return e;
 		return getPreviousSibling(declarations, child);
@@ -62,7 +68,10 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 	public boolean replaceChild(Element child, Element by) {
 		if (super.replaceChild(child, by))
 			return true;
-
+		
+		if (replaceChild(protocols, Identifier.class, this, child, by))
+			return true;
+		
 		return replaceChild(declarations, Declaration.class, this, child, by);
 	}
 

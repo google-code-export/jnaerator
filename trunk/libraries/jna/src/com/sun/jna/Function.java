@@ -317,6 +317,13 @@ public class Function extends Pointer {
         }
         else if (Pointer.class.isAssignableFrom(returnType)) {
             result = invokePointer(callingConvention, args);
+		  if (!Pointer.class.equals(returnType)) {
+			  try {
+				  result = returnType.getConstructor(new Class[] {Pointer.class}).newInstance(new Object[] {result});
+			  } catch (Exception ex) {
+				  throw new RuntimeException("Failed to instantiate pointer of type " + returnType.getName() + ". It must have a public constructor with a " + Pointer.class.getName() + " argument.", ex);
+			  }
+		  }
         }
         else if (Structure.class.isAssignableFrom(returnType)) {
             if (Structure.ByValue.class.isAssignableFrom(returnType)) {

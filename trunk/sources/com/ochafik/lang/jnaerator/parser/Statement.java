@@ -227,7 +227,7 @@ public abstract class Statement extends Element {
 		}
 		public Block() {}
 		public Block(Statement... statements) {
-			setStatements(statements);
+			addStatements(statements);
 		}
 		public Block(List<Statement> statements) {
 			setStatements(statements);
@@ -241,7 +241,7 @@ public abstract class Statement extends Element {
 		public void setStatements(List<Statement> statements) {
 			changeValue(this, this.statements, statements);
 		}
-		public void setStatements(Statement... statements) {
+		public void addStatements(Statement... statements) {
 			setStatements(Arrays.asList(statements));
 		}
 		public List<Statement> getStatements() {

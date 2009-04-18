@@ -144,8 +144,8 @@ public abstract class Structure {
         setAlignType(alignment);
         setTypeMapper(mapper);
         if (p != null) {
-            useMemory(p);
-        }
+        useMemory(p);
+    }
         else {
             allocateMemory(CALCULATE_SIZE);
         }
@@ -216,8 +216,8 @@ public abstract class Structure {
         // Invoking size() here is important when this method is invoked
         // from the ctor, to ensure fields are properly scanned and allocated
         try {
-            this.memory = m.share(offset, size());
-        }
+        this.memory = m.share(offset, size());
+    }
         catch(IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Structure exceeds provided memory bounds");
         }
@@ -449,7 +449,7 @@ public abstract class Structure {
         else if (nativeType == double.class || nativeType == Double.class) {
             result = new Double(memory.getDouble(offset));
         }
-        else if (nativeType == Pointer.class) {
+        else if (Pointer.class.isAssignableFrom(nativeType)) {
             Pointer p = memory.getPointer(offset);
             if (p != null) {
                 Pointer oldp = currentValue instanceof Pointer
@@ -458,6 +458,12 @@ public abstract class Structure {
                     result = p;
                 else
                     result = oldp;
+	    
+		        try {
+				    result = nativeType.getConstructor(new Class[] {Pointer.class}).newInstance(new Object[] {result});
+				} catch (Exception ex) {
+				  throw new RuntimeException("Failed to instantiate pointer of type " + nativeType.getName() + ". It must have a public constructor with a " + Pointer.class.getName() + " argument.", ex);
+				}
             }
         }
         else if (nativeType == String.class) {
@@ -706,7 +712,7 @@ public abstract class Structure {
         else if (nativeType == double.class || nativeType == Double.class) {
             memory.setDouble(offset, value == null ? 0.0 : ((Double)value).doubleValue());
         }
-        else if (nativeType == Pointer.class) {
+        else if (Pointer.class.isAssignableFrom(nativeType)) {
             memory.setPointer(offset, (Pointer)value);
         }
         else if (nativeType == String.class) {
@@ -1052,7 +1058,7 @@ public abstract class Structure {
             || Float.class == type || Double.class == type) {
             alignment = size;
         }
-        else if (Pointer.class == type
+        else if (Pointer.class.isAssignableFrom(type)
                  || Buffer.class.isAssignableFrom(type)
                  || Callback.class.isAssignableFrom(type)
                  || WString.class == type

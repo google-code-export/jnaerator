@@ -223,8 +223,8 @@ public abstract class Expression extends Element {
 		public MemberRef() {
 		}
 
-		public void setName(Identifier name2) {
-			this.name = name2;
+		public void setName(Identifier name) {
+			this.name = changeValue(this, this.name, name);
 		}
 		public Identifier getName() {
 			return name;
@@ -253,6 +253,8 @@ public abstract class Expression extends Element {
 		public boolean replaceChild(Element child, Element by) {
 			if (child == getTarget())
 				setTarget((Expression)by);
+			if (child == getName())
+				setName((Identifier)by);
 			return false;
 		}
 		
@@ -502,7 +504,6 @@ public abstract class Expression extends Element {
 				setFunction((Expression) by);
 				return true;
 			}
-			
 			//return replaceChild(arguments, Expression.class, this, child, by);
 			int i = indexOf(child, arguments);
 			if (i >= 0) {
@@ -522,7 +523,7 @@ public abstract class Expression extends Element {
 				return true;
 			}
 			
-			return false;
+			return super.replaceChild(child, by);
 		}
 		
 		@Override
@@ -636,7 +637,7 @@ public abstract class Expression extends Element {
 		}
 		
 		public void setName(Identifier name) {
-			this.name = name;
+			this.name = changeValue(this, this.name, name);
 		}
 
 		@Override
@@ -656,6 +657,10 @@ public abstract class Expression extends Element {
 
 		@Override
 		public boolean replaceChild(Element child, Element by) {
+			if (child == getName()) {
+				setName((Identifier) by);
+				return true;
+			}
 			return false;
 		}
 

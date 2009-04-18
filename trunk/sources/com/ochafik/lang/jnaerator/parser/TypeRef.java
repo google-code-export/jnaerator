@@ -40,6 +40,18 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			if (originalTag == null)
 				setOriginalTag(tag);
 		}
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getTag()) {
+				setTag((Identifier)by);
+				return true;
+			}
+			if (child == getOriginalTag()) {
+				setOriginalTag((Identifier)by);
+				return true;
+			}
+			return super.replaceChild(child, by);
+		}
 		public void setOriginalTag(Identifier originalTag) {
 			this.originalTag = changeValue(this, this.originalTag, originalTag);
 		}
@@ -85,12 +97,19 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			return name;
 		}
 		public void setName(Identifier name) {
-			this.name = name;
+			this.name = changeValue(this, this.name, name);
 		}
 		
 		@Override
 		public String toString(CharSequence indent) {
 			return formatComments(indent, true, false, false) + getModifiersStringPrefix() + name;
+		}
+		
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getName())
+				setName((Identifier)by);
+			return super.replaceChild(child, by);
 		}
 		
 		@Override
