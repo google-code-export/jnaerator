@@ -528,7 +528,7 @@ public class Preprocessor implements Closeable {
 	 * their own NL. */
 	private Token line_token(int line, String name, String extra) {
 		return new Token(P_LINE, line, 0,
-			"\n#line " + line + " \"" + (properStringTokensInLinePragmas ? name.replace("\\", "\\\\") : name) + "\"" + extra + "\n",
+			"\n#line " + line + " \"" + (properStringTokensInLinePragmas ? String.valueOf(name).replace("\\", "\\\\") : name) + "\"" + extra + "\n",
 			null
 				);
 	}
