@@ -124,31 +124,45 @@ public abstract class Structure {
     private boolean autoWrite = true;
 
     protected Structure() {
-        this((Pointer)null);
+        this(CALCULATE_SIZE);
+    }
+
+    protected Structure(int size) {
+        this(size, ALIGN_DEFAULT);
+    }
+
+    protected Structure(int size, int alignment) {
+        this(size, alignment, null);
     }
 
     protected Structure(TypeMapper mapper) {
-        this((Pointer)null, ALIGN_DEFAULT, mapper);
+        this(CALCULATE_SIZE, ALIGN_DEFAULT, mapper);
     }
 
-    /** Create a structure cast onto pre-allocated memory. */
+    /** Create a structure cast onto native memory. */
     protected Structure(Pointer p) {
-        this(p, ALIGN_DEFAULT);
+        this(p, CALCULATE_SIZE);
     }
 
-    protected Structure(Pointer p, int alignment) {
-        this(p, alignment, null);
+    protected Structure(Pointer p, int size) {
+        this(p, size, ALIGN_DEFAULT);
     }
 
-    protected Structure(Pointer p, int alignment, TypeMapper mapper) {
+    protected Structure(Pointer p, int size, int alignment) {
+        this(p, size, alignment, null);
+    }
+
+    protected Structure(Pointer p, int size, int alignment, TypeMapper mapper) {
         setAlignType(alignment);
         setTypeMapper(mapper);
-        if (p != null) {
         useMemory(p);
+        allocateMemory(size);
     }
-        else {
-            allocateMemory(CALCULATE_SIZE);
-        }
+
+    protected Structure(int size, int alignment, TypeMapper mapper) {
+        setAlignType(alignment);
+        setTypeMapper(mapper);
+        allocateMemory(size);
     }
 
     /** Return all fields in this structure (ordered). */
@@ -213,14 +227,7 @@ public abstract class Structure {
      * memory.
      */
     protected void useMemory(Pointer m, int offset) {
-        // Invoking size() here is important when this method is invoked
-        // from the ctor, to ensure fields are properly scanned and allocated
-        try {
         this.memory = m.share(offset, size());
-    }
-        catch(IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("Structure exceeds provided memory bounds");
-        }
     }
 
     protected void ensureAllocated() {
@@ -252,11 +259,11 @@ public abstract class Structure {
         // May need to defer size calculation if derived class not fully
         // initialized
         if (size != CALCULATE_SIZE) {
-            if (this.memory == null 
-                || this.memory instanceof AutoAllocated) {
-                this.memory = new AutoAllocated(size);
+            if (memory == null 
+                || memory instanceof AutoAllocated) {
+                memory = new AutoAllocated(size);
                 // Always clear new structure memory
-                this.memory.clear(size);
+                memory.clear(size);
             }
             this.size = size;
         }
@@ -459,11 +466,11 @@ public abstract class Structure {
                 else
                     result = oldp;
 	    
-		        try {
-				    result = nativeType.getConstructor(new Class[] {Pointer.class}).newInstance(new Object[] {result});
-				} catch (Exception ex) {
-				  throw new RuntimeException("Failed to instantiate pointer of type " + nativeType.getName() + ". It must have a public constructor with a " + Pointer.class.getName() + " argument.", ex);
-				}
+	        try {
+		    result = nativeType.getConstructor(new Class[] {Pointer.class}).newInstance(new Object[] {result});
+		} catch (Exception ex) {
+		  throw new RuntimeException("Failed to instantiate pointer of type " + nativeType.getName() + ". It must have a public constructor with a " + Pointer.class.getName() + " argument.", ex);
+		}
             }
         }
         else if (nativeType == String.class) {
