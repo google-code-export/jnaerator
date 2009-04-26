@@ -3,11 +3,11 @@
 
 = New features =
 
-  # *~* include libraries in generated JARs, w/ auto extract
+  # *OK* include libraries in generated JARs, w/ auto extract
   # allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
   # *OK* create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
   # make jnaeration features selectable from the GUI & CLI
-  # text / xml format for jnaerator config (w/ variables, so that users might contribute configs for well-known libraries)
+  # *OK* text / xml format for jnaerator config (w/ variables, so that users might contribute configs for well-known libraries)
   # include jna.jar & rococoa.jar in generated JARs (optional, otherwise link to them in classpath)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
@@ -31,4 +31,4 @@
   # OK fix the compiler's classpath in in JNAeratorStudio + Web Start
   # finalize VisualStudio parsing (replace $() variables)
   # fix the line-numbering in comments
-  # parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
+  # *OK* parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
