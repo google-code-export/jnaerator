@@ -740,43 +740,55 @@ public abstract class Structure {
         if (nativeType == boolean.class || nativeType == Boolean.class) {
 			byte v = (byte)(Boolean.TRUE.equals(value) ? -1 : 0);
 			v <<= bitOffset;
-			if (bits != 0)
-				v = (byte)((memory.getByte(offset) & ~((1 << bits) - 1)) | v);
-            memory.setByte(offset, v);
+			if (bits != 0) {
+				int mask = ((1 << bits) - 1) << bitOffset;
+				v = (byte)((memory.getInt(offset) & ~mask) | v & mask);
+			}
+			memory.setByte(offset, v);
         }
         else if (nativeType == byte.class || nativeType == Byte.class) {
             byte v = value == null ? 0 : ((Byte)value).byteValue();
 			v <<= bitOffset;
-			if (bits != 0)
-				v = (byte)((memory.getByte(offset) & ~((1 << bits) - 1)) | v);
+			if (bits != 0) {
+				int mask = ((1 << bits) - 1) << bitOffset;
+				v = (byte)((memory.getInt(offset) & ~mask) | v & mask);
+			}
 			memory.setByte(offset, v);
         }
         else if (nativeType == short.class || nativeType == Short.class) {
 			short v = value == null ? 0 : ((Short)value).shortValue();
 			v <<= bitOffset;
-			if (bits != 0)
-				v = (short)((memory.getShort(offset) & ~((1 << bits) - 1)) | v);
+			if (bits != 0) {
+				int mask = ((1 << bits) - 1) << bitOffset;
+				v = (short)((memory.getInt(offset) & ~mask) | v & mask);
+			}
 			memory.setShort(offset, v);
         }
         else if (nativeType == char.class || nativeType == Character.class) {
             char v = value == null ? 0 : ((Character)value).charValue();
 			v <<= bitOffset;
-			if (bits != 0)
-				v = (char)((memory.getChar(offset) & ~((1 << bits) - 1)) | v);
+			if (bits != 0) {
+				int mask = ((1 << bits) - 1) << bitOffset;
+				v = (char)((memory.getInt(offset) & ~mask) | v & mask);
+			}
 			memory.setChar(offset, v);
         }
         else if (nativeType == int.class || nativeType == Integer.class) {
             int v = value == null ? 0 : ((Integer)value).intValue();
 			v <<= bitOffset;
-			if (bits != 0)
-				v = (memory.getInt(offset) & ~((1 << bits) - 1)) | v;
+			if (bits != 0) {
+				int mask = ((1 << bits) - 1) << bitOffset;
+				v = (memory.getInt(offset) & ~mask) | v & mask;
+			}
 			memory.setInt(offset, v);
         }
         else if (nativeType == long.class || nativeType == Long.class) {
             long v = value == null ? 0 : ((Long)value).longValue();
 			v <<= bitOffset;
-			if (bits != 0)
-				v = (memory.getLong(offset) & ~((1 << bits) - 1)) | v;
+			if (bits != 0) {
+				long mask = (1 << bits) - 1;
+				v = (memory.getInt(offset) & ~mask) | v & mask;
+			}
 			memory.setLong(offset, v);
         }
         else if (nativeType == float.class || nativeType == Float.class) {
@@ -1070,10 +1082,10 @@ public abstract class Structure {
             }
 
 			Bits bits = field.getAnnotation(Bits.class);
-			if (bits == null || iField == 0)
+			if (bits == null || iField == 0) {
 				// Align fields as appropriate
 				structAlignment = Math.max(structAlignment, fieldAlignment);
-				if ((calculatedSize % fieldAlignment) != 0) {
+				if ((calculatedSize % fieldAlignment) != 0)
 					calculatedSize += fieldAlignment - (calculatedSize % fieldAlignment);
 			}
 			structField.offset = calculatedSize;
@@ -1082,9 +1094,9 @@ public abstract class Structure {
 				structField.bitOffset = cumulativeBitOffset;
 				int nBits = bits.value();
 				structField.bits = nBits;
-				//long mask = (1L << nBits) - 1;
+				structField.size = (nBits >>> 3) + ((nBits & 7) != 0 ? 1 : 0);
+                cumulativeBitOffset += nBits;
 				calculatedSize += cumulativeBitOffset >>> 3;
-				cumulativeBitOffset += nBits;
 				cumulativeBitOffset &= 7;
 			} else {
 				calculatedSize += structField.size;
@@ -1094,7 +1106,7 @@ public abstract class Structure {
             structFields.put(structField.name, structField);
         }
 		
-		calculatedSize += cumulativeBitOffset >>> 3;
+		calculatedSize += (cumulativeBitOffset >>> 3) + ((cumulativeBitOffset & 7) != 0 ? 1 : 0);
 		
         if (calculatedSize > 0) {
             int size = calculateAlignedSize(calculatedSize);
