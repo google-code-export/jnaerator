@@ -543,7 +543,7 @@ public class Function extends Pointer {
      *			Arguments to pass to the native function
      * @return	The value returned by the target native function
      */
-    private  native int invokeInt(int callingConvention, Object[] args);
+    native int invokeInt(int callingConvention, Object[] args);
 
     /**
      * Call the native function being represented by this object
@@ -553,7 +553,7 @@ public class Function extends Pointer {
      *			Arguments to pass to the native function
      * @return	The value returned by the target native function
      */
-    private native long invokeLong(int callingConvention, Object[] args);
+    native long invokeLong(int callingConvention, Object[] args);
 
     /**
      * Call the native function being represented by this object
@@ -573,7 +573,7 @@ public class Function extends Pointer {
      * @param	args
      *			Arguments to pass to the native function
      */
-    private native void invokeVoid(int callingConvention, Object[] args);
+    native void invokeVoid(int callingConvention, Object[] args);
 
     /**
      * Call the native function being represented by this object
@@ -583,7 +583,7 @@ public class Function extends Pointer {
      *			Arguments to pass to the native function
      * @return	The value returned by the target native function
      */
-    private native float invokeFloat(int callingConvention, Object[] args);
+    native float invokeFloat(int callingConvention, Object[] args);
 
     /**
      * Call the native function being represented by this object
@@ -593,7 +593,7 @@ public class Function extends Pointer {
      *			Arguments to pass to the native function
      * @return	The value returned by the target native function
      */
-    private native double invokeDouble(int callingConvention, Object[] args);
+    native double invokeDouble(int callingConvention, Object[] args);
 
     /**
      * Call the native function being represented by this object
@@ -605,7 +605,7 @@ public class Function extends Pointer {
      * if false, <code>char</code> is assumed
      * @return	The value returned by the target native function, as a String
      */
-    private String invokeString(int callingConvention, Object[] args, boolean wide) {
+    String invokeString(int callingConvention, Object[] args, boolean wide) {
         Pointer ptr = invokePointer(callingConvention, args);
         String s = null;
         if (ptr != null) {
@@ -625,7 +625,7 @@ public class Function extends Pointer {
      *			Arguments to pass to the native function
      * @return	The native pointer returned by the target native function
      */
-    private native Pointer invokePointer(int callingConvention, Object[] args);
+    native Pointer invokePointer(int callingConvention, Object[] args);
     
     /**
      * Call the native function being represented by this object
@@ -636,7 +636,7 @@ public class Function extends Pointer {
      * @param   result Pre-allocated structure to hold the result
      * @return  The passed-in struct argument
      */
-    private native Structure invokeStructure(int callingConvention, Object[] args,
+    native Structure invokeStructure(int callingConvention, Object[] args,
                                              Structure result);
 
     /** Provide a human-readable representation of this object. */
