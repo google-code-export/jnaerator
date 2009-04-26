@@ -61,7 +61,7 @@ public class GlobalsGenerator {
 //		}
 //	}
 	
-	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName) throws UnsupportedConversionException {
+	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName, String callerLibrary) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
 			Identifier name = result.typeConverter.getValidJavaArgumentName(ident(d.resolveName()));
 			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
@@ -137,11 +137,17 @@ public class GlobalsGenerator {
 			Expression ptrExpr = methodCall(
 				cast(
 					typeRef(NativeLibrary.class),
-					memberRef(
-						expr(typeRef(callerLibraryName)), 
-						MemberRefStyle.Dot, 
-						"INSTANCE"
-					)
+					result.config.entryName == null ?
+						memberRef(
+							expr(typeRef(callerLibraryName)), 
+							MemberRefStyle.Dot, 
+							"INSTANCE"
+						) :
+						memberRef(
+							expr(typeRef(result.config.entryName.toLowerCase() + "." + result.config.entryName)), 
+							MemberRefStyle.Dot, 
+							callerLibrary
+						)	
 				).setParenthesis(true),
 				MemberRefStyle.Dot,
 				"getGlobalVariableAddress",
@@ -172,13 +178,13 @@ public class GlobalsGenerator {
 		}
 	}
 
-	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, Identifier libraryNameExpression) {		
+	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, Identifier libraryNameExpression, String library) {		
 		if (list == null)
 			return;
 		
 		for (VariablesDeclaration v : list) {
 			try {
-				convertGlobals(v, signatures, out, libraryNameExpression);
+				convertGlobals(v, signatures, out, libraryNameExpression, library);
 			} catch (UnsupportedConversionException ex) {
 				out.addDeclaration(result.declarationsConverter.skipDeclaration(v, ex.toString()));
 			}
