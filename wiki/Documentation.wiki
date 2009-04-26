@@ -161,6 +161,26 @@ public static class foo_callback_arg1_union extends com.sun.jna.Union {
 }
 }}}
 
+== Bit Fields
+
+{{{
+// Stored on 1 byte !
+struct S {
+	unsigned likes_jnaerator : 1;
+	unsigned int times_tried_it : 7; // stored on 7 bits
+};
+}}}
+becomes :
+{{{
+/** Stored on 1 byte ! */
+public static class S extends com.sun.jna.Structure {
+	@com.sun.jna.Bits(1)
+	public int likes_jnaerator;
+	@com.sun.jna.Bits(7)
+	public int times_tried_it;
+}
+}}}
+
 = Anonymous types =
 
 In C/C++/Objective-C, it is possible to make use of anonymous types, such as in the following code :
