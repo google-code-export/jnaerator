@@ -37,8 +37,6 @@ import com.ochafik.util.string.StringUtils;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
-
 public class ObjCppToJavaScanner extends Scanner {
 	DefinitionsVisitor originalDefinitions = new DefinitionsVisitor();
 	

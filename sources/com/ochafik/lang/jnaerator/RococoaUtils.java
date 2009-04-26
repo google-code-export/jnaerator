@@ -31,8 +31,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.util.string.StringUtils;
 
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
-
 public class RococoaUtils {
 	static TypeRef ROCOCOA_ID_TYPEREF = new TypeRef.SimpleTypeRef("id");
 

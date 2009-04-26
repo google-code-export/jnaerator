@@ -41,8 +41,6 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.math.graph.BinaryEdgeSet;
 import com.ochafik.math.graph.impl.FastSparseBinaryEdgeSet;
 import com.ochafik.util.SortedIntArray;
-
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 public class DefinitionsVisitor extends Scanner {
 	BinaryEdgeSet elementsToChildren = new FastSparseBinaryEdgeSet(true);
 	TIntObjectHashMap<Element> elementsById = new TIntObjectHashMap<Element>();

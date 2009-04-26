@@ -20,8 +20,6 @@ package com.ochafik.lang.jnaerator;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.Set;
-
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
@@ -41,8 +39,6 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
-
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 public class GlobalsGenerator {
 	public GlobalsGenerator(Result result) {
 		this.result = result;

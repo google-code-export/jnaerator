@@ -29,6 +29,7 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 	}
 	public abstract boolean isPlain();
 	public abstract SimpleIdentifier resolveLastSimpleIdentifier();
+	public abstract List<SimpleIdentifier> resolveSimpleIdentifiers();
 	
 	public static class SimpleIdentifier extends Identifier {
 		private String name;
@@ -88,6 +89,10 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		@Override
 		public SimpleIdentifier resolveLastSimpleIdentifier() {
 			return this;
+		}
+		@Override
+		public List<SimpleIdentifier> resolveSimpleIdentifiers() {
+			return Arrays.asList(this);
 		}
 	}
 	public static class QualifiedIdentifier extends Identifier {
@@ -158,6 +163,10 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		@Override
 		public SimpleIdentifier resolveLastSimpleIdentifier() {
 			return identifiers.isEmpty() ? null : identifiers.get(identifiers.size() - 1);
+		}
+		@Override
+		public List<SimpleIdentifier> resolveSimpleIdentifiers() {
+			return getIdentifiers();
 		}
 	}
 
