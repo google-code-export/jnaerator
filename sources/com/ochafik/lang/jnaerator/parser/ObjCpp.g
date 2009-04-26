@@ -536,8 +536,7 @@ objCClassDef returns [Struct struct]
 				'@protected' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Protected); } |
 				(
 					(
-						fv=varDecl ( ':' bits=DECIMAL_NUMBER )? ';' { 
-							//if ($bit.text != null) $fv.decl.setBits(Integer.parseInt($bits.text));
+						fv=varDecl ';' {
 							$struct.addDeclaration($fv.decl);
 						} |
 						functionPointerVarDecl { 
@@ -630,6 +629,11 @@ structBody returns [Struct struct]
 				) ':' |
 				declaration {
 					$struct.addDeclarations($declaration.declarations);
+				} |
+				fv=varDecl ':' bits=DECIMAL_NUMBER ';' { 
+					if ($bits.text != null) 
+						$fv.decl.setBits(Integer.parseInt($bits.text));
+					$struct.addDeclaration($fv.decl);
 				}
 			)*
 		'}'
@@ -1053,7 +1057,13 @@ declaratorsList returns [List<Declarator> declarators]
 		)*
 	;
 
-directDeclarator  returns [Declarator declarator]
+directDeclarator returns [Declarator declarator]
+/*@before {
+	Declarator decl = null;
+}
+@after {
+	$declarator = decl;
+}*/
 	:	
 		(
 			{ Modifier.parseModifier(next()) == null }?=> IDENTIFIER {

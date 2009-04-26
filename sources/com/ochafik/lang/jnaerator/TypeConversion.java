@@ -1019,6 +1019,11 @@ public class TypeConversion {
 			//}	
 		} else if (x instanceof VariableRef) {
 			Identifier name = ((VariableRef)x).getName();
+			if (name != null) {
+				String sname = name.toString();
+				if ("True".equals(sname) || "False".equals(sname))
+					return primRef(JavaPrim.Boolean);
+			}
 			EnumItem enumItem = result.enumItems.get(name);
 			if (enumItem != null)
 				return typeRef(Integer.TYPE);
@@ -1093,7 +1098,22 @@ public class TypeConversion {
 				}
 			}
 		} else if (x instanceof VariableRef) {
-			res = new VariableRef(((VariableRef) x).getName());
+			Identifier name = ((VariableRef) x).getName();
+			if (name != null) {
+				String sname = name.toString();
+				if ("True".equals(sname))
+					res = new Constant(Constant.Type.Bool, true);
+				else if ("False".equals(sname))
+					res = new Constant(Constant.Type.Bool, false);
+				else {
+					EnumItem enumItem = result.enumItems.get(name);
+					if (enumItem != null)
+						res = findEnumItem(enumItem);
+					else
+						res = new VariableRef(name);
+				}	
+			} else
+				res = new VariableRef(name);
 		}
 		if (res == null) {
 //			return convertExpressionToJava(x);

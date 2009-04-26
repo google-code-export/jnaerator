@@ -93,6 +93,10 @@ public class Scanner implements Visitor {
 			if (arg != null)
 				arg.accept(this);
 		
+		for (FunctionCall fc : function.getInitializers())
+			if (fc != null)
+				fc.accept(this);
+		
 		if (function.getBody() != null)
 			function.getBody().accept(this);
 		if (function.getName() != null)
@@ -360,6 +364,9 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitAnnotation(Annotation annotation) {
 		visitElement(annotation);
+		for (Expression x : annotation.getArguments())
+			if (x != null)
+				x.accept(this);
 	}
 
 	@Override

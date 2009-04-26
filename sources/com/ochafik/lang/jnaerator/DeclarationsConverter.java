@@ -171,7 +171,7 @@ public class DeclarationsConverter {
 					continue;
 				
 				try {
-					out.addDeclaration(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", libraryClassName, true));
+					out.addDeclaration(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", libraryClassName, true, false));
 				} catch (UnsupportedConversionException ex) {
 					out.addDeclaration(skipDeclaration(define, ex.toString()));
 				}
@@ -196,7 +196,7 @@ public class DeclarationsConverter {
 		
 		Struct enumInterf = null;
 		Identifier enumName = getActualTaggedTypeName(e);
-		if (enumName != null && enumName.getLastSimpleIdentifier().getName() != null) {
+		if (enumName != null && enumName.resolveLastSimpleIdentifier().getName() != null) {
 			
 			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
 			if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
@@ -263,7 +263,8 @@ public class DeclarationsConverter {
 				try {
 					localOut.addDeclaration(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, libraryClassName), localSignatures, item, "enum item", 
 							libraryClassName, 
-							enumInterf == null
+							enumInterf == null,
+							true
 					));
 				} catch (Exception ex) {
 					out.addDeclaration(skipDeclaration(item, ex.toString()));
@@ -275,7 +276,7 @@ public class DeclarationsConverter {
 	}
 
 	@SuppressWarnings("static-access")
-	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment) throws UnsupportedConversionException {
+	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment, boolean signalErrors) throws UnsupportedConversionException {
 		try {
 			if (result.typeConverter.isJavaKeyword(name))
 				throw new UnsupportedConversionException(element, "The name '" + name + "' is invalid for a Java field.");
@@ -283,9 +284,9 @@ public class DeclarationsConverter {
 			Expression converted = result.typeConverter.convertExpressionToJava(x, libraryClassName);
 			TypeRef tr = result.typeConverter.inferJavaType(converted);
 			JavaPrim prim = result.typeConverter.getPrimitive(tr, libraryClassName);
-			if (prim == null) {
+			if ((prim == null || tr == null) && signalErrors) {
 				return new EmptyDeclaration("Failed to infer type of " + converted);
-			} else if (prim != JavaPrim.Void) {
+			} else if (prim != JavaPrim.Void && tr != null) {
 				if (signatures.variablesSignatures.add(name)) {
 					String t = converted.toString();
 					if (t.contains("sizeof")) {
@@ -678,8 +679,13 @@ public class DeclarationsConverter {
 					vs = new DirectDeclarator(vs.resolveName());
 				}
 				VariablesDeclaration vd = convertVariablesDeclaration(name, mutatedType, iChild, callerLibraryClass, v, vs);
-				if (vd != null)
+				if (vd != null) {
+					if (v.getBits() > 0) {
+						//vd.addAnnotation(new Annotation(Bits.class, new Constant(Constant.Type.Int, v.getBits())));
+						vd.addAnnotation(new Annotation(Bits.class, "(" + v.getBits() + ")"));
+					}
 					out.addDeclaration(vd);
+				}
 				iChild[0]++;
 			}
 		} catch (UnsupportedConversionException e) {
