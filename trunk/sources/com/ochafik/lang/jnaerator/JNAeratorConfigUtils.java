@@ -66,11 +66,15 @@ public class JNAeratorConfigUtils {
 		return v;
 	}
 
+	//this.frameworkspath = new ArrayList<String>(Arrays.asList(new String[] {"/System/Library/Frameworks/", "/Library/Frameworks/", "/Local/Library/Frameworks/"})); 
+	
+	
 	static List<String> DEFAULT_FRAMEWORKS_PATH = Arrays.asList( 
 		"/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks",
 		"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks", 
 		"/System/Library/Frameworks",
 		"/Library/Frameworks",
+		"/Local/Library/Frameworks/",
 		System.getProperty("user.home") + "/Library/Frameworks"
 	);
 

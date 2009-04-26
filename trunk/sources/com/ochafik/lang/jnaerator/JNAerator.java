@@ -62,6 +62,7 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
@@ -74,6 +75,8 @@ import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.PointerType;
+
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 /*
 //include com/ochafik/lang/jnaerator/parser/*.mm
@@ -171,9 +174,9 @@ public class JNAerator {
 //						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
-						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
-						//"@/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
-//						"-o", "/Users/ochafik/src/opencv-1.1.0",
+//						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
+						"@", "/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
+						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
 						
@@ -192,8 +195,13 @@ public class JNAerator {
 			for (int i = args.size(); i-- != 0;) {
 				String arg = args.get(i);
 				if (arg.startsWith("@")) {
-					List<String> lines = ReadText.readLines(arg.substring(1));
+					String includedArgsFile = arg.substring(1);
+					if (includedArgsFile.length() == 0) {
+						includedArgsFile = args.get(i + 1);
+						args.remove(i + 1);
+					}
 					args.remove(i);
+					List<String> lines = ReadText.readLines(includedArgsFile);
 					int iAdd = i;
 					for (Iterator<String> it = lines.iterator(); it.hasNext();) {
 						String trl = it.next().trim();
@@ -223,7 +231,15 @@ public class JNAerator {
 			for (int iArg = 0, len = args.size(); iArg < len; iArg++) {
 				String arg = args.get(iArg);
 				if (arg.startsWith("-I")) {
-					config.preprocessorConfig.includes.add(arg.substring("-I".length()));
+					String path = arg.substring("-I".length());
+					if (path.length() == 0)
+						path = args.get(++iArg);
+					config.preprocessorConfig.includes.add(path);
+				} else if (arg.startsWith("-F")) {
+					String path = arg.substring("-F".length());
+					if (path.length() == 0)
+						path = args.get(++iArg);
+					config.preprocessorConfig.frameworksPath.add(path);
 				} else if (arg.startsWith("-D")) {
 					int k = arg.indexOf('=');
 					String key = arg.substring("-D".length(), k > 0 ? k : arg.length()),
@@ -234,6 +250,8 @@ public class JNAerator {
 					//JNAeratorConfigUtils.autoConfigure(config);
 				} else if (arg.equals("-root"))
 					config.rootPackageName = args.get(++iArg);
+				else if (arg.equals("-entry"))
+					config.entryName = args.get(++iArg);
 				else if (arg.equals("-frameworksPath")) {
 					config.preprocessorConfig.frameworksPath.clear();
 					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args.get(++iArg).split(":")));
@@ -444,6 +462,20 @@ public class JNAerator {
 	
 	private static void generateLibraryFiles(SourceFiles sourceFiles, Result result, ClassOutputter outputter) throws IOException {
 		
+		Struct librariesHub = null;
+		PrintWriter hubOut = null;
+		if (result.config.entryName != null) {
+			librariesHub = new Struct();
+			librariesHub.addToCommentBefore("JNA Wrappers instances");
+			librariesHub.setType(Type.JavaClass);
+			librariesHub.addModifiers(Modifier.Public);
+			librariesHub.setTag(ident(result.config.entryName));
+			hubOut = outputter.getClassSourceWriter(result.config.entryName.toLowerCase() + "." + librariesHub.getTag().toString());
+			hubOut.println("package " + result.config.entryName.toLowerCase() + ";");
+			for (String pn : result.javaPackages)
+				if (!pn.equals(""))
+					hubOut.println("import " + pn + ".*;");
+		}
 		for (String library : result.libraries) {
 			if (library == null)
 				continue; // to handle code defined in macro-expanded expressions
@@ -454,7 +486,8 @@ public class JNAerator {
 			String javaPackage = result.javaPackageByLibrary.get(library);
 			Identifier libraryClassName = result.getLibraryClassSimpleName(library);
 			
-			final PrintWriter out = outputter.getClassSourceWriter((javaPackage == null ? "" : javaPackage + ".") + libraryClassName);
+			String fullLibraryClassName = (javaPackage == null ? "" : javaPackage + ".") + libraryClassName;
+			final PrintWriter out = outputter.getClassSourceWriter(fullLibraryClassName);
 			
 			if (javaPackage != null)
 				out.println("package " + javaPackage + ";");
@@ -483,6 +516,9 @@ public class JNAerator {
 			interf.addToCommentBefore("JNA Wrapper for library <b>" + library + "</b>",
 					result.declarationsConverter.getFileCommentContent(result.config.libraryProjectSources.get(library), null)
 			);
+			if (hubOut != null)
+				interf.addToCommentBefore("@see " + result.config.entryName + "." + library);
+			
 			interf.setType(Type.JavaInterface);
 			interf.addModifiers(Modifier.Public);
 			interf.setTag(libraryClassName);
@@ -492,7 +528,8 @@ public class JNAerator {
 			TypeRef libTypeRef = typeRef(libraryClassName);
 			Expression libClassLiteral = memberRef(expr(libTypeRef), MemberRefStyle.Dot, "class");
 			
-			VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator("INSTANCE",
+			VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator(
+				librariesHub == null ? "INSTANCE" : library,
 				cast(
 					libTypeRef, 
 					methodCall(
@@ -511,8 +548,19 @@ public class JNAerator {
 						memberRef(expr(typeRef(MangledFunctionMapper.class)), MemberRefStyle.Dot, "DEFAULT_OPTIONS")
 					)
 				)
-			));
-			interf.addDeclaration(instanceDecl);
+			)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
+			if (librariesHub != null) {
+				librariesHub.addDeclaration(instanceDecl);
+//				TypeRef fullLibRef = typeRef(fullLibraryClassName);
+//				librariesHub.addDeclaration(
+//					new VariablesDeclaration(fullLibRef, new Declarator.DirectDeclarator(
+//							library,
+//							memberRef(expr(fullLibRef), MemberRefStyle.Dot, "INSTANCE")
+//					)).addModifiers(Modifier.Static).addModifiers(Modifier.Final)
+//				);
+			} else
+				interf.addDeclaration(instanceDecl);
+			
 			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
 			
 			Signatures signatures = result.getSignaturesForOutputClass(libraryClassName);
@@ -523,21 +571,30 @@ public class JNAerator {
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, libraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, libraryClassName);
 
-			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName);
+			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName, library);
 			
 			for (Identifier fakePointer : result.typeConverter.fakePointersSink) {
-				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(Pointer.class), Struct.Type.JavaClass, null);
+				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
 					new Arg("pointer", typeRef(Pointer.class))
 				).addModifiers(Modifier.Public).setBody(
 					block(stat(methodCall("super", varRef("pointer")))))
 				);
+				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null)
+				.addModifiers(Modifier.Public)
+				.setBody(
+					block(stat(methodCall("super")))
+				));
 				interf.addDeclaration(decl(ptClass));
 			}
 			result.typeConverter.fakePointersSink = null;
 			
 			out.println(interf);
 			out.close();
+		}
+		if (hubOut != null) {
+			hubOut.println(librariesHub.toString());
+			hubOut.close();
 		}
 	}
 
