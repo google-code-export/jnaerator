@@ -4,7 +4,6 @@ import static com.ochafik.lang.jnaerator.parser.Expression.*;
 
 import java.util.Arrays;
 
-import static com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 import static com.ochafik.lang.jnaerator.parser.Statement.*;
 

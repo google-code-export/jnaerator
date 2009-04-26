@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
-import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -31,8 +30,6 @@ import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
-
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 public class JNAeratorUtils {
 	static String getExactTypeDefName(Element e) {
 		Element parent = e.getParentElement();

@@ -88,7 +88,7 @@ public class GCC4Mangler implements CPlusPlusMangler {
 		boolean isMethod = parent instanceof Struct;
 		if (isMethod) {
 			ns = new ArrayList<Object>(parent.getNameSpace());
-			ns.addAll(((Struct)parent).getTag().getSimpleIdentifiers());
+			ns.addAll(((Struct)parent).getTag().resolveSimpleIdentifiers());
 		} else {
 			ns = new ArrayList<Object>(function.getNameSpace());
 		}

@@ -20,8 +20,6 @@ package com.ochafik.lang.jnaerator;
 
 import java.io.PrintStream;
 
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
-
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 

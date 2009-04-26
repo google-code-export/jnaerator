@@ -112,7 +112,7 @@ public class VC9Mangler implements CPlusPlusMangler {
 		qualify(b, tr.getOriginalTag(), tr.getNameSpace());
 	}
 	private void qualify(StringBuilder b, Identifier identifier, List<String> ns) {
-		List<SimpleIdentifier> sis = identifier.getSimpleIdentifiers();
+		List<SimpleIdentifier> sis = identifier.resolveSimpleIdentifiers();
 		for (int i = sis.size(); i-- != 0;)
 			b.append(sis.get(i) + "@");
 		
@@ -140,7 +140,7 @@ public class VC9Mangler implements CPlusPlusMangler {
 		boolean isMethod = parent instanceof Struct;
 		if (isMethod) {
 			ns = new ArrayList<Object>(parent.getNameSpace());
-			ns.addAll(((Struct)parent).getTag().getSimpleIdentifiers());
+			ns.addAll(((Struct)parent).getTag().resolveSimpleIdentifiers());
 		} else {
 			ns = new ArrayList<Object>(function.getNameSpace());
 		}

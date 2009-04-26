@@ -22,10 +22,7 @@ import java.io.IOException;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.rococoa.NSClass;
 import org.rococoa.Rococoa;
 
@@ -45,8 +42,6 @@ import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.util.CompoundCollection;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
-
-import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 
 class ObjCClass {
 	/**
