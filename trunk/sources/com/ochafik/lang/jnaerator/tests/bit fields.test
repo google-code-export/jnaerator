@@ -1,0 +1,10 @@
+struct BF {
+    int i:1;
+	int j:2;
+	int k:5;
+	float f;
+};
+--
+TestLibrary.BF b = new TestLibrary.BF();
+b.i = b.j = b.k = 1;
+b.f = 1f;

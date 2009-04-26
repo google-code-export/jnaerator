@@ -1,0 +1,3 @@
+extern bool operator/=(int&, float);
+--
+INSTANCE.operatorDivideEqual((IntByReference)null, 0f);

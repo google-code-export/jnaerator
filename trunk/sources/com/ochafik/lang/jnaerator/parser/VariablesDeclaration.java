@@ -21,11 +21,22 @@ package com.ochafik.lang.jnaerator.parser;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ochafik.util.string.StringUtils;
+
 public class VariablesDeclaration extends StoredDeclarations {
 
+	int bits = -1;
+	
 	public VariablesDeclaration() {}
 	public VariablesDeclaration(TypeRef valueType, Declarator...declarators) {
 		this(valueType, Arrays.asList(declarators));
+	}
+	
+	public int getBits() {
+		return bits;
+	}
+	public void setBits(int bits) {
+		this.bits = bits;
 	}
 	public VariablesDeclaration(TypeRef valueType, List<Declarator> declarators) {
 		setValueType(valueType);
@@ -38,6 +49,21 @@ public class VariablesDeclaration extends StoredDeclarations {
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visitVariablesDeclaration(this);
+	}
+	@Override
+	public String toString(CharSequence indent) {
+		String pre = "";
+		if (!getAnnotations().isEmpty())
+			pre += StringUtils.implode(getAnnotations(), "\n" + indent) + "\n" + indent;
+		
+		
+		return formatComments(indent, false, true, true) +
+			pre + 
+			getModifiersStringPrefix() + getValueTypeAndStorageSuffix(indent) +
+			(bits < 0 ? "" : ":" + bits) + 
+			";"
+			+ (commentAfter == null ? "" : " " + commentAfter.trim())
+		;
 	}
 	
 }

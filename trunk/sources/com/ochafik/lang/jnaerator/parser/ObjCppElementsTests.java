@@ -72,6 +72,7 @@ public class ObjCppElementsTests {
 	static {
 		fieldsExcludedFromGetterSetterChecks.add("previousSibling"); 
 		fieldsExcludedFromGetterSetterChecks.add("nextSibling"); 
+		fieldsExcludedFromGetterSetterChecks.add("plain"); 
 		fieldsExcludedFromGetterSetterChecks.add("class");
 		fieldsExcludedFromGetterSetterChecks.add("const");
 		fieldsExcludedFromGetterSetterChecks.add("unsigned");

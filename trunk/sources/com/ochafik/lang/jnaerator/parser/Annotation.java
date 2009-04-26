@@ -18,28 +18,43 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Annotation extends Element {
 
 	Class<? extends java.lang.annotation.Annotation> annotationClass;
-	String arguments;
+	final List<Expression> arguments = new ArrayList<Expression>();
+	String argument;
 	
 	public Annotation() {
 		
 	}
 	
-	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass, String arguments) {
+	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass, Expression... arguments) {
 		setAnnotationClass(annotationClass);
-		setArguments(arguments);
+		setArguments(Arrays.asList(arguments));
+	}
+	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass, String argument) {
+		setAnnotationClass(annotationClass);
+		setArgument(argument);
 	}
 	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass) {
 		setAnnotationClass(annotationClass);
 	}
-
-	public void setArguments(String arguments) {
-		this.arguments = arguments;
+	
+	public void setArgument(String argument) {
+		this.argument = argument;
 	}
-	public String getArguments() {
-		return arguments;
+	public String getArgument() {
+		return argument;
+	}
+	public void setArguments(List<Expression> arguments) {
+		changeValue(this, this.arguments, arguments);
+	}
+	public List<Expression> getArguments() {
+		return unmodifiableList(arguments);
 	}
 	
 	public Class<? extends java.lang.annotation.Annotation> getAnnotationClass() {
@@ -52,16 +67,9 @@ public class Annotation extends Element {
 	
 	@Override
 	public String toString(CharSequence indent) {
-		return indent + "@" + getAnnotationClass().getName() + (getArguments() != null ? getArguments() : "");
+		return indent + "@" + getAnnotationClass().getName() + 
+			(getArgument() != null ? getArgument() : "");
 	}
-	
-	/*public String getString() {
-		return string;
-	}
-	public void setString(String string) {
-		this.string = string;
-	}*/
-	
 	
 	@Override
 	public void accept(Visitor visitor) {
@@ -70,20 +78,17 @@ public class Annotation extends Element {
 	
 	@Override
 	public Element getNextChild(Element child) {
-		// TODO Auto-generated method stub
-		return null;
+		return getNextSibling(arguments, child);
 	}
 
 	@Override
 	public Element getPreviousChild(Element child) {
-		// TODO Auto-generated method stub
-		return null;
+		return getPreviousSibling(arguments, child);
 	}
 
 	@Override
 	public boolean replaceChild(Element child, Element by) {
-		// TODO Auto-generated method stub
-		return false;
+		return replaceChild(arguments, Expression.class, this, child, by);
 	}
 
 }

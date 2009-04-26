@@ -171,8 +171,9 @@ public class JNAerator {
 //						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
-						"@/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
-						"-o", "/Users/ochafik/src/opencv-1.1.0",
+						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
+						//"@/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
+//						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
 						

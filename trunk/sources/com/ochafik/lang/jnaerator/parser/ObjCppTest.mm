@@ -14,7 +14,7 @@
 #	GNU Lesser General Public License for more details.
 #	
 #	You should have received a copy of the GNU Lesser General Public License
-#	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
+#	along with JNAerator.s  If not, see <http://www.gnu.org/licenses/>.
 #	
 #pragma reversible
 --
@@ -64,6 +64,14 @@ typedef struct {
 	int columnBytes;
 	unsigned char *data[3];
 } ImageTransfer;
+--
+struct BitField {
+	float a;
+	int f1:1;
+	int f2:7;
+	unsigned f5:16;
+	double z;
+};
 --
 class string;
 string name = "ok";

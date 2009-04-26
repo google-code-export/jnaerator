@@ -71,6 +71,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		Element e = super.getNextChild(child);
 		if (e != null)
 			return e;
+		e = getNextSibling(initializers, child);
+		if (e != null)
+			return e;
 		return getNextSibling(args, child);
 	}
 	
@@ -84,6 +87,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		Element e = super.getPreviousChild(child);
 		if (e != null)
 			return e;
+		e = getPreviousSibling(initializers, child);
+		if (e != null)
+			return e;
 		return getPreviousSibling(args, child);
 	}
 
@@ -95,6 +101,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		}
 		
 		if (replaceChild(args, Arg.class, this, child, by))
+			return true;
+		
+		if (replaceChild(initializers, FunctionCall.class, this, child, by))
 			return true;
 		
 		return super.replaceChild(child, by);
