@@ -45,7 +45,7 @@ public abstract class Union extends Structure {
     }
     /** Create a Union of the given size and alignment type. */
     protected Union(Pointer p, int alignType, TypeMapper mapper) {
-        super(p, alignType, mapper);
+        super(p, Structure.CALCULATE_SIZE, alignType, mapper);
     }
     /** Indicates which field will be used to write to native memory. 
      * @throws IllegalArgumentException if the type does not correspond to 
