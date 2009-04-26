@@ -161,7 +161,7 @@ public static class foo_callback_arg1_union extends com.sun.jna.Union {
 }
 }}}
 
-== Bit Fields
+== Bit Fields ==
 
 {{{
 // Stored on 1 byte !
