@@ -5,7 +5,7 @@ rm -fR classes 2> /dev/null
 mkdir classes 2> /dev/null
 
 echo Compiling
-javac -target 1.5 -cp `ls libraries/*.jar | tr "\n" ":"`:libraries/anarres/build/tar/lib/anarres-cpp.jar:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
+javac -target 1.5 -cp `ls libraries/*.jar | tr "\n" ":"`:libraries/anarres/build/tar/lib/anarres-cpp.jar:libraries/jna/dist/jna.jar:sources -d classes/ sources/com/ochafik/lang/jnaerator/JNAerator.java
 
 if [[ $? == 0 ]] ; then
 	echo Main-Class: com.ochafik.lang.jnaerator.JNAerator> classes/mf
@@ -22,7 +22,7 @@ if [[ $? == 0 ]] ; then
 	
 	cd classes
 	echo Merging thirdparty libraries
-	for l in `ls ../libraries/*.jar` ; do
+	for l in `ls ../libraries/*.jar` ../libraries/anarres/build/tar/lib/anarres-cpp.jar `ls ../libraries/jna/dist/*.jar`  ; do
 		if [[ "$l" != "../libraries/trove.jar" ]] ; then
 			jar xf "$l" ;
 		fi ;
