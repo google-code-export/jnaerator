@@ -322,7 +322,7 @@ public class JNAeratorConfigUtils {
 		System.out.println("os.arch = " + arch);
 		
 		//protect us from inline assembly in VC++:
-		config.preprocessorConfig.macros.put("_M_CEE_PURE", null);
+		//config.preprocessorConfig.macros.put("_M_CEE_PURE", null);
 		
 		if (arch.equals("x86_64") || arch.equals("amd64")) {
 			config.preprocessorConfig.macros.put("TARGET_CPU_X86_64", null);

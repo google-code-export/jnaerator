@@ -32,6 +32,7 @@ import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
@@ -39,6 +40,9 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 public class GCC4Mangler implements CPlusPlusMangler {
 	
 	protected void mangleType(TypeRef tr, StringBuilder b, Result result) {
+		if (tr == null)
+			tr = new TypeRef.SimpleTypeRef("void");
+		
 		if (Modifier.Const.isContainedBy(tr.getModifiers()))
 			b.append("K");
 		if (tr instanceof TypeRef.TargettedTypeRef) {
@@ -54,6 +58,8 @@ public class GCC4Mangler implements CPlusPlusMangler {
 				mangleType(resolved, b, result);
 				return;
 			}
+			if (str.getName() == null)
+				str.setName(new SimpleIdentifier("int"));
 			Primitive p = Primitive.parsePrimitive(str);
 			String s = signatures.get(p);
 			if (s != null)

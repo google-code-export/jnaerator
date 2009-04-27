@@ -499,6 +499,7 @@ public class DeclarationsConverter {
 				names.add(mangler.mangle(function, result));
 			} catch (Exception ex) {
 				System.err.println("Error in mangling of '" + function.computeSignature(true) + "' : " + ex);
+				ex.printStackTrace();
 			}
 		}
 	}

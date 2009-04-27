@@ -176,12 +176,12 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
 //						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
-						"@",
-						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
+//						"@",
+//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
 //						"/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
-//						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
-//						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
+						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
+						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
 						
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
@@ -565,7 +565,7 @@ public class JNAerator {
 			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
 			
 			Signatures signatures = result.getSignaturesForOutputClass(libraryClassName);
-			
+			result.typeConverter.allowFakePointers = true;
 			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, libraryClassName);
 			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, interf, libraryClassName);
 			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, libraryClassName);
@@ -573,6 +573,8 @@ public class JNAerator {
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, libraryClassName);
 
 			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName, library);
+			
+			result.typeConverter.allowFakePointers = false;
 			
 			Set<String> fakePointers = result.fakePointersByLibrary.get(libraryClassName);
 			if (fakePointers != null)

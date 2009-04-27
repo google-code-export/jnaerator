@@ -71,6 +71,8 @@ public class VC9Mangler implements CPlusPlusMangler {
 				mangleType(resolved, b, result, referenceList);
 				return;
 			}
+			if (str.getName() == null)
+				str.setName(new SimpleIdentifier("int"));
 			Primitive p = Primitive.parsePrimitive(str);
 			String s = signatures.get(p);
 			if (s != null)
