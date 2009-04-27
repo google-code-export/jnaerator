@@ -14,6 +14,8 @@
    Parse all the headers of a Visual Studio Express C++ 2008 solution. "Config|Platform" is typically "Release|Win32".
  * *-Ipath*
    Add include path. See JNAERATOR_INCLUDE_PATH below
+ * *-Fpath*
+   Add framework lookup path. See JNAERATOR_FRAMEWORKS_PATH below
  * *-Dsymbol*
    Define preprocessor symbol
  * *-Dsymbol=value*
@@ -32,7 +34,7 @@
  * *-framework FrameworkName*
    Parse all the headers defined in a framework.
  * *-frameworksPath path1:path2...*
-   Set the frameworks path. See JNAERATOR_FRAMEWORKS_PATH below.
+   Set the frameworks path. See JNAERATOR_FRAMEWORKS_PATH below. Overrides all previous -F switches.
  * *-o dir*
    Set output directory. Current directory by default.
 
