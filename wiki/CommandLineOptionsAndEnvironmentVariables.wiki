@@ -2,7 +2,7 @@
 
 = Syntax =
 
-{{{ java -jar jnaerator.jar options headerFiles }}}
+{{{ java -jar jnaerator.jar options headerFiles dynamicLibrariesFiles }}}
 
 = Options =
 
