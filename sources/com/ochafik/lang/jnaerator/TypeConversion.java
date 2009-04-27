@@ -106,7 +106,7 @@ public class TypeConversion {
 		this.result = result;
 	}
 	
-	public Set<Identifier> fakePointersSink;
+	//public Set<Identifier> fakePointersSink;
 
 	enum TypeConversionMode {
 		PrimitiveParameter, 
@@ -618,7 +618,7 @@ public class TypeConversion {
 		String valueTypeString = String.valueOf(valueType);
 		if (valueTypeString.matches("void\\s*\\*") || valueTypeString.matches("const\\s*void\\s*\\*")) {
 			//valueType = (TypeRef)valueType;
-			if (original instanceof Pointer && result.config.features.contains(GenFeatures.TypedPointersForForwardDeclarations) && fakePointersSink != null) {
+			if (original instanceof Pointer && result.config.features.contains(GenFeatures.TypedPointersForForwardDeclarations)) {
 				Pointer p = (Pointer) original;
 				if (p.getTarget() instanceof SimpleTypeRef) {
 					if (isResolved((SimpleTypeRef)p.getTarget()))
@@ -629,8 +629,7 @@ public class TypeConversion {
 //						int i = name.lastIndexOf('.');
 //						if (i >= 0)
 //							name = name.substring(i + 1);
-						fakePointersSink.add(name);
-						return typeRef(name);
+						return typeRef(result.getFakePointer(libraryClassName, name));
 					}
 				}
 			}
@@ -761,8 +760,8 @@ public class TypeConversion {
 								//convArgType = null;//return typeRef(com.sun.jna.Pointer.class);
 								if (valueType instanceof TypeRef.Pointer && 
 										target instanceof TypeRef.SimpleTypeRef &&
-										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations) &&
-										fakePointersSink != null) {
+										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations)
+										) {
 
 									if (isResolved((SimpleTypeRef)target))
 										return target;
@@ -770,8 +769,7 @@ public class TypeConversion {
 //									if (i >= 0) {
 //										name = name.substring(i + 1);
 //									}
-									fakePointersSink.add(name);
-									return typeRef(name);
+									return typeRef(result.getFakePointer(libraryClassName, name));
 								} else {
 									return typeRef(com.sun.jna.Pointer.class);
 								}
@@ -1012,13 +1010,14 @@ public class TypeConversion {
 			if (c != null)
 				return new SimpleTypeRef(c.getName());
 		}
+//		if (x instanceof MemberRef) {
+//			return null;
+//			//if (x instanceof FieldRef) {
+//			//	return new SimpleTypeRef(Integer.TYPE.getName());
+//			//}	
+//		} else 
 		if (x instanceof MemberRef) {
-			return null;
-			//if (x instanceof FieldRef) {
-			//	return new SimpleTypeRef(Integer.TYPE.getName());
-			//}	
-		} else if (x instanceof VariableRef) {
-			Identifier name = ((VariableRef)x).getName();
+			Identifier name = ((MemberRef)x).getName();
 			if (name != null) {
 				String sname = name.toString();
 				if ("True".equals(sname) || "False".equals(sname))

@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
@@ -481,8 +482,6 @@ public class JNAerator {
 				continue; // to handle code defined in macro-expanded expressions
 //				library = "";
 			
-			result.typeConverter.fakePointersSink = new TreeSet<Identifier>();
-			
 			String javaPackage = result.javaPackageByLibrary.get(library);
 			Identifier libraryClassName = result.getLibraryClassSimpleName(library);
 			
@@ -573,7 +572,10 @@ public class JNAerator {
 
 			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName, library);
 			
-			for (Identifier fakePointer : result.typeConverter.fakePointersSink) {
+			Set<String> fakePointers = result.fakePointersByLibrary.get(libraryClassName);
+			if (fakePointers != null)
+			for (String fakePointerName : fakePointers) {
+				SimpleIdentifier fakePointer = ident(fakePointerName);
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
 					new Arg("pointer", typeRef(Pointer.class))
@@ -587,7 +589,6 @@ public class JNAerator {
 				));
 				interf.addDeclaration(decl(ptClass));
 			}
-			result.typeConverter.fakePointersSink = null;
 			
 			out.println(interf);
 			out.close();

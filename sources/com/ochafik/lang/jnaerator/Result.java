@@ -86,6 +86,7 @@ public class Result extends Scanner {
 	Map<String, EnumItem> enumItems = new HashMap<String, EnumItem>();
 	Map<String, Define> defines = new HashMap<String, Define>();
 	Map<String, List<Define>> definesByLibrary = new HashMap<String, List<Define>>();
+	Map<String, Set<String>> fakePointersByLibrary = new HashMap<String, Set<String>>();
 	
 	Map<String, List<Function>> functionsByLibrary = new HashMap<String, List<Function>>();
 	//Map<String, Expression> defines = new LinkedHashMap<String, Expression>();
@@ -100,6 +101,24 @@ public class Result extends Scanner {
 		return list;
 	}
 	
+	public Identifier findFakePointer(Identifier name) {
+		String s = name.toString();
+		for (Map.Entry<String, Set<String>> e : fakePointersByLibrary.entrySet()) {
+			if (e.getValue().contains(s))
+				return ident(ident(e.getKey()), name);
+		}
+		return null;
+	}
+	public Identifier getFakePointer(Identifier libraryToUseIfNotDefinedYet, Identifier name) {
+		Identifier lib = findFakePointer(name);
+		if (lib != null)
+			return lib;
+		Set<String> set = fakePointersByLibrary.get(libraryToUseIfNotDefinedYet);
+		if (set == null)
+			fakePointersByLibrary.put(libraryToUseIfNotDefinedYet.toString(), set = new HashSet<String>());
+		set.add(name.toString());
+		return ident(libraryToUseIfNotDefinedYet, name);
+	}
 	public Signatures getSignaturesForOutputClass(Identifier name) {
 		Signatures s = signaturesByOutputClass.get(name);
 		if (s == null)
