@@ -175,7 +175,7 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		if (s == null) {
 			return o == null ? 0 : -1;
 		}
-		return s.compareTo(String.valueOf(o));
+		return o == null ? -1 : s.compareTo(String.valueOf(o));
 	}
 	@Override
 	public boolean equals(Object obj) {
