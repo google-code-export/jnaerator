@@ -99,7 +99,7 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class TypeConversion {
 	Result result;
 
-	public boolean allowUnknownPointers = true;
+	public boolean allowUnknownPointers = true, allowFakePointers = false;
 	
 	public TypeConversion(Result result) {
 		super();
@@ -621,7 +621,7 @@ public class TypeConversion {
 		String valueTypeString = String.valueOf(valueType);
 		if (valueTypeString.matches("void\\s*\\*") || valueTypeString.matches("const\\s*void\\s*\\*")) {
 			//valueType = (TypeRef)valueType;
-			if (original instanceof Pointer && result.config.features.contains(GenFeatures.TypedPointersForForwardDeclarations)) {
+			if (original instanceof Pointer && result.config.features.contains(GenFeatures.TypedPointersForForwardDeclarations) && allowFakePointers) {
 				Pointer p = (Pointer) original;
 				if (p.getTarget() instanceof SimpleTypeRef) {
 					if (isResolved((SimpleTypeRef)p.getTarget()))
@@ -763,7 +763,8 @@ public class TypeConversion {
 								//convArgType = null;//return typeRef(com.sun.jna.Pointer.class);
 								if (valueType instanceof TypeRef.Pointer && 
 										target instanceof TypeRef.SimpleTypeRef &&
-										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations)
+										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations) &&
+										allowFakePointers
 										) {
 
 									if (isResolved((SimpleTypeRef)target))

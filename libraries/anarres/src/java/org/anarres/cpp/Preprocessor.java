@@ -1104,11 +1104,13 @@ public class Preprocessor implements Closeable {
 								LexerException {
 		VirtualFile	pdir = null;
 		if (quoted) {
-			VirtualFile	pfile = filesystem.getFile(parent);
-			pdir = pfile.getParentFile();
-			VirtualFile	ifile = pdir.getChildFile(name);
-			if (include(ifile))
-				return;
+			if (!inIncludeNext && parent != null) {
+				VirtualFile	pfile = parent == null ? null : filesystem.getFile(parent);
+				pdir = pfile == null ? null : pfile.getParentFile();
+				VirtualFile	ifile = pdir.getChildFile(name);
+				if (include(ifile))
+					return;
+			}
 			if (include(quoteincludepath, name))
 				return;
 		} else {
@@ -1777,12 +1779,15 @@ public class Preprocessor implements Closeable {
 							// break;
 
 						case PP_INCLUDE:
+						case PP_IMPORT:
+							inIncludeNext = false;
 							if (!isActive())
 								return source_skipline(false);
 							else
 								return include(false);
 							// break;
 						case PP_INCLUDE_NEXT:
+							inIncludeNext = true;
 							if (!isActive())
 								return source_skipline(false);
 							if (!getFeature(Feature.INCLUDENEXT)) {

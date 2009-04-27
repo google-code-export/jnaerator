@@ -209,7 +209,7 @@ public abstract class Element {
 			
 		String suffix = skipLineAfter ? "\n" + indent : "";
 		if (uniqueLine != null && allowLineComments)
-			return "/// " + uniqueLine + suffix;
+			return "/// " + uniqueLine.replace("\\u", "\\\\u") + suffix;
 			
 		
 		String content = beginEachCommentLineWithStar ?

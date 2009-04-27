@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
@@ -116,7 +117,7 @@ public class JNAeratorParser {
 		return slices;
 	}
 
-	private static void parseSlices(JNAeratorConfig config, SourceFiles sourceFilesOut, List<Slice> slices, PrintStream originalOut, PrintStream originalErr, boolean multithreaded) throws InterruptedException {
+	private static void parseSlices(final JNAeratorConfig config, SourceFiles sourceFilesOut, List<Slice> slices, PrintStream originalOut, PrintStream originalErr, boolean multithreaded) throws InterruptedException {
 	
 			class ResultCountHolder {
 				volatile int nSlicesParsed = 0;
@@ -133,7 +134,7 @@ public class JNAeratorParser {
 	
 					public SourceFile call() throws Exception {
 						try {
-							ObjCppParser parser = newObjCppParser(slice.text);
+							ObjCppParser parser = newObjCppParser(slice.text, config.verbose);
 							parser.topLevelTypeIdentifiers = topLevelTypeDefs;
 							SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 							//sourceFile.setElementFile(slice.file);
@@ -184,7 +185,7 @@ public class JNAeratorParser {
 
 	public static SourceFiles parse(JNAeratorConfig config) throws IOException, LexerException {
 		SourceFiles sourceFiles = new SourceFiles();
-		String sourceContent = PreprocessorUtils.preprocessSources(config, sourceFiles.defines);
+		String sourceContent = PreprocessorUtils.preprocessSources(config, sourceFiles.defines, config.verbose);
 		
 		PrintStream originalOut = System.out, originalErr = System.err;
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -195,7 +196,7 @@ public class JNAeratorParser {
 			if (false) {
 				// easier to debug but any error might ruin all the rest of the parsing
 				try {
-					ObjCppParser parser = newObjCppParser(sourceContent);
+					ObjCppParser parser = newObjCppParser(sourceContent, config.verbose);
 					SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 					sourceFiles.add(sourceFile);
 				} catch (Exception ex) {
@@ -219,7 +220,7 @@ public class JNAeratorParser {
 		}
 		return sourceFiles;
 	}
-	static ObjCppParser newObjCppParser(String s) throws IOException {
+	static ObjCppParser newObjCppParser(String s, final boolean verbose) throws IOException {
 		return new ObjCppParser(
 				new CommonTokenStream(
 						new ObjCppLexer(
@@ -227,6 +228,12 @@ public class JNAeratorParser {
 						)
 				)
 //				, new DummyDebugEventListener()
-		);
+		) {
+			@Override
+			public void reportError(RecognitionException arg0) {
+				if (verbose)
+					super.reportError(arg0);
+			}
+		};
 	}
 }
