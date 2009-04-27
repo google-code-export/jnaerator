@@ -608,7 +608,10 @@ public class TypeConversion {
 		return isResolved(tr.getName());
 	}
 	boolean isResolved(Identifier i) {
-		return !i.isPlain() && Identifier.QualificationSeparator.Dot.equals(((Identifier.QualifiedIdentifier)i).getSeparator());
+		if (i.isPlain())
+			return false;
+		return (i instanceof Identifier.QualifiedIdentifier) && 
+			Identifier.QualificationSeparator.Dot.equals(((Identifier.QualifiedIdentifier)i).getSeparator());
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		

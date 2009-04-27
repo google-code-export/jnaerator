@@ -501,6 +501,7 @@ objCClassDef returns [Struct struct]
 		className=IDENTIFIER {
 			defineTypeIdentifierInParentScope($className.text);
 			$struct = mark(new Struct(), getLine($octype));
+			//$struct.setForwardDeclaration(true);
 			//$struct.setCommentBefore(getCommentBefore($octype.getTokenIndex()));
 			$struct.setType($octype.text.equals("@interface") ?
 				Struct.Type.ObjCClass :
@@ -514,10 +515,12 @@ objCClassDef returns [Struct struct]
 				if ($parentClass.text != null)
 					$struct.addParent(new SimpleIdentifier($parentClass.text));
 				}
-			)? |
-			'(' categoryName=IDENTIFIER ')' {
-				$struct.setCategoryName($categoryName.text);
-			}
+			) |
+			(
+				'(' categoryName=IDENTIFIER ')' {
+					$struct.setCategoryName($categoryName.text);
+				}
+			) |
 		)
 		(	
 			'<' (
@@ -529,7 +532,7 @@ objCClassDef returns [Struct struct]
 			)? '>'
 		)?
 		(
-			'{' 
+			'{'
 			(
 				'@public' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Public); } | 
 				'@private' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Private); } | 

@@ -94,6 +94,8 @@ public class PreprocessorUtils {
 		//preprocessor.addFeatures(EnumSet.allOf(Feature.class));
 		preprocessor.addFeature(Feature.KEEPCOMMENTS);
 		preprocessor.addFeature(Feature.DIGRAPHS);
+		preprocessor.addFeature(Feature.INCLUDENEXT);
+		preprocessor.addFeature(Feature.OBJCSYNTAX);
 		preprocessor.addFeature(Feature.TRIGRAPHS);
 		//preprocessor.addFeature(Feature.CSYNTAX);
 		preprocessor.addFeature(Feature.LINEMARKERS);
