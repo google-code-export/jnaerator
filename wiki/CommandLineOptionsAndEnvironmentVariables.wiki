@@ -6,6 +6,10 @@
 
 = Options =
 
+ * *@argumentsFile*
+   Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content.
+ * *-entry EntryClassName*
+   Generates a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.
  * *-project solutionFile "Config|Platform"*
    Parse all the headers of a Visual Studio Express C++ 2008 solution. "Config|Platform" is typically "Release|Win32".
  * *-Ipath*
