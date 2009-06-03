@@ -31,6 +31,8 @@
    Note that a special hack is done for library "c" on Windows systems : the output name is set to "msvcrt" instead of "c".
  * *-package outputPackageName*
    Set the Java package in which all the output will reside (by default, set to the library name).
+ * *-jar outputJar*
+   Jar file where all generated sources and the compiled classes go.
  * *-framework FrameworkName*
    Parse all the headers defined in a framework.
  * *-frameworksPath path1:path2...*
