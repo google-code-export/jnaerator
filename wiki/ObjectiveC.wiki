@@ -1,5 +1,9 @@
 #summary Details on JNAerator's support of Objective-C and MacOS X frameworks
 
+= Warning =
+
+This is not working perfectly right now : generated sources won't compile straight away.
+
 = Introduction =
 
 JNAerator can generate ready-to-use JARs that make any Objective-C framework available from Java.
