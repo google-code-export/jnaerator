@@ -187,7 +187,7 @@ public class DeclarationsConverter {
 		return new EmptyDeclaration(mess.toArray(new String[0]));
 	}
 	
-	private void convertEnum(Enum e, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
+	void convertEnum(Enum e, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
 		if (e.isForwardDeclaration())
 			return;
 		
@@ -351,7 +351,14 @@ public class DeclarationsConverter {
 		if (isMethod) {
 			ns.clear();
 			ns.addAll(parent.getNameSpace());
-			ns.add(((Struct)parent).getTag().toString());
+			switch (((Struct)parent).getType()) {
+			case ObjCClass:
+			case ObjCProtocol:
+				break;
+			case CPPClass:
+				ns.add(((Struct)parent).getTag().toString());
+				break;
+			}
 		}
 		//String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";
 		//if (!ns.isEmpty())
