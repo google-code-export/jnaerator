@@ -278,6 +278,7 @@ public class TypeConversion {
 //		
 		manualTypeDefs.put("SIZE", new TypeRef.Primitive("size_t"));
 		manualTypeDefs.put("CHAR", new TypeRef.Primitive("char"));
+		manualTypeDefs.put("BOOL", new TypeRef.Primitive("bool"));
 		manualTypeDefs.put("WCHAR", new TypeRef.Primitive("wchar_t"));
 		manualTypeDefs.put("HRESULT", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
 		
