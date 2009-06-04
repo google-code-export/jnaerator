@@ -27,6 +27,10 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 			qi.add(i);
 		return qi;
 	}
+	@Override
+	public Identifier clone() {
+		return (Identifier)super.clone();
+	}
 	public abstract boolean isPlain();
 	public abstract SimpleIdentifier resolveLastSimpleIdentifier();
 	public abstract List<SimpleIdentifier> resolveSimpleIdentifiers();
