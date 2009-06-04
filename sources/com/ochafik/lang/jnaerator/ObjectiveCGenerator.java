@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.rococoa.NSClass;
+import org.rococoa.NSObject;
 import org.rococoa.Rococoa;
 
-import static com.ochafik.lang.SyntaxUtils.as;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
@@ -28,7 +28,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
-import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
@@ -50,6 +49,8 @@ public class ObjectiveCGenerator {
 		return Result.getMap(result.classes, type).get(className);
 	}
 	public Identifier getPackageName(Struct struct) {
+		if (struct == null)
+			return null;
 		String library = result.getLibrary(struct);
 		String pa = result.javaPackageByLibrary.get(library);
 		if (pa != null && pa.trim().length() == 0)
@@ -62,6 +63,8 @@ public class ObjectiveCGenerator {
 		return javaPackage;
 	}
 	public Identifier getFullClassName(Struct struct) {
+		if (struct == null)
+			return null;
 		Identifier javaPackage = getPackageName(struct);
 		return ident(javaPackage, struct.getTag());
 	}
@@ -82,11 +85,15 @@ public class ObjectiveCGenerator {
 		out.println(generateObjectiveCClass(in));
 		out.close();
 	}
-	static SimpleIdentifier NSObjectIdent = ident("NSObject");
+	static Identifier 
+		NSObjectIdent = ident(NSObject.class), 
+		NSClassIdent = ident(NSClass.class);
 	public Struct generateObjectiveCClass(Struct in) {
 		boolean isProtocol = in.getType() == Type.ObjCProtocol;
 		
 		Struct instanceStruct = new Struct().addModifiers(Modifier.Public);
+		instanceStruct.setCommentBefore(in.getCommentBefore());
+		instanceStruct.addToCommentBefore(in.getCommentAfter());
 		instanceStruct.setTag(in.getTag().clone());
 		if (isProtocol)
 			instanceStruct.setType(Type.JavaInterface);
@@ -97,36 +104,52 @@ public class ObjectiveCGenerator {
 		classStruct.setTag(ident(classClassName));
 		classStruct.setType(Struct.Type.JavaInterface);
 		classStruct.addModifiers(Modifier.Public);
-		classStruct.addParent(ident(NSClass.class));
 		
-		List<Identifier> parents = new ArrayList<Identifier>(in.getParents());
-		if (parents.isEmpty() && !isProtocol && !in.getTag().equals(NSObjectIdent))
-			parents.add(NSObjectIdent);
+		List<Identifier> 
+			parentsForInstance = new ArrayList<Identifier>(in.getParents()),
+			parentsForClass = new ArrayList<Identifier>(in.getParents());
+		if (parentsForInstance.isEmpty() && !isProtocol && !in.getTag().equals(NSObjectIdent))
+			parentsForInstance.add(NSObjectIdent);
+		if (parentsForClass.isEmpty())
+			parentsForClass.add(NSClassIdent);
 				
-		for (Identifier p : in.getParents()) {
-			Identifier id = getFullClassName(getStruct(p, isProtocol ? Type.ObjCProtocol : Type.ObjCClass));
-			instanceStruct.addParent(id);
+		for (Identifier p : parentsForInstance) {
+			Identifier id = result.typeConverter.findObjCClassIdent(p);
+			if (id != null)
+				instanceStruct.addParent(id.clone());
+		}
+		for (Identifier p : parentsForClass) {
+			Identifier id = result.typeConverter.findObjCClassIdent(p);
+			if (id != null)
+				classStruct.addParent(ident(id.clone(), classClassName));
 		}
 		
 		for (Identifier p : in.getProtocols()) {
 			Identifier id = getFullClassName(getStruct(p, Type.ObjCProtocol));
-			if (isProtocol)
-				instanceStruct.addParent(id);
-			else
-				instanceStruct.addProtocol(id);
+			if (id != null) {
+				if (isProtocol)
+					instanceStruct.addParent(id);
+				else
+					instanceStruct.addProtocol(id);
+			}
 		}
 		
 		CompoundCollection<Declaration> declarations = new CompoundCollection<Declaration>();
 		declarations.addComponent(in.getDeclarations());
 		for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
+			for (Declaration d : catIn.getDeclarations())
+				d.addToCommentBefore("From category " + catIn.getTag());
 			declarations.addComponent(catIn.getDeclarations());
+			
+			if (catIn.getCommentBefore() != null)
+				instanceStruct.addToCommentBefore("<p>Category " + catIn.getTag()+ " : " + catIn.getCommentBefore() +"</p>");
 		}
 		
 		
 		StoredDeclarations classHolder = new VariablesDeclaration();
 		if (!isProtocol)
-			classHolder.addModifiers(Modifier.Private, Modifier.Static);
-		classHolder.setValueType(new TypeRef.SimpleTypeRef(classClassName));
+			classHolder.addModifiers(Modifier.Protected, Modifier.Static);
+		classHolder.setValueType(typeRef(classClassName));
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
 		call.addArgument(expr(Constant.Type.String, in.getTag().toString()));
 		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
@@ -182,6 +205,8 @@ public class ObjectiveCGenerator {
 //							
 							Function proxyCopy = meth.clone();
 							proxyCopy.addModifiers(Modifier.Public, Modifier.Static);
+							proxyCopy.reorganizeModifiers();
+							
 							Expression[] args = new Expression[meth.getArgs().size()];
 							int i = 0;
 							for (Arg arg : meth.getArgs())
@@ -200,8 +225,6 @@ public class ObjectiveCGenerator {
 						
 						if (decl instanceof Function) {
 							Function meth = (Function)decl;
-							if (instanceStruct.getType() == Type.JavaClass)
-								decl.addModifiers(Modifier.Public, Modifier.Abstract);
 							
 							String name = meth.getName().toString();
 							if (name.matches("^init([A-Z].*|)$"))
@@ -214,6 +237,8 @@ public class ObjectiveCGenerator {
 								createCopy.addToCommentBefore("@see #" + meth.computeSignature(false));
 								createCopy.setName(ident("create" + name.substring("init".length())));
 								createCopy.addModifiers(Modifier.Public, Modifier.Final, Modifier.Static);
+								createCopy.reorganizeModifiers();
+								
 								Expression[] args = new Expression[meth.getArgs().size()];
 								int i = 0;
 								for (Arg arg : meth.getArgs())
@@ -244,6 +269,9 @@ public class ObjectiveCGenerator {
 								
 								//methCopy = meth.clone();
 							}
+							
+							if (instanceStruct.getType() == Type.JavaClass)
+								decl.addModifiers(Modifier.Public, Modifier.Abstract);
 						}
 					}
 				}
