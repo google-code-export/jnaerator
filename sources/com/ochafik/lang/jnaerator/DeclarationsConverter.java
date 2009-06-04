@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator;
 import static com.ochafik.lang.SyntaxUtils.as;
 
 
+
 import java.io.File;
 import java.util.*;
 
@@ -798,11 +799,16 @@ public class DeclarationsConverter {
 				}
 			}
 			return "<i>" + inCategoryStr + "native declaration : " + path + (e == null || e.getElementLine() < 0 ? "" : ":" + e.getElementLine()) + "</i>";
+		} else if (e != null && e.getElementLine() >= 0) {
+			return "<i>native declaration : <input>:" + e.getElementLine() + "</i>";
 		}
 		return null;
 	}
 	String getFileCommentContent(Element e) {
 		String f = Element.getFileOfAscendency(e);
+		if (f == null && e != null && e.getElementLine() >= 0)
+			return "<i>native declaration : line " + e.getElementLine() + "</i>";
+		
 		return f == null ? null : getFileCommentContent(new File(f), e);
 	}
 	
