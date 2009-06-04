@@ -24,7 +24,7 @@ public class ElementsHelper {
 		return new Expression.VariableRef(name);
 	}
 	public static SimpleIdentifier ident(String name) {
-		return new SimpleIdentifier(name);
+		return name == null ? null : new SimpleIdentifier(name);
 	}
 	public static Identifier ident(Class<?> cl) {
 		if (cl.getPackage() == null)
