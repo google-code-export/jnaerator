@@ -41,6 +41,10 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		CStruct, CPPClass, ObjCClass, ObjCProtocol, CUnion, JavaClass, JavaInterface
 	}
 
+	@Override
+	public Struct addModifiers(Modifier... mds) {
+		return (Struct)super.addModifiers(mds);
+	}
 	
 	@Override
 	public Element getNextChild(Element child) {
