@@ -84,6 +84,10 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 //include com/ochafik/lang/jnaerator/parser/ObjCpp.g
  */
 
+/**
+ * java -Xmx2000m -jar ../bin/jnaerator.jar `for F in /System/Library/Frameworks/*.framework ; do echo $F| sed -E 's/^.*\/([^/]+)\.framework$/-framework \1/' ; done` -out apple-frameworks.jar
+ */
+
 public class JNAerator {
 
 	final JNAeratorConfig config;
@@ -120,9 +124,8 @@ public class JNAerator {
 		System.out.println("\t-defaultLibrary name");
 		System.out.println("\t-out outputDir");
 		System.out.println("\t\tRoot directory where all generated sources go");
-		//System.out.println("\t-compile");
 		System.out.println("\t-jar outputJar");
-		System.out.println("\t\tJar file where all generated sources go (implies -compile)");
+		System.out.println("\t\tJar file where all generated sources and the compiled classes go");
 		System.out.println("\t-project SolutionFile configString");
 		System.out.println("\t\tRead Visual Studio 2008 project or solution file and use the configuration specified (e.g. \"Release|Win32\").");
 		System.out.println("\t-package forcedPackageName");
@@ -160,8 +163,10 @@ public class JNAerator {
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
 //						"/Users/ochafik/Prog/Java/testxp/test.h",
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
-//						"-framework", "Foundation", 
+						"-framework", "Foundation", 
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
+//						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
+//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
 //						"-framework", "CoreFoundation",
 //						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
@@ -180,13 +185,13 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
 //						"/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
-						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
-						"-o", "/Users/ochafik/Prog/Java/test/cocoa",
+//						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
+						"-o", "/Users/ochafik/Prog/Java/test/foundation",
 						
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
 //						"-o", "/Users/ochafik/src/opencl",
-						"-v"
+						//"-v"
 				};
 			} else {
 				displayHelp();
@@ -221,7 +226,7 @@ public class JNAerator {
 					
 				}
 			}
-			System.out.println(StringUtils.implode(args));
+//			System.out.println(StringUtils.implode(args));
 			
 			final JNAeratorConfig config = new JNAeratorConfig();
 			
