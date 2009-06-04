@@ -186,12 +186,9 @@ public class JNAeratorConfig {
 	}
 
 	public String relativizeFileForSourceComments(String path) {
-		/*File file = new File(path);
-		try {
-			path = file.getCanonicalPath();
-		} catch (Exception ex) {
-			return path;
-		}*/
+		if (path == null)
+			return null;
+		
 		for (String pref : rootDirectoriesPrefixesForSourceComments) {
 			if (path.startsWith(pref)) {
 				path = path.substring(pref.length());
