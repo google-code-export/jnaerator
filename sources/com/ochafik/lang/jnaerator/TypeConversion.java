@@ -737,10 +737,9 @@ public class TypeConversion {
 					//	return typeRef(((FunctionSignature)valueType).getFunction().getName());
 				}
 				if (name != null) {
-					/// Pointer to Objective-C class
-					if (result.objCClasses.containsKey(name))
-						convArgType = typeRef(name);
-					else {
+					/// Pointer to Objective-C class ?
+					convArgType = findObjCClass(name);
+					if (convArgType == null) {
 						/// Pointer to C structure
 						Identifier structRef = findStructRef(name, libraryClassName);
 						if (structRef != null) {//result.cStructNames.contains(name)) {
@@ -850,17 +849,9 @@ public class TypeConversion {
 			if (enumTypeRef != null)
 				return enumTypeRef;
 			
-			if (name.equals("id"))
-				return typeRef(NSObject.class);
-		
-			if (name.equals("SEL"))
-				return typeRef(org.rococoa.Selector.class);
-			
-			if (name.equals("Class"))
-				return typeRef(org.rococoa.NSClass.class);
-			
-			if (name.equals("Protocol"))
-				return typeRef(org.rococoa.NSClass.class);
+			TypeRef objCClassRef = findObjCClass(name);
+			if (objCClassRef != null)
+				return objCClassRef;
 		}
 		
 		JavaPrim prim = getPrimitive(valueType, libraryClassName);
@@ -870,6 +861,29 @@ public class TypeConversion {
 		unknownTypes.add(String.valueOf(valueType));
 		throw new UnsupportedConversionException(valueType, null);
 	}
+	private TypeRef findObjCClass(Identifier name) {
+
+		if (name.equals("id"))
+			return typeRef(NSObject.class);
+	
+		if (name.equals("SEL"))
+			return typeRef(org.rococoa.Selector.class);
+		
+		if (name.equals("Class"))
+			return typeRef(org.rococoa.NSClass.class);
+		
+		if (name.equals("Protocol"))
+			return typeRef(org.rococoa.NSClass.class);
+		
+		if (name.equals("NSObject"))
+			return typeRef(org.rococoa.NSObject.class);
+		
+		Struct s = result.getObjcCClassOrProtocol(name);
+		if (s != null)
+			return typeRef(result.objectiveCGenerator.getFullClassName(s));
+		return null;
+	}
+
 	private TypeRef arrayRef(TypeRef tr) {
 		ArrayRef arrayRef;
 		if (tr instanceof ArrayRef) {
