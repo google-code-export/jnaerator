@@ -435,7 +435,7 @@ public class JNAeratorConfigUtils {
 		if (headers.exists())
 			config.addFile(headers, framework);
 		else
-			throw new IOException("No Headers subdirectory in framework '" + framework + "' found here : " + file);
+			new IOException("No Headers subdirectory in framework '" + framework + "' found here : " + file).printStackTrace();
 	}
 
 }
