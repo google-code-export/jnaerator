@@ -535,7 +535,8 @@ public class Preprocessor implements Closeable {
 	/* XXX Make this include the NL, and make all cpp directives eat
 	 * their own NL. */
 	private Token line_token(int line, String name, String extra) {
-		return new Token(P_LINE, line, 0,
+		return new Token(P_LINE, line, 0, 
+			name == null ? "" :
 			"\n#line " + line + " \"" + (properStringTokensInLinePragmas ? String.valueOf(name).replace("\\", "\\\\") : name) + "\"" + extra + "\n",
 			null
 				);
