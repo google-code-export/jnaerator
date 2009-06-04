@@ -514,8 +514,8 @@ public class JNAerator {
 				SimpleIdentifier otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
 				out.println("import static " + (otherJavaPackage == null  || otherJavaPackage.length() == 0 ? "" : otherJavaPackage + ".") + otherLibraryClassName + ".*;");
 			}
-			if (!result.objCClasses.isEmpty())
-				out.println("import org.rococoa.ID;");
+			//if (!result.objCClasses.isEmpty())
+			//	out.println("import org.rococoa.ID;");
 			
 			
 			Struct interf = new Struct();
@@ -688,11 +688,10 @@ public class JNAerator {
 		
 		
 		/// Spit Objective-C classes out
-		if (!result.objCClasses.isEmpty()) {
+		if (!result.classes.isEmpty()) {
 			if (config.verbose)
 				System.out.println("Generating Objective-C classes");
-			for (ObjCClass type : result.objCClasses.values())
-				type.generateWrapperFile();
+			result.objectiveCGenerator.generateObjectiveCClasses();
 		}
 		
 		if (config.verbose)
