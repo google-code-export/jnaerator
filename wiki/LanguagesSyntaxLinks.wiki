@@ -35,3 +35,13 @@
 = Java =
 
  * [http://www.md.pp.ru/~eu/jdk6options.html The most complete list of -XX options for Java 6 JVM]
+
+= Other interoperability tools =
+
+JNAerator builds on the following libraries :
+ * [http://jna.dev.java.net/ JNA]
+ * [http://rococoa.dev.java.net/ Rococoa]
+
+And some of its goal and achievements are similar to these opensource projects :
+ * [http://code.google.com/p/javada/ An object oriented Java to Ada binding generator]
+ * [http://code.google.com/p/jnyikes/ A simple and easy JNI wrapper]
