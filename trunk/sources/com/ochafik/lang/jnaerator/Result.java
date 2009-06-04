@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -42,6 +43,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
@@ -56,6 +58,7 @@ public class Result extends Scanner {
 	public final TypeConversion typeConverter = new TypeConversion(this);
 	public final DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
 	public final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
+	public final ObjectiveCGenerator objectiveCGenerator = new ObjectiveCGenerator(this);
 	
 	/**
 	 * @param aerator
@@ -67,7 +70,10 @@ public class Result extends Scanner {
 
 	Set<String> javaPackages = new TreeSet<String>();
 	
-	Map<Identifier, ObjCClass> objCClasses = new HashMap<Identifier, ObjCClass>();
+	//Map<Identifier, ObjCClass> objCClasses = new HashMap<Identifier, ObjCClass>();
+	Map<Struct.Type, Map<Identifier, Struct>> classes = new TreeMap<Struct.Type, Map<Identifier, Struct>>();
+	Map<Identifier, Map<String, Struct>> objCCategoriesByTargetType = new HashMap<Identifier, Map<String,Struct>>();
+	Map<String, Struct> objCCategoriesByName = new HashMap<String, Struct>();
 	//Set<String> 
 		//cStructNames = new HashSet<String>(), 
 		//enumNames = new HashSet<String>();
@@ -99,6 +105,12 @@ public class Result extends Scanner {
 		if (list == null)
 			m.put(key, list = new ArrayList<T>());
 		return list;
+	}
+	static <T, U, V> Map<U, V> getMap(Map<T, Map<U, V>> m, T key) {
+		Map<U, V> map = m.get(key);
+		if (map == null)
+			m.put(key, map = new HashMap<U, V>());
+		return map;
 	}
 	
 	public Identifier findFakePointer(Identifier name) {
@@ -142,39 +154,6 @@ public class Result extends Scanner {
 		getList(definesByLibrary, getLibrary(define)).add(define);
 	}
 	
-	ObjCClass getObjCClass(Identifier name) {
-		ObjCClass c = objCClasses.get(name);
-		if (c == null)
-			objCClasses.put(name, c = new ObjCClass(this));
-		return c;
-	}
-	public void addObjCClass(Struct c) {
-		if (c.isForwardDeclaration())
-			return;
-		
-		ObjCClass cc = getObjCClass(c.getTag());
-		if (c.getCategoryName() != null)
-			cc.categories.add(c);
-//		else if (!c.getProtocols().isEmpty())
-//			cc.protocols.add(c);
-		else {
-			if (cc.type != null) {
-				SourceFile sourceFile = c.findParentOfType(SourceFile.class);
-				String f = sourceFile.getElementFile();
-				if (f != null) {
-					String fileName = new File(f).getName();
-					SourceFile sourceFile2 = cc.type.findParentOfType(SourceFile.class);
-					String fileName2 = new File(sourceFile2.getElementFile()).getName();
-					System.err.println("Class " + c.getTag() + " defined more than once (in " + fileName + " and " + fileName2 +")");
-				} else {
-					System.err.println("Class " + c.getTag() + " defined more than once");
-				}
-			} else {
-				//cc.javaPackage = aerator.getOutputJavaPackage(c);
-				cc.type = c;
-			}
-		}
-	}
 	
 	@Override
 	public void visitEnum(Enum e) {
@@ -304,7 +283,15 @@ public class Result extends Scanner {
 				break;
 			case ObjCClass:
 			case ObjCProtocol:
-				addObjCClass(struct);
+				if (struct.isForwardDeclaration())
+					break;
+				
+				if (struct.getCategoryName() != null) {
+					getMap(objCCategoriesByTargetType, struct.getTag()).put(struct.getCategoryName(), struct);
+					objCCategoriesByName.put(struct.getCategoryName(), struct);
+				} else
+					getMap(classes, struct.getType()).put(struct.getTag(), struct);
+				
 				break;
 			default:
 				struct = null;
@@ -358,5 +345,13 @@ public class Result extends Scanner {
 		}
 		javaPackages.addAll(javaPackageByLibrary.values());
 		
+	}
+	public Struct getObjcCClassOrProtocol(Identifier name) {
+		Struct s = getMap(classes, Type.ObjCClass).get(name);
+		if (s == null)
+			s = getMap(classes, Type.ObjCProtocol).get(name);
+		if (s == null)
+			s = objCCategoriesByName.get(name.toString());
+		return s;
 	}
 }
