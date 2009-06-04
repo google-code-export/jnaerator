@@ -26,11 +26,15 @@ import java.util.List;
 import org.rococoa.NSClass;
 import org.rococoa.Rococoa;
 
+import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
+import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
+import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Modifier;
+import com.ochafik.lang.jnaerator.parser.Statement;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
@@ -39,11 +43,18 @@ import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
+import com.ochafik.lang.jnaerator.parser.Statement.Block;
+import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.CompoundCollection;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 class ObjCClass {
+	private static final boolean AUTO_RELEASE_IN_FACTORIES = false;
+
 	/**
 	 * 
 	 */
@@ -85,6 +96,15 @@ class ObjCClass {
 				continue;
 			out.println("import " + pn + ".*;");
 		}
+		for (String otherLibrary : result.libraries) {
+			if (otherLibrary == null)
+				continue;
+			
+			String otherJavaPackage = result.javaPackageByLibrary.get(otherLibrary);
+			SimpleIdentifier otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
+			out.println("import static " + (otherJavaPackage == null  || otherJavaPackage.length() == 0 ? "" : otherJavaPackage + ".") + otherLibraryClassName + ".*;");
+		}
+		
 		out.println("import org.rococoa.ID;");
 		if (!"NSObject".equals(type.getTag()))
 			out.println("import org.rococoa.NSObject;");
@@ -244,8 +264,9 @@ class ObjCClass {
 		
 		Identifier className = type.getTag();
 		final Struct instanceStruct = new Struct();
-		instanceStruct.setType(Struct.Type.JavaInterface);
-		instanceStruct.addModifiers(Modifier.Public);
+		instanceStruct.setType(Struct.Type.JavaClass);
+		//instanceStruct.addParent(ident(NSClass.class));
+		instanceStruct.addModifiers(Modifier.Public, Modifier.Abstract);
 		instanceStruct.setTag(className);
 		instanceStruct.setParents(extensions);
 		
@@ -271,21 +292,24 @@ class ObjCClass {
 		
 		//Struct classStruct = new Struct();
 		//classStruct.setName(superType)
+		String classClassName = "_Class", classInstanceName = "CLASS";
+		
 		StoredDeclarations classHolder = new VariablesDeclaration();
-		classHolder.setValueType(new TypeRef.SimpleTypeRef("_Class"));
+		classHolder.addModifiers(Modifier.Private);
+		classHolder.setValueType(new TypeRef.SimpleTypeRef(classClassName));
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
 		call.addArgument(expr(Constant.Type.String, type.getTag().toString()));
-		call.addArgument(memberRef(expr(typeRef("_Class")), MemberRefStyle.Dot, "class"));
-		classHolder.addDeclarator(new Declarator.DirectDeclarator("CLASS", call));
+		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
+		classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName, call));
 		
 		instanceStruct.addDeclaration(classHolder);
 		//s.append("\tpublic static final _Class CLASS = org.rococoa.Rococoa.createClass(\"" + type.getName() + "\", _Class.class);\n");
 	
 		Struct classStruct = new Struct();
-		classStruct.setTag(ident("_Class"));
+		classStruct.setTag(ident(classClassName));
 		classStruct.setType(Struct.Type.JavaInterface);
-		classStruct.addParent(ident(NSClass.class));
 		classStruct.addModifiers(Modifier.Public);
+		classStruct.addParent(ident(NSClass.class));
 		
 		instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
 		
@@ -298,19 +322,126 @@ class ObjCClass {
 	
 		Signatures signatures = new Signatures();
 		
+		boolean hasAlloc = false;
 		for (Declaration d : declarations) {
 			if (d instanceof Function) {
 				Function f = (Function)d;
-				result.declarationsConverter.convertFunction(f, signatures, false, f.getModifiers().contains(Modifier.Static) ? classStruct : instanceStruct, fullClassName);
+				if (f.getArgs().isEmpty() && "alloc".equals(f.getName())) {
+					hasAlloc = true;
+					break;
+				}
 			}
 		}
+		if (!hasAlloc)
+			type.addDeclaration(new Function(Function.Type.ObjCMethod, ident("alloc"), typeRef(instanceStruct.getTag())).addModifiers(Modifier.Static));
 		
-		boolean hasAllocator = false;
+		int[] iChild = new int[1];
+		for (Declaration d : declarations) {
+			if (d instanceof Function) {
+				Function f = (Function)d;
+				List<Declaration> decls = new ArrayList<Declaration>();
+				result.declarationsConverter.convertFunction(f, signatures, false, new DeclarationsHolder.ListWrapper(decls), fullClassName);
+				
+				if (f.getModifiers().contains(Modifier.Static)) {
+					for (Declaration decl : decls) {
+						classStruct.addDeclaration(decl);
+						
+						if (decl instanceof Function) {
+							Function meth = (Function)decl;
+							//String name = meth.getName().toString();
+//							
+							Function proxyCopy = meth.clone();
+							proxyCopy.addModifiers(Modifier.Public, Modifier.Final, Modifier.Static);
+							Expression[] args = new Expression[meth.getArgs().size()];
+							int i = 0;
+							for (Arg arg : meth.getArgs())
+								args[i++] = varRef(arg.getName());
+							
+							Expression val = methodCall(varRef(classInstanceName), Expression.MemberRefStyle.Dot, meth.getName().toString(), args);
+							proxyCopy.setBody(new Block(
+								meth.getValueType() == null ? stat(val) : new Statement.Return(val)
+							));
+							instanceStruct.addDeclaration(proxyCopy);
+						}
+					}
+				} else {
+					for (Declaration decl : decls) {
+						instanceStruct.addDeclaration(decl);
+						
+						if (decl instanceof Function) {
+							Function meth = (Function)decl;
+							String name = meth.getName().toString();
+							if (name.matches("^init([A-Z].*|)$"))
+							//if (name.startsWith("init") && (name.equals("init") || !Character.isUpperCase(name.charAt("init".length())))) 
+							{
+								
+								// add createXXXWithYYY factories
+								Function createCopy = meth.clone();
+								createCopy.setCommentBefore("Factory method");
+								createCopy.addToCommentBefore("@see #" + meth.computeSignature(false));
+								createCopy.setName(ident("create" + name.substring("init".length())));
+								createCopy.addModifiers(Modifier.Public, Modifier.Final, Modifier.Static);
+								Expression[] args = new Expression[meth.getArgs().size()];
+								int i = 0;
+								for (Arg arg : meth.getArgs())
+									args[i++] = varRef(arg.getName());
+								
+								Expression val = methodCall(
+									methodCall(
+										varRef(classInstanceName), 
+										Expression.MemberRefStyle.Dot, 
+										"alloc"
+									), 
+									Expression.MemberRefStyle.Dot, 
+									meth.getName().toString(), 
+									args
+								);
+								
+								if (AUTO_RELEASE_IN_FACTORIES) {
+									val = methodCall(val, MemberRefStyle.Dot, "autorelease");
+									val =
+										methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "cast",
+											val,
+											memberRef(expr(typeRef(instanceStruct.getTag())), MemberRefStyle.Dot, "class")
+										)
+									;
+								}
+								createCopy.setBody(new Block(new Statement.Return(val)));
+								instanceStruct.addDeclaration(createCopy);
+								
+								//methCopy = meth.clone();
+							}
+						}
+					}
+				}
+//			} else if (d instanceof VariablesDeclaration) {
+//				result.declarationsConverter.convertVariablesDeclaration((VariablesDeclaration)d, instanceStruct, iChild, fullClassName);
+			} else if (d instanceof TaggedTypeRefDeclaration) {
+				TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
+				if (tr instanceof Struct) {
+					result.declarationsConverter.convertStruct((Struct)tr, signatures, instanceStruct, fullClassName);
+				} else if (tr instanceof Enum) {
+					result.declarationsConverter.convertEnum((Enum)tr, signatures, instanceStruct, fullClassName);
+				}
+			} else if (d instanceof TypeDef) {
+				TypeDef td = (TypeDef)d;
+				TypeRef tr = td.getValueType();
+				if (tr instanceof Struct) {
+					result.declarationsConverter.convertStruct((Struct)tr, signatures, instanceStruct, fullClassName);
+				} else if (tr instanceof FunctionSignature) {
+					result.declarationsConverter.convertCallback((FunctionSignature)tr, signatures, instanceStruct, fullClassName);
+				}
+			}
+			iChild[0]++;
+		}
+		
+		/*boolean hasAllocator = false;
 		for (Declaration d : classStruct.getDeclarations()) {
 			if (!(d instanceof Function))
 				continue;
 			Function f = (Function)d;
-			if (className.equals(String.valueOf(f.getValueType()))) {
+			if ("alloc".equals(f.getName().toString())) {
+			//if (className.equals(String.valueOf(f.getValueType()))) {
 				hasAllocator = true;
 				break;
 			}
@@ -320,7 +451,7 @@ class ObjCClass {
 			//if (!signatures.contains(initMeth.computeSignature(false))) {
 				classStruct.addDeclaration(initMeth);
 			//}
-		}
+		}*/
 		
 		return instanceStruct;
 	}
