@@ -69,6 +69,7 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
+import javax.tools.Diagnostic.Kind;
 
 import org.rococoa.NSClass;
 
@@ -139,11 +140,17 @@ public class JNAeratorStudio extends JPanel {
 	public void error(String title, String message, Throwable th) {
 		StringWriter sw = new StringWriter();
 		th.printStackTrace(new PrintWriter(sw));
+		JScrollPane jsp = new JScrollPane(new JTextArea(sw.toString())) {
+			public Dimension getMaximumSize() {
+				return new Dimension(500, 500);
+			};
+		};
+//		jsp.setMaximumSize(new Dimension(500, 500));
 		JOptionPane.showMessageDialog(
 			this,
 			new Object[] {
 				message, 
-				new JScrollPane(new JTextArea(sw.toString()))
+				jsp
 			},
 			title == null ? "JNAeratorStudio Error" : title,
 			-1
@@ -471,12 +478,15 @@ public class JNAeratorStudio extends JPanel {
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+				if (diagnostic.getKind() == Kind.ERROR)
 				//diagnostic.getKind()
 				//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
-				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(getLocale()));//.toUri());
+					sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(getLocale()));//.toUri());
 			}
-			System.out.println(sb);
-			throw new SyntaxException(sb.toString());
+			if (sb.length() > 0) {
+				System.out.println(sb);
+				throw new SyntaxException(sb.toString());
+			}
 		}
 		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true, null);
 		showJarButton.setEnabled(true);

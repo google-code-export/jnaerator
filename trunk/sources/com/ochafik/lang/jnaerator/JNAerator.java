@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import javax.tools.Diagnostic;
@@ -63,7 +62,6 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
-import com.ochafik.lang.jnaerator.parser.Expression.MemberRef;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;

@@ -861,27 +861,33 @@ public class TypeConversion {
 		unknownTypes.add(String.valueOf(valueType));
 		throw new UnsupportedConversionException(valueType, null);
 	}
-	private TypeRef findObjCClass(Identifier name) {
+	public Identifier findObjCClassIdent(Identifier name) {
 
+		if (!name.isPlain())
+			return name;
+		
 		if (name.equals("id"))
-			return typeRef(NSObject.class);
+			return ident(NSObject.class);
 	
 		if (name.equals("SEL"))
-			return typeRef(org.rococoa.Selector.class);
+			return ident(org.rococoa.Selector.class);
 		
 		if (name.equals("Class"))
-			return typeRef(org.rococoa.NSClass.class);
+			return ident(org.rococoa.NSClass.class);
 		
 		if (name.equals("Protocol"))
-			return typeRef(org.rococoa.NSClass.class);
+			return ident(org.rococoa.NSClass.class);
 		
 		if (name.equals("NSObject"))
-			return typeRef(org.rococoa.NSObject.class);
+			return ident(org.rococoa.NSObject.class);
 		
 		Struct s = result.getObjcCClassOrProtocol(name);
 		if (s != null)
-			return typeRef(result.objectiveCGenerator.getFullClassName(s));
+			return result.objectiveCGenerator.getFullClassName(s);
 		return null;
+	}
+	public TypeRef findObjCClass(Identifier name) {
+		return typeRef(findObjCClassIdent(name));
 	}
 
 	private TypeRef arrayRef(TypeRef tr) {

@@ -258,7 +258,8 @@ public class DeclarationsConverter {
 				//ex.printStackTrace();
 				resultingExpression = null;
 			}
-			if (failedOnceForThisEnum || (failedOnceForThisEnum = resultingExpression == null))
+			failedOnceForThisEnum = failedOnceForThisEnum || resultingExpression == null;
+			if (failedOnceForThisEnum)
 				out.addDeclaration(skipDeclaration(item));
 			else {
 				try {

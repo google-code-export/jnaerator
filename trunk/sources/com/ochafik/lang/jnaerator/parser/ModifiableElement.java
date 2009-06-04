@@ -20,6 +20,7 @@ package com.ochafik.lang.jnaerator.parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public abstract class ModifiableElement extends Element {
@@ -78,6 +79,10 @@ public abstract class ModifiableElement extends Element {
 
 	public ModifiableElement addModifiers(Modifier... mds) {
 		return addModifiers(Arrays.asList(mds));
+	}
+	public ModifiableElement reorganizeModifiers() {
+		setModifiers(new ArrayList<Modifier>(new LinkedHashSet<Modifier>(getModifiers())));
+		return this;
 	}
 
 	public List<Modifier> getModifiers() {

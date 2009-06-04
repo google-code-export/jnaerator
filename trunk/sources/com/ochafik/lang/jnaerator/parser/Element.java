@@ -218,7 +218,7 @@ public abstract class Element {
 		
 		return "/**" + LINE_SEPARATOR + indent + content.replace("\\u", "\\\\u") + " */" + suffix;
 	}
-	static final boolean //allowSingleLineDoc = true, 
+	private static boolean //allowSingleLineDoc = true, 
 		beginEachCommentLineWithStar = true;
 	
 
