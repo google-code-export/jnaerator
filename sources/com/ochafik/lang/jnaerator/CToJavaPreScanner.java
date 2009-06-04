@@ -34,6 +34,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.MutableByDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 
 public class CToJavaPreScanner extends Scanner {
 	public CToJavaPreScanner() {
@@ -55,6 +56,18 @@ public class CToJavaPreScanner extends Scanner {
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
 		// TODO Auto-generated method stub
 		super.visitFunctionSignature(functionSignature);
+	}
+	
+	@Override
+	public void visitTaggedTypeRefDeclaration(TaggedTypeRefDeclaration taggedTypeRefDeclaration) {
+		super.visitTaggedTypeRefDeclaration(taggedTypeRefDeclaration);
+		TaggedTypeRef tr = taggedTypeRefDeclaration.getTaggedTypeRef();
+		if (tr != null) {
+			String before = tr.getCommentBefore();
+			tr.setCommentBefore(taggedTypeRefDeclaration.getCommentBefore());
+			tr.addToCommentBefore(before);
+			taggedTypeRefDeclaration.setCommentBefore(null);
+		}
 	}
 	
 	@Override
