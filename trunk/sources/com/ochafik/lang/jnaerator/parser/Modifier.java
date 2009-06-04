@@ -100,6 +100,7 @@ public enum Modifier {
 	//Transient(Kind.TypeQualifier, Kind.Java), 
 	
 	Public(Kind.Publicity),
+	Abstract(Kind.Publicity),
 	Final(Kind.Publicity),
 	Private(Kind.Publicity), 
 	Protected(Kind.Publicity),
