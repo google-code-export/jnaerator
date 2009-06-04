@@ -26,7 +26,6 @@ import java.util.Collection;
 import javax.swing.tree.TreeNode;
 
 import com.ochafik.beans.BeansUtils;
-import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.reflect.GettersAndSettersHelper;
 

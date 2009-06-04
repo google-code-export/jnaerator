@@ -63,6 +63,7 @@ public class JNAeratorParser {
 			this.text = text;
 		}
 	}
+	private static final boolean EASILY_DEBUGGABLE_BUT_FRAGILE_PARSING_MODE = false;
 	
 	private static List<Slice> cutSourceContentInSlices(String sourceContent, PrintStream originalOut) {
 		StringBuffer currentEmptyLines = new StringBuffer();
@@ -193,7 +194,7 @@ public class JNAeratorParser {
 		System.setOut(pout);
 		System.setErr(pout);
 		try {
-			if (false) {
+			if (EASILY_DEBUGGABLE_BUT_FRAGILE_PARSING_MODE) {
 				// easier to debug but any error might ruin all the rest of the parsing
 				try {
 					ObjCppParser parser = newObjCppParser(sourceContent, config.verbose);
