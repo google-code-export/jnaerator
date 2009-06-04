@@ -109,6 +109,12 @@ public enum Modifier {
 	__inline(Inline),
 	__inline__(Inline),
 
+	In(Kind.ObjC),
+	Out(Kind.ObjC),
+	InOut(Kind.ObjC),
+	ByCopy(Kind.ObjC),
+	ByRef(Kind.ObjC),
+
 	Align(Kind.Declspec, Kind.HasArguments),
 	Allocate(Kind.Declspec, Kind.HasArguments),
 	AppDomain(Kind.Declspec),
