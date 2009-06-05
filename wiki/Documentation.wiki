@@ -1,8 +1,6 @@
 #summary Behaviour of JNAerator for different inputs
 #labels Featured
 
-<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense728x90.xml" border="0" width="728" height="90" />
-
 <wiki:gadget  url="http://jnaerator.googlecode.com/svn/wiki/adsense728x90.xml" border="0" width="468" height="60" />
 
 <wiki:toc max_depth="3" />
