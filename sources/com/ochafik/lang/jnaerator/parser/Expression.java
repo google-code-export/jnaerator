@@ -1131,7 +1131,7 @@ public abstract class Expression extends Element {
 
 	public static class Constant extends Expression {
 		public enum Type {
-			Int, String, Char, IntegerString, Float, Short, Byte, Long, UInt, Double, LongString, ULong, Bool
+			Int, String, Char, IntegerString, Float, Short, Byte, Long, UInt, Double, LongString, ULong, Bool, Null
 		}
 		public enum IntForm {
 			Hex, Octal, String, Decimal
@@ -1256,6 +1256,9 @@ public abstract class Expression extends Element {
 				b.append("");
 			else {
 				switch (getType()) {
+				case Null:
+					b.append("null");
+					break;
 				case Byte:
 				case Double:
 				case Int:
