@@ -26,6 +26,9 @@ import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOp;
+import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOperator;
+import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
@@ -36,7 +39,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.CompoundCollection;
 
 public class ObjectiveCGenerator {
-	String classClassName = "_class_", classInstanceName = "_CLASS_";
+	String classClassName = "_class_", classInstanceName = "_CLASS_", classInstanceGetterName = "_getCLASS_";
 	boolean AUTO_RELEASE_IN_FACTORIES = false;
 
 	public ObjectiveCGenerator(Result result) {
@@ -102,15 +105,16 @@ public class ObjectiveCGenerator {
 		
 		Struct classStruct = new Struct();
 		classStruct.setTag(ident(classClassName));
-		classStruct.setType(Struct.Type.JavaInterface);
-		classStruct.addModifiers(Modifier.Public);
+		classStruct.setType(Struct.Type.JavaClass);
+		classStruct.addModifiers(Modifier.Public, Modifier.Abstract);
 		
 		List<Identifier> 
 			parentsForInstance = new ArrayList<Identifier>(in.getParents()),
 			parentsForClass = new ArrayList<Identifier>(in.getParents());
 		if (parentsForInstance.isEmpty() && !isProtocol && !in.getTag().equals(NSObjectIdent))
 			parentsForInstance.add(NSObjectIdent);
-		if (parentsForClass.isEmpty())
+//		if (parentsForClass.isEmpty())
+		parentsForClass.clear();
 			parentsForClass.add(NSClassIdent);
 				
 		for (Identifier p : parentsForInstance) {
@@ -121,7 +125,9 @@ public class ObjectiveCGenerator {
 		for (Identifier p : parentsForClass) {
 			Identifier id = result.typeConverter.findObjCClassIdent(p);
 			if (id != null)
-				classStruct.addParent(ident(id.clone(), classClassName));
+				classStruct.addParent(
+						id.clone());
+						//ident(id.clone(), classClassName));
 		}
 		
 		for (Identifier p : in.getProtocols()) {
@@ -148,20 +154,43 @@ public class ObjectiveCGenerator {
 		
 		StoredDeclarations classHolder = new VariablesDeclaration();
 		if (!isProtocol)
-			classHolder.addModifiers(Modifier.Protected, Modifier.Static);
+			classHolder.addModifiers(Modifier.Private, Modifier.Static);
 		classHolder.setValueType(typeRef(classClassName));
+		
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
 		call.addArgument(expr(Constant.Type.String, in.getTag().toString()));
 		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
-		classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName, call));
+		classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName));
 		
+		Function classGetter = new Function(Function.Type.JavaMethod, ident(classInstanceGetterName), typeRef(classClassName));
+		classGetter.addModifiers(Modifier.Private, Modifier.Static);
+		classGetter.setBody(new Block(
+			new Statement.If(
+				expr(
+					varRef(classInstanceName), 
+					BinaryOperator.IsEqual, 
+					new Constant(Constant.Type.Null, null)
+				),
+				new Statement.ExpressionStatement(
+					new AssignmentOp(
+						varRef(classInstanceName), 
+						AssignmentOperator.Equal, 
+						call
+					)
+				),
+				null
+			),
+			new Statement.Return(varRef(classInstanceName))
+		));
 		if (!isProtocol)
 			addAllocIfMissing(in);
 		outputMembers(in, instanceStruct, classStruct, declarations);
 		
 		if (!classStruct.getDeclarations().isEmpty()) {
-			instanceStruct.addDeclaration(classHolder);
 			instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
+			instanceStruct.addDeclaration(classHolder);
+			instanceStruct.addDeclaration(classGetter);
+			
 		}
 			
 		return instanceStruct;
@@ -212,12 +241,15 @@ public class ObjectiveCGenerator {
 							for (Arg arg : meth.getArgs())
 								args[i++] = varRef(arg.getName());
 							
-							Expression val = methodCall(varRef(classInstanceName), Expression.MemberRefStyle.Dot, meth.getName().toString(), args);
+							Expression val = methodCall(methodCall(null, null, classInstanceGetterName), Expression.MemberRefStyle.Dot, meth.getName().toString(), args);
 							proxyCopy.setBody(new Block(
 								meth.getValueType() == null ? stat(val) : new Statement.Return(val)
 							));
 							instanceStruct.addDeclaration(proxyCopy);
 						}
+
+						if (classStruct.getType() == Type.JavaClass)
+							decl.addModifiers(Modifier.Public, Modifier.Abstract);
 					}
 				} else {
 					for (Declaration decl : decls) {
@@ -246,7 +278,7 @@ public class ObjectiveCGenerator {
 								
 								Expression val = methodCall(
 									methodCall(
-										varRef(classInstanceName), 
+										methodCall(null, null, classInstanceGetterName), 
 										Expression.MemberRefStyle.Dot, 
 										"alloc"
 									), 
@@ -297,5 +329,11 @@ public class ObjectiveCGenerator {
 		}
 
 	}
+	
+//	protected static _class_ _CLASS_ = org.rococoa.Rococoa.createClass("NSURL", _class_.class);
+//	public abstract class _class_ extends 
+//		org.rococoa.NSClass {
+//		//org.rococoa.NSObject._class_ {
+//	}
 	
 }
