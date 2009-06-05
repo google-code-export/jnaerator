@@ -1,5 +1,6 @@
 #summary Credits, included libraries and licenses
 #labels Featured
+<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense.xml" border="0" width="468" height="60" />
 
 = Overview =
 
