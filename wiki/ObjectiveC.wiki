@@ -1,5 +1,5 @@
 #summary Details on JNAerator's support of Objective-C and MacOS X frameworks
-<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense.xml" border="0" width="468" height="60" />
+<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense728x90.xml" border="0" width="468" height="60" />
 
 = Warning =
 
