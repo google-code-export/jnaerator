@@ -1,7 +1,7 @@
-#labels Manual
-<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense.xml" border="0" width="468" height="60" />
-
 #summary General information about JNAerator
+#labels Manual
+
+<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense.xml" border="0" width="468" height="60" />
 
 = Credits & License =
 
