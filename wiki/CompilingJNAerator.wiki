@@ -1,5 +1,5 @@
 #summary Instructions on how to compile and JNAerator from sources
-<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense728x90.xml" border="0" width="728" height="90" />
+#sidebar sidebar
 
 
 Checkout the latest sources (you'll need SVN installed) : 

@@ -1,5 +1,5 @@
 #summary Technical links on parsing, complex computer language features and runtime internals
-<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense728x90.xml" border="0" width="728" height="90" />
+#sidebar sidebar
 
 = Parsing = 
 
