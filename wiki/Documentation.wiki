@@ -1,6 +1,5 @@
 #summary Behaviour of JNAerator for different inputs
 #labels Featured
-
 #sidebar sidebar
 
 <wiki:toc max_depth="3" />
