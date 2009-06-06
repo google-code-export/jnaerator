@@ -1,5 +1,5 @@
 #summary Simple Meaningful Example : C header with its JNAerated interface.
-#sidebar sidebare
+#sidebar sidebar
 
 = Input Header =
 
