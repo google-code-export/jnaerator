@@ -11,6 +11,7 @@
 	/>
 	<Content type="html">
 		<![CDATA[
+			<div align="center">
 			<script type="text/javascript"><!--
 				google_ad_client = "pub-0875912875934642";
 				/* 120x600, date de crŽation 06/06/09 */
@@ -22,6 +23,7 @@
 			<script type="text/javascript"
 				src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 			</script>
+			</div>
 		]]>
 	</Content>
 </Module>
