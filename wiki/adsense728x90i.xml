@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+	<ModulePrefs 
+		author="Olivier Chafik" 
+		author_link="http://ochafik.free.fr/" 
+		author_email="olivier.chafik@gmail.com" 
+		description="Adsense will help support my OpenSource developments" 
+		title="AdSense" 
+		title_url="http://ochafik.free.fr/"
+		height="60"
+	/>
+	<Content type="html">
+		<![CDATA[
+			<script type="text/javascript"><!--
+	google_ad_client = "pub-0875912875934642";
+	/* 728x90i, date de création 06/06/09 */
+	google_ad_slot = "1845638355";
+	google_ad_width = 728;
+	google_ad_height = 90;
+	//-->
+	</script>
+	<script type="text/javascript"
+	src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+	</script>
+		]]>
+	</Content>
+</Module>
