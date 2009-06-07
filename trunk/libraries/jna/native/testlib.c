@@ -201,6 +201,11 @@ returnStringArgument(char *arg) {
   return arg;
 }
 
+EXPORT void*
+returnObjectArgument(void* arg) {
+  return arg;
+}
+
 EXPORT wchar_t* 
 returnWStringMagic() {
   return MAGICWSTRING;
@@ -757,7 +762,15 @@ callInt32StdCallCallback(int32_t (__stdcall *func)(int32_t arg, int32_t arg2),
   }
   return value;
 }
+
 #endif /* _WIN32 && !_WIN64 */
+
+#include <jni.h>
+#include <math.h>
+JNIEXPORT jdouble JNICALL
+Java_com_sun_jna_RawTest_00024JNI_cos(JNIEnv *env, jclass cls, jdouble x) {
+  return cos(x);
+}
 
 #ifdef __cplusplus
 }

@@ -42,7 +42,7 @@
   <property name="jni.revision" value="0"/>
   <property name="jni.build" value="${build.number}"/>
   <property name="jni.version" value="${jni.major}.${jni.minor}.${jni.revision}"/>
-  <property name="jni.md5" value="892beacd437514d23ed9b1cefeb2ead6"/>
+  <property name="jni.md5" value=""/>
   <property name="spec.title" value="Java Native Access (JNA)"/>
   <property name="spec.vendor" value="${vendor}"/>
   <property name="spec.version" value="${jna.major}"/>
@@ -64,8 +64,11 @@
   <target name="compile-single" depends="compile"/>
 
   <target name="-dynamic-properties">
-    <echo>Java version: ${java.version}, compatibility: ${compatibility}</echo>
-    <echo>JNA version ${jna.version}, native API version ${jni.version}</echo>
+    <echo>Java version ${java.version}, compatibility: ${compatibility}</echo>
+    <echo>JNA version ${jna.version}, native ${jni.version}</echo>
+    <echo>${java.vm.name} (${java.vm.vendor}, ${java.vm.version})</echo>
+    <echo>${java.home}</echo>
+    <echo>${java.library.path}</echo>
 
     <replaceregexp match="(&lt;version&gt;).*(&lt;/version&gt;)"
                    replace="\1${jna.version}\2" 
@@ -83,6 +86,12 @@
         <os arch="amd64"/>
       </or>
     </condition>
+    <condition property="ld.preload" value="LD_PRELOAD_64" else="LD_PRELOAD">
+      <and>
+        <os name="SunOS"/>
+        <equals arg1="${vm.arch}" arg2="-d64"/>
+      </and>
+    </condition>
     <property name="build" value="build${vm.arch}"/>
     <property name="classes" location="${build}/classes"/>
     <property name="eclipse.classes" location="build.eclipse/classes"/>
@@ -90,19 +99,18 @@
     <property name="reports" value="${build}/reports"/>
 
     <!-- Add other supported platforms here -->
+    <condition property="jre.arch" value="i386">
+      <equals arg1="x86" arg2="${os.arch}"/>
+    </condition>
+    <condition property="jre.arch" value="amd64">
+      <equals arg1="x86_64" arg2="${os.arch}"/>
+    </condition>
+    <property name="jre.arch" value="${os.arch}"/>
+    <condition property="os.prefix" value="linux-${jre.arch}">
+      <os name="Linux"/>
+    </condition>
     <condition property="os.prefix" value="win32-${os.arch}">
       <os family="windows"/>
-    </condition>
-    <condition property="os.prefix" value="linux-i386">
-      <!-- IBM's J9 reports 'x86' -->
-      <and><os name="Linux"/><os arch="x86"/></and>
-    </condition>
-    <condition property="os.prefix" value="linux-amd64">
-      <!-- Debian reports 'x86_64' -->
-      <and><os name="Linux"/><os arch="x86_64"/></and>
-    </condition>
-    <condition property="os.prefix" value="linux-${os.arch}">
-      <os name="Linux"/>
     </condition>
     <!-- Darwin builds are universal, no arch required -->
     <condition property="os.prefix" value="darwin">
@@ -125,7 +133,10 @@
       <available file="${java.home}/../include"/>
     </condition>
     <fail unless="jdk.home" message="JAVA_HOME/java.home must be a JDK, not JRE"/>
-
+    <condition property="libjsig"
+               value="${java.home}/lib/${jre.arch}/libjsig.so" else="">
+      <available file="${java.home}/lib/${jre.arch}/libjsig.so"/>
+    </condition>
     <property name="native.jar" value="${os.prefix}.jar"/>
     <property name="build.native" location="${build}/native"/>
     <property name="md5.file" location="${build.native}/sig"/>
@@ -187,7 +198,7 @@
       </srcfiles>
     </uptodate>
   </target>
-  <target name="jar" depends="-setup,native,:jar" unless="-jar"
+  <target name="jar" depends="-setup,:jar" unless="-jar"
           description="Build primary jar">
     <jar jarfile="${build}/${jar}">
       <manifest>
@@ -206,7 +217,7 @@
       </fileset>
     </jar>
   </target>
-  <target name="examples" depends="jar,native">
+  <target name="examples" depends="jar">
     <jar jarfile="${build}/examples.jar">
       <manifest>
         <attribute name="Class-Path" value="jna.jar"/>
@@ -244,7 +255,10 @@
     <fixcrlf srcdir="${build.native}" includes="sig" eol="unix"/>
     <checksum property="md5" file="${md5.file}" />
     <condition property="jni.valid" value="true">
-      <equals arg1="${jni.md5}" arg2="${md5}" trim="true"/>
+      <or>
+        <equals arg1="${jni.md5}" arg2="${md5}" trim="true"/>
+        <equals arg1="${jni.md5}" arg2=""/>
+      </or>
     </condition>
   </target>
 
@@ -380,7 +394,7 @@
     </jar>
   </target>
 
-  <target name="compile-tests" depends="compile,native"
+  <target name="compile-tests" depends="compile"
           description="Compile all test code">
     <javac classpathref="compile-test.path"
            source="${test.compatibility}"
@@ -423,6 +437,8 @@
     <property name="tests.platform" value=""/>
     <property name="tests.exclude" value=""/>
     <junit printsummary="yes" fork="${test.fork}" failureproperty="testfailure">
+      <!-- avoid VM conflicts with JNA protected mode -->
+      <env key="${ld.preload}" file="${libjsig}"/>
       <jvmarg value="-Djna.library.path=${build.native}"/>
       <!-- Avoid VM crashes, if possible -->
       <jvmarg value="-Djna.protected=true"/>
@@ -489,7 +505,7 @@
       <doctitle>JNA API Documentation</doctitle>
       <header>${header}</header>
       <bottom>${footer}</bottom>
-      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+      <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
 
       <packageset dir="${src}" defaultexcludes="yes">
         <patternset>
@@ -506,7 +522,7 @@
     </javadoc>
   </target>
 
-  <target name="dist" depends="jar,compile-tests,native,examples,javadoc"
+  <target name="dist" depends="jar,compile-tests,examples,javadoc"
           description="Build distribution files">
     <jar jarfile="${dist}/jna.jar" duplicate="preserve">
       <manifest>

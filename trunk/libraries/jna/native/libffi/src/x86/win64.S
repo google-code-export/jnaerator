@@ -121,12 +121,82 @@ ffi_call_win64 PROC FRAME
 	movd	rcx, xmm0
 
 	call	QWORD PTR FN[rbp]
-ret_int$:
- 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_INT
- 	jne	ret_float$
+ret_struct4b$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SMALL_STRUCT_4B
+ 	jne	ret_struct2b$
 
 	mov	rcx, QWORD PTR RVALUE[rbp]
 	mov	DWORD PTR [rcx], eax
+	jmp	ret_void$
+
+ret_struct2b$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SMALL_STRUCT_2B
+ 	jne	ret_struct1b$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	mov	WORD PTR [rcx], ax
+	jmp	ret_void$
+
+ret_struct1b$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SMALL_STRUCT_1B
+ 	jne	ret_uint8$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	mov	BYTE PTR [rcx], al
+	jmp	ret_void$
+
+ret_uint8$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_UINT8
+ 	jne	ret_sint8$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	movzx   rax, al
+	mov	QWORD PTR [rcx], rax
+	jmp	ret_void$
+
+ret_sint8$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SINT8
+ 	jne	ret_uint16$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	movsx   rax, al
+	mov	QWORD PTR [rcx], rax
+	jmp	ret_void$
+
+ret_uint16$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_UINT16
+ 	jne	ret_sint16$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	movzx   rax, ax
+	mov	QWORD PTR [rcx], rax
+	jmp	SHORT ret_void$
+
+ret_sint16$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SINT16
+ 	jne	ret_uint32$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	movsx   rax, ax
+	mov	QWORD PTR [rcx], rax
+	jmp	SHORT ret_void$
+
+ret_uint32$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_UINT32
+ 	jne	ret_sint32$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	mov     eax, eax
+	mov	QWORD PTR [rcx], rax
+	jmp	SHORT ret_void$
+
+ret_sint32$:
+ 	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SINT32
+ 	jne	ret_float$
+
+	mov	rcx, QWORD PTR RVALUE[rbp]
+	cdqe
+	mov	QWORD PTR [rcx], rax
 	jmp	SHORT ret_void$
 
 ret_float$:
@@ -134,18 +204,18 @@ ret_float$:
  	jne	SHORT ret_double$
 
  	mov	rax, QWORD PTR RVALUE[rbp]
- 	movlpd	QWORD PTR [rax], xmm0
+ 	movss	DWORD PTR [rax], xmm0
  	jmp	SHORT ret_void$
 
 ret_double$:
  	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_DOUBLE
- 	jne	SHORT ret_int64$
+ 	jne	SHORT ret_sint64$
 
  	mov	rax, QWORD PTR RVALUE[rbp]
  	movlpd	QWORD PTR [rax], xmm0
  	jmp	SHORT ret_void$
 
-ret_int64$:
+ret_sint64$:
   	cmp	DWORD PTR CIF_FLAGS[rbp], FFI_TYPE_SINT64
   	jne	ret_void$
 
@@ -154,7 +224,7 @@ ret_int64$:
  	jmp	SHORT ret_void$
 	
 ret_void$:
-	xor	eax, eax
+	xor	rax, rax
 
 	lea	rsp, QWORD PTR [rbp+16]
 	pop	rbp
@@ -245,7 +315,7 @@ _ffi_call_win64:
 	mov	CIF_BYTES(%rbp),%eax
 	add	$15, %rax
 	and	$-16, %rax
-	#callq	___chkstk
+	callq	___chkstk
 	cmpq	$0x1000, %rax
 	jb	Lch_done
 Lch_probe:
@@ -279,24 +349,82 @@ Lch_done:
 	movd	%xmm0, %rcx
 
 	callq	*FN(%rbp)
-.Lret_struct2b:
-	cmpl	$FFI_TYPE_SMALL_STRUCT_2B, CIF_FLAGS(%rbp)
-	jne .Lret_struct1b
-	mov	RVALUE(%rbp), %rcx
-	mov	%ax, (%rcx)
-	jmp .Lret_void
-.Lret_struct1b:
-	cmpl	$FFI_TYPE_SMALL_STRUCT_1B, CIF_FLAGS(%rbp)
-	jne .Lret_int
-	mov	RVALUE(%rbp), %rcx
-	mov	%al, (%rcx)
-	jmp .Lret_void
-.Lret_int:
- 	cmpl	$FFI_TYPE_INT, CIF_FLAGS(%rbp)
- 	jne	.Lret_float
+.Lret_struct4b:
+ 	cmpl	$FFI_TYPE_SMALL_STRUCT_4B, CIF_FLAGS(%rbp)
+ 	jne .Lret_struct2b
 
 	mov	RVALUE(%rbp), %rcx
 	mov	%eax, (%rcx)
+	jmp	.Lret_void
+
+.Lret_struct2b:
+	cmpl	$FFI_TYPE_SMALL_STRUCT_2B, CIF_FLAGS(%rbp)
+	jne .Lret_struct1b
+	
+	mov	RVALUE(%rbp), %rcx
+	mov	%ax, (%rcx)
+	jmp .Lret_void
+	
+.Lret_struct1b:
+	cmpl	$FFI_TYPE_SMALL_STRUCT_1B, CIF_FLAGS(%rbp)
+	jne .Lret_uint8
+	
+	mov	RVALUE(%rbp), %rcx
+	mov	%al, (%rcx)
+	jmp .Lret_void
+
+.Lret_uint8:
+	cmpl	$FFI_TYPE_UINT8, CIF_FLAGS(%rbp)
+	jne .Lret_sint8
+	
+        mov     RVALUE(%rbp), %rcx
+        movzbq  %al, %rax
+	movq    %rax, (%rcx)
+	jmp .Lret_void
+
+.Lret_sint8:
+	cmpl	$FFI_TYPE_SINT8, CIF_FLAGS(%rbp)
+	jne .Lret_uint16
+	
+        mov     RVALUE(%rbp), %rcx
+        movsbq  %al, %rax
+	movq    %rax, (%rcx)
+	jmp .Lret_void
+
+.Lret_uint16:
+	cmpl	$FFI_TYPE_UINT16, CIF_FLAGS(%rbp)
+	jne .Lret_sint16
+	
+        mov     RVALUE(%rbp), %rcx
+        movzwq  %ax, %rax
+	movq    %rax, (%rcx)
+	jmp .Lret_void
+
+.Lret_sint16:
+	cmpl	$FFI_TYPE_SINT16, CIF_FLAGS(%rbp)
+	jne .Lret_uint32
+	
+        mov     RVALUE(%rbp), %rcx
+        movswq  %ax, %rax
+	movq    %rax, (%rcx)
+	jmp .Lret_void
+
+.Lret_uint32:
+	cmpl	$FFI_TYPE_UINT32, CIF_FLAGS(%rbp)
+	jne .Lret_sint32
+	
+        mov     RVALUE(%rbp), %rcx
+        movl    %eax, %eax
+	movq    %rax, (%rcx)
+	jmp .Lret_void
+
+.Lret_sint32:
+ 	cmpl	$FFI_TYPE_SINT32, CIF_FLAGS(%rbp)
+ 	jne	.Lret_float
+
+	mov	RVALUE(%rbp), %rcx
+	cltq
+	movq	%rax, (%rcx)
 	jmp	.Lret_void
 
 .Lret_float:
@@ -304,18 +432,18 @@ Lch_done:
  	jne	.Lret_double
 
  	mov	RVALUE(%rbp), %rax
- 	movlpd	%xmm0,(%rax)
+ 	movss	%xmm0, (%rax)
  	jmp	.Lret_void
 
 .Lret_double:
  	cmpl	$FFI_TYPE_DOUBLE, CIF_FLAGS(%rbp)
- 	jne	.Lret_int64
+ 	jne	.Lret_sint64
 
  	mov	RVALUE(%rbp), %rax
  	movlpd	%xmm0, (%rax)
  	jmp	.Lret_void
 
-.Lret_int64:
+.Lret_sint64:
   	cmpl	$FFI_TYPE_SINT64, CIF_FLAGS(%rbp)
   	jne	.Lret_void
 
@@ -324,7 +452,7 @@ Lch_done:
  	jmp	.Lret_void
 	
 .Lret_void:
-	xor	%eax, %eax
+	xor	%rax, %rax
 
 	lea	16(%rbp), %rsp
 	pop	%rbp

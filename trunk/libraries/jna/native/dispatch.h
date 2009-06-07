@@ -36,11 +36,11 @@ typedef struct _callback {
   void* x_closure;
   ffi_closure* ffi_closure;
   ffi_cif ffi_cif;
-  ffi_type* ffi_args[MAX_NARGS];
+  ffi_type** ffi_args;
   JavaVM* vm;
   jobject object;
   jmethodID methodID;
-  char param_jtypes[MAX_NARGS];
+  char* param_jtypes;
 } callback;
 
 // Size of a register
@@ -90,7 +90,6 @@ typedef long word_t;
 #define EError "java/lang/Error"
 
 extern void throwByName(JNIEnv *env, const char *name, const char *msg);
-extern jobject newJavaPointer(JNIEnv *, void *);
 extern char get_jtype(JNIEnv*, jclass);
 extern ffi_type* get_ffi_type(JNIEnv*, jclass, char);
 extern ffi_type* get_ffi_rtype(JNIEnv*, jclass, char);
