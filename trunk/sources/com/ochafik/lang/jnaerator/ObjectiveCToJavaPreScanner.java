@@ -22,6 +22,7 @@ import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
@@ -47,36 +48,13 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 	public void visitEnum(Enum e) {
 		if (e.getTag() == null) {
 			// Hack to infer the enum name from the next typedef NSUInteger NSSomethingThatLooksLikeTheEnumsIdentifiers
-			Element nextDeclaration = e.getNextSibling();
-			if (nextDeclaration != null && (nextDeclaration instanceof TypeDef)) {
-				TypeDef typeDef = (TypeDef) nextDeclaration;
-				TypeRef type = typeDef.getValueType();
-				if (type instanceof TypeRef.SimpleTypeRef) {
-					Identifier simpleType = ((TypeRef.SimpleTypeRef)type).getName();
-					if (simpleType.equals("NSUInteger") || 
-							simpleType.equals("NSInteger") ||
-							simpleType.equals("CFIndex")) 
-					{
-						Declarator bestPlainStorage = null;
-						for (Declarator st : typeDef.getDeclarators()) {
-							if (st instanceof Declarator.DirectDeclarator) {
-								boolean niceName = !st.resolveName().startsWith("_");
-								if (bestPlainStorage == null || niceName) {
-									bestPlainStorage = st;
-									if (niceName)
-										break;
-								}
-							}
-						}
-						if (bestPlainStorage != null) {
-							String name = bestPlainStorage.resolveName();
-							System.err.println("Automatic struct name matching : " + name);
-							e.setTag(ident(name));
-							bestPlainStorage.replaceBy(null);
-							if (typeDef.getDeclarators().isEmpty())
-								typeDef.replaceBy(null);
-						}
-					}
+			Element base = e.getParentElement() instanceof TaggedTypeRefDeclaration ? e.getParentElement() : e;
+			Element next = base.getNextSibling();
+			if (!handle(next, e)) {
+				Element previous = base.getPreviousSibling();
+				Element beforePrevious = previous == null ? null : previous.getPreviousSibling();
+				if (previous != null && !(beforePrevious instanceof TaggedTypeRefDeclaration && ((TaggedTypeRefDeclaration)beforePrevious).getTaggedTypeRef() instanceof Enum)) {
+					handle(previous, e);
 				}
 			}
 		}
@@ -85,5 +63,41 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 			// TODO parse cocoa comments here
 		}
 		super.visitEnum(e);
+	}
+
+	private boolean handle(Element nextDeclaration, Enum e) {
+		if (nextDeclaration instanceof TypeDef) {
+			TypeDef typeDef = (TypeDef) nextDeclaration;
+			TypeRef type = typeDef.getValueType();
+			if (type instanceof TypeRef.SimpleTypeRef) {
+				Identifier simpleType = ((TypeRef.SimpleTypeRef)type).getName();
+				if (simpleType.equals("NSUInteger") || 
+						simpleType.equals("NSInteger") ||
+						simpleType.equals("CFIndex")) 
+				{
+					Declarator bestPlainStorage = null;
+					for (Declarator st : typeDef.getDeclarators()) {
+						if (st instanceof Declarator.DirectDeclarator) {
+							boolean niceName = !st.resolveName().startsWith("_");
+							if (bestPlainStorage == null || niceName) {
+								bestPlainStorage = st;
+								if (niceName)
+									break;
+							}
+						}
+					}
+					if (bestPlainStorage != null) {
+						String name = bestPlainStorage.resolveName();
+						System.err.println("Automatic struct name matching : " + name);
+						e.setTag(ident(name));
+						bestPlainStorage.replaceBy(null);
+						if (typeDef.getDeclarators().isEmpty())
+							typeDef.replaceBy(null);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

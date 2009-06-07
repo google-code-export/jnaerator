@@ -1530,9 +1530,11 @@ statement	returns [Statement stat]
 	;
 	
 constant returns [Constant constant]
-	:	s=('-' | '+')? DECIMAL_NUMBER { $constant =  Constant.parseDecimal(($s.text == null ? "" : $s.text) + $DECIMAL_NUMBER.text); } |
-		HEXADECIMAL_NUMBER { $constant = Constant.parseHex($HEXADECIMAL_NUMBER.text); } |
-		OCTAL_NUMBER { $constant = Constant.parseOctal($OCTAL_NUMBER.text); } |
+	:	s=('-' | '+')? (
+			DECIMAL_NUMBER { $constant =  Constant.parseDecimal(($s.text == null ? "" : $s.text) + $DECIMAL_NUMBER.text); } |
+			HEXADECIMAL_NUMBER { $constant = Constant.parseHex($HEXADECIMAL_NUMBER.text, "-".equals($s.text)); } |
+			OCTAL_NUMBER { $constant = Constant.parseOctal($OCTAL_NUMBER.text, "-".equals($s.text)); }
+		) |
 		CHARACTER { $constant =  Constant.parseCharOrStringInteger($CHARACTER.text); } |
 		s2=('-' | '+')? FLOAT_NUMBER { $constant = Constant.parseFloat(($s2.text == null ? "" : $s2.text) + $FLOAT_NUMBER.text); } |
 		//CHARACTER { $constant =  Constant.parseChar($CHARACTER.text); } |

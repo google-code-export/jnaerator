@@ -54,12 +54,18 @@ public class ObjectiveCGenerator {
 	public Identifier getPackageName(Struct struct) {
 		if (struct == null)
 			return null;
-		String library = result.getLibrary(struct);
-		String pa = result.getLibraryPackage(library);
-		if (pa != null && pa.trim().length() == 0)
-			pa = null;
-		Identifier javaPackage = ident(pa);
 		
+		if (struct.getType() == Struct.Type.ObjCClass) {
+			String name = String.valueOf(struct.getTag());
+			if (name.equals("NSObject") ||
+					name.equals("NSClass"))
+				return ident("org", "rococoa");
+			else if (name.equals("NSString"))
+				return ident("org", "rococoa", "cocoa");
+		}
+		
+		String library = result.getLibrary(struct);
+		Identifier javaPackage = result.getLibraryPackage(library);
 		if (struct.getType() == Type.ObjCProtocol)
 			javaPackage = ident(javaPackage, "protocols");
 		
@@ -167,31 +173,39 @@ public class ObjectiveCGenerator {
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
 		call.addArgument(expr(Constant.Type.String, in.getTag().toString()));
 		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
-		classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName));
 		
-		Function classGetter = new Function(Function.Type.JavaMethod, ident(classInstanceGetterName), typeRef(classClassName));
-		classGetter.addModifiers(Modifier.Private, Modifier.Static);
-		classGetter.setBody(new Block(
-			new Statement.If(
-				expr(
-					varRef(classInstanceName), 
-					BinaryOperator.IsEqual, 
-					new Constant(Constant.Type.Null, null)
-				),
-				new Statement.ExpressionStatement(
-					new AssignmentOp(
+		Function classGetter;
+		if (isProtocol) {
+			classGetter = null;
+			classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName, call));
+		} else {
+			classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName));
+			
+			classGetter = new Function(Function.Type.JavaMethod, ident(classInstanceGetterName), typeRef(classClassName));
+			classGetter.addModifiers(Modifier.Private, Modifier.Static);
+			classGetter.setBody(new Block(
+				new Statement.If(
+					expr(
 						varRef(classInstanceName), 
-						AssignmentOperator.Equal, 
-						call
-					)
+						BinaryOperator.IsEqual, 
+						new Constant(Constant.Type.Null, null)
+					),
+					new Statement.ExpressionStatement(
+						new AssignmentOp(
+							varRef(classInstanceName), 
+							AssignmentOperator.Equal, 
+							call
+						)
+					),
+					null
 				),
-				null
-			),
-			new Statement.Return(varRef(classInstanceName))
-		));
+				new Statement.Return(varRef(classInstanceName))
+			));
+		}
+		
 		if (!isProtocol)
 			addAllocIfMissing(in);
-		outputMembers(in, instanceStruct, classStruct, declarations);
+		outputMembers(in, instanceStruct, classStruct, declarations, isProtocol);
 		
 		if (!classStruct.getDeclarations().isEmpty()) {
 			instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
@@ -219,7 +233,7 @@ public class ObjectiveCGenerator {
 		
 	}
 	private void outputMembers(Struct in, Struct instanceStruct,
-			Struct classStruct, CompoundCollection<Declaration> declarations) {
+			Struct classStruct, CompoundCollection<Declaration> declarations, boolean isProtocol) {
 		
 		Signatures signatures = new Signatures();
 		Identifier fullClassName = getFullClassName(in);
@@ -235,7 +249,7 @@ public class ObjectiveCGenerator {
 					for (Declaration decl : decls) {
 						classStruct.addDeclaration(decl);
 						
-						if (decl instanceof Function) {
+						if (!isProtocol && decl instanceof Function) {
 							Function meth = (Function)decl;
 							//String name = meth.getName().toString();
 //							
@@ -250,7 +264,7 @@ public class ObjectiveCGenerator {
 							
 							Expression val = methodCall(methodCall(null, null, classInstanceGetterName), Expression.MemberRefStyle.Dot, meth.getName().toString(), args);
 							proxyCopy.setBody(new Block(
-								meth.getValueType() == null ? stat(val) : new Statement.Return(val)
+								meth.getValueType() == null || "void".equals(meth.getValueType().toString()) ? stat(val) : new Statement.Return(val)
 							));
 							instanceStruct.addDeclaration(proxyCopy);
 						}
@@ -262,7 +276,7 @@ public class ObjectiveCGenerator {
 					for (Declaration decl : decls) {
 						instanceStruct.addDeclaration(decl);
 						
-						if (decl instanceof Function) {
+						if (!isProtocol && decl instanceof Function) {
 							Function meth = (Function)decl;
 							
 							String name = meth.getName().toString();
@@ -275,7 +289,7 @@ public class ObjectiveCGenerator {
 								createCopy.setCommentBefore("Factory method");
 								createCopy.addToCommentBefore("@see #" + meth.computeSignature(false));
 								createCopy.setName(ident("create" + name.substring("init".length())));
-								createCopy.addModifiers(Modifier.Public, Modifier.Final, Modifier.Static);
+								createCopy.addModifiers(Modifier.Public, Modifier.Static);
 								createCopy.reorganizeModifiers();
 								
 								Expression[] args = new Expression[meth.getArgs().size()];

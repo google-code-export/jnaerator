@@ -31,6 +31,7 @@ import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 
 public abstract class Expression extends Element {
+	private static final long MAX_UINT_VALUE = 2L * Integer.MAX_VALUE;
 	
 	public static class ExpressionSequence extends Expression {
 		final List<Expression> sequence = new ArrayList<Expression>();
@@ -1460,10 +1461,10 @@ public abstract class Expression extends Element {
 		}
 
 		public static Constant parseDecimal(String string) {
-			return parseDecimal(string, 10, IntForm.Decimal);
+			return parseDecimal(string, 10, IntForm.Decimal, false);
 		}
 		
-		public static Constant parseDecimal(String string, int radix, IntForm form) {
+		public static Constant parseDecimal(String string, int radix, IntForm form, boolean negate) {
 			string = string.trim().toLowerCase();
 			int len = string.length();
 			boolean unsigned = false;
@@ -1493,32 +1494,39 @@ public abstract class Expression extends Element {
 				}
 			}
 			
+			if (negate) {
+				val = -val;
+//				form = IntForm.Decimal;
+			}
+			
 			//TODO handle unsigned properly !
-			if (val > Integer.MIN_VALUE && val < Integer.MAX_VALUE)
+			if ((form == IntForm.Hex && string.length() <= 8) || val > Integer.MIN_VALUE && val < Integer.MAX_VALUE)
 				return new Constant(unsigned ? Type.UInt : Type.Int, form, (int)val);
+			else if (val >= 0 && val < MAX_UINT_VALUE)
+				return new Constant(Type.UInt, form, (int)val);
 			else
 				return new Constant(unsigned ? Type.ULong : Type.Long, form, val);
 			
 		}
 
-		public static Constant parseHex(String string) {
+		public static Constant parseHex(String string, boolean negate) {
 			string = string.trim().toLowerCase();
 			if (!string.startsWith("0x"))
 				throw new IllegalArgumentException("Expected hex literal, got " + string);
 			
 			try {
-				return parseDecimal(string.substring(2), 16, IntForm.Hex);
+				return parseDecimal(string.substring(2), 16, IntForm.Hex, negate);
 			} catch (NumberFormatException ex) {
 				throw new NumberFormatException("Parsing hex : \"" + string +"\"");
 			}
 		}
 
-		public static Constant parseOctal(String string) {
+		public static Constant parseOctal(String string, boolean negate) {
 			string = string.trim().toLowerCase();
 			if (!string.startsWith("\\"))
 				throw new IllegalArgumentException("Expected octal literal, got " + string);
 			
-			return parseDecimal(string.substring(2), 8, IntForm.Octal);
+			return parseDecimal(string.substring(2), 8, IntForm.Octal, negate);
 		}
 
 		public static Constant parseFloat(String string) {
