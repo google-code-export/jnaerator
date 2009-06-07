@@ -63,7 +63,6 @@ import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
-import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
@@ -480,7 +479,7 @@ public class JNAerator {
 			librariesHub.setTag(ident(result.config.entryName));
 			hubOut = outputter.getClassSourceWriter(result.config.entryName.toLowerCase() + "." + librariesHub.getTag().toString());
 			hubOut.println("package " + result.config.entryName.toLowerCase() + ";");
-			for (String pn : result.javaPackages)
+			for (Identifier pn : result.javaPackages)
 				if (!pn.equals(""))
 					hubOut.println("import " + pn + ".*;");
 		}
@@ -489,16 +488,16 @@ public class JNAerator {
 				continue; // to handle code defined in macro-expanded expressions
 //				library = "";
 			
-			String javaPackage = result.javaPackageByLibrary.get(library);
+			Identifier javaPackage = result.javaPackageByLibrary.get(library);
 			Identifier libraryClassName = result.getLibraryClassSimpleName(library);
 			
-			String fullLibraryClassName = (javaPackage == null ? "" : javaPackage + ".") + libraryClassName;
-			final PrintWriter out = outputter.getClassSourceWriter(fullLibraryClassName);
+			Identifier fullLibraryClassName = ident(javaPackage, libraryClassName);
+			final PrintWriter out = outputter.getClassSourceWriter(fullLibraryClassName.toString());
 			
 			if (javaPackage != null)
 				out.println("package " + javaPackage + ";");
 			
-			for (String pn : result.javaPackages) {
+			for (Identifier pn : result.javaPackages) {
 				if (pn.equals(""))
 					continue;
 				
@@ -510,9 +509,9 @@ public class JNAerator {
 				if (otherLibrary == null)
 					continue;
 				
-				String otherJavaPackage = result.javaPackageByLibrary.get(otherLibrary);
-				SimpleIdentifier otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
-				out.println("import static " + (otherJavaPackage == null  || otherJavaPackage.length() == 0 ? "" : otherJavaPackage + ".") + otherLibraryClassName + ".*;");
+				Identifier otherJavaPackage = result.javaPackageByLibrary.get(otherLibrary);
+				Identifier otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
+				out.println("import static " + ident(otherJavaPackage, otherLibraryClassName) + ".*;");
 			}
 			//if (!result.objCClasses.isEmpty())
 			//	out.println("import org.rococoa.ID;");
@@ -584,7 +583,7 @@ public class JNAerator {
 			Set<String> fakePointers = result.fakePointersByLibrary.get(libraryClassName);
 			if (fakePointers != null)
 			for (String fakePointerName : fakePointers) {
-				SimpleIdentifier fakePointer = ident(fakePointerName);
+				Identifier fakePointer = ident(fakePointerName);
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
 					new Arg("pointer", typeRef(Pointer.class))

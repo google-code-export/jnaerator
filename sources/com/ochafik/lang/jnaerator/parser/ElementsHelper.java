@@ -23,8 +23,13 @@ public class ElementsHelper {
 	public static Expression varRef(SimpleIdentifier name) {
 		return new Expression.VariableRef(name);
 	}
-	public static SimpleIdentifier ident(String name) {
-		return name == null ? null : new SimpleIdentifier(name);
+	public static Identifier ident(String name, String... others) {
+		if (name == null) {
+			if (others.length > 0)
+				return ident(others[0], Arrays.copyOfRange(others, 1, others.length));
+			return null;
+		}
+		return new SimpleIdentifier(name).derive(Identifier.QualificationSeparator.Dot, others);
 	}
 	public static Identifier ident(Class<?> cl) {
 		if (cl.getPackage() == null)

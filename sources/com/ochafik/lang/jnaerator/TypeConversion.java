@@ -68,6 +68,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.New;
 import com.ochafik.lang.jnaerator.parser.Expression.TypeRefExpression;
 import com.ochafik.lang.jnaerator.parser.Expression.UnaryOp;
+import com.ochafik.lang.jnaerator.parser.Expression.UnaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
@@ -310,6 +311,9 @@ public class TypeConversion {
 				depth++;
 				try {
 					super.visitSimpleTypeRef(simpleTypeRef);
+					if (simpleTypeRef.isMarkedAsResolved())
+						return;
+					
 					Identifier name = ((SimpleTypeRef) simpleTypeRef).getName();
 					if (name != null && name.equals("id"))
 						return; // TODO limit to Objc
@@ -463,7 +467,7 @@ public class TypeConversion {
 //		String library = result.getLibrary(e);
 //		if (library == null)
 //			return null;
-//		SimpleIdentifier libClass = result.getLibraryClassSimpleName(library);
+//		SimpleIdentifier libClass = result.getLibraryClassFullName(library);
 //		return SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name;
 //	}
 	public Identifier libMember(Identifier libClass, Identifier libraryClassName, Identifier member) {
@@ -476,7 +480,7 @@ public class TypeConversion {
 		String library = result.getLibrary(e);
 		if (library == null)
 			return null;
-		return libMember(result.getLibraryClassSimpleName(library), libraryClassName, name);
+		return libMember(result.getLibraryClassFullName(library), libraryClassName, name);
 	}
 	public SimpleTypeRef findEnum(Identifier name, Identifier libraryClassName) {
 		Enum s = result.enumsByName.get(name);
@@ -488,7 +492,7 @@ public class TypeConversion {
 		String library = result.getLibrary(s);
 		if (library == null)
 			return null;
-		SimpleIdentifier libClass = result.getLibraryClassSimpleName(library);
+		Identifier libClass = result.getLibraryClassFullName(library);
 		//return new SimpleTypeRef(SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name);
 		
 		SimpleTypeRef tr = new SimpleTypeRef("int");
@@ -508,7 +512,7 @@ public class TypeConversion {
 	public Expression findDefine(Identifier name) {
 		Define s = result.defines.get(name);
 		String library = s == null ? null : result.getLibrary(s);
-		return library == null ? null : javaStaticFieldRef(result.getLibraryClassSimpleName(library), name);
+		return library == null ? null : javaStaticFieldRef(result.getLibraryClassFullName(library), name);
 	}
 	
 	public Identifier inferCallBackName(FunctionSignature functionSignature, boolean prependNamespaces) {
@@ -588,7 +592,7 @@ public class TypeConversion {
 			return //result.result.getObjCClass(parentStruct.getName()).
 				typeRef(libMember(structName, libraryClassName, inferCallBackName(s, true)));
 		}
-		return typeRef(libMember(result.getLibraryClassSimpleName(library), libraryClassName, inferCallBackName(s, true)));
+		return typeRef(libMember(result.getLibraryClassFullName(library), libraryClassName, inferCallBackName(s, true)));
 	}
 	
 	public TypeRef findCallbackRef(FunctionSignature s, Identifier callerLibraryClass) {
@@ -603,8 +607,8 @@ public class TypeConversion {
 				typeRef(ident(structName, inferCallBackName(s, true)));
 		}
 		return typeRef(inferCallBackName(s, true));
-		//libMember(result.getLibraryClassSimpleName(library), inferCallBackName(s, true));
-		//typeRef(ident(result.getLibraryClassSimpleName(library), inferCallBackName(s, true)));	
+		//libMember(result.getLibraryClassFullName(library), inferCallBackName(s, true));
+		//typeRef(ident(result.getLibraryClassFullName(library), inferCallBackName(s, true)));	
 	}
 	static TypeRef primRef(JavaPrim p) {
 		return new SimpleTypeRef(toString(p));
@@ -1087,7 +1091,11 @@ public class TypeConversion {
 				convertExpressionToJava(((BinaryOp) x).getSecondOperand(), libraryClassName)
 			);
 		} else if (x instanceof UnaryOp) {
-			res = expr(((UnaryOp) x).getOperator(), 
+			UnaryOperator op = ((UnaryOp) x).getOperator();
+			if (op == UnaryOperator.Not) {
+				throw new UnsupportedConversionException(x, null); // TODO handle this properly ?
+			}
+			res = expr(op, 
 				convertExpressionToJava(((UnaryOp) x).getOperand(), libraryClassName)
 			);
 		} else if (x instanceof Cast) {
@@ -1252,7 +1260,7 @@ public class TypeConversion {
 			return null;
 		
 		Enum e = (Enum)parent;
-		Expression cl = expr(typeRef(result.getLibraryClassSimpleName(library)));
+		Expression cl = expr(typeRef(result.getLibraryClassFullName(library)));
 		if (e.getTag() != null)
 			cl = memberRef(cl, MemberRefStyle.Dot, e.getTag());
 		return memberRef(cl, MemberRefStyle.Dot, enumItem.getName());

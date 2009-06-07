@@ -27,6 +27,13 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 			qi.add(i);
 		return qi;
 	}
+	public QualifiedIdentifier derive(QualificationSeparator separator, String... subIdentifiers) {
+		QualifiedIdentifier qi = new QualifiedIdentifier(separator);
+		qi.add(this);
+		for (String i : subIdentifiers)
+			qi.add(new SimpleIdentifier(i));
+		return qi;
+	}
 	@Override
 	public Identifier clone() {
 		return (Identifier)super.clone();

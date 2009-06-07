@@ -40,7 +40,6 @@ import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
-import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -67,7 +66,7 @@ public class Result extends Scanner {
 		this.classOutputter = classOutputter;
 	}
 
-	Set<String> javaPackages = new TreeSet<String>();
+	Set<Identifier> javaPackages = new TreeSet<Identifier>();
 	
 	//Map<Identifier, ObjCClass> objCClasses = new HashMap<Identifier, ObjCClass>();
 	Map<Struct.Type, Map<Identifier, Struct>> classes = new TreeMap<Struct.Type, Map<Identifier, Struct>>();
@@ -310,8 +309,11 @@ public class Result extends Scanner {
 		}
 	}
 
-	public SimpleIdentifier getLibraryClassSimpleName(String library) {
+	public Identifier getLibraryClassSimpleName(String library) {
 		return ident(StringUtils.capitalize(library) + "Library");
+	}
+	public Identifier getLibraryClassFullName(String library) {
+		return ident(getLibraryPackage(library), getLibraryClassSimpleName(library));
 	}
 	public String getLibraryFileExpression(String library) {
 		if (library.equals("c"))
@@ -321,12 +323,14 @@ public class Result extends Scanner {
 	}
 
 	Set<String> libraries = new HashSet<String>();
-	Map<String, String> javaPackageByLibrary = new HashMap<String, String>();
+	Map<String, Identifier> javaPackageByLibrary = new HashMap<String, Identifier>();
 	
-	public String getLibraryPackage(String library) {
+	public Identifier getLibraryPackage(String library) {
 		if (library == null)
 			return null;
-		return config.packageName == null ? (config.rootPackageName == null ? "" : config.rootPackageName + ".") + library.toLowerCase() : config.packageName;
+		return config.packageName == null ? 
+				ident(ident(config.rootPackageName), library.toLowerCase()) : 
+				ident(config.packageName);
 	}
 	public void chooseLibraryClasses(String packageName, String rootPackageName) {
 		libraries.clear();
@@ -341,7 +345,7 @@ public class Result extends Scanner {
 		libraries.addAll(definesByLibrary.keySet());
 		
 		for (String library : libraries) {
-			String javaPackage = getLibraryPackage(library);
+			Identifier javaPackage = getLibraryPackage(library);
 			if (javaPackage != null)
 				javaPackageByLibrary.put(library, javaPackage);
 		}
