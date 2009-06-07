@@ -86,6 +86,10 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 		inputs.put(path, mjf);
 		return mjf;
 	}
+	@Override
+	public boolean isSameFile(FileObject a, FileObject b) {
+		return a.toString().equals(b.toString());
+	}
 	public Iterable<? extends JavaFileObject> getJavaFileObjects() {
 		return new ArrayList<JavaFileObject>(inputs.values());
 	}
