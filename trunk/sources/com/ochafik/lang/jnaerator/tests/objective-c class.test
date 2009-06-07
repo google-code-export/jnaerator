@@ -7,6 +7,8 @@
 
 @end
 --
-NSMutableArray a = NSMutableArray.CLASS.arrayWithCapacity(10);
+import test.*;
+
+NSMutableArray a = NSMutableArray.arrayWithCapacity(10);
 int c = a.count();
 boolean e = a.empty();

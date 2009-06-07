@@ -10,9 +10,16 @@
 
 @interface Base (Categ)
 -(Base*) merge: (Base*) f;
+-test:(id<Printing>)arg;
 @end
 
 --
-Base base = Base.CLASS.baseWithName();
+import test.*;
+import test.protocols.*;
+
+Base base = Base.baseWithName();
 base = base.merge(base);
 base.print();
+base.test((Printing)null);
+base.test((org.rococoa.NSObject)null);
+

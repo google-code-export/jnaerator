@@ -99,7 +99,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 			setBody((Statement.Block)by);
 			return true;
 		}
-		
+		if (child == getName()) {
+			setName((Identifier)by);
+			return true;
+		}
 		if (replaceChild(args, Arg.class, this, child, by))
 			return true;
 		

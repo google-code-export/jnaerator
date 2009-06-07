@@ -3,6 +3,9 @@ extern void *pVoid;
 extern int i;
 extern void (*fptr)(int);
 --
+import test.*;
+import static test.TestLibrary.*;
+
 IntByReference pInt = TestLibrary.pInt.get().value;
 PointerByReference pVoid = TestLibrary.pVoid.get();
 IntByReference i = TestLibrary.i.get();

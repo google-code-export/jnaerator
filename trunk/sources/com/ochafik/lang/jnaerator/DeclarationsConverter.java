@@ -25,6 +25,8 @@ import static com.ochafik.lang.SyntaxUtils.as;
 import java.io.File;
 import java.util.*;
 
+import org.rococoa.NSObject;
+
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
@@ -198,6 +200,8 @@ public class DeclarationsConverter {
 		Struct enumInterf = null;
 		Identifier enumName = getActualTaggedTypeName(e);
 		if (enumName != null && enumName.resolveLastSimpleIdentifier().getName() != null) {
+			if (!signatures.classSignatures.add(enumName))
+				return;
 			
 			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
 			if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
@@ -428,12 +432,12 @@ public class DeclarationsConverter {
 			for (Arg arg : function.getArgs()) {
 				if (arg.isVarArg() && arg.getValueType() == null) {
 					//TODO choose vaname dynamically !
-					String vaType = isObjectiveC ? "NSObject" : "Object";
+					Identifier vaType = ident(isObjectiveC ? NSObject.class : Object.class);
 					String argName = chooseJavaArgName("varargs", iArg, argNames);
-					natFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
+					natFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
 					if (alternativeOutputs) {
-						primFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
-						bufFunc.addArg(new Arg(argName, new TypeRef.SimpleTypeRef(vaType))).setVarArg(true);
+						primFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
+						bufFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
 					}
 				} else {
 					String argName = chooseJavaArgName(arg.getName(), iArg, argNames);

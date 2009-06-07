@@ -161,6 +161,8 @@ public class JNAerator {
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
 //						"/Users/ochafik/Prog/Java/testxp/test.h",
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
+						"-library", "objc",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
 						"-framework", "Foundation", 
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
