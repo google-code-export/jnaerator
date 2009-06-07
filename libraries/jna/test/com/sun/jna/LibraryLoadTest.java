@@ -54,6 +54,8 @@ public class LibraryLoadTest extends TestCase {
     }
 
     public void testLoadAWTAfterJNA() {
+        if (GraphicsEnvironment.isHeadless()) return;
+
         if (Pointer.SIZE > 0) {
             Toolkit.getDefaultToolkit();
         }
@@ -105,7 +107,8 @@ public class LibraryLoadTest extends TestCase {
         dst.deleteOnExit();
         copy(src, dst);
         NativeLibrary.addSearchPath(UNICODE, tmp);
-        NativeLibrary.getInstance(UNICODE);
+        NativeLibrary nl = NativeLibrary.getInstance(UNICODE);
+        nl.dispose();
     }
     
     public void testHandleObjectMethods() {

@@ -13,7 +13,6 @@ package com.sun.jna;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -92,8 +91,9 @@ public class Function extends Pointer {
     // Keep a reference to the NativeLibrary so it does not get garbage collected
     // until the function is
     private NativeLibrary library;
-    private String functionName;
-    private int callingConvention;
+    private final String functionName;
+    final int callingConvention;
+    final Map options;
 
     /** For internal JNA use. */
     static final String OPTION_INVOKING_METHOD = "invoking-method";
@@ -122,6 +122,7 @@ public class Function extends Pointer {
         this.library = library;
         this.functionName = functionName;
         this.callingConvention = callingConvention;
+        this.options = library.options;
         try {
             this.peer = library.getSymbolAddress(functionName);
         }
@@ -154,6 +155,7 @@ public class Function extends Pointer {
         this.functionName = functionAddress.toString();
         this.callingConvention = callingConvention;
         this.peer = functionAddress.peer;
+        this.options = Collections.EMPTY_MAP;
     }
     
     private void checkCallingConvention(int convention)
@@ -181,7 +183,7 @@ public class Function extends Pointer {
      * native result as an Object.
      */
     public Object invoke(Class returnType, Object[] inArgs) {
-        return invoke(returnType, inArgs, Collections.EMPTY_MAP);
+        return invoke(returnType, inArgs, this.options);
     }    
     
     /** Invoke the native function with the given arguments, returning the
@@ -202,8 +204,10 @@ public class Function extends Pointer {
         TypeMapper mapper = 
             (TypeMapper)options.get(Library.OPTION_TYPE_MAPPER);
         Method invokingMethod = (Method)options.get(OPTION_INVOKING_METHOD);
+        boolean allowObjects = Boolean.TRUE.equals(options.get(Library.OPTION_ALLOW_OBJECTS));
         for (int i=0; i < args.length; i++) {
-            args[i] = convertArgument(args, i, invokingMethod, mapper);
+            args[i] = convertArgument(args, i, invokingMethod,
+                                      mapper, allowObjects);
         }
         
         Class nativeType = returnType;
@@ -220,7 +224,7 @@ public class Function extends Pointer {
             }
         }
 
-        Object result = invoke(args, nativeType);
+        Object result = invoke(args, nativeType, allowObjects);
 
         // Convert the result to a custom value/type if appropriate
         if (resultConverter != null) {
@@ -275,8 +279,8 @@ public class Function extends Pointer {
         return result;
     }
 
-    /** @see NativeLibrary#NativeLibrary(String,String,long) implementation */
-    Object invoke(Object[] args, Class returnType) {
+    /** @see NativeLibrary#NativeLibrary(String,String,long,Map) implementation */
+    Object invoke(Object[] args, Class returnType, boolean allowObjects) {
         Object result = null;
         if (returnType == null || returnType==void.class || returnType==Void.class) {
             invokeVoid(callingConvention, args);
@@ -376,6 +380,15 @@ public class Function extends Pointer {
                 result = p.getPointerArray(0);
             }
         }
+        else if (allowObjects) {
+            result = invokeObject(callingConvention, args);
+            if (result != null
+                && !returnType.isAssignableFrom(result.getClass())) {
+                throw new ClassCastException("Return type " + returnType
+                                             + " does not match result "
+                                             + result.getClass());
+            }
+        }
         else {
             throw new IllegalArgumentException("Unsupported return type "
                                                + returnType
@@ -384,7 +397,9 @@ public class Function extends Pointer {
         return result;
     }
     
-    private Object convertArgument(Object[] args, int index, Method invokingMethod, TypeMapper mapper) { 
+    private Object convertArgument(Object[] args, int index,
+                                   Method invokingMethod, TypeMapper mapper,
+                                   boolean allowObjects) { 
         Object arg = args[index];
         if (arg != null) {
             Class type = arg.getClass();
@@ -518,10 +533,14 @@ public class Function extends Pointer {
             }
         }
         else if (argClass.isArray()){
+            // TODO: handle array of NativeMapped
             throw new IllegalArgumentException("Unsupported array argument type: " 
                                                + argClass.getComponentType());
         }
-        if (arg != null && !Native.isSupportedNativeType(arg.getClass())) {
+        else if (allowObjects) {
+            return arg;
+        }
+        else if (!Native.isSupportedNativeType(arg.getClass())) {
             throw new IllegalArgumentException("Unsupported argument type "
                                                + arg.getClass().getName()
                                                + " at parameter " + index
@@ -628,7 +647,8 @@ public class Function extends Pointer {
     native Pointer invokePointer(int callingConvention, Object[] args);
     
     /**
-     * Call the native function being represented by this object
+     * Call the native function being represented by this object, returning
+     * a struct by value.
      *
      * @param   callingConvention calling convention to be used
      * @param   args
@@ -639,6 +659,17 @@ public class Function extends Pointer {
     native Structure invokeStructure(int callingConvention, Object[] args,
                                              Structure result);
 
+    /**
+     * Call the native function being represented by this object, returning
+     * a Java <code>Object</code>.
+     *
+     * @param   callingConvention calling convention to be used
+     * @param   args
+     *          Arguments to pass to the native function
+     * @return  The returned Java <code>Object</code>
+     */
+    private native Object invokeObject(int callingConvention, Object[] args);
+
     /** Provide a human-readable representation of this object. */
     public String toString() {
         if (library != null) {
@@ -646,6 +677,13 @@ public class Function extends Pointer {
                 + ")@0x" + Long.toHexString(peer);
         }
         return "native function@0x" + Long.toHexString(peer);
+    }
+
+    /** Convenience method for
+     * {@link #invoke(Class,Object[]) invokeObject(Object.class, args)}.
+     */
+    public Object invokeObject(Object[] args) {
+        return invoke(Object.class, args);
     }
 
     /** Convenience method for 
@@ -705,6 +743,7 @@ public class Function extends Pointer {
         if (o instanceof Function) {
             Function other = (Function)o;
             return other.callingConvention == this.callingConvention
+                && other.options.equals(this.options)
                 && other.peer == this.peer;
         }
         return false;
@@ -757,7 +796,7 @@ public class Function extends Pointer {
     }
     
     private static class PointerArray extends Memory implements PostCallRead {
-        private Pointer[] original;
+        private final Pointer[] original;
         public PointerArray(Pointer[] arg) {
             super(Pointer.SIZE * (arg.length+1));
             this.original = arg;

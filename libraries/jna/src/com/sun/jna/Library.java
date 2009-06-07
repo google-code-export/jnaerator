@@ -13,8 +13,6 @@ package com.sun.jna;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -74,6 +72,16 @@ public interface Library {
      * be one of the predefined alignment types in {@link Structure}. 
      */
     String OPTION_STRUCTURE_ALIGNMENT = "structure-alignment";
+    /** Option key for a boolean flag to allow any Java class instance as a
+        parameter.  If no type mapper is found, the object is passed as a
+        pointer.
+        <em>NOTE:</em> This is for use with raw JNI interactions via the
+        JNIEnv data structure.
+    */
+    String OPTION_ALLOW_OBJECTS = "allow-objects";
+    /** Calling convention for the library. */
+    String OPTION_CALLING_CONVENTION = "calling-convention";
+
     static class Handler implements InvocationHandler {
         
         static final Method OBJECT_TOSTRING;
@@ -110,9 +118,8 @@ public interface Library {
         // Library invocation options
         private final Map options;
         private FunctionMapper functionMapper;
-        private InvocationMapper invocationMapper;
+        private final InvocationMapper invocationMapper;
         private final Map functions = new WeakHashMap();
-        private int callingConvention;
         public Handler(String libname, Class interfaceClass, Map options) {
 
             if (libname == null || "".equals(libname.trim())) {
@@ -120,12 +127,17 @@ public interface Library {
                                                    + libname + "\"");
             }
 
-            this.nativeLibrary = NativeLibrary.getInstance(libname);
             this.interfaceClass = interfaceClass;
-            this.options = options;
-            this.callingConvention = 
+            options = new HashMap(options);
+            int callingConvention = 
                 AltCallingConvention.class.isAssignableFrom(interfaceClass)
                 ? Function.ALT_CONVENTION : Function.C_CONVENTION;
+            if (options.get(OPTION_CALLING_CONVENTION) == null) {
+                options.put(OPTION_CALLING_CONVENTION,
+                            new Integer(callingConvention));
+            }
+            this.options = options;
+            this.nativeLibrary = NativeLibrary.getInstance(libname, options);
             functionMapper = (FunctionMapper)options.get(OPTION_FUNCTION_MAPPER);
             if (functionMapper == null) {
                 // backward compatibility; passed-in map is itself the name map
@@ -188,7 +200,7 @@ public interface Library {
                             // Just in case the function mapper screwed up
                             methodName = method.getName();
                         }
-                        f.function = nativeLibrary.getFunction(methodName, callingConvention);
+                        f.function = nativeLibrary.getFunction(methodName);
                         f.options = new HashMap(this.options);
                         f.options.put(Function.OPTION_INVOKING_METHOD, method);
                     }

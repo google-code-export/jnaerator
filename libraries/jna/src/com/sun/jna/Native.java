@@ -1,4 +1,4 @@
-/* Copyright (c) 2007 Timothy Wall, All Rights Reserved
+/* Copyright (c) 2007, 2008, 2009 Timothy Wall, All Rights Reserved
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,6 @@ package com.sun.jna;
 import java.awt.Component;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +24,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
@@ -35,16 +33,16 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.sun.jna.Structure.ByReference;
 import com.sun.jna.Callback.UncaughtExceptionHandler;
-
+import com.sun.jna.Structure.FFIType;
 
 /** Provides generation of invocation plumbing for a defined native
  * library interface.  Also provides various utilities for native operations.
@@ -73,6 +71,8 @@ import com.sun.jna.Callback.UncaughtExceptionHandler;
  */
 public final class Native {
 
+    private static String nativeLibraryPath;
+    private static boolean unpacked;
     private static Map typeMappers = new WeakHashMap();
     private static Map alignments = new WeakHashMap();
     private static Map options = new WeakHashMap();
@@ -94,11 +94,20 @@ public final class Native {
     public static final int LONG_SIZE;
     /** Size of a native <code>wchar_t</code> type, in bytes. */
     public static final int WCHAR_SIZE;
+    /** Size of a native <code>size_t</code> type, in bytes. */
+    public static final int SIZE_T_SIZE;
+
+    private static final int TYPE_VOIDP = 0;
+    private static final int TYPE_LONG = 1;
+    private static final int TYPE_WCHAR_T = 2;
+    private static final int TYPE_SIZE_T = 3;
+
     static {
         loadNativeLibrary();
-        POINTER_SIZE = pointerSize();
-        LONG_SIZE = longSize();
-        WCHAR_SIZE = wideCharSize();
+        POINTER_SIZE = sizeof(TYPE_VOIDP);
+        LONG_SIZE = sizeof(TYPE_LONG);
+        WCHAR_SIZE = sizeof(TYPE_WCHAR_T);
+        SIZE_T_SIZE = sizeof(TYPE_SIZE_T);
         // Perform initialization of other JNA classes until *after* 
         // initializing the above final fields
         initIDs();
@@ -107,6 +116,67 @@ public final class Native {
         }
     }
     
+    /** Ensure our unpacked native library gets cleaned up if this class gets
+        garbage-collected.
+    */
+    private static final Object finalizer = new Object() {
+        protected void finalize() {
+            deleteNativeLibrary();
+        }
+    };
+
+    /** Remove any unpacked native library.  Forcing the class loader to
+        unload it first is required on Windows, since the temporary native
+        library can't be deleted until the native library is unloaded.  Any
+        deferred execution we might install at this point would prevent the
+        Native class and its class loader from being GC'd, so we instead force
+        the native library unload just a little bit prematurely.
+     */
+    private static boolean deleteNativeLibrary() {
+        String path = nativeLibraryPath;
+        if (path == null || !unpacked) return true;
+        File flib = new File(path);
+        if (flib.delete()) {
+            nativeLibraryPath = null;
+            unpacked = false;
+            return true;
+        }
+        // Reach into the bowels of ClassLoader to force the native
+        // library to unload
+        try {
+            ClassLoader cl = Native.class.getClassLoader();
+            Field f = ClassLoader.class.getDeclaredField("nativeLibraries");
+            f.setAccessible(true);
+            List libs = (List)f.get(cl);
+            for (Iterator i = libs.iterator();i.hasNext();) {
+                Object lib = i.next();
+                f = lib.getClass().getDeclaredField("name");
+                f.setAccessible(true);
+                String name = (String)f.get(lib);
+                if (name.equals(path) || name.indexOf(path) != -1) {
+                    Method m = lib.getClass().getDeclaredMethod("finalize", new Class[0]);
+                    m.setAccessible(true);
+                    m.invoke(lib, new Object[0]);
+                    nativeLibraryPath = null;
+                    if (unpacked) {
+                        if (flib.exists()) {
+                            if (flib.delete()) {
+                                unpacked = false;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        catch(Exception e) {
+            throw new RuntimeException("Native library delete failed: " + e.getMessage());
+        }
+        return false;
+    }
+
     private Native() { }
     
     private static native void initIDs();
@@ -118,7 +188,15 @@ public final class Native {
      * system property <code>jna.protected</code> has a value of "true"
      * when the JNA library is first loaded.<p>
      * If not supported by the underlying platform, this setting will
-     * have no effect.
+     * have no effect.<p>
+     * NOTE: On platforms which support signals (non-Windows), JNA uses
+     * signals to trap errors.  This may interfere with the JVM's own use of
+     * signals.  When protected mode is enabled, you should make use of the
+     * jsig library, if available (see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/vm/signal-chaining.html">Signal Chaining</a>).
+     * In short, set the environment variable <code>LD_PRELOAD</code> to the
+     * path to <code>libjsig.so</code> in your JRE lib directory
+     * (usually ${java.home}/lib/${os.arch}/libjsig.so) before launching your
+     * Java application.
      */
     public static synchronized native void setProtected(boolean enable);
     
@@ -129,7 +207,8 @@ public final class Native {
     public static synchronized native boolean isProtected();
 
     /** Set whether the system last error result is captured after every
-     * native invocation.  Defaults to <code>true</code>.
+     * native invocation.  Defaults to <code>true</code> (<code>false</code>
+     * for direct-mapped calls).
      */
     public static synchronized native void setPreserveLastError(boolean enable);
     
@@ -534,6 +613,7 @@ public final class Native {
                 String path = new File(new File(dirs[i]), System.mapLibraryName(libName)).getAbsolutePath();
                 try {
                     System.load(path);
+                    nativeLibraryPath = path;
                     return;
                 } catch (UnsatisfiedLinkError ex) {
                 }
@@ -547,7 +627,9 @@ public final class Native {
                         ext = "dylib";
                     }
                     try {
-                        System.load(path.substring(0, path.lastIndexOf(orig)) + ext);
+                        path = path.substring(0, path.lastIndexOf(orig)) + ext;
+                        System.load(path);
+                        nativeLibraryPath = path;
                         return;
                     } catch (UnsatisfiedLinkError ex) {
                     }
@@ -556,6 +638,7 @@ public final class Native {
         }
         try {
             System.loadLibrary(libName);
+            nativeLibraryPath = libName;
         }
         catch(UnsatisfiedLinkError e) {
             loadNativeLibraryFromJar();
@@ -594,10 +677,14 @@ public final class Native {
             FileOutputStream fos = null;
             try {
                 // Suffix is required on windows, or library fails to load
-                // Let Java pick the suffix
-                lib = File.createTempFile("jna", null);
+                // Let Java pick the suffix, except on windows, to avoid
+                // problems with Web Start.
+                lib = File.createTempFile("jna", Platform.isWindows()?".dll":null);
                 lib.deleteOnExit();
-                if (Platform.deleteNativeLibraryAfterVMExit()) {
+                ClassLoader cl = Native.class.getClassLoader();
+                if (Platform.deleteNativeLibraryAfterVMExit()
+                    && (cl == null
+                        || cl.equals(ClassLoader.getSystemClassLoader()))) {
                     Runtime.getRuntime().addShutdownHook(new DeleteNativeLibrary(lib));
                 }
                 fos = new FileOutputStream(lib);
@@ -616,22 +703,18 @@ public final class Native {
                     try { fos.close(); } catch(IOException e) { }
                 }
             }
+            unpacked = true;
         }
         System.load(lib.getAbsolutePath());
+        nativeLibraryPath = lib.getAbsolutePath();
     }
 
     /**
      * Initialize field and method IDs for native methods of this class. 
      * Returns the size of a native pointer.
      **/
-    private static native int pointerSize();
+    private static native int sizeof(int type);
 
-    /** Return the size of a native <code>long</code>. */
-    private static native int longSize();
-
-    /** Return the size of a native <code>wchar_t</code>. */
-    private static native int wideCharSize();
-    
     private static native String getNativeVersion();
     private static native String getAPIChecksum();
 
@@ -740,45 +823,15 @@ public final class Native {
     }
 
     /** For internal use only. */
-    /* Windows won't allow file deletion while
-     * it is in use, and the VM doesn't provide for explicit unloading of 
-     * native libraries (and the implicit method requires GC of a custom class
-     * loader which loaded the class with native bits, which would require
-     * all native bits to be encapsulated in a private class).
-     * Instead, spawn a cleanup task to remove the file *after* the VM exits.
-     */
     public static class DeleteNativeLibrary extends Thread {
-        private File file;
+        private final File file;
         public DeleteNativeLibrary(File file) {
             this.file = file;
         }
-        private boolean unload(String path) {
-            // Reach into the bowels of ClassLoader to force the native
-            // library to unload
-            try {
-                ClassLoader cl = getClass().getClassLoader();
-                Field f = ClassLoader.class.getDeclaredField("nativeLibraries");
-                f.setAccessible(true);
-                List libs = (List)f.get(cl);
-                for (Iterator i = libs.iterator();i.hasNext();) {
-                    Object lib = i.next();
-                    f = lib.getClass().getDeclaredField("name");
-                    f.setAccessible(true);
-                    String name = (String)f.get(lib);
-                    if (name.equals(path)) {
-                        Method m = lib.getClass().getDeclaredMethod("finalize", new Class[0]);
-                        m.setAccessible(true);
-                        m.invoke(lib, new Object[0]);
-                        return true;
-                    }
-                }
-            }
-            catch(Exception e) {
-            }
-            return false;
-        }
         public void run() {
-            if (!unload(file.getAbsolutePath()) || !file.delete()) {
+            // If we can't force an unload/delete, spawn a new process
+            // to do so
+            if (!deleteNativeLibrary()) {
                 try {
                     Runtime.getRuntime().exec(new String[] {
                         System.getProperty("java.home") + "/bin/java",
@@ -871,6 +924,258 @@ public final class Native {
     public static UncaughtExceptionHandler getCallbackExceptionHandler() {
         return callbackExceptionHandler;
     }
+    
+    /** When called from a class static initializer, maps all native methods
+     * found within that class to native libraries via the JNA raw calling
+     * interface.
+     * @param libName library name to which functions should be bound
+     */
+    public static void register(String libName) {
+        register(getNativeClass(getCallingClass()),
+                 NativeLibrary.getInstance(libName));
+    }
+
+    /** When called from a class static initializer, maps all native methods
+     * found within that class to native libraries via the JNA raw calling
+     * interface.
+     * @param lib native library to which functions should be bound
+     */
+    public static void register(NativeLibrary lib) {
+        register(getNativeClass(getCallingClass()), lib);
+    }
+
+    static Class getNativeClass(Class cls) {
+        Method[] methods = cls.getDeclaredMethods();
+        for (int i=0;i < methods.length;i++) {
+            if ((methods[i].getModifiers() & Modifier.NATIVE) != 0) {
+                return cls;
+            }
+        }
+        int idx = cls.getName().lastIndexOf("$");
+        if (idx != -1) {
+            String name = cls.getName().substring(0, idx);
+            try {
+                return getNativeClass(Class.forName(name, true, cls.getClassLoader()));
+            }
+            catch(ClassNotFoundException e) {
+            }
+        }
+        throw new IllegalArgumentException("Can't determine class with native methods from the current context (" + cls + ")");
+    }
+
+    static Class getCallingClass() {
+        Class[] context = new SecurityManager() {
+            public Class[] getClassContext() {
+                return super.getClassContext();
+            }
+        }.getClassContext();
+        if (context.length < 4) {
+            throw new IllegalStateException("This method must be called from the static initializer of a class");
+        }
+        return context[3];
+    }
+
+    private static Map registeredClasses = new HashMap();
+    private static Map registeredLibraries = new HashMap();
+    private static Object unloader = new Object() {
+        protected void finalize() {
+            synchronized(registeredClasses) {
+                for (Iterator i=registeredClasses.entrySet().iterator();i.hasNext();) {
+                    Map.Entry e = (Map.Entry)i.next();
+                    unregister((Class)e.getKey(), (long[])e.getValue());
+                    i.remove();
+                }
+            }
+        }
+    };
+
+    /** Remove all native mappings for the calling class.
+        Should only be called if the class is no longer referenced and about
+        to be garbage collected.
+     */
+    public static void unregister() {
+        unregister(getNativeClass(getCallingClass()));
+    }
+
+    /** Remove all native mappings for the given class.
+        Should only be called if the class is no longer referenced and about
+        to be garbage collected.
+     */
+    public static void unregister(Class cls) {
+        synchronized(registeredClasses) {
+            if (registeredClasses.containsKey(cls)) {
+                unregister(cls, (long[])registeredClasses.get(cls));
+                registeredClasses.remove(cls);
+                registeredLibraries.remove(cls);
+            }
+        }
+    }
+
+    /** Unregister the native methods for the given class. */
+    private static native void unregister(Class cls, long[] handles);
+
+    private static String getSignature(Class cls) {
+        if (cls.isArray()) {
+            return "[" + getSignature(cls.getComponentType());
+        }
+        if (cls.isPrimitive()) {
+            if (cls == void.class) return "V";
+            if (cls == boolean.class) return "Z";
+            if (cls == byte.class) return "B";
+            if (cls == short.class) return "S";
+            if (cls == char.class) return "C";
+            if (cls == int.class) return "I";
+            if (cls == long.class) return "J";
+            if (cls == float.class) return "F";
+            if (cls == double.class) return "D";
+        }
+        return "L" + cls.getName().replace(".", "/") + ";";
+    }
+
+    private static final int CVT_UNSUPPORTED = -1;
+    private static final int CVT_DEFAULT = 0;
+    private static final int CVT_POINTER = 1;
+    private static final int CVT_STRING = 2;
+    private static final int CVT_STRUCTURE = 3;
+    private static final int CVT_STRUCTURE_BYVAL = 4;
+    private static final int CVT_BUFFER = 5;
+    private static final int CVT_ARRAY_BYTE = 6;
+    private static final int CVT_ARRAY_SHORT = 7;
+    private static final int CVT_ARRAY_CHAR = 8;
+    private static final int CVT_ARRAY_INT = 9;
+    private static final int CVT_ARRAY_LONG = 10;
+    private static final int CVT_ARRAY_FLOAT = 11;
+    private static final int CVT_ARRAY_DOUBLE = 12;
+    private static final int CVT_ARRAY_BOOLEAN = 13;
+    private static final int CVT_BOOLEAN = 14;
+    private static final int CVT_CALLBACK = 15;
+
+    private static int getConversion(Class type) {
+        if (Pointer.class.isAssignableFrom(type)) {
+            return CVT_POINTER;
+        }
+        if (String.class == type) {
+            return CVT_STRING;
+        }
+        if (Buffer.class.isAssignableFrom(type)) {
+            return CVT_BUFFER;
+        }
+        if (Structure.class.isAssignableFrom(type)) {
+            if (Structure.ByValue.class.isAssignableFrom(type)) {
+                return CVT_STRUCTURE_BYVAL;
+            }
+            return CVT_STRUCTURE;
+        }
+        if (type.isArray()) {
+            switch(type.getName().charAt(1)) {
+            case 'Z': return CVT_ARRAY_BOOLEAN;
+            case 'B': return CVT_ARRAY_BYTE;
+            case 'S': return CVT_ARRAY_SHORT;
+            case 'C': return CVT_ARRAY_CHAR;
+            case 'I': return CVT_ARRAY_INT;
+            case 'J': return CVT_ARRAY_LONG;
+            case 'F': return CVT_ARRAY_FLOAT;
+            case 'D': return CVT_ARRAY_DOUBLE;
+            default: break;
+            }
+        }
+        if (type.isPrimitive()) {
+            return type == boolean.class ? CVT_BOOLEAN : CVT_DEFAULT;
+        }
+        if (Callback.class.isAssignableFrom(type)) {
+            return CVT_CALLBACK;
+        }
+        return -1;
+    }
+
+    /** When called from a class static initializer, maps all native methods
+     * found within that class to native libraries via the JNA raw calling
+     * interface.
+     * @param lib library to which functions should be bound
+     */
+    // TODO: Pointer, NativeLong                                            
+    // TODO: structure by value                                             
+    // TODO: byref, primitive arrays                                        
+    // TODO: stdcall name mapping                                           
+    // TODO: derive library, etc. from annotations (per-class or per-method)
+    // TODO: get function name from annotation
+    // TODO: read parameter type mapping from annotations (long/native long)
+    public static void register(Class cls, NativeLibrary lib) {
+        Method[] methods = cls.getDeclaredMethods();
+        List mlist = new ArrayList();
+        for (int i=0;i < methods.length;i++) {
+            if ((methods[i].getModifiers() & Modifier.NATIVE) != 0) {
+                mlist.add(methods[i]);
+            }
+        }
+        long[] handles = new long[mlist.size()];
+        for (int i=0;i < handles.length;i++) {
+            Method method = (Method)mlist.get(i);
+            String sig = "(";
+            Class rtype = method.getReturnType();
+            Class[] ptypes = method.getParameterTypes();
+            long[] atypes = new long[ptypes.length];
+            int[] cvt = new int[ptypes.length];
+            int rcvt = getConversion(rtype);
+            if (rcvt == CVT_UNSUPPORTED) {
+                throw new IllegalArgumentException(rtype + " is not a supported return type (in method " + method.getName() + " in " + cls + ")");
+            }
+            for (int t=0;t < ptypes.length;t++) {
+                Class type = ptypes[t];
+                sig += getSignature(type);
+                cvt[t] = getConversion(type);
+                if (cvt[t] == CVT_UNSUPPORTED) {
+                    throw new IllegalArgumentException(type + " is not a supported argument type (in method " + method.getName() + " in " + cls + ")");
+                }
+                // All conversions other than struct by value and primitives
+                // result in a pointer passed to the native function
+                if (cvt[t] == CVT_STRUCTURE_BYVAL
+                    || cvt[t] == CVT_DEFAULT) {
+                    atypes[t] = FFIType.get(type).peer;
+                }
+                else {
+                    atypes[t] = FFIType.get(Pointer.class).peer;
+                }
+            }
+            sig += ")";
+            sig += getSignature(rtype);
+            
+            String name = method.getName();
+            FunctionMapper mapper = (FunctionMapper)lib.getOptions().get(Library.OPTION_FUNCTION_MAPPER);
+            if (mapper != null) {
+                name = mapper.getFunctionName(lib, method);
+            }
+            Function f = lib.getFunction(name);
+            try {
+                handles[i] = registerMethod(cls, method.getName(),
+                                            sig, cvt, atypes, rcvt,
+                                            FFIType.get(rtype).peer, rtype, 
+                                            f.peer, f.callingConvention);
+            }
+            catch(NoSuchMethodError e) {
+                throw new UnsatisfiedLinkError("No method " + method.getName() + " with signature " + sig + " in " + cls);
+            }
+        }
+        synchronized(registeredClasses) {
+            registeredClasses.put(cls, handles);
+            registeredLibraries.put(cls, lib);
+        }
+    }
+
+    private static native long registerMethod(Class cls,
+                                              String name,
+                                              String signature,
+                                              int[] conversions,
+                                              long[] arg_types,
+                                              int rconversion,
+                                              long rtype,
+                                              Class rclass,
+                                              long fptr,
+                                              int callingConvention);
+    
+    static native long ffi_prep_cif(int abi, int nargs, long ffi_return_type, long ffi_types);
+    static native void ffi_call(long cif, long fptr, long resp, long args);
+    static native long ffi_prep_closure();
 
     /** Prints JNA library details to the console. */
     public static void main(String[] args) {
