@@ -11,5 +11,8 @@ enum E {
 	Item2 = Item1 + 10
 };
 --
+import test.*;
+import static test.TestLibrary.*;
+
 int i = kATSLineAppleReserved;
 i = E.Item2;

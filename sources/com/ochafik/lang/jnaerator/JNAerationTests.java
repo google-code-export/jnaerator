@@ -74,8 +74,8 @@ public class JNAerationTests {
 			Set<String> imports = new TreeSet<String>();
 			List<String> content = new ArrayList<String>();
 			String lib = libraryName + "." + StringUtils.capitalize(libraryName) + "Library";
-			imports.add("import " + lib + ";");
-			imports.add("import static " + lib + ".*;");
+			//imports.add("import " + lib + ";");
+			//imports.add("import static " + lib + ".*;");
 			imports.add("import com.sun.jna.*;");
 			imports.add("import com.sun.jna.ptr.*;");
 			imports.add("import java.nio.*;");
@@ -137,7 +137,7 @@ public class JNAerationTests {
 		for (URL testURL : URLUtils.listFiles(dir, new Filter<String>() {
 			@Override
 			public boolean accept(String path) {
-				return path.toLowerCase().endsWith(".test");
+				return path.toLowerCase().endsWith(".test");// && path.contains("objective");
 			}
 		})) {
 			String t = ReadText.readText(testURL);

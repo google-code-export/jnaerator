@@ -4,6 +4,9 @@ struct S {
 	long (*foo[10])(union { long l; int i; });
 };
 --
+import test.*;
+import static test.TestLibrary.*;
+
 S s = new TestLibrary.S();
 s.functions[0].invoke((Pointer)null);
 s.fptr.invoke();

@@ -1,6 +1,9 @@
 void CopyBytes(char* dest, const char* source, const wchar_t* wsource, size_t n, const int* intArray);
 int process(void* ptr);
 --
+import test.*;
+import static test.TestLibrary.*;
+
 TestLibrary.INSTANCE.CopyBytes((ByteByReference)null, (ByteByReference)null, (ShortByReference)null, (NativeLong)null, (IntByReference)null);
 TestLibrary.INSTANCE.CopyBytes((ByteBuffer)null, (String)null, (WString)null, (NativeLong)null, (IntBuffer)null);
 TestLibrary.INSTANCE.CopyBytes((ByteBuffer)null, (String)null, (WString)null, (NativeLong)null, (int[])null);

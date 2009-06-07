@@ -233,6 +233,8 @@ public class ObjCppElementsTests {
 					Object got2 = getter.invoke(element);
 					Element elementGot2 = container == null ? (Element)got2 : ((Collection<Element>)got2).iterator().next();
 					
+//					if (arg != elementGot2)
+//						arg =arg; // debug: break here
 					assertFalse("Replacement of field " + fieldName + " in " + type.getName() + " failed", arg == elementGot2);
 					assertEquals("Replacement of field " + fieldName + " in " + type.getName() + " failed", replace, elementGot2);
 					assertNull("Parent element not removed in " + setter, elementGot.getParentElement());

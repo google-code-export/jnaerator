@@ -6,6 +6,9 @@ struct B {
    A *pa;
 };
 --
+import test.*;
+import static test.TestLibrary.*;
+
 TestLibrary.B b = new TestLibrary.B();
 b.a = new TestLibrary.A.ByValue();
 b.pa = new TestLibrary.A.ByReference();

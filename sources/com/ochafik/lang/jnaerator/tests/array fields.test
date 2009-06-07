@@ -11,6 +11,9 @@ struct Months {
 	Str15	names[12];
 };
 --
+import test.*;
+import static test.TestLibrary.*;
+
 S s = new S();
 s.iarr[2] = 10;
 s.csarr[10] = (ByteByReference)null;

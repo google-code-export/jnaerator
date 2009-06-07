@@ -124,10 +124,8 @@ public class MissingNamesChooser extends Scanner {
 	
 	@Override
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
-		if (chooseNameIfMissing(functionSignature))
-			return;
-
-		super.visitFunctionSignature(functionSignature);
+		if (!chooseNameIfMissing(functionSignature))
+			super.visitFunctionSignature(functionSignature);
 		
 		DeclarationsHolder holder = functionSignature.findParentOfType(DeclarationsHolder.class);
 		Function f = functionSignature.getFunction();
@@ -158,9 +156,10 @@ public class MissingNamesChooser extends Scanner {
 	public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
 		super.visitTaggedTypeRef(taggedTypeRef);
 
+		chooseNameIfMissing(taggedTypeRef);
+		//	return;
+		
 		Element parent = taggedTypeRef.getParentElement(); 
-		if (chooseNameIfMissing(taggedTypeRef))
-			return;
 		
 		if (!(parent instanceof TaggedTypeRefDeclaration) && !(parent instanceof TypeDef)) {
 			DeclarationsHolder holder = taggedTypeRef.findParentOfType(DeclarationsHolder.class);
@@ -169,8 +168,12 @@ public class MissingNamesChooser extends Scanner {
 				if (parent instanceof VariablesDeclaration && ((VariablesDeclaration)parent).getDeclarators().isEmpty()) {
 					taggedTypeRef.importDetails(parent, false);
 					parent.replaceBy(null);
-				} else
-					taggedTypeRef.replaceBy(new TypeRef.SimpleTypeRef(taggedTypeRef.getTag()));
+				} else {
+					TypeRef tr = new TypeRef.SimpleTypeRef(taggedTypeRef.getTag());
+					taggedTypeRef.replaceBy(tr);
+					if (taggedTypeRef instanceof Struct)
+						tr.setMarkedAsResolved(true);
+				}
 				
 		 		td.setTaggedTypeRef(taggedTypeRef);
 		 		holder.addDeclaration(td);

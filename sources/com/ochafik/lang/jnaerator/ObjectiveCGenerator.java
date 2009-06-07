@@ -55,7 +55,7 @@ public class ObjectiveCGenerator {
 		if (struct == null)
 			return null;
 		String library = result.getLibrary(struct);
-		String pa = result.javaPackageByLibrary.get(library);
+		String pa = result.getLibraryPackage(library);
 		if (pa != null && pa.trim().length() == 0)
 			pa = null;
 		Identifier javaPackage = ident(pa);
@@ -84,6 +84,13 @@ public class ObjectiveCGenerator {
 		PrintWriter out = result.classOutputter.getClassSourceWriter(getFullClassName(in).toString());
 		if (javaPackage != null)
 			out.println("package " + javaPackage + ";");
+		
+//		for (String library : result.libraries) {
+//			String p = library == null ? null : result.javaPackageByLibrary.get(library);
+//			if (p == null || p.equals(javaPackage))
+//				continue;
+//			out.println("import " + p + ".*;");
+//		}
 	
 		out.println(generateObjectiveCClass(in));
 		out.close();

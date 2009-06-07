@@ -9,6 +9,9 @@ void ComplexArgFunction(
         }* pArg
 );
 --
+import test.*;
+import static test.TestLibrary.*;
+
 ComplexArgFunction_pArg_struct a = null;
 a.v = (NativeLong)null;
 a.fptr.invoke();

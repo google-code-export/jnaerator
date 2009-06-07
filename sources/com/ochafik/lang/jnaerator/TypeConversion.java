@@ -311,6 +311,8 @@ public class TypeConversion {
 				try {
 					super.visitSimpleTypeRef(simpleTypeRef);
 					Identifier name = ((SimpleTypeRef) simpleTypeRef).getName();
+					if (name != null && name.equals("id"))
+						return; // TODO limit to Objc
 					
 					Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
 					if (p != null) {
@@ -436,6 +438,8 @@ public class TypeConversion {
 	}
 	
 	public Identifier findStructRef(Identifier name, Identifier libraryClassName) {
+//		if (name != null && name.toString().equals("u_union"))
+//			name = name;
 		Struct s = result.structsByName.get(name);
 		if (s == null) {
 			Pair<TypeDef, Declarator> pair = result.typeDefs.get(name);
@@ -462,7 +466,7 @@ public class TypeConversion {
 //		SimpleIdentifier libClass = result.getLibraryClassSimpleName(library);
 //		return SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name;
 //	}
-	public Identifier libMember(SimpleIdentifier libClass, Identifier libraryClassName, Identifier member) {
+	public Identifier libMember(Identifier libClass, Identifier libraryClassName, Identifier member) {
 		return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
 		//return member; //TODODODODODODODODOoOOOOO
 	}
@@ -582,7 +586,7 @@ public class TypeConversion {
 		if (parentStruct != null && (parentStruct.getType() == Struct.Type.ObjCClass || parentStruct.getType() == Struct.Type.ObjCProtocol)) {
 			Identifier structName = result.declarationsConverter.getActualTaggedTypeName(parentStruct);
 			return //result.result.getObjCClass(parentStruct.getName()).
-				typeRef(ident(structName, inferCallBackName(s, true)));
+				typeRef(libMember(structName, libraryClassName, inferCallBackName(s, true)));
 		}
 		return typeRef(libMember(result.getLibraryClassSimpleName(library), libraryClassName, inferCallBackName(s, true)));
 	}
@@ -606,7 +610,7 @@ public class TypeConversion {
 		return new SimpleTypeRef(toString(p));
 	}
 	boolean isResolved(SimpleTypeRef tr) {
-		return isResolved(tr.getName());
+		return tr.isMarkedAsResolved() || isResolved(tr.getName());
 	}
 	boolean isResolved(Identifier i) {
 		if (i.isPlain())
@@ -827,7 +831,7 @@ public class TypeConversion {
 			if (name == null)
 				throw new UnsupportedConversionException(valueType, null);
 			
-			if (isResolved(name))
+			if (isResolved((SimpleTypeRef) valueType))
 					return valueType;
 			
 			if (name instanceof SimpleIdentifier) {

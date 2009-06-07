@@ -186,6 +186,9 @@ public class Scanner implements Visitor {
 		for (Identifier i : struct.getProtocols())
 			if (i != null)
 				i.accept(this);
+		for (Identifier i : struct.getParents())
+			if (i != null)
+				i.accept(this);
 	}
 
 	protected void visitCStruct(Struct struct) {

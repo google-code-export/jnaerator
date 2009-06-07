@@ -323,6 +323,11 @@ public class Result extends Scanner {
 	Set<String> libraries = new HashSet<String>();
 	Map<String, String> javaPackageByLibrary = new HashMap<String, String>();
 	
+	public String getLibraryPackage(String library) {
+		if (library == null)
+			return null;
+		return config.packageName == null ? (config.rootPackageName == null ? "" : config.rootPackageName + ".") + library.toLowerCase() : config.packageName;
+	}
 	public void chooseLibraryClasses(String packageName, String rootPackageName) {
 		libraries.clear();
 		javaPackages.clear();
@@ -336,11 +341,9 @@ public class Result extends Scanner {
 		libraries.addAll(definesByLibrary.keySet());
 		
 		for (String library : libraries) {
-			if (library == null || library.length() == 0)
-				continue;
-			
-			String javaPackage = packageName == null ? (rootPackageName == null ? "" : rootPackageName + ".") + library.toLowerCase() : packageName;
-			javaPackageByLibrary.put(library, javaPackage);
+			String javaPackage = getLibraryPackage(library);
+			if (javaPackage != null)
+				javaPackageByLibrary.put(library, javaPackage);
 		}
 		javaPackages.addAll(javaPackageByLibrary.values());
 		

@@ -5,6 +5,9 @@ struct BF {
 	float f;
 };
 --
+import test.*;
+import static test.TestLibrary.*;
+
 TestLibrary.BF b = new TestLibrary.BF();
 b.i = b.j = b.k = 1;
 b.f = 1f;

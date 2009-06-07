@@ -30,6 +30,14 @@ import com.ochafik.util.string.StringUtils;
 
 public abstract class TypeRef extends ModifiableElement implements Declarator.MutableByDeclarator {
 	
+	protected boolean markedAsResolved;
+	public TypeRef setMarkedAsResolved(boolean markedAsResolved) {
+		this.markedAsResolved = markedAsResolved;
+		return this;
+	}
+	public boolean isMarkedAsResolved() {
+		return markedAsResolved;
+	}
 	public static abstract class TaggedTypeRef extends TypeRef {
 		Identifier tag, originalTag;
 		public Identifier getTag() {
