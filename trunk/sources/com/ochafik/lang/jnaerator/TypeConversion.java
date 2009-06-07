@@ -830,6 +830,23 @@ public class TypeConversion {
 			if (isResolved(name))
 					return valueType;
 			
+			if (name instanceof SimpleIdentifier) {
+				SimpleIdentifier sname = (SimpleIdentifier)name;
+				String n = sname.getName();
+				TypeRef objCClass = null;
+				if (n.equals("id") && sname.getTemplateArguments().size() == 1 && conversionMode != TypeConversionMode.NativeParameter) {
+					Expression x = sname.getTemplateArguments().get(0);
+					TypeRefExpression trx = x instanceof TypeRefExpression ? (TypeRefExpression)x : null;
+					SimpleTypeRef str = trx.getType() instanceof SimpleTypeRef ? (SimpleTypeRef)trx.getType() : null;
+					objCClass = findObjCClass(str.getName());
+				}
+
+				if (objCClass == null)
+					objCClass = findObjCClass(new SimpleIdentifier(n));
+
+				if (objCClass != null)
+					return objCClass;
+			}
 			Identifier structRef = findStructRef(name, libraryClassName);
 			if (structRef != null) {
 				switch (conversionMode) {
