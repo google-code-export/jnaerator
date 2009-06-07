@@ -1,4 +1,5 @@
 /* Copyright (c) 2007 Timothy Wall, All Rights Reserved
+ * Parts Copyright (c) 2008 Olivier Chafik 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,12 +16,22 @@ package com.sun.jna.examples;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.examples.unix.bsd.CLibrary;
+import com.sun.jna.examples.unix.bsd.CLibrary.kevent;
+import com.sun.jna.examples.unix.bsd.CLibrary.timespec;
 import com.sun.jna.examples.win32.Kernel32;
 import com.sun.jna.examples.win32.Kernel32.FILE_NOTIFY_INFORMATION;
 import com.sun.jna.examples.win32.Kernel32.OVERLAPPED;
@@ -48,9 +59,13 @@ public abstract class FileMonitor {
     public static final int FILE_SIZE_CHANGED = 0x40;
     public static final int FILE_ATTRIBUTES_CHANGED = 0x80;
     public static final int FILE_SECURITY_CHANGED = 0x100;
+    
+    //public static final int FILE_WATCHED = 0x200;
+    //public static final int FILE_UNWATCHED = 0x400;
+    
     public static final int FILE_ANY = 0x1FF;
 
-    public interface FileListener {
+    public interface FileListener extends EventListener {
         public void fileChanged(FileEvent e);
     }
     
@@ -64,13 +79,24 @@ public abstract class FileMonitor {
         }
         public File getFile() { return file; }
         public int getType() { return type; }
+        
+        /// this is just to ease up events debugging
         public String toString() {
-            return "FileEvent: " + file + ":" + type;
+        	Integer typeObj = new Integer(type);
+        	for (Field field : FileMonitor.class.getDeclaredFields()) {
+        		try {
+					if (Modifier.isStatic(field.getModifiers()) && typeObj.equals(field.get(null)))
+						return field.getName().replace("FILE_", "") + ": " + file;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        	}
+            return "FileEvent: " + file + ": " + type;
         }
     }
     
     private final Map watched = new HashMap();
-    private List listeners = new ArrayList();
+    protected List listeners = new ArrayList();
     
     protected abstract void watch(File file, int mask, boolean recursive) throws IOException ;
     protected abstract void unwatch(File file);
@@ -96,21 +122,17 @@ public abstract class FileMonitor {
     }
     
     protected void notify(FileEvent e) {
-        for (Iterator i=listeners.iterator();i.hasNext();) {
-            ((FileListener)i.next()).fileChanged(e);
-        }
+    	for (int i = 0, len = listeners.size(); i < len; i++) {
+    		((FileListener)listeners.get(i)).fileChanged(e);
+    	}
     }
     
     public synchronized void addFileListener(FileListener x) {
-        List list = new ArrayList(listeners);
-        list.add(x);
-        listeners = list;
+    	listeners.add(x);
     }
     
     public synchronized void removeFileListener(FileListener x) {
-        List list = new ArrayList(listeners);
-        list.remove(x);
-        listeners = list;
+    	listeners.remove(x);
     }
     
     protected void finalize() {
@@ -120,22 +142,32 @@ public abstract class FileMonitor {
         dispose();
     }
     
-    /** Canonical lazy loading of a singleton. */
-    private static class Holder {
-        public static final FileMonitor INSTANCE;
-        static {
-            String os = System.getProperty("os.name");
-            if (os.startsWith("Windows")) {
-                INSTANCE = new W32FileMonitor();
-            }
-            else {
-                throw new Error("FileMonitor not implemented for " + os);
-            }
+    /** Create a FileMonitor instance */
+    static FileMonitor createInstance() {
+    	String os = System.getProperty("os.name");
+        if (os.startsWith("Windows")) {
+            return new W32FileMonitor();
+        } else if (os.startsWith("Mac") || os.indexOf("BSD") >= 0) {
+    		try {
+    			//return new NaiveKQueueFileMonitor();
+            	return new KQueueFileMonitor();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+        } else {
+            throw new Error("FileMonitor not implemented for " + os);
         }
     }
     
+    /** Shared FileMonitor instance */
+    private static FileMonitor sharedInstance;
+    
+    /** Get the shared FileMonitor instance */
     public static FileMonitor getInstance() {
-        return Holder.INSTANCE;
+    	if (sharedInstance == null) {
+    		sharedInstance = createInstance();
+    	}
+        return sharedInstance;
     }
     
     private static class W32FileMonitor extends FileMonitor {
@@ -211,10 +243,7 @@ public abstract class FileMonitor {
             HANDLEByReference rkey = new HANDLEByReference();
             PointerByReference roverlap = new PointerByReference();
             klib.GetQueuedCompletionStatus(port, rcount, rkey, roverlap, Kernel32.INFINITE);
-            
-            synchronized (this) { 
-                return (FileInfo)handleMap.get(rkey.getValue());
-            }
+            return (FileInfo)handleMap.get(rkey.getValue());
         }
         private int convertMask(int mask) {
             int result = 0;
@@ -222,7 +251,7 @@ public abstract class FileMonitor {
                 result |= Kernel32.FILE_NOTIFY_CHANGE_CREATION;
             }
             if ((mask & FILE_DELETED) != 0) {
-                result |= Kernel32.FILE_NOTIFY_CHANGE_NAME;
+                result |= Kernel32.FILE_NOTIFY_CHANGE_CREATION;
             }
             if ((mask & FILE_MODIFIED) != 0) {
                 result |= Kernel32.FILE_NOTIFY_CHANGE_LAST_WRITE;
@@ -244,9 +273,6 @@ public abstract class FileMonitor {
             }
             return result;
         }
-
-        private static int watcherThreadID;
-
         protected synchronized void watch(File file, int eventMask, boolean recursive) throws IOException {
             File dir = file;
             if (!dir.isDirectory()) {
@@ -291,26 +317,15 @@ public abstract class FileMonitor {
                                             finfo.overlapped, null)) {
                 int err = klib.GetLastError();
                 throw new IOException("ReadDirectoryChangesW failed on "
-                                      + finfo.file + ", handle " + handle
+                                      + finfo.file 
                                       + ": '" + getSystemError(err)
                                       + "' (" + err + ")");
             }
             if (watcher == null) {
-                watcher = new Thread("W32 File Monitor-" + (watcherThreadID++)) {
+                watcher = new Thread("W32 File Monitor") {
                     public void run() {
                         FileInfo finfo;
-                        while (true) {
-                           finfo = waitForChange();
-                           if (finfo == null) {
-                              synchronized(W32FileMonitor.this) {
-                                 if (fileMap.isEmpty()) {
-                                    watcher = null;
-                                    break;
-                                 }
-                              }
-                              continue;
-                            }
-                           
+                        while ((finfo = waitForChange()) != null) {
                             try {
                                 handleChanges(finfo);
                             }
@@ -325,7 +340,6 @@ public abstract class FileMonitor {
                 watcher.start();
             }
         }
-
         protected synchronized void unwatch(File file) {
             FileInfo finfo = (FileInfo)fileMap.remove(file);
             if (finfo != null) {
@@ -335,12 +349,6 @@ public abstract class FileMonitor {
             }
         }
         protected synchronized void dispose() {
-            // unwatch any remaining files in map, allows watcher thread to exit
-            int i = 0;
-            for (Object[] keys = fileMap.keySet().toArray(); !fileMap.isEmpty();) {
-                unwatch((File)keys[i++]);
-            }
-            
             Kernel32 klib = Kernel32.INSTANCE;
             klib.PostQueuedCompletionStatus(port, 0, null, null);
             klib.CloseHandle(port);
@@ -356,20 +364,247 @@ public abstract class FileMonitor {
                               null, code, 
                               0, pref, 0, null);
             String s = pref.getValue().getString(0, !Boolean.getBoolean("w32.ascii"));
-            s = s.replace(".\r",".").replace(".\n",".");
             lib.LocalFree(pref.getValue());
             return s;
         }
     }
     
-    private static class KQueueFileMonitor extends FileMonitor {
-        protected void watch(File file, int mask, boolean recursive) {
-            
-        }
-        protected void unwatch(File file) {
-        }
-        protected void dispose() {
-        }
+    /**
+     * KQueue implementation of FileMonitor, for BSD-derived systems (including Mac OS X).<br/>
+     * Only one dedicated thread and one kqueue is created by this monitor, designed to be as scalable as possible.<br/>
+     * TODO handle the FileEvent.FILE_CREATED event and recursive flag (right now, only existing files can be watched).<br/>
+     * @author Olivier Chafik
+     */
+    private static class KQueueFileMonitor extends FileMonitor implements Runnable {
+    	/// map from file descriptor to file
+    	private final Map/*<Integer, File>*/ fdToFile = new TreeMap();
+    	
+    	/// map from file to file descriptor
+    	private final Map/*<File, Integer>*/ fileToFd = new TreeMap();
+
+    	int notificationFileDescriptor;
+    	File notificationFile;
+    	final int kqueueHandle;
+    	timespec timeout;
+
+    	/// Map from file to pending declaration kevent
+    	private final Map/*<File, kevent>*/ pendingDeclarationEvents = new LinkedHashMap();
+
+    	public KQueueFileMonitor() throws IOException {
+    		try {
+    			notificationFile = File.createTempFile("kqueueFileWatch", ".sync");
+    			notificationFile.createNewFile();
+    			notificationFile.deleteOnExit();
+
+    			add(notificationFile, FileMonitor.FILE_ATTRIBUTES_CHANGED, false);
+    			notificationFileDescriptor = ((Integer)fileToFd.get(notificationFile)).intValue();
+    			
+    			// as there is a synchronization file, we will be able to interrupt calls to kevent easily. So we setup a timeout as high as we want :
+    			timeout = new timespec(100, 0);
+    		} catch (IOException e) {
+    			System.err.println("Failed to create notification file " + notificationFile);
+
+    			// we'll do fine even without notification file : however, there will be some delay to add / remove files
+    			timeout = new timespec(0, 500000000);
+    		}
+    		kqueueHandle = CLibrary.INSTANCE.kqueue();
+    		if (kqueueHandle == -1) 
+    			throw new IOException("Unable to create kqueue !");
+    	}
+    	protected int convertMask(int fileMonitorMask) {
+    		int keventMask = 0;
+    		if ((fileMonitorMask & FileMonitor.FILE_DELETED) != 0) {
+    			keventMask |= CLibrary.NOTE_DELETE;
+    		}
+    		if ((fileMonitorMask & FileMonitor.FILE_MODIFIED) != 0) {
+    			keventMask |= CLibrary.NOTE_WRITE;
+    		}
+    		if ((fileMonitorMask & FileMonitor.FILE_RENAMED) != 0) {
+    			keventMask |= CLibrary.NOTE_RENAME;
+    		}
+    		if ((fileMonitorMask & FileMonitor.FILE_SIZE_CHANGED) != 0) {
+    			keventMask |= CLibrary.NOTE_EXTEND;
+    		}
+    		if ((fileMonitorMask & FileMonitor.FILE_ACCESSED) != 0) {
+    			keventMask |= Kernel32.FILE_NOTIFY_CHANGE_LAST_ACCESS;
+    		}
+    		if ((fileMonitorMask & FileMonitor.FILE_ATTRIBUTES_CHANGED) != 0) {
+    			keventMask |= CLibrary.NOTE_ATTRIB;
+    		}
+    		if ((fileMonitorMask & FileMonitor.FILE_SECURITY_CHANGED) != 0) {
+    			keventMask |= CLibrary.NOTE_ATTRIB;
+    		}
+    		return keventMask;
+    	}
+    	//final Pointer NATIVE_0L = Pointer.createConstant(0), NATIVE_1L = Pointer.createConstant(1);
+
+    	protected synchronized void add(File file, int keventMask, boolean recursive) throws IOException {
+    		int fd;
+    		Integer fdObj = (Integer)fileToFd.get(file);
+    		if (fdObj == null) {
+    			fd = CLibrary.INSTANCE.open(file.toString(), CLibrary.O_EVTONLY, 0);
+    			if (fd < 0) 
+    				throw new FileNotFoundException(file.toString());
+
+    			fdToFile.put(fd, file);
+    			fileToFd.put(file, fd);
+    		} else {
+    			fd = fdObj.intValue();
+    		}
+
+    		CLibrary.kevent ke = new kevent();
+    		ke.ident = fd;
+    		ke.filter = CLibrary.EVFILT_VNODE;
+    		ke.flags = CLibrary.EV_ADD | CLibrary.EV_CLEAR;
+    		ke.fflags = keventMask;
+    		ke.data = 0;
+
+    		recursive = recursive && file.isDirectory();
+    		//ke.udata = recursive ? NATIVE_1L : NATIVE_0L;
+    		ke.udata = Pointer.NULL;
+
+    		synchronized (pendingDeclarationEvents) {
+    			pendingDeclarationEvents.put(file, ke);
+    		}
+
+    		//System.err.println("File " + file + " : recursive = "+recursive);
+    		if (recursive) {
+    			for (File child : file.listFiles()) {
+    				System.err.println("Child " + child);
+    				add(child, keventMask, recursive);
+    			}
+    		}
+    	}
+    	protected synchronized void remove(File file) {
+    		Integer fdObj = (Integer)fileToFd.remove(file);
+    		if (fdObj == null)
+    			return;
+
+    		fdToFile.remove(fdObj);
+
+    		// This will automatically remove the file from the kqueue :
+    		CLibrary.INSTANCE.close(fdObj.intValue());
+    	}
+
+    	public synchronized void dispose() {
+    		if (loopThread != null)
+    			loopThread.interrupt();
+    	}
+
+    	protected void finalize() {
+    		notificationFile.delete();
+    		if (kqueueHandle != -1) {
+    			CLibrary.INSTANCE.close(kqueueHandle);
+    		}
+    	}
+
+    	/**
+    	 * @param f
+    	 * @param mask
+    	 * @param recurse ignored !
+    	 * @throws IOException 
+    	 */
+    	public synchronized void watch(File f, int fileMonitorMask, boolean recurse) throws IOException {
+    		doWatch(f, convertMask(fileMonitorMask), recurse);
+    	}
+    	protected void doWatch(File f, int keventMask, boolean recurse) throws IOException {
+    		checkStarted();
+    		add(f, keventMask, recurse);
+    		tryAndSync();
+    	}
+
+    	/// Whether the file monitor thread was started or not
+    	protected boolean started;
+
+    	protected Thread loopThread;
+    	protected synchronized void checkStarted() {
+    		if (loopThread == null)
+    			(loopThread = new Thread(this)).start();
+    	}
+
+    	public synchronized void unwatch(File file) {
+    		remove(file);
+    		tryAndSync();
+    	}
+
+
+    	/**
+    	 * This will try to cause the kevent call in run() to return before the timeout, by modifying the notificationFile
+    	 */
+    	protected void tryAndSync() {
+    		notificationFile.setLastModified(System.currentTimeMillis());
+    	}
+
+    	public void run() {
+    		kevent event = new kevent();
+    		Pointer pEvent = event.getPointer();
+    		timeout.write();
+    		Pointer pTimeout = timeout.getPointer();
+
+    		kevent modifEvent = new kevent();
+    		modifEvent.write();
+    		Pointer pModifEvent = modifEvent.getPointer();
+
+    		for (;!Thread.interrupted();) {
+    			// First, handle pending declarations : add watched files
+    			synchronized (pendingDeclarationEvents) {
+    				for (Iterator entrit = pendingDeclarationEvents.entrySet().iterator(); entrit.hasNext();) {
+    					Map.Entry/*<File, kevent>*/ entry = (Map.Entry)entrit.next();
+    					modifEvent.set((kevent)entry.getValue());
+    					modifEvent.write();
+
+    					int nev = CLibrary.INSTANCE.kevent(kqueueHandle, pModifEvent, 1, Pointer.NULL, 0, Pointer.NULL);
+    					if (nev != 0)
+    						new IOException("kevent did not like modification event for " + entry.getKey()).printStackTrace();
+    				}
+    				pendingDeclarationEvents.clear();
+    			}
+
+    			// Now listen to events : call returns on first event or after timeout is reached.
+    			int nev = CLibrary.INSTANCE.kevent(kqueueHandle, Pointer.NULL, 0, pEvent, 1, pTimeout);
+    			event.read();
+    			System.out.println("kevent = "+nev);
+    			if (nev < 0) {
+    				throw new RuntimeException("kevent call returned negative value !");
+    			} else if (nev > 0) {
+    				if (notificationFileDescriptor == event.ident) {
+    					// This is a fake event, triggered by modification of the synchronization file.
+    					// It is only meant to interrupt the blocking call to kevent and handle pending declarations before doing another blocking call to kevent.
+    					continue; 
+    				}
+    				File file = (File)fdToFile.get(event.ident);
+    				if ((event.fflags & CLibrary.NOTE_DELETE) != 0) {
+    					remove(file);
+    					notify(new FileEvent(file, FileMonitor.FILE_DELETED));
+    				}
+    				if ((event.fflags & CLibrary.NOTE_RENAME) != 0) {
+    					// A file that is renamed is also declared as deleted, and its track is lost.
+    					remove(file);
+    					notify(new FileMonitor.FileEvent(file, FileMonitor.FILE_RENAMED));
+    					notify(new FileMonitor.FileEvent(file, FileMonitor.FILE_DELETED));
+    				}
+    				if ((event.fflags & CLibrary.NOTE_EXTEND) != 0 || (event.fflags & CLibrary.NOTE_WRITE) != 0) {
+    					notify(new FileMonitor.FileEvent(file, FileMonitor.FILE_SIZE_CHANGED));
+    				}
+    				if ((event.fflags & CLibrary.NOTE_ATTRIB) != 0) {
+    					// TODO handle recursivity : if file is a directory and is marked as recursively watched, add children
+    					/*if (event.udata.getPointer().getInt(0) == 1) // Was this file watched recursively ?
+    							if (file.isDirectory())
+    								for (File child : file.listFiles())
+    									if (!fileToFd.containsKey(child)) {
+    										// child is not watched yet : add it
+    										notify(new FileEvent(child, FileMonitor.FILE_CREATED));
+    										try {
+    											doWatch(child, event.fflags, true);
+    										} catch (IOException e) {
+    											System.err.println("Failed to add recursive file "+child +" : "+e);
+    										}
+    									}*/
+    					notify(new FileMonitor.FileEvent(file, FileMonitor.FILE_ATTRIBUTES_CHANGED));
+    				}
+    			}
+    		}
+    	}
     }
     
     private static class INotifyFileMonitor extends FileMonitor {
