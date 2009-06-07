@@ -144,7 +144,7 @@ public class ObjectiveCGenerator {
 		declarations.addComponent(in.getDeclarations());
 		for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
 			for (Declaration d : catIn.getDeclarations())
-				d.addToCommentBefore("From category " + catIn.getTag());
+				d.addToCommentBefore("From category " + catIn.getCategoryName());
 			declarations.addComponent(catIn.getDeclarations());
 			
 			if (catIn.getCommentBefore() != null)
