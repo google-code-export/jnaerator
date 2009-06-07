@@ -463,8 +463,8 @@ public class TypeConversion {
 //		return SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name;
 //	}
 	public Identifier libMember(SimpleIdentifier libClass, Identifier libraryClassName, Identifier member) {
-		//return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
-		return member; //TODODODODODODODODOoOOOOO
+		return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
+		//return member; //TODODODODODODODODOoOOOOO
 	}
 	public Identifier findRef(Identifier name, Element e, Identifier libraryClassName) {
 		if (e == null || !name.isPlain())
