@@ -107,6 +107,17 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 		sp.typeIdentifiers.add(name);
 	}
 	boolean isTypeIdentifier(String identifier) {
+		if (possibleLanguages.contains(Language.ObjectiveC)) {
+			if ("SEL".equals(identifier) ||
+				"id".equals(identifier) ||
+				"IMP".equals(identifier) ||
+				"Class".equals(identifier) ||
+				"Protocol".equals(identifier) ||
+				"BOOL".equals(identifier) ||
+				"NSObject".equals(identifier) ||
+				"NSClass".equals(identifier))
+				return true;
+		}
 		for (Object oscope : Symbols_stack) {
 			Symbols_scope scope = (Symbols_scope)oscope;
 			if (scope.typeIdentifiers.contains(identifier))

@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-06-07 23:48:05
+// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-06-08 03:35:03
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -209,6 +209,17 @@ public class ObjCppParser extends Parser {
     		sp.typeIdentifiers.add(name);
     	}
     	boolean isTypeIdentifier(String identifier) {
+    		if (possibleLanguages.contains(Language.ObjectiveC)) {
+    			if ("SEL".equals(identifier) ||
+    				"id".equals(identifier) ||
+    				"IMP".equals(identifier) ||
+    				"Class".equals(identifier) ||
+    				"Protocol".equals(identifier) ||
+    				"BOOL".equals(identifier) ||
+    				"NSObject".equals(identifier) ||
+    				"NSClass".equals(identifier))
+    				return true;
+    		}
     		for (Object oscope : Symbols_stack) {
     			Symbols_scope scope = (Symbols_scope)oscope;
     			if (scope.typeIdentifiers.contains(identifier))
@@ -367,7 +378,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "lineDirective"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:290:1: lineDirective : ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:301:1: lineDirective : ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? ;
     public final void lineDirective() throws RecognitionException {
         int lineDirective_StartIndex = input.index();
         Token ln=null;
@@ -377,8 +388,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 1) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:291:2: (ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:291:4: ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:302:2: (ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:302:4: ln= '#line' line= DECIMAL_NUMBER (unescapedString= STRING )? (depth= DECIMAL_NUMBER )?
             {
             ln=(Token)match(input,22,FOLLOW_22_in_lineDirective78); if (state.failed) return ;
             line=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_lineDirective82); if (state.failed) return ;
@@ -392,7 +403,7 @@ public class ObjCppParser extends Parser {
               			}
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:299:3: (unescapedString= STRING )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:310:3: (unescapedString= STRING )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -401,7 +412,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt1) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:300:4: unescapedString= STRING
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:311:4: unescapedString= STRING
                     {
                     unescapedString=(Token)match(input,STRING,FOLLOW_STRING_in_lineDirective95); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
@@ -421,7 +432,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:310:8: (depth= DECIMAL_NUMBER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:321:8: (depth= DECIMAL_NUMBER )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -456,7 +467,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "sourceFile"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:313:1: sourceFile returns [SourceFile sourceFile] : ( declaration | lineDirective )* EOF ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:324:1: sourceFile returns [SourceFile sourceFile] : ( declaration | lineDirective )* EOF ;
     public final SourceFile sourceFile() throws RecognitionException {
         Symbols_stack.push(new Symbols_scope());
 
@@ -470,13 +481,13 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 2) ) { return sourceFile; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:318:2: ( ( declaration | lineDirective )* EOF )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:319:3: ( declaration | lineDirective )* EOF
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:329:2: ( ( declaration | lineDirective )* EOF )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:330:3: ( declaration | lineDirective )* EOF
             {
             if ( state.backtracking==0 ) {
                sourceFile = new SourceFile(); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:320:3: ( declaration | lineDirective )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:331:3: ( declaration | lineDirective )*
             loop3:
             do {
                 int alt3=3;
@@ -492,7 +503,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:321:4: declaration
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:332:4: declaration
             	    {
             	    pushFollow(FOLLOW_declaration_in_sourceFile150);
             	    declaration1=declaration();
@@ -509,7 +520,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:325:4: lineDirective
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:336:4: lineDirective
             	    {
             	    pushFollow(FOLLOW_lineDirective_in_sourceFile159);
             	    lineDirective();
@@ -551,7 +562,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "externDeclarations"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:333:1: externDeclarations returns [ExternDeclarations declarations] : {...}? => IDENTIFIER STRING '{' (ed= declaration )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:344:1: externDeclarations returns [ExternDeclarations declarations] : {...}? => IDENTIFIER STRING '{' (ed= declaration )* '}' ;
     public final ExternDeclarations externDeclarations() throws RecognitionException {
         ExternDeclarations declarations = null;
         int externDeclarations_StartIndex = input.index();
@@ -561,8 +572,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 3) ) { return declarations; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:334:2: ({...}? => IDENTIFIER STRING '{' (ed= declaration )* '}' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:334:4: {...}? => IDENTIFIER STRING '{' (ed= declaration )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:345:2: ({...}? => IDENTIFIER STRING '{' (ed= declaration )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:345:4: {...}? => IDENTIFIER STRING '{' (ed= declaration )* '}'
             {
             if ( !(( next("extern") )) ) {
                 if (state.backtracking>0) {state.failed=true; return declarations;}
@@ -577,7 +588,7 @@ public class ObjCppParser extends Parser {
               		
             }
             match(input,23,FOLLOW_23_in_externDeclarations201); if (state.failed) return declarations;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:340:4: (ed= declaration )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:351:4: (ed= declaration )*
             loop4:
             do {
                 int alt4=2;
@@ -590,7 +601,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt4) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:341:5: ed= declaration
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:352:5: ed= declaration
             	    {
             	    pushFollow(FOLLOW_declaration_in_externDeclarations215);
             	    ed=declaration();
@@ -635,7 +646,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "declaration"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:348:1: declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex] : ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:359:1: declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex] : ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) ;
     public final ObjCppParser.declaration_return declaration() throws RecognitionException {
         IsTypeDef_stack.push(new IsTypeDef_scope());
 
@@ -660,8 +671,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 4) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:350:2: ( ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:351:3: ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:361:2: ( ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:362:3: ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
             {
             if ( state.backtracking==0 ) {
                retval.declarations = new ArrayList<Declaration>(); 
@@ -670,15 +681,15 @@ public class ObjCppParser extends Parser {
               		  retval.preComment = getCommentBefore(retval.startTokenIndex);
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:356:3: ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:357:4: ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:367:3: ( ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:368:4: ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:357:4: ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:368:4: ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )
             int alt6=9;
             alt6 = dfa6.predict(input);
             switch (alt6) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:358:5: {...}? => pragmaContent
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:369:5: {...}? => pragmaContent
                     {
                     if ( !(( next("__pragma") )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -693,7 +704,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:359:5: templateDef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:370:5: templateDef
                     {
                     pushFollow(FOLLOW_templateDef_in_declaration277);
                     templateDef();
@@ -704,7 +715,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:360:5: functionDeclaration
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:371:5: functionDeclaration
                     {
                     pushFollow(FOLLOW_functionDeclaration_in_declaration286);
                     functionDeclaration3=functionDeclaration();
@@ -720,7 +731,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:363:5: externDeclarations
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:374:5: externDeclarations
                     {
                     pushFollow(FOLLOW_externDeclarations_in_declaration296);
                     externDeclarations4=externDeclarations();
@@ -736,7 +747,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:366:5: varDecl ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:377:5: varDecl ';'
                     {
                     pushFollow(FOLLOW_varDecl_in_declaration306);
                     varDecl5=varDecl();
@@ -753,7 +764,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:369:5: objCClassDef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:380:5: objCClassDef
                     {
                     pushFollow(FOLLOW_objCClassDef_in_declaration318);
                     objCClassDef6=objCClassDef();
@@ -769,7 +780,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:372:5: typeDef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:383:5: typeDef
                     {
                     pushFollow(FOLLOW_typeDef_in_declaration328);
                     typeDef7=typeDef();
@@ -785,7 +796,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:375:5: forwardClassDecl
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:386:5: forwardClassDecl
                     {
                     pushFollow(FOLLOW_forwardClassDecl_in_declaration338);
                     forwardClassDecl8=forwardClassDecl();
@@ -801,12 +812,12 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:378:5: 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:389:5: 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}'
                     {
                     match(input,26,FOLLOW_26_in_declaration348); if (state.failed) return retval;
                     ns=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_declaration352); if (state.failed) return retval;
                     match(input,23,FOLLOW_23_in_declaration354); if (state.failed) return retval;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:379:6: (subD= declaration )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:390:6: (subD= declaration )*
                     loop5:
                     do {
                         int alt5=2;
@@ -819,7 +830,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:380:7: subD= declaration
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:391:7: subD= declaration
                     	    {
                     	    pushFollow(FOLLOW_declaration_in_declaration372);
                     	    subD=declaration();
@@ -889,7 +900,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "forwardClassDecl"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:406:1: forwardClassDecl returns [List<Declaration> declarations] : '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:417:1: forwardClassDecl returns [List<Declaration> declarations] : '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' ;
     public final List<Declaration> forwardClassDecl() throws RecognitionException {
         List<Declaration> declarations = null;
         int forwardClassDecl_StartIndex = input.index();
@@ -898,8 +909,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 5) ) { return declarations; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:407:2: ( '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:407:5: '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:418:2: ( '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:418:5: '@class' n1= IDENTIFIER ( ',' nx= IDENTIFIER )* ';'
             {
             if ( state.backtracking==0 ) {
                declarations = new ArrayList<Declaration>(); 
@@ -912,7 +923,7 @@ public class ObjCppParser extends Parser {
               			defineTypeIdentifierInParentScope((n1!=null?n1.getText():null));
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:413:3: ( ',' nx= IDENTIFIER )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:424:3: ( ',' nx= IDENTIFIER )*
             loop7:
             do {
                 int alt7=2;
@@ -925,7 +936,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt7) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:413:4: ',' nx= IDENTIFIER
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:424:4: ',' nx= IDENTIFIER
             	    {
             	    match(input,28,FOLLOW_28_in_forwardClassDecl442); if (state.failed) return declarations;
             	    nx=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_forwardClassDecl449); if (state.failed) return declarations;
@@ -962,7 +973,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "functionPointerVarDecl"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:422:1: functionPointerVarDecl returns [List<? extends Declaration> declarations] : tr= mutableTypeRef {...}? ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:433:1: functionPointerVarDecl returns [List<? extends Declaration> declarations] : tr= mutableTypeRef {...}? ';' ;
     public final List<? extends Declaration> functionPointerVarDecl() throws RecognitionException {
         List<? extends Declaration> declarations = null;
         int functionPointerVarDecl_StartIndex = input.index();
@@ -971,8 +982,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 6) ) { return declarations; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:423:2: (tr= mutableTypeRef {...}? ';' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:423:4: tr= mutableTypeRef {...}? ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:434:2: (tr= mutableTypeRef {...}? ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:434:4: tr= mutableTypeRef {...}? ';'
             {
             pushFollow(FOLLOW_mutableTypeRef_in_functionPointerVarDecl480);
             tr=mutableTypeRef();
@@ -1012,7 +1023,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "enumItem"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:432:1: enumItem returns [Enum.EnumItem item] : n= IDENTIFIER ( '=' v= topLevelExpr )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:443:1: enumItem returns [Enum.EnumItem item] : n= IDENTIFIER ( '=' v= topLevelExpr )? ;
     public final ObjCppParser.enumItem_return enumItem() throws RecognitionException {
         ObjCppParser.enumItem_return retval = new ObjCppParser.enumItem_return();
         retval.start = input.LT(1);
@@ -1023,11 +1034,11 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 7) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:433:2: (n= IDENTIFIER ( '=' v= topLevelExpr )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:433:4: n= IDENTIFIER ( '=' v= topLevelExpr )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:444:2: (n= IDENTIFIER ( '=' v= topLevelExpr )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:444:4: n= IDENTIFIER ( '=' v= topLevelExpr )?
             {
             n=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_enumItem506); if (state.failed) return retval;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:433:17: ( '=' v= topLevelExpr )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:444:17: ( '=' v= topLevelExpr )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -1036,7 +1047,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt8) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:433:18: '=' v= topLevelExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:444:18: '=' v= topLevelExpr
                     {
                     match(input,29,FOLLOW_29_in_enumItem509); if (state.failed) return retval;
                     pushFollow(FOLLOW_topLevelExpr_in_enumItem513);
@@ -1076,7 +1087,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "enumBody"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:440:1: enumBody returns [Enum e] : '{' (i1= enumItem ( ',' (ix= enumItem )? )* )? '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:451:1: enumBody returns [Enum e] : '{' (i1= enumItem ( ',' (ix= enumItem )? )* )? '}' ;
     public final Enum enumBody() throws RecognitionException {
         Enum e = null;
         int enumBody_StartIndex = input.index();
@@ -1087,8 +1098,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 8) ) { return e; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:441:2: ( '{' (i1= enumItem ( ',' (ix= enumItem )? )* )? '}' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:442:3: '{' (i1= enumItem ( ',' (ix= enumItem )? )* )? '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:452:2: ( '{' (i1= enumItem ( ',' (ix= enumItem )? )* )? '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:453:3: '{' (i1= enumItem ( ',' (ix= enumItem )? )* )? '}'
             {
             if ( state.backtracking==0 ) {
                
@@ -1097,7 +1108,7 @@ public class ObjCppParser extends Parser {
               		
             }
             match(input,23,FOLLOW_23_in_enumBody539); if (state.failed) return e;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:447:4: (i1= enumItem ( ',' (ix= enumItem )? )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:458:4: (i1= enumItem ( ',' (ix= enumItem )? )* )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1106,7 +1117,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt11) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:448:5: i1= enumItem ( ',' (ix= enumItem )? )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:459:5: i1= enumItem ( ',' (ix= enumItem )? )*
                     {
                     pushFollow(FOLLOW_enumItem_in_enumBody555);
                     i1=enumItem();
@@ -1119,7 +1130,7 @@ public class ObjCppParser extends Parser {
                       						e.addItem((i1!=null?i1.item:null)); 
                       				
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:452:5: ( ',' (ix= enumItem )? )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:463:5: ( ',' (ix= enumItem )? )*
                     loop10:
                     do {
                         int alt10=2;
@@ -1132,10 +1143,10 @@ public class ObjCppParser extends Parser {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:453:6: ',' (ix= enumItem )?
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:464:6: ',' (ix= enumItem )?
                     	    {
                     	    match(input,28,FOLLOW_28_in_enumBody570); if (state.failed) return e;
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:454:6: (ix= enumItem )?
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:465:6: (ix= enumItem )?
                     	    int alt9=2;
                     	    int LA9_0 = input.LA(1);
 
@@ -1144,7 +1155,7 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    switch (alt9) {
                     	        case 1 :
-                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:454:7: ix= enumItem
+                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:465:7: ix= enumItem
                     	            {
                     	            pushFollow(FOLLOW_enumItem_in_enumBody581);
                     	            ix=enumItem();
@@ -1196,7 +1207,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "enumCore"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:462:1: enumCore returns [Enum e] : t= 'enum' (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:473:1: enumCore returns [Enum e] : t= 'enum' (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) ) ;
     public final Enum enumCore() throws RecognitionException {
         Enum e = null;
         int enumCore_StartIndex = input.index();
@@ -1217,12 +1228,12 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 9) ) { return e; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:466:2: (t= 'enum' (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:467:3: t= 'enum' (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:2: (t= 'enum' (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:478:3: t= 'enum' (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) )
             {
             t=(Token)match(input,30,FOLLOW_30_in_enumCore625); if (state.failed) return e;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:468:3: (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:469:4: m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:479:3: (m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:480:4: m1= modifiers (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) )
             {
             pushFollow(FOLLOW_modifiers_in_enumCore636);
             m1=modifiers();
@@ -1232,7 +1243,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                modifiers.addAll(m1); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:470:4: (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:481:4: (ab= enumBody | tag= qualifiedIdentifier (m2= modifiers nb= enumBody | ) )
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1251,7 +1262,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt13) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:471:5: ab= enumBody
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:482:5: ab= enumBody
                     {
                     pushFollow(FOLLOW_enumBody_in_enumCore651);
                     ab=enumBody();
@@ -1268,19 +1279,19 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:475:5: tag= qualifiedIdentifier (m2= modifiers nb= enumBody | )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:486:5: tag= qualifiedIdentifier (m2= modifiers nb= enumBody | )
                     {
                     pushFollow(FOLLOW_qualifiedIdentifier_in_enumCore663);
                     tag=qualifiedIdentifier();
 
                     state._fsp--;
                     if (state.failed) return e;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:476:5: (m2= modifiers nb= enumBody | )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:487:5: (m2= modifiers nb= enumBody | )
                     int alt12=2;
                     alt12 = dfa12.predict(input);
                     switch (alt12) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:6: m2= modifiers nb= enumBody
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:488:6: m2= modifiers nb= enumBody
                             {
                             pushFollow(FOLLOW_modifiers_in_enumCore678);
                             m2=modifiers();
@@ -1305,7 +1316,7 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:481:10: 
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:492:10: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -1358,7 +1369,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "objCClassDef"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:498:1: objCClassDef returns [Struct struct] : octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)* '@end' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:509:1: objCClassDef returns [Struct struct] : octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)* '@end' ;
     public final Struct objCClassDef() throws RecognitionException {
         Struct struct = null;
         int objCClassDef_StartIndex = input.index();
@@ -1381,8 +1392,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 10) ) { return struct; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:499:2: (octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)* '@end' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:500:3: octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)* '@end'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:510:2: (octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)* '@end' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:511:3: octype= ( '@protocol' | '@interface' ) className= IDENTIFIER ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | ) ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )? ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )? ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)* '@end'
             {
             octype=(Token)input.LT(1);
             if ( (input.LA(1)>=31 && input.LA(1)<=32) ) {
@@ -1409,7 +1420,7 @@ public class ObjCppParser extends Parser {
               			struct.setTag(new SimpleIdentifier((className!=null?className.getText():null)));
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:512:3: ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:523:3: ( ( ':' parentClass= IDENTIFIER ) | ( '(' categoryName= IDENTIFIER ')' ) | )
             int alt14=3;
             switch ( input.LA(1) ) {
             case 33:
@@ -1495,10 +1506,10 @@ public class ObjCppParser extends Parser {
 
             switch (alt14) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:513:4: ( ':' parentClass= IDENTIFIER )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:524:4: ( ':' parentClass= IDENTIFIER )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:513:4: ( ':' parentClass= IDENTIFIER )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:514:5: ':' parentClass= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:524:4: ( ':' parentClass= IDENTIFIER )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:525:5: ':' parentClass= IDENTIFIER
                     {
                     match(input,33,FOLLOW_33_in_objCClassDef767); if (state.failed) return struct;
                     parentClass=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef771); if (state.failed) return struct;
@@ -1515,10 +1526,10 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:519:4: ( '(' categoryName= IDENTIFIER ')' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:530:4: ( '(' categoryName= IDENTIFIER ')' )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:519:4: ( '(' categoryName= IDENTIFIER ')' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:520:5: '(' categoryName= IDENTIFIER ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:530:4: ( '(' categoryName= IDENTIFIER ')' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:531:5: '(' categoryName= IDENTIFIER ')'
                     {
                     match(input,34,FOLLOW_34_in_objCClassDef791); if (state.failed) return struct;
                     categoryName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef795); if (state.failed) return struct;
@@ -1535,14 +1546,14 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:524:3: 
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:535:3: 
                     {
                     }
                     break;
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:525:3: ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:536:3: ( '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>' )?
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -1551,10 +1562,10 @@ public class ObjCppParser extends Parser {
             }
             switch (alt17) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:526:4: '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:537:4: '<' (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )? '>'
                     {
                     match(input,36,FOLLOW_36_in_objCClassDef820); if (state.failed) return struct;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:526:8: (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:537:8: (p1= IDENTIFIER ( ',' px= IDENTIFIER )* )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -1563,13 +1574,13 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt16) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:527:5: p1= IDENTIFIER ( ',' px= IDENTIFIER )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:538:5: p1= IDENTIFIER ( ',' px= IDENTIFIER )*
                             {
                             p1=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef830); if (state.failed) return struct;
                             if ( state.backtracking==0 ) {
                                struct.addProtocol(new SimpleIdentifier((p1!=null?p1.getText():null))); 
                             }
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:528:5: ( ',' px= IDENTIFIER )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:539:5: ( ',' px= IDENTIFIER )*
                             loop15:
                             do {
                                 int alt15=2;
@@ -1582,7 +1593,7 @@ public class ObjCppParser extends Parser {
 
                                 switch (alt15) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:529:6: ',' px= IDENTIFIER
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:540:6: ',' px= IDENTIFIER
                             	    {
                             	    match(input,28,FOLLOW_28_in_objCClassDef845); if (state.failed) return struct;
                             	    px=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCClassDef855); if (state.failed) return struct;
@@ -1611,7 +1622,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:534:3: ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:545:3: ( '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}' )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -1620,10 +1631,10 @@ public class ObjCppParser extends Parser {
             }
             switch (alt20) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:535:4: '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:546:4: '{' ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )* '}'
                     {
                     match(input,23,FOLLOW_23_in_objCClassDef886); if (state.failed) return struct;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:536:4: ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:547:4: ( '@public' | '@private' | '@protected' | ( (fv= varDecl ';' | functionPointerVarDecl ) ) )*
                     loop19:
                     do {
                         int alt19=5;
@@ -1664,7 +1675,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt19) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:537:5: '@public'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:548:5: '@public'
                     	    {
                     	    match(input,38,FOLLOW_38_in_objCClassDef897); if (state.failed) return struct;
                     	    if ( state.backtracking==0 ) {
@@ -1674,7 +1685,7 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:538:5: '@private'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:549:5: '@private'
                     	    {
                     	    match(input,39,FOLLOW_39_in_objCClassDef908); if (state.failed) return struct;
                     	    if ( state.backtracking==0 ) {
@@ -1684,7 +1695,7 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 3 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:539:5: '@protected'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:550:5: '@protected'
                     	    {
                     	    match(input,40,FOLLOW_40_in_objCClassDef919); if (state.failed) return struct;
                     	    if ( state.backtracking==0 ) {
@@ -1694,17 +1705,17 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 4 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:540:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:551:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
                     	    {
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:540:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:541:6: (fv= varDecl ';' | functionPointerVarDecl )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:551:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:552:6: (fv= varDecl ';' | functionPointerVarDecl )
                     	    {
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:541:6: (fv= varDecl ';' | functionPointerVarDecl )
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:552:6: (fv= varDecl ';' | functionPointerVarDecl )
                     	    int alt18=2;
                     	    alt18 = dfa18.predict(input);
                     	    switch (alt18) {
                     	        case 1 :
-                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:542:7: fv= varDecl ';'
+                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:553:7: fv= varDecl ';'
                     	            {
                     	            pushFollow(FOLLOW_varDecl_in_objCClassDef946);
                     	            fv=varDecl();
@@ -1721,7 +1732,7 @@ public class ObjCppParser extends Parser {
                     	            }
                     	            break;
                     	        case 2 :
-                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:545:7: functionPointerVarDecl
+                    	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:556:7: functionPointerVarDecl
                     	            {
                     	            pushFollow(FOLLOW_functionPointerVarDecl_in_objCClassDef960);
                     	            functionPointerVarDecl9=functionPointerVarDecl();
@@ -1761,7 +1772,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                struct.setNextMemberVisibility(Struct.MemberVisibility.Public); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:554:3: ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:565:3: ( objCMethodDecl | typeDef | vd= varDecl ';' {...}?)*
             loop21:
             do {
                 int alt21=4;
@@ -1798,7 +1809,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt21) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:555:4: objCMethodDecl
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:566:4: objCMethodDecl
             	    {
             	    pushFollow(FOLLOW_objCMethodDecl_in_objCClassDef1005);
             	    objCMethodDecl10=objCMethodDecl();
@@ -1814,7 +1825,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:558:4: typeDef
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:569:4: typeDef
             	    {
             	    pushFollow(FOLLOW_typeDef_in_objCClassDef1014);
             	    typeDef11=typeDef();
@@ -1830,7 +1841,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:561:4: vd= varDecl ';' {...}?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:572:4: vd= varDecl ';' {...}?
             	    {
             	    pushFollow(FOLLOW_varDecl_in_objCClassDef1025);
             	    vd=varDecl();
@@ -1874,7 +1885,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "objCMethodDecl"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:568:1: objCMethodDecl returns [Function function] : tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= mutableTypeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:579:1: objCMethodDecl returns [Function function] : tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= mutableTypeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' ;
     public final Function objCMethodDecl() throws RecognitionException {
         Function function = null;
         int objCMethodDecl_StartIndex = input.index();
@@ -1894,8 +1905,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 11) ) { return function; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:569:2: (tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= mutableTypeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:569:4: tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= mutableTypeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:580:2: (tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= mutableTypeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:580:4: tk= (tp= '+' | tm= '-' ) ( '(' (returnTypeRef= mutableTypeRef )? ')' )? methodName= IDENTIFIER ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )? ';'
             {
             if ( state.backtracking==0 ) {
                	
@@ -1903,7 +1914,7 @@ public class ObjCppParser extends Parser {
               			function.setType(Function.Type.ObjCMethod);
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:573:6: (tp= '+' | tm= '-' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:584:6: (tp= '+' | tm= '-' )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -1922,7 +1933,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt22) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:574:4: tp= '+'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:585:4: tp= '+'
                     {
                     tp=(Token)match(input,42,FOLLOW_42_in_objCMethodDecl1074); if (state.failed) return function;
                     if ( state.backtracking==0 ) {
@@ -1936,7 +1947,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:579:4: tm= '-'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:590:4: tm= '-'
                     {
                     tm=(Token)match(input,43,FOLLOW_43_in_objCMethodDecl1086); if (state.failed) return function;
                     if ( state.backtracking==0 ) {
@@ -1951,7 +1962,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:584:3: ( '(' (returnTypeRef= mutableTypeRef )? ')' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:595:3: ( '(' (returnTypeRef= mutableTypeRef )? ')' )?
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -1960,10 +1971,10 @@ public class ObjCppParser extends Parser {
             }
             switch (alt24) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:586:4: '(' (returnTypeRef= mutableTypeRef )? ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:597:4: '(' (returnTypeRef= mutableTypeRef )? ')'
                     {
                     match(input,34,FOLLOW_34_in_objCMethodDecl1105); if (state.failed) return function;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:587:18: (returnTypeRef= mutableTypeRef )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:598:18: (returnTypeRef= mutableTypeRef )?
                     int alt23=2;
                     int LA23_0 = input.LA(1);
 
@@ -2011,7 +2022,7 @@ public class ObjCppParser extends Parser {
               			function.setCommentAfter(getCommentAfterOnSameLine(methodName.getTokenIndex()));
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:596:3: ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:607:3: ( ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )? )?
             int alt27=2;
             int LA27_0 = input.LA(1);
 
@@ -2020,7 +2031,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt27) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:597:4: ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:608:4: ':' '(' argType1= mutableTypeRef ')' argName1= IDENTIFIER (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )* ( ',' '...' )?
                     {
                     match(input,33,FOLLOW_33_in_objCMethodDecl1144); if (state.failed) return function;
                     match(input,34,FOLLOW_34_in_objCMethodDecl1146); if (state.failed) return function;
@@ -2038,7 +2049,7 @@ public class ObjCppParser extends Parser {
                       				function.addArg(arg);
                       			
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:602:4: (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:613:4: (sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER )*
                     loop25:
                     do {
                         int alt25=2;
@@ -2051,7 +2062,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt25) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:603:5: sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:614:5: sel= IDENTIFIER ':' '(' argType= mutableTypeRef ')' argName= IDENTIFIER
                     	    {
                     	    sel=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodDecl1171); if (state.failed) return function;
                     	    match(input,33,FOLLOW_33_in_objCMethodDecl1173); if (state.failed) return function;
@@ -2079,7 +2090,7 @@ public class ObjCppParser extends Parser {
                         }
                     } while (true);
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:611:4: ( ',' '...' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:622:4: ( ',' '...' )?
                     int alt26=2;
                     int LA26_0 = input.LA(1);
 
@@ -2088,7 +2099,7 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt26) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:612:5: ',' '...'
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:623:5: ',' '...'
                             {
                             match(input,28,FOLLOW_28_in_objCMethodDecl1214); if (state.failed) return function;
                             match(input,44,FOLLOW_44_in_objCMethodDecl1216); if (state.failed) return function;
@@ -2127,7 +2138,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "structBody"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:620:1: structBody returns [Struct struct] : '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:631:1: structBody returns [Struct struct] : '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )* '}' ;
     public final Struct structBody() throws RecognitionException {
         Struct struct = null;
         int structBody_StartIndex = input.index();
@@ -2139,8 +2150,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 12) ) { return struct; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:621:2: ( '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )* '}' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:622:3: '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:632:2: ( '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:633:3: '{' ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )* '}'
             {
             if ( state.backtracking==0 ) {
                
@@ -2149,16 +2160,16 @@ public class ObjCppParser extends Parser {
               		
             }
             match(input,23,FOLLOW_23_in_structBody1254); if (state.failed) return struct;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:627:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:638:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )*
             loop29:
             do {
                 int alt29=4;
                 alt29 = dfa29.predict(input);
                 switch (alt29) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:628:5: ( 'public' | 'private' | 'protected' ) ':'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:639:5: ( 'public' | 'private' | 'protected' ) ':'
             	    {
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:628:5: ( 'public' | 'private' | 'protected' )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:639:5: ( 'public' | 'private' | 'protected' )
             	    int alt28=3;
             	    switch ( input.LA(1) ) {
             	    case 45:
@@ -2186,7 +2197,7 @@ public class ObjCppParser extends Parser {
 
             	    switch (alt28) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:629:6: 'public'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:640:6: 'public'
             	            {
             	            match(input,45,FOLLOW_45_in_structBody1272); if (state.failed) return struct;
             	            if ( state.backtracking==0 ) {
@@ -2196,7 +2207,7 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 2 :
-            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:630:6: 'private'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:641:6: 'private'
             	            {
             	            match(input,46,FOLLOW_46_in_structBody1284); if (state.failed) return struct;
             	            if ( state.backtracking==0 ) {
@@ -2206,7 +2217,7 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 3 :
-            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:631:6: 'protected'
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:642:6: 'protected'
             	            {
             	            match(input,47,FOLLOW_47_in_structBody1296); if (state.failed) return struct;
             	            if ( state.backtracking==0 ) {
@@ -2223,7 +2234,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:633:5: declaration
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:5: declaration
             	    {
             	    pushFollow(FOLLOW_declaration_in_structBody1315);
             	    declaration12=declaration();
@@ -2239,7 +2250,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:636:5: fv= varDecl ':' bits= DECIMAL_NUMBER ';'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:647:5: fv= varDecl ':' bits= DECIMAL_NUMBER ';'
             	    {
             	    pushFollow(FOLLOW_varDecl_in_structBody1327);
             	    fv=varDecl();
@@ -2283,7 +2294,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "structCore"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:645:1: structCore returns [Struct struct] : typeToken= ( 'struct' | 'class' | 'union' ) (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:656:1: structCore returns [Struct struct] : typeToken= ( 'struct' | 'class' | 'union' ) (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) ) ;
     public final Struct structCore() throws RecognitionException {
         Symbols_stack.push(new Symbols_scope());
 
@@ -2309,8 +2320,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 13) ) { return struct; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:669:2: (typeToken= ( 'struct' | 'class' | 'union' ) (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:670:3: typeToken= ( 'struct' | 'class' | 'union' ) (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:680:2: (typeToken= ( 'struct' | 'class' | 'union' ) (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:681:3: typeToken= ( 'struct' | 'class' | 'union' ) (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) )
             {
             typeToken=(Token)input.LT(1);
             if ( (input.LA(1)>=48 && input.LA(1)<=50) ) {
@@ -2323,8 +2334,8 @@ public class ObjCppParser extends Parser {
                 throw mse;
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:671:3: (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:672:4: m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:682:3: (m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:683:4: m1= modifiers (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) )
             {
             pushFollow(FOLLOW_modifiers_in_structCore1409);
             m1=modifiers();
@@ -2334,7 +2345,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                modifiers.addAll(m1); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:673:4: (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:684:4: (ab= structBody | tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | ) )
             int alt33=2;
             int LA33_0 = input.LA(1);
 
@@ -2353,7 +2364,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt33) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:674:5: ab= structBody
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:685:5: ab= structBody
                     {
                     pushFollow(FOLLOW_structBody_in_structCore1424);
                     ab=structBody();
@@ -2370,7 +2381,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:678:5: tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:689:5: tag= qualifiedIdentifier ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | )
                     {
                     pushFollow(FOLLOW_qualifiedIdentifier_in_structCore1436);
                     tag=qualifiedIdentifier();
@@ -2382,15 +2393,15 @@ public class ObjCppParser extends Parser {
                       					defineTypeIdentifierInParentScope((tag!=null?tag.identifier:null));
                       				
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:681:5: ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:692:5: ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | )
                     int alt32=2;
                     alt32 = dfa32.predict(input);
                     switch (alt32) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:682:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:693:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
                             {
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:682:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:683:7: m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:693:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:694:7: m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody
                             {
                             pushFollow(FOLLOW_modifiers_in_structCore1461);
                             m2=modifiers();
@@ -2400,7 +2411,7 @@ public class ObjCppParser extends Parser {
                             if ( state.backtracking==0 ) {
                                modifiers.addAll(m2); 
                             }
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:684:7: ( ':' ( 'public' )? parent= qualifiedIdentifier )?
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:695:7: ( ':' ( 'public' )? parent= qualifiedIdentifier )?
                             int alt31=2;
                             int LA31_0 = input.LA(1);
 
@@ -2409,10 +2420,10 @@ public class ObjCppParser extends Parser {
                             }
                             switch (alt31) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:685:8: ':' ( 'public' )? parent= qualifiedIdentifier
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:696:8: ':' ( 'public' )? parent= qualifiedIdentifier
                                     {
                                     match(input,33,FOLLOW_33_in_structCore1480); if (state.failed) return struct;
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:686:8: ( 'public' )?
+                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:697:8: ( 'public' )?
                                     int alt30=2;
                                     int LA30_0 = input.LA(1);
 
@@ -2461,7 +2472,7 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:695:10: 
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:706:10: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -2528,7 +2539,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "anyOp"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:706:1: anyOp returns [java.lang.Enum<?> op] : ( binaryOp | unaryOp | assignmentOp );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:717:1: anyOp returns [java.lang.Enum<?> op] : ( binaryOp | unaryOp | assignmentOp );
     public final java.lang.Enum<?> anyOp() throws RecognitionException {
         java.lang.Enum<?> op = null;
         int anyOp_StartIndex = input.index();
@@ -2541,7 +2552,7 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 14) ) { return op; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:707:2: ( binaryOp | unaryOp | assignmentOp )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:718:2: ( binaryOp | unaryOp | assignmentOp )
             int alt34=3;
             switch ( input.LA(1) ) {
             case 43:
@@ -2619,7 +2630,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt34) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:707:4: binaryOp
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:718:4: binaryOp
                     {
                     pushFollow(FOLLOW_binaryOp_in_anyOp1569);
                     binaryOp13=binaryOp();
@@ -2633,7 +2644,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:708:3: unaryOp
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:719:3: unaryOp
                     {
                     pushFollow(FOLLOW_unaryOp_in_anyOp1578);
                     unaryOp14=unaryOp();
@@ -2647,7 +2658,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:709:3: assignmentOp
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:720:3: assignmentOp
                     {
                     pushFollow(FOLLOW_assignmentOp_in_anyOp1587);
                     assignmentOp15=assignmentOp();
@@ -2679,7 +2690,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "functionDeclaration"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:713:1: functionDeclaration returns [Function function] : preMods1= modifiers (returnTypeRef= mutableTypeRef )? preMods2= modifiers name= qualifiedCppFunctionName argList postMods= modifiers ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )? ( ';' | statementsBlock ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:724:1: functionDeclaration returns [Function function] : preMods1= modifiers (returnTypeRef= mutableTypeRef )? preMods2= modifiers name= qualifiedCppFunctionName argList postMods= modifiers ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )? ( ';' | statementsBlock ) ;
     public final ObjCppParser.functionDeclaration_return functionDeclaration() throws RecognitionException {
         Symbols_stack.push(new Symbols_scope());
 
@@ -2710,8 +2721,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 15) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:718:2: (preMods1= modifiers (returnTypeRef= mutableTypeRef )? preMods2= modifiers name= qualifiedCppFunctionName argList postMods= modifiers ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )? ( ';' | statementsBlock ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:718:4: preMods1= modifiers (returnTypeRef= mutableTypeRef )? preMods2= modifiers name= qualifiedCppFunctionName argList postMods= modifiers ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )? ( ';' | statementsBlock )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:729:2: (preMods1= modifiers (returnTypeRef= mutableTypeRef )? preMods2= modifiers name= qualifiedCppFunctionName argList postMods= modifiers ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )? ( ';' | statementsBlock ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:729:4: preMods1= modifiers (returnTypeRef= mutableTypeRef )? preMods2= modifiers name= qualifiedCppFunctionName argList postMods= modifiers ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )? ( ';' | statementsBlock )
             {
             if ( state.backtracking==0 ) {
                	
@@ -2727,14 +2738,14 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.function.addModifiers(preMods1); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:723:16: (returnTypeRef= mutableTypeRef )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:734:16: (returnTypeRef= mutableTypeRef )?
             int alt35=2;
             switch ( input.LA(1) ) {
                 case IDENTIFIER:
                     {
                     int LA35_1 = input.LA(2);
 
-                    if ( (((synpred56_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred56_ObjCpp()&&( next("extern") ))||synpred56_ObjCpp()||(synpred56_ObjCpp()&&( next("__success") ))||(synpred56_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred56_ObjCpp()&&( next("__pragma") ))||(synpred56_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )))) ) {
+                    if ( (((synpred56_ObjCpp()&&( next("__success") ))||synpred56_ObjCpp()||(synpred56_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred56_ObjCpp()&&( next("__pragma") ))||(synpred56_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred56_ObjCpp()&&( next("extern") ))||(synpred56_ObjCpp()&&( Modifier.parseModifier(next()) != null )))) ) {
                         alt35=1;
                     }
                     }
@@ -2822,7 +2833,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.function.addModifiers(postMods); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:737:3: ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:748:3: ( ':' i1= constructorInitializer ( ',' ix= constructorInitializer )* )?
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -2831,7 +2842,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt37) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:738:4: ':' i1= constructorInitializer ( ',' ix= constructorInitializer )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:749:4: ':' i1= constructorInitializer ( ',' ix= constructorInitializer )*
                     {
                     match(input,33,FOLLOW_33_in_functionDeclaration1672); if (state.failed) return retval;
                     pushFollow(FOLLOW_constructorInitializer_in_functionDeclaration1679);
@@ -2842,7 +2853,7 @@ public class ObjCppParser extends Parser {
                     if ( state.backtracking==0 ) {
                        retval.function.addInitializer(i1); 
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:740:4: ( ',' ix= constructorInitializer )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:751:4: ( ',' ix= constructorInitializer )*
                     loop36:
                     do {
                         int alt36=2;
@@ -2855,7 +2866,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt36) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:741:5: ',' ix= constructorInitializer
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:752:5: ',' ix= constructorInitializer
                     	    {
                     	    match(input,28,FOLLOW_28_in_functionDeclaration1692); if (state.failed) return retval;
                     	    pushFollow(FOLLOW_constructorInitializer_in_functionDeclaration1696);
@@ -2881,7 +2892,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:744:3: ( ';' | statementsBlock )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:755:3: ( ';' | statementsBlock )
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -2900,14 +2911,14 @@ public class ObjCppParser extends Parser {
             }
             switch (alt38) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:745:4: ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:756:4: ';'
                     {
                     match(input,25,FOLLOW_25_in_functionDeclaration1719); if (state.failed) return retval;
 
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:746:4: statementsBlock
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:757:4: statementsBlock
                     {
                     pushFollow(FOLLOW_statementsBlock_in_functionDeclaration1726);
                     statementsBlock17=statementsBlock();
@@ -2946,7 +2957,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "constructorInitializer"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:752:1: constructorInitializer returns [FunctionCall init] : qn= qualifiedCppFunctionName '(' (el= topLevelExprList )? ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:1: constructorInitializer returns [FunctionCall init] : qn= qualifiedCppFunctionName '(' (el= topLevelExprList )? ')' ;
     public final FunctionCall constructorInitializer() throws RecognitionException {
         FunctionCall init = null;
         int constructorInitializer_StartIndex = input.index();
@@ -2957,8 +2968,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 16) ) { return init; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:753:2: (qn= qualifiedCppFunctionName '(' (el= topLevelExprList )? ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:753:4: qn= qualifiedCppFunctionName '(' (el= topLevelExprList )? ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:764:2: (qn= qualifiedCppFunctionName '(' (el= topLevelExprList )? ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:764:4: qn= qualifiedCppFunctionName '(' (el= topLevelExprList )? ')'
             {
             pushFollow(FOLLOW_qualifiedCppFunctionName_in_constructorInitializer1749);
             qn=qualifiedCppFunctionName();
@@ -2971,7 +2982,7 @@ public class ObjCppParser extends Parser {
               		
             }
             match(input,34,FOLLOW_34_in_constructorInitializer1757); if (state.failed) return init;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:756:7: (el= topLevelExprList )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:767:7: (el= topLevelExprList )?
             int alt39=2;
             int LA39_0 = input.LA(1);
 
@@ -2980,7 +2991,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt39) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:757:4: el= topLevelExprList
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:768:4: el= topLevelExprList
                     {
                     pushFollow(FOLLOW_topLevelExprList_in_constructorInitializer1766);
                     el=topLevelExprList();
@@ -3014,7 +3025,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "modifiers"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:761:1: modifiers returns [List<Modifier> modifiers] : ( modifier )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:772:1: modifiers returns [List<Modifier> modifiers] : ( modifier )* ;
     public final List<Modifier> modifiers() throws RecognitionException {
         List<Modifier> modifiers = null;
         int modifiers_StartIndex = input.index();
@@ -3024,10 +3035,10 @@ public class ObjCppParser extends Parser {
          modifiers = new ArrayList<Modifier>(); 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 17) ) { return modifiers; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:2: ( ( modifier )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:5: ( modifier )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:2: ( ( modifier )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:5: ( modifier )*
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:5: ( modifier )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:5: ( modifier )*
             loop40:
             do {
                 int alt40=2;
@@ -3036,7 +3047,7 @@ public class ObjCppParser extends Parser {
                 if ( (LA40_0==IDENTIFIER) ) {
                     int LA40_2 = input.LA(2);
 
-                    if ( (((synpred61_ObjCpp()&&( next("__success") ))||(synpred61_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred61_ObjCpp()&&( next("extern") ))||(synpred61_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred61_ObjCpp()&&( next("__pragma") ))||(synpred61_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {
+                    if ( (((synpred61_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred61_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred61_ObjCpp()&&( next("__success") ))||(synpred61_ObjCpp()&&( next("__pragma") ))||(synpred61_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred61_ObjCpp()&&( next("extern") )))) ) {
                         alt40=1;
                     }
 
@@ -3046,7 +3057,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt40) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:7: modifier
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:7: modifier
             	    {
             	    pushFollow(FOLLOW_modifier_in_modifiers1799);
             	    modifier18=modifier();
@@ -3082,17 +3093,17 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "pragmaContent"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:766:1: pragmaContent : IDENTIFIER '(' ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )* ')' ( ';' )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:777:1: pragmaContent : IDENTIFIER '(' ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )* ')' ( ';' )? ;
     public final void pragmaContent() throws RecognitionException {
         int pragmaContent_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 18) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:766:15: ( IDENTIFIER '(' ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )* ')' ( ';' )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:769:4: IDENTIFIER '(' ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )* ')' ( ';' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:777:15: ( IDENTIFIER '(' ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )* ')' ( ';' )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:780:4: IDENTIFIER '(' ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )* ')' ( ';' )?
             {
             match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_pragmaContent1825); if (state.failed) return ;
             match(input,34,FOLLOW_34_in_pragmaContent1827); if (state.failed) return ;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:5: ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:5: ( IDENTIFIER | constant | ',' | ':' | '(' ( IDENTIFIER | constant | ',' | ':' )* ')' )*
             loop42:
             do {
                 int alt42=6;
@@ -3134,14 +3145,14 @@ public class ObjCppParser extends Parser {
 
                 switch (alt42) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:6: IDENTIFIER
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:6: IDENTIFIER
             	    {
             	    match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_pragmaContent1834); if (state.failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:19: constant
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:19: constant
             	    {
             	    pushFollow(FOLLOW_constant_in_pragmaContent1838);
             	    constant();
@@ -3152,24 +3163,24 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:30: ','
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:30: ','
             	    {
             	    match(input,28,FOLLOW_28_in_pragmaContent1842); if (state.failed) return ;
 
             	    }
             	    break;
             	case 4 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:36: ':'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:36: ':'
             	    {
             	    match(input,33,FOLLOW_33_in_pragmaContent1846); if (state.failed) return ;
 
             	    }
             	    break;
             	case 5 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:42: '(' ( IDENTIFIER | constant | ',' | ':' )* ')'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:42: '(' ( IDENTIFIER | constant | ',' | ':' )* ')'
             	    {
             	    match(input,34,FOLLOW_34_in_pragmaContent1850); if (state.failed) return ;
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:46: ( IDENTIFIER | constant | ',' | ':' )*
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:46: ( IDENTIFIER | constant | ',' | ':' )*
             	    loop41:
             	    do {
             	        int alt41=5;
@@ -3206,14 +3217,14 @@ public class ObjCppParser extends Parser {
 
             	        switch (alt41) {
             	    	case 1 :
-            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:47: IDENTIFIER
+            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:47: IDENTIFIER
             	    	    {
             	    	    match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_pragmaContent1853); if (state.failed) return ;
 
             	    	    }
             	    	    break;
             	    	case 2 :
-            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:60: constant
+            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:60: constant
             	    	    {
             	    	    pushFollow(FOLLOW_constant_in_pragmaContent1857);
             	    	    constant();
@@ -3224,14 +3235,14 @@ public class ObjCppParser extends Parser {
             	    	    }
             	    	    break;
             	    	case 3 :
-            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:71: ','
+            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:71: ','
             	    	    {
             	    	    match(input,28,FOLLOW_28_in_pragmaContent1861); if (state.failed) return ;
 
             	    	    }
             	    	    break;
             	    	case 4 :
-            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:770:77: ':'
+            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:77: ':'
             	    	    {
             	    	    match(input,33,FOLLOW_33_in_pragmaContent1865); if (state.failed) return ;
 
@@ -3254,7 +3265,7 @@ public class ObjCppParser extends Parser {
             } while (true);
 
             match(input,35,FOLLOW_35_in_pragmaContent1876); if (state.failed) return ;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:772:4: ( ';' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:783:4: ( ';' )?
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -3297,7 +3308,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "modifier"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:776:1: modifier returns [List<Modifier> modifiers, String asmName] : ({...}? => pragmaContent | {...}? => IDENTIFIER ex= STRING | {...}?m= IDENTIFIER | {...}? => IDENTIFIER '(' 'return' binaryOp expression ')' | {...}? => IDENTIFIER '(' expression ')' | {...}? => IDENTIFIER '(' ( (an= STRING )* | extendedModifiers ) ')' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:787:1: modifier returns [List<Modifier> modifiers, String asmName] : ({...}? => pragmaContent | {...}? => IDENTIFIER ex= STRING | {...}?m= IDENTIFIER | {...}? => IDENTIFIER '(' 'return' binaryOp expression ')' | {...}? => IDENTIFIER '(' expression ')' | {...}? => IDENTIFIER '(' ( (an= STRING )* | extendedModifiers ) ')' );
     public final ObjCppParser.modifier_return modifier() throws RecognitionException {
         ObjCppParser.modifier_return retval = new ObjCppParser.modifier_return();
         retval.start = input.LT(1);
@@ -3311,7 +3322,7 @@ public class ObjCppParser extends Parser {
          retval.modifiers = new ArrayList<Modifier>(); 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 19) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:778:2: ({...}? => pragmaContent | {...}? => IDENTIFIER ex= STRING | {...}?m= IDENTIFIER | {...}? => IDENTIFIER '(' 'return' binaryOp expression ')' | {...}? => IDENTIFIER '(' expression ')' | {...}? => IDENTIFIER '(' ( (an= STRING )* | extendedModifiers ) ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:789:2: ({...}? => pragmaContent | {...}? => IDENTIFIER ex= STRING | {...}?m= IDENTIFIER | {...}? => IDENTIFIER '(' 'return' binaryOp expression ')' | {...}? => IDENTIFIER '(' expression ')' | {...}? => IDENTIFIER '(' ( (an= STRING )* | extendedModifiers ) ')' )
             int alt46=6;
             int LA46_0 = input.LA(1);
 
@@ -3353,7 +3364,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt46) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:780:3: {...}? => pragmaContent
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:3: {...}? => pragmaContent
                     {
                     if ( !(( next("__pragma") )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3368,7 +3379,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:3: {...}? => IDENTIFIER ex= STRING
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:792:3: {...}? => IDENTIFIER ex= STRING
                     {
                     if ( !(( next("extern") )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3385,7 +3396,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:784:3: {...}?m= IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:795:3: {...}?m= IDENTIFIER
                     {
                     if ( !(( Modifier.parseModifier(next()) != null )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3401,7 +3412,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:787:3: {...}? => IDENTIFIER '(' 'return' binaryOp expression ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:798:3: {...}? => IDENTIFIER '(' 'return' binaryOp expression ')'
                     {
                     if ( !(( next("__success") )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3425,7 +3436,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:3: {...}? => IDENTIFIER '(' expression ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:802:3: {...}? => IDENTIFIER '(' expression ')'
                     {
                     if ( !(( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3443,7 +3454,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:794:3: {...}? => IDENTIFIER '(' ( (an= STRING )* | extendedModifiers ) ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:805:3: {...}? => IDENTIFIER '(' ( (an= STRING )* | extendedModifiers ) ')'
                     {
                     if ( !(( next("__declspec", "__attribute__", "__asm") )) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -3451,7 +3462,7 @@ public class ObjCppParser extends Parser {
                     }
                     match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_modifier2000); if (state.failed) return retval;
                     match(input,34,FOLLOW_34_in_modifier2004); if (state.failed) return retval;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:796:7: ( (an= STRING )* | extendedModifiers )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:807:7: ( (an= STRING )* | extendedModifiers )
                     int alt45=2;
                     switch ( input.LA(1) ) {
                     case STRING:
@@ -3493,9 +3504,9 @@ public class ObjCppParser extends Parser {
 
                     switch (alt45) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:4: (an= STRING )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:4: (an= STRING )*
                             {
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:4: (an= STRING )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:4: (an= STRING )*
                             loop44:
                             do {
                                 int alt44=2;
@@ -3508,7 +3519,7 @@ public class ObjCppParser extends Parser {
 
                                 switch (alt44) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:6: an= STRING
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:6: an= STRING
                             	    {
                             	    an=(Token)match(input,STRING,FOLLOW_STRING_in_modifier2015); if (state.failed) return retval;
                             	    if ( state.backtracking==0 ) {
@@ -3533,7 +3544,7 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:804:4: extendedModifiers
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:815:4: extendedModifiers
                             {
                             pushFollow(FOLLOW_extendedModifiers_in_modifier2027);
                             extendedModifiers19=extendedModifiers();
@@ -3573,7 +3584,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "extendedModifiers"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:811:1: extendedModifiers returns [List<Modifier> modifiers] : ({...}?m= IDENTIFIER () )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:822:1: extendedModifiers returns [List<Modifier> modifiers] : ({...}?m= IDENTIFIER () )* ;
     public final List<Modifier> extendedModifiers() throws RecognitionException {
         List<Modifier> modifiers = null;
         int extendedModifiers_StartIndex = input.index();
@@ -3581,13 +3592,13 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 20) ) { return modifiers; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:812:2: ( ({...}?m= IDENTIFIER () )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:812:4: ({...}?m= IDENTIFIER () )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:823:2: ( ({...}?m= IDENTIFIER () )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:823:4: ({...}?m= IDENTIFIER () )*
             {
             if ( state.backtracking==0 ) {
                modifiers = new ArrayList<Modifier>(); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:813:3: ({...}?m= IDENTIFIER () )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:824:3: ({...}?m= IDENTIFIER () )*
             loop47:
             do {
                 int alt47=2;
@@ -3600,15 +3611,15 @@ public class ObjCppParser extends Parser {
 
                 switch (alt47) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:814:4: {...}?m= IDENTIFIER ()
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:825:4: {...}?m= IDENTIFIER ()
             	    {
             	    if ( !(( next(Modifier.Kind.Extended) )) ) {
             	        if (state.backtracking>0) {state.failed=true; return modifiers;}
             	        throw new FailedPredicateException(input, "extendedModifiers", " next(Modifier.Kind.Extended) ");
             	    }
             	    m=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_extendedModifiers2064); if (state.failed) return modifiers;
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:815:4: ()
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:816:5: 
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:826:4: ()
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:5: 
             	    {
             	    if ( state.backtracking==0 ) {
 
@@ -3647,7 +3658,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "argDef"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:826:1: argDef returns [Arg arg] : ( (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )? | '...' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:837:1: argDef returns [Arg arg] : ( (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )? | '...' );
     public final ObjCppParser.argDef_return argDef() throws RecognitionException {
         ObjCppParser.argDef_return retval = new ObjCppParser.argDef_return();
         retval.start = input.LT(1);
@@ -3661,7 +3672,7 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 21) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:2: ( (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )? | '...' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:2: ( (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )? | '...' )
             int alt50=2;
             int LA50_0 = input.LA(1);
 
@@ -3680,10 +3691,10 @@ public class ObjCppParser extends Parser {
             }
             switch (alt50) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:4: (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:4: (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )?
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:4: (tr= mutableTypeRef )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:828:4: tr= mutableTypeRef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:4: (tr= mutableTypeRef )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: tr= mutableTypeRef
                     {
                     pushFollow(FOLLOW_mutableTypeRef_in_argDef2107);
                     tr=mutableTypeRef();
@@ -3704,10 +3715,10 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:3: ( ( declarator )? )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: ( declarator )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:849:3: ( ( declarator )? )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:4: ( declarator )?
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: ( declarator )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:4: ( declarator )?
                     int alt48=2;
                     int LA48_0 = input.LA(1);
 
@@ -3747,7 +3758,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:853:3: ( '=' dv= topLevelExpr )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:864:3: ( '=' dv= topLevelExpr )?
                     int alt49=2;
                     int LA49_0 = input.LA(1);
 
@@ -3756,7 +3767,7 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt49) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:853:4: '=' dv= topLevelExpr
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:864:4: '=' dv= topLevelExpr
                             {
                             match(input,29,FOLLOW_29_in_argDef2134); if (state.failed) return retval;
                             pushFollow(FOLLOW_topLevelExpr_in_argDef2138);
@@ -3780,7 +3791,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:858:3: '...'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:869:3: '...'
                     {
                     match(input,44,FOLLOW_44_in_argDef2152); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -3809,7 +3820,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "typeMutator"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:863:1: typeMutator returns [TypeMutator mutator] : (t= ( '*' | '&' ) | '[' ']' );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:874:1: typeMutator returns [TypeMutator mutator] : (t= ( '*' | '&' ) | '[' ']' );
     public final TypeMutator typeMutator() throws RecognitionException {
         TypeMutator mutator = null;
         int typeMutator_StartIndex = input.index();
@@ -3817,7 +3828,7 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 22) ) { return mutator; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:864:2: (t= ( '*' | '&' ) | '[' ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:875:2: (t= ( '*' | '&' ) | '[' ']' )
             int alt51=2;
             int LA51_0 = input.LA(1);
 
@@ -3836,7 +3847,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt51) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:865:3: t= ( '*' | '&' )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:876:3: t= ( '*' | '&' )
                     {
                     t=(Token)input.LT(1);
                     if ( (input.LA(1)>=52 && input.LA(1)<=53) ) {
@@ -3858,7 +3869,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:868:3: '[' ']'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:879:3: '[' ']'
                     {
                     match(input,54,FOLLOW_54_in_typeMutator2188); if (state.failed) return mutator;
                     match(input,55,FOLLOW_55_in_typeMutator2190); if (state.failed) return mutator;
@@ -3884,7 +3895,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "arrayTypeMutator"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:871:1: arrayTypeMutator returns [TypeMutator mutator] : '[' expression ']' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:882:1: arrayTypeMutator returns [TypeMutator mutator] : '[' expression ']' ;
     public final TypeMutator arrayTypeMutator() throws RecognitionException {
         TypeMutator mutator = null;
         int arrayTypeMutator_StartIndex = input.index();
@@ -3893,8 +3904,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 23) ) { return mutator; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:872:2: ( '[' expression ']' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:872:4: '[' expression ']'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:883:2: ( '[' expression ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:883:4: '[' expression ']'
             {
             match(input,54,FOLLOW_54_in_arrayTypeMutator2208); if (state.failed) return mutator;
             pushFollow(FOLLOW_expression_in_arrayTypeMutator2214);
@@ -3925,7 +3936,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "templateDef"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:879:1: templateDef : 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' declaration ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:890:1: templateDef : 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' declaration ;
     public final void templateDef() throws RecognitionException {
         IsTypeDef_stack.push(new IsTypeDef_scope());
 
@@ -3936,12 +3947,12 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 24) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:2: ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' declaration )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:4: 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' declaration
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:2: ( 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' declaration )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:4: 'template' '<' ( templateArgDecl ( ',' templateArgDecl )* )? '>' declaration
             {
             match(input,56,FOLLOW_56_in_templateDef2251); if (state.failed) return ;
             match(input,36,FOLLOW_36_in_templateDef2253); if (state.failed) return ;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:19: ( templateArgDecl ( ',' templateArgDecl )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:19: ( templateArgDecl ( ',' templateArgDecl )* )?
             int alt53=2;
             int LA53_0 = input.LA(1);
 
@@ -3957,14 +3968,14 @@ public class ObjCppParser extends Parser {
             }
             switch (alt53) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:20: templateArgDecl ( ',' templateArgDecl )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:20: templateArgDecl ( ',' templateArgDecl )*
                     {
                     pushFollow(FOLLOW_templateArgDecl_in_templateDef2256);
                     templateArgDecl();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:36: ( ',' templateArgDecl )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:36: ( ',' templateArgDecl )*
                     loop52:
                     do {
                         int alt52=2;
@@ -3977,7 +3988,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt52) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:37: ',' templateArgDecl
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:37: ',' templateArgDecl
                     	    {
                     	    match(input,28,FOLLOW_28_in_templateDef2259); if (state.failed) return ;
                     	    pushFollow(FOLLOW_templateArgDecl_in_templateDef2261);
@@ -4025,13 +4036,13 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "templateArgDecl"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:891:1: templateArgDecl : argDef ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:902:1: templateArgDecl : argDef ;
     public final void templateArgDecl() throws RecognitionException {
         int templateArgDecl_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 25) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:892:2: ( argDef )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:892:4: argDef
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:903:2: ( argDef )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:903:4: argDef
             {
             pushFollow(FOLLOW_argDef_in_templateArgDecl2287);
             argDef();
@@ -4055,7 +4066,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "functionSignatureSuffix"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:895:1: functionSignatureSuffix returns [FunctionSignature signature] : tk= '(' m1= modifiers '*' m2= modifiers ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:906:1: functionSignatureSuffix returns [FunctionSignature signature] : tk= '(' m1= modifiers '*' m2= modifiers ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' ;
     public final FunctionSignature functionSignatureSuffix() throws RecognitionException {
         FunctionSignature signature = null;
         int functionSignatureSuffix_StartIndex = input.index();
@@ -4072,8 +4083,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 26) ) { return signature; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:896:2: (tk= '(' m1= modifiers '*' m2= modifiers ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:896:4: tk= '(' m1= modifiers '*' m2= modifiers ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:907:2: (tk= '(' m1= modifiers '*' m2= modifiers ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:907:4: tk= '(' m1= modifiers '*' m2= modifiers ( IDENTIFIER )? ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')'
             {
             tk=(Token)match(input,34,FOLLOW_34_in_functionSignatureSuffix2307); if (state.failed) return signature;
             pushFollow(FOLLOW_modifiers_in_functionSignatureSuffix2311);
@@ -4087,7 +4098,7 @@ public class ObjCppParser extends Parser {
 
             state._fsp--;
             if (state.failed) return signature;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:896:41: ( IDENTIFIER )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:907:41: ( IDENTIFIER )?
             int alt54=2;
             int LA54_0 = input.LA(1);
 
@@ -4115,7 +4126,7 @@ public class ObjCppParser extends Parser {
               		
             }
             match(input,34,FOLLOW_34_in_functionSignatureSuffix2328); if (state.failed) return signature;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:902:7: (a1= argDef ( ',' ax= argDef )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:913:7: (a1= argDef ( ',' ax= argDef )* )?
             int alt56=2;
             int LA56_0 = input.LA(1);
 
@@ -4131,7 +4142,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt56) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:903:4: a1= argDef ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:914:4: a1= argDef ( ',' ax= argDef )*
                     {
                     pushFollow(FOLLOW_argDef_in_functionSignatureSuffix2337);
                     a1=argDef();
@@ -4144,7 +4155,7 @@ public class ObjCppParser extends Parser {
                       					((FunctionSignature)signature).getFunction().addArg((a1!=null?a1.arg:null)); 
                       			
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:907:4: ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:918:4: ( ',' ax= argDef )*
                     loop55:
                     do {
                         int alt55=2;
@@ -4157,7 +4168,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt55) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:908:5: ',' ax= argDef
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:919:5: ',' ax= argDef
                     	    {
                     	    match(input,28,FOLLOW_28_in_functionSignatureSuffix2350); if (state.failed) return signature;
                     	    pushFollow(FOLLOW_argDef_in_functionSignatureSuffix2359);
@@ -4203,7 +4214,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "functionSignatureSuffixNoName"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:916:1: functionSignatureSuffixNoName returns [FunctionSignature signature] : tk= '(' modifiers '*' ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:927:1: functionSignatureSuffixNoName returns [FunctionSignature signature] : tk= '(' modifiers '*' ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' ;
     public final FunctionSignature functionSignatureSuffixNoName() throws RecognitionException {
         FunctionSignature signature = null;
         int functionSignatureSuffixNoName_StartIndex = input.index();
@@ -4217,8 +4228,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 27) ) { return signature; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:917:2: (tk= '(' modifiers '*' ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:917:4: tk= '(' modifiers '*' ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:2: (tk= '(' modifiers '*' ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:4: tk= '(' modifiers '*' ')' '(' (a1= argDef ( ',' ax= argDef )* )? ')'
             {
             tk=(Token)match(input,34,FOLLOW_34_in_functionSignatureSuffixNoName2391); if (state.failed) return signature;
             pushFollow(FOLLOW_modifiers_in_functionSignatureSuffixNoName2393);
@@ -4236,7 +4247,7 @@ public class ObjCppParser extends Parser {
               		
             }
             match(input,34,FOLLOW_34_in_functionSignatureSuffixNoName2403); if (state.failed) return signature;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:922:7: (a1= argDef ( ',' ax= argDef )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:933:7: (a1= argDef ( ',' ax= argDef )* )?
             int alt58=2;
             int LA58_0 = input.LA(1);
 
@@ -4252,7 +4263,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt58) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:923:4: a1= argDef ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:934:4: a1= argDef ( ',' ax= argDef )*
                     {
                     pushFollow(FOLLOW_argDef_in_functionSignatureSuffixNoName2412);
                     a1=argDef();
@@ -4265,7 +4276,7 @@ public class ObjCppParser extends Parser {
                       					((FunctionSignature)signature).getFunction().addArg((a1!=null?a1.arg:null)); 
                       			
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:927:4: ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:938:4: ( ',' ax= argDef )*
                     loop57:
                     do {
                         int alt57=2;
@@ -4278,7 +4289,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt57) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:5: ',' ax= argDef
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:939:5: ',' ax= argDef
                     	    {
                     	    match(input,28,FOLLOW_28_in_functionSignatureSuffixNoName2425); if (state.failed) return signature;
                     	    pushFollow(FOLLOW_argDef_in_functionSignatureSuffixNoName2434);
@@ -4324,7 +4335,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "mutableTypeRef"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:936:1: mutableTypeRef returns [TypeRef type] : ( typeRefCore ) ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:1: mutableTypeRef returns [TypeRef type] : ( typeRefCore ) ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )* ;
     public final TypeRef mutableTypeRef() throws RecognitionException {
         TypeRef type = null;
         int mutableTypeRef_StartIndex = input.index();
@@ -4337,11 +4348,11 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 28) ) { return type; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:937:2: ( ( typeRefCore ) ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:938:3: ( typeRefCore ) ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:948:2: ( ( typeRefCore ) ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:949:3: ( typeRefCore ) ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )*
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:938:3: ( typeRefCore )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:938:5: typeRefCore
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:949:3: ( typeRefCore )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:949:5: typeRefCore
             {
             pushFollow(FOLLOW_typeRefCore_in_mutableTypeRef2469);
             typeRefCore24=typeRefCore();
@@ -4356,17 +4367,17 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:941:3: ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:952:3: ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )*
             loop59:
             do {
                 int alt59=3;
                 alt59 = dfa59.predict(input);
                 switch (alt59) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:4: (m1= typeMutator )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:953:4: (m1= typeMutator )
             	    {
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:4: (m1= typeMutator )
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:943:5: m1= typeMutator
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:953:4: (m1= typeMutator )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:954:5: m1= typeMutator
             	    {
             	    pushFollow(FOLLOW_typeMutator_in_mutableTypeRef2490);
             	    m1=typeMutator();
@@ -4385,10 +4396,10 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:4: (f1= functionSignatureSuffix )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:4: (f1= functionSignatureSuffix )
             	    {
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:4: (f1= functionSignatureSuffix )
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:948:5: f1= functionSignatureSuffix
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:4: (f1= functionSignatureSuffix )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:959:5: f1= functionSignatureSuffix
             	    {
             	    pushFollow(FOLLOW_functionSignatureSuffix_in_mutableTypeRef2512);
             	    f1=functionSignatureSuffix();
@@ -4433,7 +4444,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "nonMutableTypeRef"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:959:1: nonMutableTypeRef returns [TypeRef type] : typeRefCore ( ( typeMutator )* (fs= functionSignatureSuffix ) )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:970:1: nonMutableTypeRef returns [TypeRef type] : typeRefCore ( ( typeMutator )* (fs= functionSignatureSuffix ) )* ;
     public final TypeRef nonMutableTypeRef() throws RecognitionException {
         TypeRef type = null;
         int nonMutableTypeRef_StartIndex = input.index();
@@ -4446,8 +4457,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 29) ) { return type; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:960:2: ( typeRefCore ( ( typeMutator )* (fs= functionSignatureSuffix ) )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:961:3: typeRefCore ( ( typeMutator )* (fs= functionSignatureSuffix ) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:971:2: ( typeRefCore ( ( typeMutator )* (fs= functionSignatureSuffix ) )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:972:3: typeRefCore ( ( typeMutator )* (fs= functionSignatureSuffix ) )*
             {
             pushFollow(FOLLOW_typeRefCore_in_nonMutableTypeRef2541);
             typeRefCore25=typeRefCore();
@@ -4459,7 +4470,7 @@ public class ObjCppParser extends Parser {
               			type = typeRefCore25; 
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:964:3: ( ( typeMutator )* (fs= functionSignatureSuffix ) )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:975:3: ( ( typeMutator )* (fs= functionSignatureSuffix ) )*
             loop61:
             do {
                 int alt61=2;
@@ -4497,9 +4508,9 @@ public class ObjCppParser extends Parser {
 
                 switch (alt61) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:965:4: ( typeMutator )* (fs= functionSignatureSuffix )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:976:4: ( typeMutator )* (fs= functionSignatureSuffix )
             	    {
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:965:4: ( typeMutator )*
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:976:4: ( typeMutator )*
             	    loop60:
             	    do {
             	        int alt60=2;
@@ -4512,7 +4523,7 @@ public class ObjCppParser extends Parser {
 
             	        switch (alt60) {
             	    	case 1 :
-            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:966:5: typeMutator
+            	    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:977:5: typeMutator
             	    	    {
             	    	    pushFollow(FOLLOW_typeMutator_in_nonMutableTypeRef2558);
             	    	    typeMutator26=typeMutator();
@@ -4533,8 +4544,8 @@ public class ObjCppParser extends Parser {
             	        }
             	    } while (true);
 
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:970:4: (fs= functionSignatureSuffix )
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:971:5: fs= functionSignatureSuffix
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:981:4: (fs= functionSignatureSuffix )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:982:5: fs= functionSignatureSuffix
             	    {
             	    pushFollow(FOLLOW_functionSignatureSuffix_in_nonMutableTypeRef2579);
             	    fs=functionSignatureSuffix();
@@ -4579,7 +4590,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "declarator"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:982:1: declarator returns [Declarator declarator] : modifiers ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) ) ( '=' dv= topLevelExpr )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:993:1: declarator returns [Declarator declarator] : modifiers ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) ) ( '=' dv= topLevelExpr )? ;
     public final Declarator declarator() throws RecognitionException {
         Declarator declarator = null;
         int declarator_StartIndex = input.index();
@@ -4595,15 +4606,15 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 30) ) { return declarator; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:983:2: ( modifiers ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) ) ( '=' dv= topLevelExpr )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:984:3: modifiers ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) ) ( '=' dv= topLevelExpr )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:994:2: ( modifiers ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) ) ( '=' dv= topLevelExpr )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:995:3: modifiers ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) ) ( '=' dv= topLevelExpr )?
             {
             pushFollow(FOLLOW_modifiers_in_declarator2610);
             modifiers28=modifiers();
 
             state._fsp--;
             if (state.failed) return declarator;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:985:3: ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:996:3: ( ( directDeclarator ) | (pt= ( '*' | '&' | '^' ) inner= declarator ) )
             int alt62=2;
             int LA62_0 = input.LA(1);
 
@@ -4625,10 +4636,10 @@ public class ObjCppParser extends Parser {
             }
             switch (alt62) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:986:4: ( directDeclarator )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:997:4: ( directDeclarator )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:986:4: ( directDeclarator )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:987:5: directDeclarator
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:997:4: ( directDeclarator )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:998:5: directDeclarator
                     {
                     pushFollow(FOLLOW_directDeclarator_in_declarator2626);
                     directDeclarator27=directDeclarator();
@@ -4647,10 +4658,10 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:991:4: (pt= ( '*' | '&' | '^' ) inner= declarator )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1002:4: (pt= ( '*' | '&' | '^' ) inner= declarator )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:991:4: (pt= ( '*' | '&' | '^' ) inner= declarator )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:992:5: pt= ( '*' | '&' | '^' ) inner= declarator
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1002:4: (pt= ( '*' | '&' | '^' ) inner= declarator )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1003:5: pt= ( '*' | '&' | '^' ) inner= declarator
                     {
                     pt=(Token)input.LT(1);
                     if ( (input.LA(1)>=52 && input.LA(1)<=53)||input.LA(1)==57 ) {
@@ -4682,7 +4693,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:998:3: ( '=' dv= topLevelExpr )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1009:3: ( '=' dv= topLevelExpr )?
             int alt63=2;
             int LA63_0 = input.LA(1);
 
@@ -4695,7 +4706,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt63) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:999:4: '=' dv= topLevelExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1010:4: '=' dv= topLevelExpr
                     {
                     match(input,29,FOLLOW_29_in_declarator2689); if (state.failed) return declarator;
                     pushFollow(FOLLOW_topLevelExpr_in_declarator2697);
@@ -4738,7 +4749,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "typeDef"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1011:1: typeDef returns [TypeDef typeDef] : 'typedef' varDecl ';' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1022:1: typeDef returns [TypeDef typeDef] : 'typedef' varDecl ';' ;
     public final TypeDef typeDef() throws RecognitionException {
         IsTypeDef_stack.push(new IsTypeDef_scope());
 
@@ -4752,8 +4763,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 31) ) { return typeDef; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1016:2: ( 'typedef' varDecl ';' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1016:4: 'typedef' varDecl ';'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1027:2: ( 'typedef' varDecl ';' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1027:4: 'typedef' varDecl ';'
             {
             match(input,58,FOLLOW_58_in_typeDef2733); if (state.failed) return typeDef;
             pushFollow(FOLLOW_varDecl_in_typeDef2738);
@@ -4787,7 +4798,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "varDeclEOF"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1023:1: varDeclEOF returns [Declaration decl] : varDecl ';' EOF ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1034:1: varDeclEOF returns [Declaration decl] : varDecl ';' EOF ;
     public final Declaration varDeclEOF() throws RecognitionException {
         Declaration decl = null;
         int varDeclEOF_StartIndex = input.index();
@@ -4796,8 +4807,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 32) ) { return decl; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1024:2: ( varDecl ';' EOF )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1024:4: varDecl ';' EOF
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1035:2: ( varDecl ';' EOF )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1035:4: varDecl ';' EOF
             {
             pushFollow(FOLLOW_varDecl_in_varDeclEOF2758);
             varDecl30=varDecl();
@@ -4826,7 +4837,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "declarationEOF"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1027:1: declarationEOF returns [List<Declaration> declarations] : d= declaration EOF ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1038:1: declarationEOF returns [List<Declaration> declarations] : d= declaration EOF ;
     public final List<Declaration> declarationEOF() throws RecognitionException {
         List<Declaration> declarations = null;
         int declarationEOF_StartIndex = input.index();
@@ -4835,8 +4846,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 33) ) { return declarations; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1028:2: (d= declaration EOF )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1028:5: d= declaration EOF
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1039:2: (d= declaration EOF )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1039:5: d= declaration EOF
             {
             pushFollow(FOLLOW_declaration_in_declarationEOF2782);
             d=declaration();
@@ -4864,7 +4875,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "varDecl"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1031:1: varDecl returns [VariablesDeclaration decl] : tr= nonMutableTypeRef (d1= declaratorsList )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1042:1: varDecl returns [VariablesDeclaration decl] : tr= nonMutableTypeRef (d1= declaratorsList )? ;
     public final VariablesDeclaration varDecl() throws RecognitionException {
         VariablesDeclaration decl = null;
         int varDecl_StartIndex = input.index();
@@ -4875,8 +4886,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 34) ) { return decl; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1032:2: (tr= nonMutableTypeRef (d1= declaratorsList )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1033:3: tr= nonMutableTypeRef (d1= declaratorsList )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1043:2: (tr= nonMutableTypeRef (d1= declaratorsList )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1044:3: tr= nonMutableTypeRef (d1= declaratorsList )?
             {
             pushFollow(FOLLOW_nonMutableTypeRef_in_varDecl2806);
             tr=nonMutableTypeRef();
@@ -4889,7 +4900,7 @@ public class ObjCppParser extends Parser {
               			//decl.addModifiers($modifiers.modifiers);
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1037:3: (d1= declaratorsList )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1048:3: (d1= declaratorsList )?
             int alt64=2;
             int LA64_0 = input.LA(1);
 
@@ -4898,7 +4909,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt64) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1038:4: d1= declaratorsList
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1049:4: d1= declaratorsList
                     {
                     pushFollow(FOLLOW_declaratorsList_in_varDecl2819);
                     d1=declaratorsList();
@@ -4933,17 +4944,17 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "objCProtocolRefList"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1044:1: objCProtocolRefList : '<' IDENTIFIER ( ',' IDENTIFIER )* '>' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1055:1: objCProtocolRefList : '<' IDENTIFIER ( ',' IDENTIFIER )* '>' ;
     public final void objCProtocolRefList() throws RecognitionException {
         int objCProtocolRefList_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 35) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1045:2: ( '<' IDENTIFIER ( ',' IDENTIFIER )* '>' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1045:4: '<' IDENTIFIER ( ',' IDENTIFIER )* '>'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1056:2: ( '<' IDENTIFIER ( ',' IDENTIFIER )* '>' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1056:4: '<' IDENTIFIER ( ',' IDENTIFIER )* '>'
             {
             match(input,36,FOLLOW_36_in_objCProtocolRefList2838); if (state.failed) return ;
             match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCProtocolRefList2843); if (state.failed) return ;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1047:3: ( ',' IDENTIFIER )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1058:3: ( ',' IDENTIFIER )*
             loop65:
             do {
                 int alt65=2;
@@ -4956,7 +4967,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt65) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1048:4: ',' IDENTIFIER
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1059:4: ',' IDENTIFIER
             	    {
             	    match(input,28,FOLLOW_28_in_objCProtocolRefList2853); if (state.failed) return ;
             	    match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCProtocolRefList2859); if (state.failed) return ;
@@ -4987,7 +4998,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "declaratorsList"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1054:1: declaratorsList returns [List<Declarator> declarators] : d= declarator ( ',' x= declarator )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1065:1: declaratorsList returns [List<Declarator> declarators] : d= declarator ( ',' x= declarator )* ;
     public final List<Declarator> declaratorsList() throws RecognitionException {
         List<Declarator> declarators = null;
         int declaratorsList_StartIndex = input.index();
@@ -4998,8 +5009,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 36) ) { return declarators; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1055:2: (d= declarator ( ',' x= declarator )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1055:4: d= declarator ( ',' x= declarator )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1066:2: (d= declarator ( ',' x= declarator )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1066:4: d= declarator ( ',' x= declarator )*
             {
             if ( state.backtracking==0 ) {
                declarators = new ArrayList<Declarator>(); 
@@ -5012,7 +5023,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                declarators.add(d); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1057:3: ( ',' x= declarator )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1068:3: ( ',' x= declarator )*
             loop66:
             do {
                 int alt66=2;
@@ -5025,7 +5036,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt66) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1058:4: ',' x= declarator
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1069:4: ',' x= declarator
             	    {
             	    match(input,28,FOLLOW_28_in_declaratorsList2901); if (state.failed) return declarators;
             	    pushFollow(FOLLOW_declarator_in_declaratorsList2909);
@@ -5062,7 +5073,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "directDeclarator"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1063:1: directDeclarator returns [Declarator declarator] : ({...}? => IDENTIFIER | '(' inner= declarator ')' ) ( '[' ( expression | ) ']' | argList )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1074:1: directDeclarator returns [Declarator declarator] : ({...}? => IDENTIFIER | '(' inner= declarator ')' ) ( '[' ( expression | ) ']' | argList )* ;
     public final Declarator directDeclarator() throws RecognitionException {
         Declarator declarator = null;
         int directDeclarator_StartIndex = input.index();
@@ -5076,10 +5087,10 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 37) ) { return declarator; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1070:2: ( ({...}? => IDENTIFIER | '(' inner= declarator ')' ) ( '[' ( expression | ) ']' | argList )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1071:3: ({...}? => IDENTIFIER | '(' inner= declarator ')' ) ( '[' ( expression | ) ']' | argList )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1081:2: ( ({...}? => IDENTIFIER | '(' inner= declarator ')' ) ( '[' ( expression | ) ']' | argList )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1082:3: ({...}? => IDENTIFIER | '(' inner= declarator ')' ) ( '[' ( expression | ) ']' | argList )*
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1071:3: ({...}? => IDENTIFIER | '(' inner= declarator ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1082:3: ({...}? => IDENTIFIER | '(' inner= declarator ')' )
             int alt67=2;
             int LA67_0 = input.LA(1);
 
@@ -5098,7 +5109,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt67) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1072:4: {...}? => IDENTIFIER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1083:4: {...}? => IDENTIFIER
                     {
                     if ( !(( Modifier.parseModifier(next()) == null )) ) {
                         if (state.backtracking>0) {state.failed=true; return declarator;}
@@ -5117,7 +5128,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1078:4: '(' inner= declarator ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1089:4: '(' inner= declarator ')'
                     {
                     match(input,34,FOLLOW_34_in_directDeclarator2954); if (state.failed) return declarator;
                     pushFollow(FOLLOW_declarator_in_directDeclarator2958);
@@ -5139,7 +5150,7 @@ public class ObjCppParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1084:3: ( '[' ( expression | ) ']' | argList )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1095:3: ( '[' ( expression | ) ']' | argList )*
             loop69:
             do {
                 int alt69=3;
@@ -5155,10 +5166,10 @@ public class ObjCppParser extends Parser {
 
                 switch (alt69) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1085:4: '[' ( expression | ) ']'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1096:4: '[' ( expression | ) ']'
             	    {
             	    match(input,54,FOLLOW_54_in_directDeclarator2976); if (state.failed) return declarator;
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1086:4: ( expression | )
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1097:4: ( expression | )
             	    int alt68=2;
             	    int LA68_0 = input.LA(1);
 
@@ -5177,7 +5188,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    switch (alt68) {
             	        case 1 :
-            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1087:5: expression
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1098:5: expression
             	            {
             	            pushFollow(FOLLOW_expression_in_directDeclarator2988);
             	            expression32=expression();
@@ -5196,7 +5207,7 @@ public class ObjCppParser extends Parser {
             	            }
             	            break;
             	        case 2 :
-            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1092:9: 
+            	            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1103:9: 
             	            {
             	            if ( state.backtracking==0 ) {
 
@@ -5214,7 +5225,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1097:4: argList
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1108:4: argList
             	    {
             	    pushFollow(FOLLOW_argList_in_directDeclarator3012);
             	    argList33=argList();
@@ -5256,7 +5267,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "argList"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1103:1: argList returns [List<Arg> args, boolean isObjC] : op= '(' (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )? cp= ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1114:1: argList returns [List<Arg> args, boolean isObjC] : op= '(' (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )? cp= ')' ;
     public final ObjCppParser.argList_return argList() throws RecognitionException {
         ObjCppParser.argList_return retval = new ObjCppParser.argList_return();
         retval.start = input.LT(1);
@@ -5270,8 +5281,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 38) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1104:2: (op= '(' (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )? cp= ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1104:4: op= '(' (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )? cp= ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:2: (op= '(' (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )? cp= ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:4: op= '(' (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )? cp= ')'
             {
             if ( state.backtracking==0 ) {
                
@@ -5280,7 +5291,7 @@ public class ObjCppParser extends Parser {
               		
             }
             op=(Token)match(input,34,FOLLOW_34_in_argList3040); if (state.failed) return retval;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1109:3: (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1120:3: (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )?
             int alt72=2;
             int LA72_0 = input.LA(1);
 
@@ -5296,7 +5307,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt72) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1110:4: a1= argDef ( ',' ax= argDef )* ( ',' '...' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1121:4: a1= argDef ( ',' ax= argDef )* ( ',' '...' )?
                     {
                     pushFollow(FOLLOW_argDef_in_argList3052);
                     a1=argDef();
@@ -5309,7 +5320,7 @@ public class ObjCppParser extends Parser {
                       					retval.args.add((a1!=null?a1.arg:null));
                       			
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1114:4: ( ',' ax= argDef )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1125:4: ( ',' ax= argDef )*
                     loop70:
                     do {
                         int alt70=2;
@@ -5337,7 +5348,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt70) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:5: ',' ax= argDef
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1126:5: ',' ax= argDef
                     	    {
                     	    match(input,28,FOLLOW_28_in_argList3065); if (state.failed) return retval;
                     	    pushFollow(FOLLOW_argDef_in_argList3074);
@@ -5359,7 +5370,7 @@ public class ObjCppParser extends Parser {
                         }
                     } while (true);
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1120:4: ( ',' '...' )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1131:4: ( ',' '...' )?
                     int alt71=2;
                     int LA71_0 = input.LA(1);
 
@@ -5368,7 +5379,7 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt71) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1121:5: ',' '...'
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1132:5: ',' '...'
                             {
                             match(input,28,FOLLOW_28_in_argList3094); if (state.failed) return retval;
                             match(input,44,FOLLOW_44_in_argList3096); if (state.failed) return retval;
@@ -5410,7 +5421,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "typeRefCore"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1150:1: typeRefCore returns [TypeRef type] : preMods= modifiers ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )? postMods= modifiers ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1161:1: typeRefCore returns [TypeRef type] : preMods= modifiers ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )? postMods= modifiers ;
     public final TypeRef typeRefCore() throws RecognitionException {
         TypeRef type = null;
         int typeRefCore_StartIndex = input.index();
@@ -5434,8 +5445,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 39) ) { return type; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1165:2: (preMods= modifiers ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )? postMods= modifiers )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1166:3: preMods= modifiers ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )? postMods= modifiers
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1176:2: (preMods= modifiers ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )? postMods= modifiers )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1177:3: preMods= modifiers ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )? postMods= modifiers
             {
             pushFollow(FOLLOW_modifiers_in_typeRefCore3148);
             preMods=modifiers();
@@ -5445,7 +5456,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                modifiers.addAll(preMods); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1167:3: ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1178:3: ( 'typename' pn= typeName | {...}? =>an= typeName | structCore | enumCore )?
             int alt73=5;
             switch ( input.LA(1) ) {
                 case 59:
@@ -5484,7 +5495,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt73) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1168:4: 'typename' pn= typeName
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1179:4: 'typename' pn= typeName
                     {
                     match(input,59,FOLLOW_59_in_typeRefCore3159); if (state.failed) return type;
                     pushFollow(FOLLOW_typeName_in_typeRefCore3163);
@@ -5499,7 +5510,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1169:4: {...}? =>an= typeName
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1180:4: {...}? =>an= typeName
                     {
                     if ( !(( 
                     				isTypeIdentifier(next()) || 
@@ -5523,7 +5534,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1176:4: structCore
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1187:4: structCore
                     {
                     pushFollow(FOLLOW_structCore_in_typeRefCore3186);
                     structCore34=structCore();
@@ -5537,7 +5548,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1177:4: enumCore
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1188:4: enumCore
                     {
                     pushFollow(FOLLOW_enumCore_in_typeRefCore3195);
                     enumCore35=enumCore();
@@ -5589,7 +5600,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "typeName"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1182:1: typeName returns [TypeRef type] : i= qualifiedIdentifier ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1193:1: typeName returns [TypeRef type] : i= qualifiedIdentifier ;
     public final TypeRef typeName() throws RecognitionException {
         TypeRef type = null;
         int typeName_StartIndex = input.index();
@@ -5598,8 +5609,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 40) ) { return type; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1183:2: (i= qualifiedIdentifier )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1184:3: i= qualifiedIdentifier
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1194:2: (i= qualifiedIdentifier )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1195:3: i= qualifiedIdentifier
             {
             pushFollow(FOLLOW_qualifiedIdentifier_in_typeName3230);
             i=qualifiedIdentifier();
@@ -5633,7 +5644,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "objCMethodCall"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1194:1: objCMethodCall returns [FunctionCall expr] : '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1205:1: objCMethodCall returns [FunctionCall expr] : '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' ;
     public final FunctionCall objCMethodCall() throws RecognitionException {
         FunctionCall expr = null;
         int objCMethodCall_StartIndex = input.index();
@@ -5648,8 +5659,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 41) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1195:2: ( '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1196:3: '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1206:2: ( '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1207:3: '[' target= expression methodName= IDENTIFIER ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )? ']'
             {
             match(input,54,FOLLOW_54_in_objCMethodCall3250); if (state.failed) return expr;
             pushFollow(FOLLOW_expression_in_objCMethodCall3254);
@@ -5666,7 +5677,7 @@ public class ObjCppParser extends Parser {
               			expr.setMemberRefStyle(MemberRefStyle.SquareBrackets);
               		
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1202:3: ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1213:3: ( ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )* )?
             int alt75=2;
             int LA75_0 = input.LA(1);
 
@@ -5675,7 +5686,7 @@ public class ObjCppParser extends Parser {
             }
             switch (alt75) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1203:4: ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1214:4: ':' arg1= expression (selx= IDENTIFIER ':' argx= expression )*
                     {
                     match(input,33,FOLLOW_33_in_objCMethodCall3269); if (state.failed) return expr;
                     pushFollow(FOLLOW_expression_in_objCMethodCall3273);
@@ -5688,7 +5699,7 @@ public class ObjCppParser extends Parser {
                       				expr.addArgument(null, arg1);
                       			
                     }
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1206:4: (selx= IDENTIFIER ':' argx= expression )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1217:4: (selx= IDENTIFIER ':' argx= expression )*
                     loop74:
                     do {
                         int alt74=2;
@@ -5701,7 +5712,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt74) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1207:5: selx= IDENTIFIER ':' argx= expression
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1218:5: selx= IDENTIFIER ':' argx= expression
                     	    {
                     	    selx=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_objCMethodCall3288); if (state.failed) return expr;
                     	    match(input,33,FOLLOW_33_in_objCMethodCall3290); if (state.failed) return expr;
@@ -5748,7 +5759,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "binaryOp"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1215:1: binaryOp returns [Expression.BinaryOperator op] : t= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1226:1: binaryOp returns [Expression.BinaryOperator op] : t= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) ;
     public final Expression.BinaryOperator binaryOp() throws RecognitionException {
         Expression.BinaryOperator op = null;
         int binaryOp_StartIndex = input.index();
@@ -5756,8 +5767,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 42) ) { return op; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1216:2: (t= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1216:5: t= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1227:2: (t= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1227:5: t= ( '+' | '-' | '*' | '/' | '%' | '<<' | '>>>' | '>>' | '^' | '||' | '|' | '&&' | '&' | '<=' | '>=' | '<' | '>' | '==' | '!=' )
             {
             t=(Token)input.LT(1);
             if ( (input.LA(1)>=36 && input.LA(1)<=37)||(input.LA(1)>=42 && input.LA(1)<=43)||(input.LA(1)>=52 && input.LA(1)<=53)||input.LA(1)==57||(input.LA(1)>=60 && input.LA(1)<=71) ) {
@@ -5792,7 +5803,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "typeRefOrExpression"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1226:1: typeRefOrExpression returns [Expression expr] : (tr= mutableTypeRef | e= topLevelExpr );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1237:1: typeRefOrExpression returns [Expression expr] : (tr= mutableTypeRef | e= topLevelExpr );
     public final Expression typeRefOrExpression() throws RecognitionException {
         Expression expr = null;
         int typeRefOrExpression_StartIndex = input.index();
@@ -5803,12 +5814,12 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 43) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1227:2: (tr= mutableTypeRef | e= topLevelExpr )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:2: (tr= mutableTypeRef | e= topLevelExpr )
             int alt76=2;
             alt76 = dfa76.predict(input);
             switch (alt76) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1227:4: tr= mutableTypeRef
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:4: tr= mutableTypeRef
                     {
                     pushFollow(FOLLOW_mutableTypeRef_in_typeRefOrExpression3436);
                     tr=mutableTypeRef();
@@ -5824,7 +5835,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1230:3: e= topLevelExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1241:3: e= topLevelExpr
                     {
                     pushFollow(FOLLOW_topLevelExpr_in_typeRefOrExpression3447);
                     e=topLevelExpr();
@@ -5855,7 +5866,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "simpleIdentifier"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1235:1: simpleIdentifier returns [SimpleIdentifier identifier] : i= IDENTIFIER ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1246:1: simpleIdentifier returns [SimpleIdentifier identifier] : i= IDENTIFIER ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )? ;
     public final SimpleIdentifier simpleIdentifier() throws RecognitionException {
         SimpleIdentifier identifier = null;
         int simpleIdentifier_StartIndex = input.index();
@@ -5867,22 +5878,22 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 44) ) { return identifier; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1236:2: (i= IDENTIFIER ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1236:4: i= IDENTIFIER ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1247:2: (i= IDENTIFIER ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1247:4: i= IDENTIFIER ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )?
             {
             i=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_simpleIdentifier3466); if (state.failed) return identifier;
             if ( state.backtracking==0 ) {
                identifier = new SimpleIdentifier((i!=null?i.getText():null)); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1237:3: ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1248:3: ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )?
             int alt79=2;
             alt79 = dfa79.predict(input);
             switch (alt79) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:4: '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:4: '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>'
                     {
                     match(input,36,FOLLOW_36_in_simpleIdentifier3477); if (state.failed) return identifier;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:8: (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:8: (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )?
                     int alt78=2;
                     int LA78_0 = input.LA(1);
 
@@ -5898,7 +5909,7 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt78) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1239:5: a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1250:5: a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )*
                             {
                             pushFollow(FOLLOW_typeRefOrExpression_in_simpleIdentifier3487);
                             a1=typeRefOrExpression();
@@ -5908,7 +5919,7 @@ public class ObjCppParser extends Parser {
                             if ( state.backtracking==0 ) {
                                identifier.addTemplateArgument(a1); 
                             }
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1240:5: ( ',' ax= typeRefOrExpression )*
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1251:5: ( ',' ax= typeRefOrExpression )*
                             loop77:
                             do {
                                 int alt77=2;
@@ -5921,7 +5932,7 @@ public class ObjCppParser extends Parser {
 
                                 switch (alt77) {
                             	case 1 :
-                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1241:6: ',' ax= typeRefOrExpression
+                            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1252:6: ',' ax= typeRefOrExpression
                             	    {
                             	    match(input,28,FOLLOW_28_in_simpleIdentifier3502); if (state.failed) return identifier;
                             	    pushFollow(FOLLOW_typeRefOrExpression_in_simpleIdentifier3512);
@@ -5974,7 +5985,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "qualifiedIdentifier"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1248:1: qualifiedIdentifier returns [Identifier identifier] : i1= simpleIdentifier ( '::' ix= simpleIdentifier )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1259:1: qualifiedIdentifier returns [Identifier identifier] : i1= simpleIdentifier ( '::' ix= simpleIdentifier )* ;
     public final ObjCppParser.qualifiedIdentifier_return qualifiedIdentifier() throws RecognitionException {
         ObjCppParser.qualifiedIdentifier_return retval = new ObjCppParser.qualifiedIdentifier_return();
         retval.start = input.LT(1);
@@ -5986,8 +5997,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 45) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:2: (i1= simpleIdentifier ( '::' ix= simpleIdentifier )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:4: i1= simpleIdentifier ( '::' ix= simpleIdentifier )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1260:2: (i1= simpleIdentifier ( '::' ix= simpleIdentifier )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1260:4: i1= simpleIdentifier ( '::' ix= simpleIdentifier )*
             {
             pushFollow(FOLLOW_simpleIdentifier_in_qualifiedIdentifier3553);
             i1=simpleIdentifier();
@@ -5997,7 +6008,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                retval.identifier = i1; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1250:3: ( '::' ix= simpleIdentifier )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1261:3: ( '::' ix= simpleIdentifier )*
             loop80:
             do {
                 int alt80=2;
@@ -6010,7 +6021,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt80) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1251:4: '::' ix= simpleIdentifier
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1262:4: '::' ix= simpleIdentifier
             	    {
             	    match(input,72,FOLLOW_72_in_qualifiedIdentifier3564); if (state.failed) return retval;
             	    pushFollow(FOLLOW_simpleIdentifier_in_qualifiedIdentifier3568);
@@ -6049,7 +6060,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "qualifiedCppFunctionName"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1255:1: qualifiedCppFunctionName returns [Identifier identifier] : i1= simpleCppFunctionName ( '::' ix= simpleCppFunctionName )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1266:1: qualifiedCppFunctionName returns [Identifier identifier] : i1= simpleCppFunctionName ( '::' ix= simpleCppFunctionName )* ;
     public final Identifier qualifiedCppFunctionName() throws RecognitionException {
         Identifier identifier = null;
         int qualifiedCppFunctionName_StartIndex = input.index();
@@ -6060,8 +6071,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 46) ) { return identifier; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1256:2: (i1= simpleCppFunctionName ( '::' ix= simpleCppFunctionName )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1256:4: i1= simpleCppFunctionName ( '::' ix= simpleCppFunctionName )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1267:2: (i1= simpleCppFunctionName ( '::' ix= simpleCppFunctionName )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1267:4: i1= simpleCppFunctionName ( '::' ix= simpleCppFunctionName )*
             {
             pushFollow(FOLLOW_simpleCppFunctionName_in_qualifiedCppFunctionName3593);
             i1=simpleCppFunctionName();
@@ -6071,7 +6082,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                identifier = i1; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1257:3: ( '::' ix= simpleCppFunctionName )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1268:3: ( '::' ix= simpleCppFunctionName )*
             loop81:
             do {
                 int alt81=2;
@@ -6084,7 +6095,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt81) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1258:4: '::' ix= simpleCppFunctionName
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1269:4: '::' ix= simpleCppFunctionName
             	    {
             	    match(input,72,FOLLOW_72_in_qualifiedCppFunctionName3604); if (state.failed) return identifier;
             	    pushFollow(FOLLOW_simpleCppFunctionName_in_qualifiedCppFunctionName3608);
@@ -6121,7 +6132,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "simpleCppFunctionName"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1262:1: simpleCppFunctionName returns [SimpleIdentifier identifier] : (pre= '~' )? i= simpleIdentifier ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1273:1: simpleCppFunctionName returns [SimpleIdentifier identifier] : (pre= '~' )? i= simpleIdentifier ;
     public final SimpleIdentifier simpleCppFunctionName() throws RecognitionException {
         SimpleIdentifier identifier = null;
         int simpleCppFunctionName_StartIndex = input.index();
@@ -6131,10 +6142,10 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 47) ) { return identifier; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1263:2: ( (pre= '~' )? i= simpleIdentifier )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1264:3: (pre= '~' )? i= simpleIdentifier
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1274:2: ( (pre= '~' )? i= simpleIdentifier )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1275:3: (pre= '~' )? i= simpleIdentifier
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1264:6: (pre= '~' )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1275:6: (pre= '~' )?
             int alt82=2;
             int LA82_0 = input.LA(1);
 
@@ -6181,7 +6192,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "baseExpression"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1272:1: baseExpression returns [Expression expr] : (i= simpleIdentifier | constant | '(' expression ')' | objCMethodCall | selectorExpr | protocolExpr | encodingExpr );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1283:1: baseExpression returns [Expression expr] : (i= simpleIdentifier | constant | '(' expression ')' | objCMethodCall | selectorExpr | protocolExpr | encodingExpr );
     public final Expression baseExpression() throws RecognitionException {
         Expression expr = null;
         int baseExpression_StartIndex = input.index();
@@ -6196,7 +6207,7 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 48) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1273:2: (i= simpleIdentifier | constant | '(' expression ')' | objCMethodCall | selectorExpr | protocolExpr | encodingExpr )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1284:2: (i= simpleIdentifier | constant | '(' expression ')' | objCMethodCall | selectorExpr | protocolExpr | encodingExpr )
             int alt83=7;
             switch ( input.LA(1) ) {
             case IDENTIFIER:
@@ -6251,7 +6262,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt83) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1274:3: i= simpleIdentifier
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1285:3: i= simpleIdentifier
                     {
                     pushFollow(FOLLOW_simpleIdentifier_in_baseExpression3665);
                     i=simpleIdentifier();
@@ -6265,7 +6276,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1275:3: constant
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1286:3: constant
                     {
                     pushFollow(FOLLOW_constant_in_baseExpression3674);
                     constant36=constant();
@@ -6279,7 +6290,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1276:3: '(' expression ')'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1287:3: '(' expression ')'
                     {
                     match(input,34,FOLLOW_34_in_baseExpression3682); if (state.failed) return expr;
                     pushFollow(FOLLOW_expression_in_baseExpression3684);
@@ -6299,7 +6310,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1281:3: objCMethodCall
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1292:3: objCMethodCall
                     {
                     pushFollow(FOLLOW_objCMethodCall_in_baseExpression3694);
                     objCMethodCall38=objCMethodCall();
@@ -6313,7 +6324,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1282:3: selectorExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1293:3: selectorExpr
                     {
                     pushFollow(FOLLOW_selectorExpr_in_baseExpression3702);
                     selectorExpr();
@@ -6324,7 +6335,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1283:3: protocolExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1294:3: protocolExpr
                     {
                     pushFollow(FOLLOW_protocolExpr_in_baseExpression3708);
                     protocolExpr();
@@ -6335,7 +6346,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1284:3: encodingExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1295:3: encodingExpr
                     {
                     pushFollow(FOLLOW_encodingExpr_in_baseExpression3714);
                     encodingExpr();
@@ -6361,14 +6372,14 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "selectorExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1287:1: selectorExpr returns [Expression expr] : '@selector' '(' selectorName ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1298:1: selectorExpr returns [Expression expr] : '@selector' '(' selectorName ')' ;
     public final Expression selectorExpr() throws RecognitionException {
         Expression expr = null;
         int selectorExpr_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 49) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1288:2: ( '@selector' '(' selectorName ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1288:4: '@selector' '(' selectorName ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1299:2: ( '@selector' '(' selectorName ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1299:4: '@selector' '(' selectorName ')'
             {
             match(input,74,FOLLOW_74_in_selectorExpr3730); if (state.failed) return expr;
             match(input,34,FOLLOW_34_in_selectorExpr3735); if (state.failed) return expr;
@@ -6395,16 +6406,16 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "selectorName"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1294:1: selectorName : IDENTIFIER ( IDENTIFIER ':' )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1305:1: selectorName : IDENTIFIER ( IDENTIFIER ':' )* ;
     public final void selectorName() throws RecognitionException {
         int selectorName_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 50) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1295:2: ( IDENTIFIER ( IDENTIFIER ':' )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1295:4: IDENTIFIER ( IDENTIFIER ':' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1306:2: ( IDENTIFIER ( IDENTIFIER ':' )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1306:4: IDENTIFIER ( IDENTIFIER ':' )*
             {
             match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_selectorName3756); if (state.failed) return ;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1295:15: ( IDENTIFIER ':' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1306:15: ( IDENTIFIER ':' )*
             loop84:
             do {
                 int alt84=2;
@@ -6417,7 +6428,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt84) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1295:16: IDENTIFIER ':'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1306:16: IDENTIFIER ':'
             	    {
             	    match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_selectorName3759); if (state.failed) return ;
             	    match(input,33,FOLLOW_33_in_selectorName3761); if (state.failed) return ;
@@ -6447,13 +6458,13 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "protocolExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1298:1: protocolExpr : '@protocol' '(' IDENTIFIER ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1309:1: protocolExpr : '@protocol' '(' IDENTIFIER ')' ;
     public final void protocolExpr() throws RecognitionException {
         int protocolExpr_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 51) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1299:2: ( '@protocol' '(' IDENTIFIER ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1299:4: '@protocol' '(' IDENTIFIER ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1310:2: ( '@protocol' '(' IDENTIFIER ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1310:4: '@protocol' '(' IDENTIFIER ')'
             {
             match(input,31,FOLLOW_31_in_protocolExpr3774); if (state.failed) return ;
             match(input,34,FOLLOW_34_in_protocolExpr3778); if (state.failed) return ;
@@ -6476,13 +6487,13 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "encodingExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1305:1: encodingExpr : '@encode' '(' IDENTIFIER ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1316:1: encodingExpr : '@encode' '(' IDENTIFIER ')' ;
     public final void encodingExpr() throws RecognitionException {
         int encodingExpr_StartIndex = input.index();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 52) ) { return ; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1306:2: ( '@encode' '(' IDENTIFIER ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1306:4: '@encode' '(' IDENTIFIER ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1317:2: ( '@encode' '(' IDENTIFIER ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1317:4: '@encode' '(' IDENTIFIER ')'
             {
             match(input,75,FOLLOW_75_in_encodingExpr3797); if (state.failed) return ;
             match(input,34,FOLLOW_34_in_encodingExpr3802); if (state.failed) return ;
@@ -6505,7 +6516,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "assignmentExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1312:1: assignmentExpr returns [Expression expr] : e= inlineCondExpr (op= assignmentOp f= assignmentExpr )? ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1323:1: assignmentExpr returns [Expression expr] : e= inlineCondExpr (op= assignmentOp f= assignmentExpr )? ;
     public final Expression assignmentExpr() throws RecognitionException {
         Expression expr = null;
         int assignmentExpr_StartIndex = input.index();
@@ -6518,8 +6529,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 53) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1313:2: (e= inlineCondExpr (op= assignmentOp f= assignmentExpr )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1313:4: e= inlineCondExpr (op= assignmentOp f= assignmentExpr )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1324:2: (e= inlineCondExpr (op= assignmentOp f= assignmentExpr )? )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1324:4: e= inlineCondExpr (op= assignmentOp f= assignmentExpr )?
             {
             pushFollow(FOLLOW_inlineCondExpr_in_assignmentExpr3828);
             e=inlineCondExpr();
@@ -6529,12 +6540,12 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1314:3: (op= assignmentOp f= assignmentExpr )?
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1325:3: (op= assignmentOp f= assignmentExpr )?
             int alt85=2;
             alt85 = dfa85.predict(input);
             switch (alt85) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1315:4: op= assignmentOp f= assignmentExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1326:4: op= assignmentOp f= assignmentExpr
                     {
                     pushFollow(FOLLOW_assignmentOp_in_assignmentExpr3844);
                     op=assignmentOp();
@@ -6575,7 +6586,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "assignmentOp"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1319:1: assignmentOp returns [Expression.AssignmentOperator op] : t= ( '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=' ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1330:1: assignmentOp returns [Expression.AssignmentOperator op] : t= ( '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=' ) ;
     public final ObjCppParser.assignmentOp_return assignmentOp() throws RecognitionException {
         ObjCppParser.assignmentOp_return retval = new ObjCppParser.assignmentOp_return();
         retval.start = input.LT(1);
@@ -6584,8 +6595,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 54) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1320:2: (t= ( '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=' ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1320:5: t= ( '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1331:2: (t= ( '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1331:5: t= ( '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=' | '~=' )
             {
             t=(Token)input.LT(1);
             if ( input.LA(1)==29||(input.LA(1)>=76 && input.LA(1)<=86) ) {
@@ -6622,7 +6633,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "inlineCondExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1325:1: inlineCondExpr returns [Expression expr] : e= logOrExpr ( '?' logOrExpr ':' logOrExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1336:1: inlineCondExpr returns [Expression expr] : e= logOrExpr ( '?' logOrExpr ':' logOrExpr )* ;
     public final Expression inlineCondExpr() throws RecognitionException {
         Expression expr = null;
         int inlineCondExpr_StartIndex = input.index();
@@ -6631,8 +6642,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 55) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1326:2: (e= logOrExpr ( '?' logOrExpr ':' logOrExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1326:4: e= logOrExpr ( '?' logOrExpr ':' logOrExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1337:2: (e= logOrExpr ( '?' logOrExpr ':' logOrExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1337:4: e= logOrExpr ( '?' logOrExpr ':' logOrExpr )*
             {
             pushFollow(FOLLOW_logOrExpr_in_inlineCondExpr3939);
             e=logOrExpr();
@@ -6642,7 +6653,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1327:3: ( '?' logOrExpr ':' logOrExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1338:3: ( '?' logOrExpr ':' logOrExpr )*
             loop86:
             do {
                 int alt86=2;
@@ -6655,7 +6666,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt86) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1328:4: '?' logOrExpr ':' logOrExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1339:4: '?' logOrExpr ':' logOrExpr
             	    {
             	    match(input,87,FOLLOW_87_in_inlineCondExpr3951); if (state.failed) return expr;
             	    pushFollow(FOLLOW_logOrExpr_in_inlineCondExpr3956);
@@ -6695,7 +6706,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "addExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1335:1: addExpr returns [Expression expr] : e= multExpr (op= ( '+' | '-' ) f= multExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1346:1: addExpr returns [Expression expr] : e= multExpr (op= ( '+' | '-' ) f= multExpr )* ;
     public final Expression addExpr() throws RecognitionException {
         Expression expr = null;
         int addExpr_StartIndex = input.index();
@@ -6707,8 +6718,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 56) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1336:2: (e= multExpr (op= ( '+' | '-' ) f= multExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1336:4: e= multExpr (op= ( '+' | '-' ) f= multExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1347:2: (e= multExpr (op= ( '+' | '-' ) f= multExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1347:4: e= multExpr (op= ( '+' | '-' ) f= multExpr )*
             {
             pushFollow(FOLLOW_multExpr_in_addExpr3989);
             e=multExpr();
@@ -6718,7 +6729,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1337:3: (op= ( '+' | '-' ) f= multExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1348:3: (op= ( '+' | '-' ) f= multExpr )*
             loop87:
             do {
                 int alt87=2;
@@ -6731,7 +6742,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt87) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1338:4: op= ( '+' | '-' ) f= multExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1349:4: op= ( '+' | '-' ) f= multExpr
             	    {
             	    op=(Token)input.LT(1);
             	    if ( (input.LA(1)>=42 && input.LA(1)<=43) ) {
@@ -6778,7 +6789,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "multExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1343:1: multExpr returns [Expression expr] : e= castExpr (op= ( '%' | '*' | '/' ) f= castExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1354:1: multExpr returns [Expression expr] : e= castExpr (op= ( '%' | '*' | '/' ) f= castExpr )* ;
     public final Expression multExpr() throws RecognitionException {
         Expression expr = null;
         int multExpr_StartIndex = input.index();
@@ -6790,8 +6801,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 57) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1344:2: (e= castExpr (op= ( '%' | '*' | '/' ) f= castExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1344:4: e= castExpr (op= ( '%' | '*' | '/' ) f= castExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1355:2: (e= castExpr (op= ( '%' | '*' | '/' ) f= castExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1355:4: e= castExpr (op= ( '%' | '*' | '/' ) f= castExpr )*
             {
             pushFollow(FOLLOW_castExpr_in_multExpr4039);
             e=castExpr();
@@ -6801,7 +6812,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1345:3: (op= ( '%' | '*' | '/' ) f= castExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1356:3: (op= ( '%' | '*' | '/' ) f= castExpr )*
             loop88:
             do {
                 int alt88=2;
@@ -6814,7 +6825,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt88) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1346:4: op= ( '%' | '*' | '/' ) f= castExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1357:4: op= ( '%' | '*' | '/' ) f= castExpr
             	    {
             	    op=(Token)input.LT(1);
             	    if ( input.LA(1)==52||(input.LA(1)>=60 && input.LA(1)<=61) ) {
@@ -6861,7 +6872,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "bitOrExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1351:1: bitOrExpr returns [Expression expr] : e= xorExpr (op= '|' f= xorExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1362:1: bitOrExpr returns [Expression expr] : e= xorExpr (op= '|' f= xorExpr )* ;
     public final Expression bitOrExpr() throws RecognitionException {
         Expression expr = null;
         int bitOrExpr_StartIndex = input.index();
@@ -6873,8 +6884,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 58) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1352:2: (e= xorExpr (op= '|' f= xorExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1352:4: e= xorExpr (op= '|' f= xorExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1363:2: (e= xorExpr (op= '|' f= xorExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1363:4: e= xorExpr (op= '|' f= xorExpr )*
             {
             pushFollow(FOLLOW_xorExpr_in_bitOrExpr4095);
             e=xorExpr();
@@ -6884,7 +6895,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1353:3: (op= '|' f= xorExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1364:3: (op= '|' f= xorExpr )*
             loop89:
             do {
                 int alt89=2;
@@ -6897,7 +6908,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt89) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1354:4: op= '|' f= xorExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1365:4: op= '|' f= xorExpr
             	    {
             	    op=(Token)match(input,66,FOLLOW_66_in_bitOrExpr4109); if (state.failed) return expr;
             	    pushFollow(FOLLOW_xorExpr_in_bitOrExpr4116);
@@ -6934,7 +6945,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "bitAndExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1359:1: bitAndExpr returns [Expression expr] : e= equalExpr (op= '&' f= equalExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1370:1: bitAndExpr returns [Expression expr] : e= equalExpr (op= '&' f= equalExpr )* ;
     public final Expression bitAndExpr() throws RecognitionException {
         Expression expr = null;
         int bitAndExpr_StartIndex = input.index();
@@ -6946,8 +6957,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 59) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1360:2: (e= equalExpr (op= '&' f= equalExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1360:4: e= equalExpr (op= '&' f= equalExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1371:2: (e= equalExpr (op= '&' f= equalExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1371:4: e= equalExpr (op= '&' f= equalExpr )*
             {
             pushFollow(FOLLOW_equalExpr_in_bitAndExpr4140);
             e=equalExpr();
@@ -6957,7 +6968,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1361:3: (op= '&' f= equalExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1372:3: (op= '&' f= equalExpr )*
             loop90:
             do {
                 int alt90=2;
@@ -6970,7 +6981,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt90) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1362:4: op= '&' f= equalExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1373:4: op= '&' f= equalExpr
             	    {
             	    op=(Token)match(input,53,FOLLOW_53_in_bitAndExpr4153); if (state.failed) return expr;
             	    pushFollow(FOLLOW_equalExpr_in_bitAndExpr4160);
@@ -7007,7 +7018,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "shiftExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1368:1: shiftExpr returns [Expression expr] : e= addExpr (op= ( '>>' | '<<' ) f= addExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1379:1: shiftExpr returns [Expression expr] : e= addExpr (op= ( '>>' | '<<' ) f= addExpr )* ;
     public final Expression shiftExpr() throws RecognitionException {
         Expression expr = null;
         int shiftExpr_StartIndex = input.index();
@@ -7019,8 +7030,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 60) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1369:2: (e= addExpr (op= ( '>>' | '<<' ) f= addExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1369:4: e= addExpr (op= ( '>>' | '<<' ) f= addExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1380:2: (e= addExpr (op= ( '>>' | '<<' ) f= addExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1380:4: e= addExpr (op= ( '>>' | '<<' ) f= addExpr )*
             {
             pushFollow(FOLLOW_addExpr_in_shiftExpr4185);
             e=addExpr();
@@ -7030,7 +7041,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1370:3: (op= ( '>>' | '<<' ) f= addExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1381:3: (op= ( '>>' | '<<' ) f= addExpr )*
             loop91:
             do {
                 int alt91=2;
@@ -7043,7 +7054,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt91) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1371:4: op= ( '>>' | '<<' ) f= addExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1382:4: op= ( '>>' | '<<' ) f= addExpr
             	    {
             	    op=(Token)input.LT(1);
             	    if ( input.LA(1)==62||input.LA(1)==64 ) {
@@ -7090,7 +7101,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "xorExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1376:1: xorExpr returns [Expression expr] : e= bitAndExpr (op= '^' f= bitAndExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1387:1: xorExpr returns [Expression expr] : e= bitAndExpr (op= '^' f= bitAndExpr )* ;
     public final Expression xorExpr() throws RecognitionException {
         Expression expr = null;
         int xorExpr_StartIndex = input.index();
@@ -7102,8 +7113,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 61) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1377:2: (e= bitAndExpr (op= '^' f= bitAndExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1377:4: e= bitAndExpr (op= '^' f= bitAndExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1388:2: (e= bitAndExpr (op= '^' f= bitAndExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1388:4: e= bitAndExpr (op= '^' f= bitAndExpr )*
             {
             pushFollow(FOLLOW_bitAndExpr_in_xorExpr4235);
             e=bitAndExpr();
@@ -7113,7 +7124,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1378:3: (op= '^' f= bitAndExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1389:3: (op= '^' f= bitAndExpr )*
             loop92:
             do {
                 int alt92=2;
@@ -7126,7 +7137,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt92) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1379:4: op= '^' f= bitAndExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1390:4: op= '^' f= bitAndExpr
             	    {
             	    op=(Token)match(input,57,FOLLOW_57_in_xorExpr4248); if (state.failed) return expr;
             	    pushFollow(FOLLOW_bitAndExpr_in_xorExpr4255);
@@ -7163,7 +7174,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "logOrExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1384:1: logOrExpr returns [Expression expr] : e= logAndExpr (op= '||' f= logAndExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1395:1: logOrExpr returns [Expression expr] : e= logAndExpr (op= '||' f= logAndExpr )* ;
     public final Expression logOrExpr() throws RecognitionException {
         Expression expr = null;
         int logOrExpr_StartIndex = input.index();
@@ -7175,8 +7186,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 62) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1385:2: (e= logAndExpr (op= '||' f= logAndExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1385:4: e= logAndExpr (op= '||' f= logAndExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1396:2: (e= logAndExpr (op= '||' f= logAndExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1396:4: e= logAndExpr (op= '||' f= logAndExpr )*
             {
             pushFollow(FOLLOW_logAndExpr_in_logOrExpr4279);
             e=logAndExpr();
@@ -7186,7 +7197,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1386:3: (op= '||' f= logAndExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1397:3: (op= '||' f= logAndExpr )*
             loop93:
             do {
                 int alt93=2;
@@ -7199,7 +7210,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt93) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1387:4: op= '||' f= logAndExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1398:4: op= '||' f= logAndExpr
             	    {
             	    op=(Token)match(input,65,FOLLOW_65_in_logOrExpr4292); if (state.failed) return expr;
             	    pushFollow(FOLLOW_logAndExpr_in_logOrExpr4299);
@@ -7236,7 +7247,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "logAndExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1392:1: logAndExpr returns [Expression expr] : e= bitOrExpr (op= '&&' f= bitOrExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1403:1: logAndExpr returns [Expression expr] : e= bitOrExpr (op= '&&' f= bitOrExpr )* ;
     public final Expression logAndExpr() throws RecognitionException {
         Expression expr = null;
         int logAndExpr_StartIndex = input.index();
@@ -7248,8 +7259,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 63) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1393:2: (e= bitOrExpr (op= '&&' f= bitOrExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1393:4: e= bitOrExpr (op= '&&' f= bitOrExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1404:2: (e= bitOrExpr (op= '&&' f= bitOrExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1404:4: e= bitOrExpr (op= '&&' f= bitOrExpr )*
             {
             pushFollow(FOLLOW_bitOrExpr_in_logAndExpr4323);
             e=bitOrExpr();
@@ -7259,7 +7270,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1394:3: (op= '&&' f= bitOrExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1405:3: (op= '&&' f= bitOrExpr )*
             loop94:
             do {
                 int alt94=2;
@@ -7272,7 +7283,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt94) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1395:4: op= '&&' f= bitOrExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1406:4: op= '&&' f= bitOrExpr
             	    {
             	    op=(Token)match(input,67,FOLLOW_67_in_logAndExpr4336); if (state.failed) return expr;
             	    pushFollow(FOLLOW_bitOrExpr_in_logAndExpr4343);
@@ -7309,7 +7320,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "equalExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1400:1: equalExpr returns [Expression expr] : e= compareExpr (op= ( '!=' | '==' ) f= compareExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1411:1: equalExpr returns [Expression expr] : e= compareExpr (op= ( '!=' | '==' ) f= compareExpr )* ;
     public final Expression equalExpr() throws RecognitionException {
         Expression expr = null;
         int equalExpr_StartIndex = input.index();
@@ -7321,8 +7332,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 64) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1401:2: (e= compareExpr (op= ( '!=' | '==' ) f= compareExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1401:4: e= compareExpr (op= ( '!=' | '==' ) f= compareExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1412:2: (e= compareExpr (op= ( '!=' | '==' ) f= compareExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1412:4: e= compareExpr (op= ( '!=' | '==' ) f= compareExpr )*
             {
             pushFollow(FOLLOW_compareExpr_in_equalExpr4367);
             e=compareExpr();
@@ -7332,7 +7343,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1402:3: (op= ( '!=' | '==' ) f= compareExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1413:3: (op= ( '!=' | '==' ) f= compareExpr )*
             loop95:
             do {
                 int alt95=2;
@@ -7345,7 +7356,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt95) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1403:4: op= ( '!=' | '==' ) f= compareExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1414:4: op= ( '!=' | '==' ) f= compareExpr
             	    {
             	    op=(Token)input.LT(1);
             	    if ( (input.LA(1)>=70 && input.LA(1)<=71) ) {
@@ -7392,7 +7403,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "compareExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1408:1: compareExpr returns [Expression expr] : e= shiftExpr (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1419:1: compareExpr returns [Expression expr] : e= shiftExpr (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )* ;
     public final Expression compareExpr() throws RecognitionException {
         Expression expr = null;
         int compareExpr_StartIndex = input.index();
@@ -7404,8 +7415,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 65) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1409:2: (e= shiftExpr (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1409:4: e= shiftExpr (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1420:2: (e= shiftExpr (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1420:4: e= shiftExpr (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )*
             {
             pushFollow(FOLLOW_shiftExpr_in_compareExpr4417);
             e=shiftExpr();
@@ -7415,14 +7426,14 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = e; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1410:3: (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1421:3: (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )*
             loop96:
             do {
                 int alt96=2;
                 alt96 = dfa96.predict(input);
                 switch (alt96) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1411:4: op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1422:4: op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr
             	    {
             	    op=(Token)input.LT(1);
             	    if ( (input.LA(1)>=36 && input.LA(1)<=37)||(input.LA(1)>=68 && input.LA(1)<=69) ) {
@@ -7469,7 +7480,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "castExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1416:1: castExpr returns [Expression expr] : ( '(' tr= mutableTypeRef ')' inner= castExpr | e= unaryExpr );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1427:1: castExpr returns [Expression expr] : ( '(' tr= mutableTypeRef ')' inner= castExpr | e= unaryExpr );
     public final Expression castExpr() throws RecognitionException {
         Expression expr = null;
         int castExpr_StartIndex = input.index();
@@ -7482,12 +7493,12 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 66) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1417:2: ( '(' tr= mutableTypeRef ')' inner= castExpr | e= unaryExpr )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1428:2: ( '(' tr= mutableTypeRef ')' inner= castExpr | e= unaryExpr )
             int alt97=2;
             alt97 = dfa97.predict(input);
             switch (alt97) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1417:4: '(' tr= mutableTypeRef ')' inner= castExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1428:4: '(' tr= mutableTypeRef ')' inner= castExpr
                     {
                     match(input,34,FOLLOW_34_in_castExpr4474); if (state.failed) return expr;
                     pushFollow(FOLLOW_mutableTypeRef_in_castExpr4478);
@@ -7508,7 +7519,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1418:3: e= unaryExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1429:3: e= unaryExpr
                     {
                     pushFollow(FOLLOW_unaryExpr_in_castExpr4495);
                     e=unaryExpr();
@@ -7537,7 +7548,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "unaryExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1421:1: unaryExpr returns [Expression expr] : (p= postfixExpr | uo= unaryOp castExpr | 'sizeof' ( '(' tr= mutableTypeRef ')' | unaryExpr ) );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1432:1: unaryExpr returns [Expression expr] : (p= postfixExpr | uo= unaryOp castExpr | 'sizeof' ( '(' tr= mutableTypeRef ')' | unaryExpr ) );
     public final Expression unaryExpr() throws RecognitionException {
         Expression expr = null;
         int unaryExpr_StartIndex = input.index();
@@ -7552,7 +7563,7 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 67) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1422:2: (p= postfixExpr | uo= unaryOp castExpr | 'sizeof' ( '(' tr= mutableTypeRef ')' | unaryExpr ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1433:2: (p= postfixExpr | uo= unaryOp castExpr | 'sizeof' ( '(' tr= mutableTypeRef ')' | unaryExpr ) )
             int alt99=3;
             switch ( input.LA(1) ) {
             case DECIMAL_NUMBER:
@@ -7616,7 +7627,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt99) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1423:3: p= postfixExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1434:3: p= postfixExpr
                     {
                     pushFollow(FOLLOW_postfixExpr_in_unaryExpr4517);
                     p=postfixExpr();
@@ -7630,7 +7641,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1424:3: uo= unaryOp castExpr
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1435:3: uo= unaryOp castExpr
                     {
                     pushFollow(FOLLOW_unaryOp_in_unaryExpr4527);
                     uo=unaryOp();
@@ -7649,15 +7660,15 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1425:3: 'sizeof' ( '(' tr= mutableTypeRef ')' | unaryExpr )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1436:3: 'sizeof' ( '(' tr= mutableTypeRef ')' | unaryExpr )
                     {
                     match(input,88,FOLLOW_88_in_unaryExpr4537); if (state.failed) return expr;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1425:12: ( '(' tr= mutableTypeRef ')' | unaryExpr )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1436:12: ( '(' tr= mutableTypeRef ')' | unaryExpr )
                     int alt98=2;
                     alt98 = dfa98.predict(input);
                     switch (alt98) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1426:4: '(' tr= mutableTypeRef ')'
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1437:4: '(' tr= mutableTypeRef ')'
                             {
                             match(input,34,FOLLOW_34_in_unaryExpr4544); if (state.failed) return expr;
                             pushFollow(FOLLOW_mutableTypeRef_in_unaryExpr4548);
@@ -7670,7 +7681,7 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1427:4: unaryExpr
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1438:4: unaryExpr
                             {
                             pushFollow(FOLLOW_unaryExpr_in_unaryExpr4558);
                             unaryExpr();
@@ -7702,7 +7713,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "unaryOp"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1431:1: unaryOp returns [Expression.UnaryOperator op] : t= ( '++' | '--' | '&' | '*' | '-' | '~' | '!' ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1442:1: unaryOp returns [Expression.UnaryOperator op] : t= ( '++' | '--' | '&' | '*' | '-' | '~' | '!' ) ;
     public final Expression.UnaryOperator unaryOp() throws RecognitionException {
         Expression.UnaryOperator op = null;
         int unaryOp_StartIndex = input.index();
@@ -7710,8 +7721,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 68) ) { return op; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1432:2: (t= ( '++' | '--' | '&' | '*' | '-' | '~' | '!' ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1432:5: t= ( '++' | '--' | '&' | '*' | '-' | '~' | '!' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1443:2: (t= ( '++' | '--' | '&' | '*' | '-' | '~' | '!' ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1443:5: t= ( '++' | '--' | '&' | '*' | '-' | '~' | '!' )
             {
             t=(Token)input.LT(1);
             if ( input.LA(1)==43||(input.LA(1)>=52 && input.LA(1)<=53)||input.LA(1)==73||(input.LA(1)>=89 && input.LA(1)<=91) ) {
@@ -7746,7 +7757,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "postfixExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1437:1: postfixExpr returns [Expression expr] : baseExpression ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1448:1: postfixExpr returns [Expression expr] : baseExpression ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )* ;
     public final Expression postfixExpr() throws RecognitionException {
         Expression expr = null;
         int postfixExpr_StartIndex = input.index();
@@ -7765,8 +7776,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 69) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1438:2: ( baseExpression ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1439:3: baseExpression ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1449:2: ( baseExpression ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1450:3: baseExpression ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )*
             {
             pushFollow(FOLLOW_baseExpression_in_postfixExpr4628);
             baseExpression40=baseExpression();
@@ -7776,7 +7787,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                expr = baseExpression40; 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1440:3: ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1451:3: ( '[' expression ']' | '(' ( topLevelExprList )? ')' | '::' ao= simpleIdentifier | '.' di= simpleIdentifier | '->' ai= simpleIdentifier | '++' | '--' )*
             loop101:
             do {
                 int alt101=8;
@@ -7821,7 +7832,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt101) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1441:4: '[' expression ']'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1452:4: '[' expression ']'
             	    {
             	    match(input,54,FOLLOW_54_in_postfixExpr4639); if (state.failed) return expr;
             	    pushFollow(FOLLOW_expression_in_postfixExpr4641);
@@ -7839,10 +7850,10 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1444:4: '(' ( topLevelExprList )? ')'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1455:4: '(' ( topLevelExprList )? ')'
             	    {
             	    match(input,34,FOLLOW_34_in_postfixExpr4652); if (state.failed) return expr;
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1444:8: ( topLevelExprList )?
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1455:8: ( topLevelExprList )?
             	    int alt100=2;
             	    int LA100_0 = input.LA(1);
 
@@ -7878,7 +7889,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1451:4: '::' ao= simpleIdentifier
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1462:4: '::' ao= simpleIdentifier
             	    {
             	    match(input,72,FOLLOW_72_in_postfixExpr4666); if (state.failed) return expr;
             	    pushFollow(FOLLOW_simpleIdentifier_in_postfixExpr4670);
@@ -7895,7 +7906,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 4 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1454:4: '.' di= simpleIdentifier
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1465:4: '.' di= simpleIdentifier
             	    {
             	    match(input,92,FOLLOW_92_in_postfixExpr4679); if (state.failed) return expr;
             	    pushFollow(FOLLOW_simpleIdentifier_in_postfixExpr4683);
@@ -7912,7 +7923,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 5 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1457:4: '->' ai= simpleIdentifier
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1468:4: '->' ai= simpleIdentifier
             	    {
             	    match(input,93,FOLLOW_93_in_postfixExpr4692); if (state.failed) return expr;
             	    pushFollow(FOLLOW_simpleIdentifier_in_postfixExpr4696);
@@ -7929,7 +7940,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 6 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1460:4: '++'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1471:4: '++'
             	    {
             	    match(input,89,FOLLOW_89_in_postfixExpr4705); if (state.failed) return expr;
             	    if ( state.backtracking==0 ) {
@@ -7941,7 +7952,7 @@ public class ObjCppParser extends Parser {
             	    }
             	    break;
             	case 7 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1463:4: '--'
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1474:4: '--'
             	    {
             	    match(input,90,FOLLOW_90_in_postfixExpr4714); if (state.failed) return expr;
             	    if ( state.backtracking==0 ) {
@@ -7978,7 +7989,7 @@ public class ObjCppParser extends Parser {
     };
 
     // $ANTLR start "topLevelExpr"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1469:1: topLevelExpr returns [Expression expr] : e= assignmentExpr ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1480:1: topLevelExpr returns [Expression expr] : e= assignmentExpr ;
     public final ObjCppParser.topLevelExpr_return topLevelExpr() throws RecognitionException {
         ObjCppParser.topLevelExpr_return retval = new ObjCppParser.topLevelExpr_return();
         retval.start = input.LT(1);
@@ -7988,8 +7999,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 70) ) { return retval; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1470:2: (e= assignmentExpr )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1470:4: e= assignmentExpr
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1481:2: (e= assignmentExpr )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1481:4: e= assignmentExpr
             {
             pushFollow(FOLLOW_assignmentExpr_in_topLevelExpr4738);
             e=assignmentExpr();
@@ -8018,7 +8029,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "topLevelExprList"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1472:1: topLevelExprList returns [List<Expression> exprs] : e= topLevelExpr ( ',' f= topLevelExpr )* ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1483:1: topLevelExprList returns [List<Expression> exprs] : e= topLevelExpr ( ',' f= topLevelExpr )* ;
     public final List<Expression> topLevelExprList() throws RecognitionException {
         List<Expression> exprs = null;
         int topLevelExprList_StartIndex = input.index();
@@ -8029,8 +8040,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 71) ) { return exprs; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1473:2: (e= topLevelExpr ( ',' f= topLevelExpr )* )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1474:3: e= topLevelExpr ( ',' f= topLevelExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1484:2: (e= topLevelExpr ( ',' f= topLevelExpr )* )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1485:3: e= topLevelExpr ( ',' f= topLevelExpr )*
             {
             if ( state.backtracking==0 ) {
                exprs = new ArrayList<Expression>(); 
@@ -8043,7 +8054,7 @@ public class ObjCppParser extends Parser {
             if ( state.backtracking==0 ) {
                exprs.add((e!=null?e.expr:null)); 
             }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1476:3: ( ',' f= topLevelExpr )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1487:3: ( ',' f= topLevelExpr )*
             loop102:
             do {
                 int alt102=2;
@@ -8056,7 +8067,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt102) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1477:4: ',' f= topLevelExpr
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1488:4: ',' f= topLevelExpr
             	    {
             	    match(input,28,FOLLOW_28_in_topLevelExprList4774); if (state.failed) return exprs;
             	    pushFollow(FOLLOW_topLevelExpr_in_topLevelExprList4781);
@@ -8093,7 +8104,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "expression"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1482:1: expression returns [Expression expr] : l= topLevelExprList ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1493:1: expression returns [Expression expr] : l= topLevelExprList ;
     public final Expression expression() throws RecognitionException {
         Expression expr = null;
         int expression_StartIndex = input.index();
@@ -8102,8 +8113,8 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 72) ) { return expr; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1483:2: (l= topLevelExprList )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1483:4: l= topLevelExprList
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1494:2: (l= topLevelExprList )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1494:4: l= topLevelExprList
             {
             pushFollow(FOLLOW_topLevelExprList_in_expression4805);
             l=topLevelExprList();
@@ -8137,7 +8148,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "statementsBlock"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1494:1: statementsBlock returns [Block stat] : '{' ( statement )* '}' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1505:1: statementsBlock returns [Block stat] : '{' ( statement )* '}' ;
     public final Block statementsBlock() throws RecognitionException {
         Symbols_stack.push(new Symbols_scope());
 
@@ -8151,14 +8162,14 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 73) ) { return stat; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1499:2: ( '{' ( statement )* '}' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1499:4: '{' ( statement )* '}'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1510:2: ( '{' ( statement )* '}' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1510:4: '{' ( statement )* '}'
             {
             if ( state.backtracking==0 ) {
                stat = new Block(); 
             }
             match(input,23,FOLLOW_23_in_statementsBlock4839); if (state.failed) return stat;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1501:3: ( statement )*
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1512:3: ( statement )*
             loop103:
             do {
                 int alt103=2;
@@ -8171,7 +8182,7 @@ public class ObjCppParser extends Parser {
 
                 switch (alt103) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1502:4: statement
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1513:4: statement
             	    {
             	    pushFollow(FOLLOW_statement_in_statementsBlock4849);
             	    statement43=statement();
@@ -8212,7 +8223,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "statement"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1508:1: statement returns [Statement stat] : (b= statementsBlock | declaration | es= expression ';' | rt= 'return' rex= expression ';' | IDENTIFIER ':' | 'break' ';' | 'if' '(' topLevelExpr ')' statement ( 'else' statement )? | 'while' '(' topLevelExpr ')' statement | 'do' statement 'while' '(' topLevelExpr ')' ';' | 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}' | ';' | {...}? IDENTIFIER '(' varDecl ':' expression ')' statement );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1519:1: statement returns [Statement stat] : (b= statementsBlock | declaration | es= expression ';' | rt= 'return' rex= expression ';' | IDENTIFIER ':' | 'break' ';' | 'if' '(' topLevelExpr ')' statement ( 'else' statement )? | 'while' '(' topLevelExpr ')' statement | 'do' statement 'while' '(' topLevelExpr ')' ';' | 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}' | ';' | {...}? IDENTIFIER '(' varDecl ':' expression ')' statement );
     public final Statement statement() throws RecognitionException {
         Statement stat = null;
         int statement_StartIndex = input.index();
@@ -8226,12 +8237,12 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 74) ) { return stat; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1509:2: (b= statementsBlock | declaration | es= expression ';' | rt= 'return' rex= expression ';' | IDENTIFIER ':' | 'break' ';' | 'if' '(' topLevelExpr ')' statement ( 'else' statement )? | 'while' '(' topLevelExpr ')' statement | 'do' statement 'while' '(' topLevelExpr ')' ';' | 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}' | ';' | {...}? IDENTIFIER '(' varDecl ':' expression ')' statement )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1520:2: (b= statementsBlock | declaration | es= expression ';' | rt= 'return' rex= expression ';' | IDENTIFIER ':' | 'break' ';' | 'if' '(' topLevelExpr ')' statement ( 'else' statement )? | 'while' '(' topLevelExpr ')' statement | 'do' statement 'while' '(' topLevelExpr ')' ';' | 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}' | ';' | {...}? IDENTIFIER '(' varDecl ':' expression ')' statement )
             int alt109=13;
             alt109 = dfa109.predict(input);
             switch (alt109) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1510:3: b= statementsBlock
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1521:3: b= statementsBlock
                     {
                     pushFollow(FOLLOW_statementsBlock_in_statement4880);
                     b=statementsBlock();
@@ -8245,7 +8256,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1511:3: declaration
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1522:3: declaration
                     {
                     pushFollow(FOLLOW_declaration_in_statement4888);
                     declaration();
@@ -8256,7 +8267,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1512:3: es= expression ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1523:3: es= expression ';'
                     {
                     pushFollow(FOLLOW_expression_in_statement4897);
                     es=expression();
@@ -8271,7 +8282,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1513:3: rt= 'return' rex= expression ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1524:3: rt= 'return' rex= expression ';'
                     {
                     rt=(Token)match(input,51,FOLLOW_51_in_statement4909); if (state.failed) return stat;
                     pushFollow(FOLLOW_expression_in_statement4913);
@@ -8289,7 +8300,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1516:3: IDENTIFIER ':'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1527:3: IDENTIFIER ':'
                     {
                     match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_statement4923); if (state.failed) return stat;
                     match(input,33,FOLLOW_33_in_statement4925); if (state.failed) return stat;
@@ -8297,7 +8308,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1517:3: 'break' ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1528:3: 'break' ';'
                     {
                     match(input,94,FOLLOW_94_in_statement4932); if (state.failed) return stat;
                     match(input,25,FOLLOW_25_in_statement4934); if (state.failed) return stat;
@@ -8305,7 +8316,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1518:3: 'if' '(' topLevelExpr ')' statement ( 'else' statement )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1529:3: 'if' '(' topLevelExpr ')' statement ( 'else' statement )?
                     {
                     match(input,95,FOLLOW_95_in_statement4940); if (state.failed) return stat;
                     match(input,34,FOLLOW_34_in_statement4942); if (state.failed) return stat;
@@ -8320,7 +8331,7 @@ public class ObjCppParser extends Parser {
 
                     state._fsp--;
                     if (state.failed) return stat;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1518:39: ( 'else' statement )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1529:39: ( 'else' statement )?
                     int alt104=2;
                     int LA104_0 = input.LA(1);
 
@@ -8333,7 +8344,7 @@ public class ObjCppParser extends Parser {
                     }
                     switch (alt104) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1518:40: 'else' statement
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1529:40: 'else' statement
                             {
                             match(input,96,FOLLOW_96_in_statement4951); if (state.failed) return stat;
                             pushFollow(FOLLOW_statement_in_statement4953);
@@ -8351,7 +8362,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1519:3: 'while' '(' topLevelExpr ')' statement
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1530:3: 'while' '(' topLevelExpr ')' statement
                     {
                     match(input,97,FOLLOW_97_in_statement4962); if (state.failed) return stat;
                     match(input,34,FOLLOW_34_in_statement4964); if (state.failed) return stat;
@@ -8370,7 +8381,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1520:3: 'do' statement 'while' '(' topLevelExpr ')' ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1531:3: 'do' statement 'while' '(' topLevelExpr ')' ';'
                     {
                     match(input,98,FOLLOW_98_in_statement4977); if (state.failed) return stat;
                     pushFollow(FOLLOW_statement_in_statement4979);
@@ -8391,11 +8402,11 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1521:3: 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1532:3: 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement
                     {
                     match(input,99,FOLLOW_99_in_statement4996); if (state.failed) return stat;
                     match(input,34,FOLLOW_34_in_statement4998); if (state.failed) return stat;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1521:13: ( expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1532:13: ( expression )?
                     int alt105=2;
                     int LA105_0 = input.LA(1);
 
@@ -8418,7 +8429,7 @@ public class ObjCppParser extends Parser {
                     }
 
                     match(input,25,FOLLOW_25_in_statement5003); if (state.failed) return stat;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1521:29: ( expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1532:29: ( expression )?
                     int alt106=2;
                     int LA106_0 = input.LA(1);
 
@@ -8441,7 +8452,7 @@ public class ObjCppParser extends Parser {
                     }
 
                     match(input,25,FOLLOW_25_in_statement5008); if (state.failed) return stat;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1521:45: ( expression )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1532:45: ( expression )?
                     int alt107=2;
                     int LA107_0 = input.LA(1);
 
@@ -8473,7 +8484,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1522:3: 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1533:3: 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}'
                     {
                     match(input,100,FOLLOW_100_in_statement5022); if (state.failed) return stat;
                     match(input,34,FOLLOW_34_in_statement5024); if (state.failed) return stat;
@@ -8484,7 +8495,7 @@ public class ObjCppParser extends Parser {
                     if (state.failed) return stat;
                     match(input,35,FOLLOW_35_in_statement5028); if (state.failed) return stat;
                     match(input,23,FOLLOW_23_in_statement5030); if (state.failed) return stat;
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1523:4: ( 'case' topLevelExpr ':' | statement )*
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1534:4: ( 'case' topLevelExpr ':' | statement )*
                     loop108:
                     do {
                         int alt108=3;
@@ -8500,7 +8511,7 @@ public class ObjCppParser extends Parser {
 
                         switch (alt108) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1524:5: 'case' topLevelExpr ':'
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1535:5: 'case' topLevelExpr ':'
                     	    {
                     	    match(input,101,FOLLOW_101_in_statement5043); if (state.failed) return stat;
                     	    pushFollow(FOLLOW_topLevelExpr_in_statement5045);
@@ -8513,7 +8524,7 @@ public class ObjCppParser extends Parser {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1525:5: statement
+                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1536:5: statement
                     	    {
                     	    pushFollow(FOLLOW_statement_in_statement5055);
                     	    statement();
@@ -8534,14 +8545,14 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1528:3: ';'
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1539:3: ';'
                     {
                     match(input,25,FOLLOW_25_in_statement5071); if (state.failed) return stat;
 
                     }
                     break;
                 case 13 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1529:3: {...}? IDENTIFIER '(' varDecl ':' expression ')' statement
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1540:3: {...}? IDENTIFIER '(' varDecl ':' expression ')' statement
                     {
                     if ( !(( next("foreach") )) ) {
                         if (state.backtracking>0) {state.failed=true; return stat;}
@@ -8585,7 +8596,7 @@ public class ObjCppParser extends Parser {
 
 
     // $ANTLR start "constant"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1532:1: constant returns [Constant constant] : ( (s= ( '-' | '+' ) )? ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER ) | CHARACTER | (s2= ( '-' | '+' ) )? FLOAT_NUMBER | STRING );
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1543:1: constant returns [Constant constant] : ( (s= ( '-' | '+' ) )? ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER ) | CHARACTER | (s2= ( '-' | '+' ) )? FLOAT_NUMBER | STRING );
     public final Constant constant() throws RecognitionException {
         Constant constant = null;
         int constant_StartIndex = input.index();
@@ -8600,7 +8611,7 @@ public class ObjCppParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 75) ) { return constant; }
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1533:2: ( (s= ( '-' | '+' ) )? ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER ) | CHARACTER | (s2= ( '-' | '+' ) )? FLOAT_NUMBER | STRING )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1544:2: ( (s= ( '-' | '+' ) )? ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER ) | CHARACTER | (s2= ( '-' | '+' ) )? FLOAT_NUMBER | STRING )
             int alt113=4;
             switch ( input.LA(1) ) {
             case 42:
@@ -8655,9 +8666,9 @@ public class ObjCppParser extends Parser {
 
             switch (alt113) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1533:4: (s= ( '-' | '+' ) )? ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1544:4: (s= ( '-' | '+' ) )? ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1533:5: (s= ( '-' | '+' ) )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1544:5: (s= ( '-' | '+' ) )?
                     int alt110=2;
                     int LA110_0 = input.LA(1);
 
@@ -8685,7 +8696,7 @@ public class ObjCppParser extends Parser {
 
                     }
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1533:19: ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER )
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1544:19: ( DECIMAL_NUMBER | HEXADECIMAL_NUMBER | OCTAL_NUMBER )
                     int alt111=3;
                     switch ( input.LA(1) ) {
                     case DECIMAL_NUMBER:
@@ -8713,7 +8724,7 @@ public class ObjCppParser extends Parser {
 
                     switch (alt111) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1534:4: DECIMAL_NUMBER
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1545:4: DECIMAL_NUMBER
                             {
                             DECIMAL_NUMBER44=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_constant5124); if (state.failed) return constant;
                             if ( state.backtracking==0 ) {
@@ -8723,7 +8734,7 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1535:4: HEXADECIMAL_NUMBER
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1546:4: HEXADECIMAL_NUMBER
                             {
                             HEXADECIMAL_NUMBER45=(Token)match(input,HEXADECIMAL_NUMBER,FOLLOW_HEXADECIMAL_NUMBER_in_constant5133); if (state.failed) return constant;
                             if ( state.backtracking==0 ) {
@@ -8733,7 +8744,7 @@ public class ObjCppParser extends Parser {
                             }
                             break;
                         case 3 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1536:4: OCTAL_NUMBER
+                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1547:4: OCTAL_NUMBER
                             {
                             OCTAL_NUMBER46=(Token)match(input,OCTAL_NUMBER,FOLLOW_OCTAL_NUMBER_in_constant5142); if (state.failed) return constant;
                             if ( state.backtracking==0 ) {
@@ -8749,7 +8760,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1538:3: CHARACTER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1549:3: CHARACTER
                     {
                     CHARACTER47=(Token)match(input,CHARACTER,FOLLOW_CHARACTER_in_constant5154); if (state.failed) return constant;
                     if ( state.backtracking==0 ) {
@@ -8759,9 +8770,9 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1539:3: (s2= ( '-' | '+' ) )? FLOAT_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1550:3: (s2= ( '-' | '+' ) )? FLOAT_NUMBER
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1539:5: (s2= ( '-' | '+' ) )?
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1550:5: (s2= ( '-' | '+' ) )?
                     int alt112=2;
                     int LA112_0 = input.LA(1);
 
@@ -8797,7 +8808,7 @@ public class ObjCppParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1541:3: STRING
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1552:3: STRING
                     {
                     STRING49=(Token)match(input,STRING,FOLLOW_STRING_in_constant5184); if (state.failed) return constant;
                     if ( state.backtracking==0 ) {
@@ -8822,8 +8833,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred6_ObjCpp
     public final void synpred6_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:358:5: ({...}? => pragmaContent )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:358:5: {...}? => pragmaContent
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:369:5: ({...}? => pragmaContent )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:369:5: {...}? => pragmaContent
         {
         if ( !(( next("__pragma") )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -8841,8 +8852,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred8_ObjCpp
     public final void synpred8_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:360:5: ( functionDeclaration )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:360:5: functionDeclaration
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:371:5: ( functionDeclaration )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:371:5: functionDeclaration
         {
         pushFollow(FOLLOW_functionDeclaration_in_synpred8_ObjCpp286);
         functionDeclaration();
@@ -8856,8 +8867,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred9_ObjCpp
     public final void synpred9_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:363:5: ( externDeclarations )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:363:5: externDeclarations
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:374:5: ( externDeclarations )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:374:5: externDeclarations
         {
         pushFollow(FOLLOW_externDeclarations_in_synpred9_ObjCpp296);
         externDeclarations();
@@ -8871,8 +8882,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred10_ObjCpp
     public final void synpred10_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:366:5: ( varDecl ';' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:366:5: varDecl ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:377:5: ( varDecl ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:377:5: varDecl ';'
         {
         pushFollow(FOLLOW_varDecl_in_synpred10_ObjCpp306);
         varDecl();
@@ -8892,8 +8903,8 @@ public class ObjCppParser extends Parser {
         Enum nb = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:6: (m2= modifiers nb= enumBody )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:477:6: m2= modifiers nb= enumBody
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:488:6: (m2= modifiers nb= enumBody )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:488:6: m2= modifiers nb= enumBody
         {
         pushFollow(FOLLOW_modifiers_in_synpred21_ObjCpp678);
         m2=modifiers();
@@ -8914,11 +8925,11 @@ public class ObjCppParser extends Parser {
     public final void synpred24_ObjCpp_fragment() throws RecognitionException {   
         Token categoryName=null;
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:519:4: ( ( '(' categoryName= IDENTIFIER ')' ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:519:4: ( '(' categoryName= IDENTIFIER ')' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:530:4: ( ( '(' categoryName= IDENTIFIER ')' ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:530:4: ( '(' categoryName= IDENTIFIER ')' )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:519:4: ( '(' categoryName= IDENTIFIER ')' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:520:5: '(' categoryName= IDENTIFIER ')'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:530:4: ( '(' categoryName= IDENTIFIER ')' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:531:5: '(' categoryName= IDENTIFIER ')'
         {
         match(input,34,FOLLOW_34_in_synpred24_ObjCpp791); if (state.failed) return ;
         categoryName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred24_ObjCpp795); if (state.failed) return ;
@@ -8936,8 +8947,8 @@ public class ObjCppParser extends Parser {
         VariablesDeclaration fv = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:542:7: (fv= varDecl ';' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:542:7: fv= varDecl ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:553:7: (fv= varDecl ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:553:7: fv= varDecl ';'
         {
         pushFollow(FOLLOW_varDecl_in_synpred31_ObjCpp946);
         fv=varDecl();
@@ -8955,18 +8966,18 @@ public class ObjCppParser extends Parser {
         VariablesDeclaration fv = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:540:5: ( ( (fv= varDecl ';' | functionPointerVarDecl ) ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:540:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:551:5: ( ( (fv= varDecl ';' | functionPointerVarDecl ) ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:551:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:540:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:541:6: (fv= varDecl ';' | functionPointerVarDecl )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:551:5: ( (fv= varDecl ';' | functionPointerVarDecl ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:552:6: (fv= varDecl ';' | functionPointerVarDecl )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:541:6: (fv= varDecl ';' | functionPointerVarDecl )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:552:6: (fv= varDecl ';' | functionPointerVarDecl )
         int alt120=2;
         alt120 = dfa120.predict(input);
         switch (alt120) {
             case 1 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:542:7: fv= varDecl ';'
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:553:7: fv= varDecl ';'
                 {
                 pushFollow(FOLLOW_varDecl_in_synpred32_ObjCpp946);
                 fv=varDecl();
@@ -8978,7 +8989,7 @@ public class ObjCppParser extends Parser {
                 }
                 break;
             case 2 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:545:7: functionPointerVarDecl
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:556:7: functionPointerVarDecl
                 {
                 pushFollow(FOLLOW_functionPointerVarDecl_in_synpred32_ObjCpp960);
                 functionPointerVarDecl();
@@ -9004,8 +9015,8 @@ public class ObjCppParser extends Parser {
         VariablesDeclaration vd = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:561:4: (vd= varDecl ';' {...}?)
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:561:4: vd= varDecl ';' {...}?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:572:4: (vd= varDecl ';' {...}?)
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:572:4: vd= varDecl ';' {...}?
         {
         pushFollow(FOLLOW_varDecl_in_synpred36_ObjCpp1025);
         vd=varDecl();
@@ -9027,8 +9038,8 @@ public class ObjCppParser extends Parser {
         TypeRef returnTypeRef = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:587:18: (returnTypeRef= mutableTypeRef )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:587:18: returnTypeRef= mutableTypeRef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:598:18: (returnTypeRef= mutableTypeRef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:598:18: returnTypeRef= mutableTypeRef
         {
         pushFollow(FOLLOW_mutableTypeRef_in_synpred38_ObjCpp1113);
         returnTypeRef=mutableTypeRef();
@@ -9042,8 +9053,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred46_ObjCpp
     public final void synpred46_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:633:5: ( declaration )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:633:5: declaration
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:5: ( declaration )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:644:5: declaration
         {
         pushFollow(FOLLOW_declaration_in_synpred46_ObjCpp1315);
         declaration();
@@ -9061,8 +9072,8 @@ public class ObjCppParser extends Parser {
         VariablesDeclaration fv = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:636:5: (fv= varDecl ':' bits= DECIMAL_NUMBER ';' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:636:5: fv= varDecl ':' bits= DECIMAL_NUMBER ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:647:5: (fv= varDecl ':' bits= DECIMAL_NUMBER ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:647:5: fv= varDecl ':' bits= DECIMAL_NUMBER ';'
         {
         pushFollow(FOLLOW_varDecl_in_synpred47_ObjCpp1327);
         fv=varDecl();
@@ -9086,18 +9097,18 @@ public class ObjCppParser extends Parser {
         Struct nb = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:682:6: ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:682:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:693:6: ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:693:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:682:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:683:7: m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:693:6: (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:694:7: m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody
         {
         pushFollow(FOLLOW_modifiers_in_synpred53_ObjCpp1461);
         m2=modifiers();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:684:7: ( ':' ( 'public' )? parent= qualifiedIdentifier )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:695:7: ( ':' ( 'public' )? parent= qualifiedIdentifier )?
         int alt128=2;
         int LA128_0 = input.LA(1);
 
@@ -9106,10 +9117,10 @@ public class ObjCppParser extends Parser {
         }
         switch (alt128) {
             case 1 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:685:8: ':' ( 'public' )? parent= qualifiedIdentifier
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:696:8: ':' ( 'public' )? parent= qualifiedIdentifier
                 {
                 match(input,33,FOLLOW_33_in_synpred53_ObjCpp1480); if (state.failed) return ;
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:686:8: ( 'public' )?
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:697:8: ( 'public' )?
                 int alt127=2;
                 int LA127_0 = input.LA(1);
 
@@ -9153,8 +9164,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred54_ObjCpp
     public final void synpred54_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:707:4: ( binaryOp )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:707:4: binaryOp
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:718:4: ( binaryOp )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:718:4: binaryOp
         {
         pushFollow(FOLLOW_binaryOp_in_synpred54_ObjCpp1569);
         binaryOp();
@@ -9168,8 +9179,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred55_ObjCpp
     public final void synpred55_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:708:3: ( unaryOp )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:708:3: unaryOp
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:719:3: ( unaryOp )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:719:3: unaryOp
         {
         pushFollow(FOLLOW_unaryOp_in_synpred55_ObjCpp1578);
         unaryOp();
@@ -9186,8 +9197,8 @@ public class ObjCppParser extends Parser {
         TypeRef returnTypeRef = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:723:16: (returnTypeRef= mutableTypeRef )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:723:16: returnTypeRef= mutableTypeRef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:734:16: (returnTypeRef= mutableTypeRef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:734:16: returnTypeRef= mutableTypeRef
         {
         pushFollow(FOLLOW_mutableTypeRef_in_synpred56_ObjCpp1630);
         returnTypeRef=mutableTypeRef();
@@ -9201,8 +9212,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred61_ObjCpp
     public final void synpred61_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:7: ( modifier )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:763:7: modifier
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:7: ( modifier )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:774:7: modifier
         {
         pushFollow(FOLLOW_modifier_in_synpred61_ObjCpp1799);
         modifier();
@@ -9216,8 +9227,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred71_ObjCpp
     public final void synpred71_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:772:4: ( ';' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:772:4: ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:783:4: ( ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:783:4: ';'
         {
         match(input,25,FOLLOW_25_in_synpred71_ObjCpp1881); if (state.failed) return ;
 
@@ -9227,8 +9238,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred72_ObjCpp
     public final void synpred72_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:780:3: ({...}? => pragmaContent )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:780:3: {...}? => pragmaContent
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:3: ({...}? => pragmaContent )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:3: {...}? => pragmaContent
         {
         if ( !(( next("__pragma") )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -9248,8 +9259,8 @@ public class ObjCppParser extends Parser {
     public final void synpred73_ObjCpp_fragment() throws RecognitionException {   
         Token ex=null;
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:3: ({...}? => IDENTIFIER ex= STRING )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:781:3: {...}? => IDENTIFIER ex= STRING
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:792:3: ({...}? => IDENTIFIER ex= STRING )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:792:3: {...}? => IDENTIFIER ex= STRING
         {
         if ( !(( next("extern") )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -9266,8 +9277,8 @@ public class ObjCppParser extends Parser {
     public final void synpred74_ObjCpp_fragment() throws RecognitionException {   
         Token m=null;
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:784:3: ({...}?m= IDENTIFIER )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:784:3: {...}?m= IDENTIFIER
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:795:3: ({...}?m= IDENTIFIER )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:795:3: {...}?m= IDENTIFIER
         {
         if ( !(( Modifier.parseModifier(next()) != null )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -9281,8 +9292,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred75_ObjCpp
     public final void synpred75_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:787:3: ({...}? => IDENTIFIER '(' 'return' binaryOp expression ')' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:787:3: {...}? => IDENTIFIER '(' 'return' binaryOp expression ')'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:798:3: ({...}? => IDENTIFIER '(' 'return' binaryOp expression ')' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:798:3: {...}? => IDENTIFIER '(' 'return' binaryOp expression ')'
         {
         if ( !(( next("__success") )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -9309,8 +9320,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred76_ObjCpp
     public final void synpred76_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:3: ({...}? => IDENTIFIER '(' expression ')' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:791:3: {...}? => IDENTIFIER '(' expression ')'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:802:3: ({...}? => IDENTIFIER '(' expression ')' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:802:3: {...}? => IDENTIFIER '(' expression ')'
         {
         if ( !(( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -9333,10 +9344,10 @@ public class ObjCppParser extends Parser {
     public final void synpred78_ObjCpp_fragment() throws RecognitionException {   
         Token an=null;
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:4: ( (an= STRING )* )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:4: (an= STRING )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:4: ( (an= STRING )* )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:4: (an= STRING )*
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:4: (an= STRING )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:4: (an= STRING )*
         loop131:
         do {
             int alt131=2;
@@ -9349,7 +9360,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt131) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:797:6: an= STRING
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:808:6: an= STRING
         	    {
         	    an=(Token)match(input,STRING,FOLLOW_STRING_in_synpred78_ObjCpp2015); if (state.failed) return ;
 
@@ -9368,8 +9379,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred80_ObjCpp
     public final void synpred80_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: ( declarator )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: declarator
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:4: ( declarator )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:4: declarator
         {
         pushFollow(FOLLOW_declarator_in_synpred80_ObjCpp2122);
         declarator();
@@ -9388,11 +9399,11 @@ public class ObjCppParser extends Parser {
         ObjCppParser.topLevelExpr_return dv = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:4: ( (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )? )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:4: (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:4: ( (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )? )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:4: (tr= mutableTypeRef ) ( ( declarator )? ) ( '=' dv= topLevelExpr )?
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:827:4: (tr= mutableTypeRef )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:828:4: tr= mutableTypeRef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:4: (tr= mutableTypeRef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: tr= mutableTypeRef
         {
         pushFollow(FOLLOW_mutableTypeRef_in_synpred82_ObjCpp2107);
         tr=mutableTypeRef();
@@ -9402,10 +9413,10 @@ public class ObjCppParser extends Parser {
 
         }
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:838:3: ( ( declarator )? )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: ( declarator )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:849:3: ( ( declarator )? )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:4: ( declarator )?
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:839:4: ( declarator )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:850:4: ( declarator )?
         int alt132=2;
         int LA132_0 = input.LA(1);
 
@@ -9430,7 +9441,7 @@ public class ObjCppParser extends Parser {
 
         }
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:853:3: ( '=' dv= topLevelExpr )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:864:3: ( '=' dv= topLevelExpr )?
         int alt133=2;
         int LA133_0 = input.LA(1);
 
@@ -9439,7 +9450,7 @@ public class ObjCppParser extends Parser {
         }
         switch (alt133) {
             case 1 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:853:4: '=' dv= topLevelExpr
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:864:4: '=' dv= topLevelExpr
                 {
                 match(input,29,FOLLOW_29_in_synpred82_ObjCpp2134); if (state.failed) return ;
                 pushFollow(FOLLOW_topLevelExpr_in_synpred82_ObjCpp2138);
@@ -9460,15 +9471,15 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred86_ObjCpp
     public final void synpred86_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:20: ( templateArgDecl ( ',' templateArgDecl )* )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:20: templateArgDecl ( ',' templateArgDecl )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:20: ( templateArgDecl ( ',' templateArgDecl )* )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:20: templateArgDecl ( ',' templateArgDecl )*
         {
         pushFollow(FOLLOW_templateArgDecl_in_synpred86_ObjCpp2256);
         templateArgDecl();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:36: ( ',' templateArgDecl )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:36: ( ',' templateArgDecl )*
         loop134:
         do {
             int alt134=2;
@@ -9481,7 +9492,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt134) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:886:37: ',' templateArgDecl
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:897:37: ',' templateArgDecl
         	    {
         	    match(input,28,FOLLOW_28_in_synpred86_ObjCpp2259); if (state.failed) return ;
         	    pushFollow(FOLLOW_templateArgDecl_in_synpred86_ObjCpp2261);
@@ -9510,15 +9521,15 @@ public class ObjCppParser extends Parser {
         ObjCppParser.argDef_return ax = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:903:4: (a1= argDef ( ',' ax= argDef )* )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:903:4: a1= argDef ( ',' ax= argDef )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:914:4: (a1= argDef ( ',' ax= argDef )* )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:914:4: a1= argDef ( ',' ax= argDef )*
         {
         pushFollow(FOLLOW_argDef_in_synpred89_ObjCpp2337);
         a1=argDef();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:907:4: ( ',' ax= argDef )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:918:4: ( ',' ax= argDef )*
         loop135:
         do {
             int alt135=2;
@@ -9531,7 +9542,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt135) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:908:5: ',' ax= argDef
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:919:5: ',' ax= argDef
         	    {
         	    match(input,28,FOLLOW_28_in_synpred89_ObjCpp2350); if (state.failed) return ;
         	    pushFollow(FOLLOW_argDef_in_synpred89_ObjCpp2359);
@@ -9560,15 +9571,15 @@ public class ObjCppParser extends Parser {
         ObjCppParser.argDef_return ax = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:923:4: (a1= argDef ( ',' ax= argDef )* )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:923:4: a1= argDef ( ',' ax= argDef )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:934:4: (a1= argDef ( ',' ax= argDef )* )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:934:4: a1= argDef ( ',' ax= argDef )*
         {
         pushFollow(FOLLOW_argDef_in_synpred91_ObjCpp2412);
         a1=argDef();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:927:4: ( ',' ax= argDef )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:938:4: ( ',' ax= argDef )*
         loop136:
         do {
             int alt136=2;
@@ -9581,7 +9592,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt136) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:928:5: ',' ax= argDef
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:939:5: ',' ax= argDef
         	    {
         	    match(input,28,FOLLOW_28_in_synpred91_ObjCpp2425); if (state.failed) return ;
         	    pushFollow(FOLLOW_argDef_in_synpred91_ObjCpp2434);
@@ -9608,11 +9619,11 @@ public class ObjCppParser extends Parser {
         TypeMutator m1 = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:4: ( (m1= typeMutator ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:4: (m1= typeMutator )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:953:4: ( (m1= typeMutator ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:953:4: (m1= typeMutator )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:942:4: (m1= typeMutator )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:943:5: m1= typeMutator
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:953:4: (m1= typeMutator )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:954:5: m1= typeMutator
         {
         pushFollow(FOLLOW_typeMutator_in_synpred92_ObjCpp2490);
         m1=typeMutator();
@@ -9632,11 +9643,11 @@ public class ObjCppParser extends Parser {
         FunctionSignature f1 = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:4: ( (f1= functionSignatureSuffix ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:4: (f1= functionSignatureSuffix )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:4: ( (f1= functionSignatureSuffix ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:4: (f1= functionSignatureSuffix )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:947:4: (f1= functionSignatureSuffix )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:948:5: f1= functionSignatureSuffix
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:958:4: (f1= functionSignatureSuffix )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:959:5: f1= functionSignatureSuffix
         {
         pushFollow(FOLLOW_functionSignatureSuffix_in_synpred93_ObjCpp2512);
         f1=functionSignatureSuffix();
@@ -9656,10 +9667,10 @@ public class ObjCppParser extends Parser {
         FunctionSignature fs = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:965:4: ( ( typeMutator )* (fs= functionSignatureSuffix ) )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:965:4: ( typeMutator )* (fs= functionSignatureSuffix )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:976:4: ( ( typeMutator )* (fs= functionSignatureSuffix ) )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:976:4: ( typeMutator )* (fs= functionSignatureSuffix )
         {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:965:4: ( typeMutator )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:976:4: ( typeMutator )*
         loop137:
         do {
             int alt137=2;
@@ -9672,7 +9683,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt137) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:966:5: typeMutator
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:977:5: typeMutator
         	    {
         	    pushFollow(FOLLOW_typeMutator_in_synpred95_ObjCpp2558);
         	    typeMutator();
@@ -9688,8 +9699,8 @@ public class ObjCppParser extends Parser {
             }
         } while (true);
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:970:4: (fs= functionSignatureSuffix )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:971:5: fs= functionSignatureSuffix
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:981:4: (fs= functionSignatureSuffix )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:982:5: fs= functionSignatureSuffix
         {
         pushFollow(FOLLOW_functionSignatureSuffix_in_synpred95_ObjCpp2579);
         fs=functionSignatureSuffix();
@@ -9709,8 +9720,8 @@ public class ObjCppParser extends Parser {
         ObjCppParser.topLevelExpr_return dv = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:999:4: ( '=' dv= topLevelExpr )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:999:4: '=' dv= topLevelExpr
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1010:4: ( '=' dv= topLevelExpr )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1010:4: '=' dv= topLevelExpr
         {
         match(input,29,FOLLOW_29_in_synpred99_ObjCpp2689); if (state.failed) return ;
         pushFollow(FOLLOW_topLevelExpr_in_synpred99_ObjCpp2697);
@@ -9725,8 +9736,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred103_ObjCpp
     public final void synpred103_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1072:4: ({...}? => IDENTIFIER )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1072:4: {...}? => IDENTIFIER
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1083:4: ({...}? => IDENTIFIER )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1083:4: {...}? => IDENTIFIER
         {
         if ( !(( Modifier.parseModifier(next()) == null )) ) {
             if (state.backtracking>0) {state.failed=true; return ;}
@@ -9743,8 +9754,8 @@ public class ObjCppParser extends Parser {
         ObjCppParser.argDef_return ax = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:5: ( ',' ax= argDef )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:5: ',' ax= argDef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1126:5: ( ',' ax= argDef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1126:5: ',' ax= argDef
         {
         match(input,28,FOLLOW_28_in_synpred107_ObjCpp3065); if (state.failed) return ;
         pushFollow(FOLLOW_argDef_in_synpred107_ObjCpp3074);
@@ -9764,15 +9775,15 @@ public class ObjCppParser extends Parser {
         ObjCppParser.argDef_return ax = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1110:4: (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1110:4: a1= argDef ( ',' ax= argDef )* ( ',' '...' )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1121:4: (a1= argDef ( ',' ax= argDef )* ( ',' '...' )? )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1121:4: a1= argDef ( ',' ax= argDef )* ( ',' '...' )?
         {
         pushFollow(FOLLOW_argDef_in_synpred109_ObjCpp3052);
         a1=argDef();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1114:4: ( ',' ax= argDef )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1125:4: ( ',' ax= argDef )*
         loop139:
         do {
             int alt139=2;
@@ -9800,7 +9811,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt139) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1115:5: ',' ax= argDef
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1126:5: ',' ax= argDef
         	    {
         	    match(input,28,FOLLOW_28_in_synpred109_ObjCpp3065); if (state.failed) return ;
         	    pushFollow(FOLLOW_argDef_in_synpred109_ObjCpp3074);
@@ -9817,7 +9828,7 @@ public class ObjCppParser extends Parser {
             }
         } while (true);
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1120:4: ( ',' '...' )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1131:4: ( ',' '...' )?
         int alt140=2;
         int LA140_0 = input.LA(1);
 
@@ -9826,7 +9837,7 @@ public class ObjCppParser extends Parser {
         }
         switch (alt140) {
             case 1 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1121:5: ',' '...'
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1132:5: ',' '...'
                 {
                 match(input,28,FOLLOW_28_in_synpred109_ObjCpp3094); if (state.failed) return ;
                 match(input,44,FOLLOW_44_in_synpred109_ObjCpp3096); if (state.failed) return ;
@@ -9846,8 +9857,8 @@ public class ObjCppParser extends Parser {
         TypeRef an = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1169:4: ({...}? =>an= typeName )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1169:4: {...}? =>an= typeName
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1180:4: ({...}? =>an= typeName )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1180:4: {...}? =>an= typeName
         {
         if ( !(( 
         				isTypeIdentifier(next()) || 
@@ -9874,8 +9885,8 @@ public class ObjCppParser extends Parser {
         TypeRef tr = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1227:4: (tr= mutableTypeRef )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1227:4: tr= mutableTypeRef
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:4: (tr= mutableTypeRef )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:4: tr= mutableTypeRef
         {
         pushFollow(FOLLOW_mutableTypeRef_in_synpred134_ObjCpp3436);
         tr=mutableTypeRef();
@@ -9894,15 +9905,15 @@ public class ObjCppParser extends Parser {
         Expression ax = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1239:5: (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1239:5: a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1250:5: (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1250:5: a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )*
         {
         pushFollow(FOLLOW_typeRefOrExpression_in_synpred136_ObjCpp3487);
         a1=typeRefOrExpression();
 
         state._fsp--;
         if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1240:5: ( ',' ax= typeRefOrExpression )*
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1251:5: ( ',' ax= typeRefOrExpression )*
         loop142:
         do {
             int alt142=2;
@@ -9915,7 +9926,7 @@ public class ObjCppParser extends Parser {
 
             switch (alt142) {
         	case 1 :
-        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1241:6: ',' ax= typeRefOrExpression
+        	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1252:6: ',' ax= typeRefOrExpression
         	    {
         	    match(input,28,FOLLOW_28_in_synpred136_ObjCpp3502); if (state.failed) return ;
         	    pushFollow(FOLLOW_typeRefOrExpression_in_synpred136_ObjCpp3512);
@@ -9944,11 +9955,11 @@ public class ObjCppParser extends Parser {
         Expression ax = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:4: ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:4: '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:4: ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:4: '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>'
         {
         match(input,36,FOLLOW_36_in_synpred137_ObjCpp3477); if (state.failed) return ;
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1238:8: (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )?
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1249:8: (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )?
         int alt144=2;
         int LA144_0 = input.LA(1);
 
@@ -9964,14 +9975,14 @@ public class ObjCppParser extends Parser {
         }
         switch (alt144) {
             case 1 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1239:5: a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )*
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1250:5: a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )*
                 {
                 pushFollow(FOLLOW_typeRefOrExpression_in_synpred137_ObjCpp3487);
                 a1=typeRefOrExpression();
 
                 state._fsp--;
                 if (state.failed) return ;
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1240:5: ( ',' ax= typeRefOrExpression )*
+                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1251:5: ( ',' ax= typeRefOrExpression )*
                 loop143:
                 do {
                     int alt143=2;
@@ -9984,7 +9995,7 @@ public class ObjCppParser extends Parser {
 
                     switch (alt143) {
                 	case 1 :
-                	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1241:6: ',' ax= typeRefOrExpression
+                	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1252:6: ',' ax= typeRefOrExpression
                 	    {
                 	    match(input,28,FOLLOW_28_in_synpred137_ObjCpp3502); if (state.failed) return ;
                 	    pushFollow(FOLLOW_typeRefOrExpression_in_synpred137_ObjCpp3512);
@@ -10020,8 +10031,8 @@ public class ObjCppParser extends Parser {
         Expression f = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1315:4: (op= assignmentOp f= assignmentExpr )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1315:4: op= assignmentOp f= assignmentExpr
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1326:4: (op= assignmentOp f= assignmentExpr )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1326:4: op= assignmentOp f= assignmentExpr
         {
         pushFollow(FOLLOW_assignmentOp_in_synpred148_ObjCpp3844);
         op=assignmentOp();
@@ -10044,8 +10055,8 @@ public class ObjCppParser extends Parser {
         Expression f = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1411:4: (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1411:4: op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1422:4: (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1422:4: op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr
         {
         op=(Token)input.LT(1);
         if ( (input.LA(1)>=36 && input.LA(1)<=37)||(input.LA(1)>=68 && input.LA(1)<=69) ) {
@@ -10075,8 +10086,8 @@ public class ObjCppParser extends Parser {
         Expression inner = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1417:4: ( '(' tr= mutableTypeRef ')' inner= castExpr )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1417:4: '(' tr= mutableTypeRef ')' inner= castExpr
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1428:4: ( '(' tr= mutableTypeRef ')' inner= castExpr )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1428:4: '(' tr= mutableTypeRef ')' inner= castExpr
         {
         match(input,34,FOLLOW_34_in_synpred179_ObjCpp4474); if (state.failed) return ;
         pushFollow(FOLLOW_mutableTypeRef_in_synpred179_ObjCpp4478);
@@ -10100,8 +10111,8 @@ public class ObjCppParser extends Parser {
         Expression p = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1423:3: (p= postfixExpr )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1423:3: p= postfixExpr
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1434:3: (p= postfixExpr )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1434:3: p= postfixExpr
         {
         pushFollow(FOLLOW_postfixExpr_in_synpred180_ObjCpp4517);
         p=postfixExpr();
@@ -10118,8 +10129,8 @@ public class ObjCppParser extends Parser {
         Expression.UnaryOperator uo = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1424:3: (uo= unaryOp castExpr )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1424:3: uo= unaryOp castExpr
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1435:3: (uo= unaryOp castExpr )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1435:3: uo= unaryOp castExpr
         {
         pushFollow(FOLLOW_unaryOp_in_synpred181_ObjCpp4527);
         uo=unaryOp();
@@ -10141,8 +10152,8 @@ public class ObjCppParser extends Parser {
         TypeRef tr = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1426:4: ( '(' tr= mutableTypeRef ')' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1426:4: '(' tr= mutableTypeRef ')'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1437:4: ( '(' tr= mutableTypeRef ')' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1437:4: '(' tr= mutableTypeRef ')'
         {
         match(input,34,FOLLOW_34_in_synpred182_ObjCpp4544); if (state.failed) return ;
         pushFollow(FOLLOW_mutableTypeRef_in_synpred182_ObjCpp4548);
@@ -10158,8 +10169,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred200_ObjCpp
     public final void synpred200_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1511:3: ( declaration )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1511:3: declaration
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1522:3: ( declaration )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1522:3: declaration
         {
         pushFollow(FOLLOW_declaration_in_synpred200_ObjCpp4888);
         declaration();
@@ -10176,8 +10187,8 @@ public class ObjCppParser extends Parser {
         Expression es = null;
 
 
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1512:3: (es= expression ';' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1512:3: es= expression ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1523:3: (es= expression ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1523:3: es= expression ';'
         {
         pushFollow(FOLLOW_expression_in_synpred201_ObjCpp4897);
         es=expression();
@@ -10192,8 +10203,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred203_ObjCpp
     public final void synpred203_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1516:3: ( IDENTIFIER ':' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1516:3: IDENTIFIER ':'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1527:3: ( IDENTIFIER ':' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1527:3: IDENTIFIER ':'
         {
         match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred203_ObjCpp4923); if (state.failed) return ;
         match(input,33,FOLLOW_33_in_synpred203_ObjCpp4925); if (state.failed) return ;
@@ -10204,8 +10215,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred205_ObjCpp
     public final void synpred205_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1518:40: ( 'else' statement )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1518:40: 'else' statement
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1529:40: ( 'else' statement )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1529:40: 'else' statement
         {
         match(input,96,FOLLOW_96_in_synpred205_ObjCpp4951); if (state.failed) return ;
         pushFollow(FOLLOW_statement_in_synpred205_ObjCpp4953);
@@ -10220,8 +10231,8 @@ public class ObjCppParser extends Parser {
 
     // $ANTLR start synpred216_ObjCpp
     public final void synpred216_ObjCpp_fragment() throws RecognitionException {   
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1528:3: ( ';' )
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1528:3: ';'
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1539:3: ( ';' )
+        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1539:3: ';'
         {
         match(input,25,FOLLOW_25_in_synpred216_ObjCpp5071); if (state.failed) return ;
 
@@ -11026,7 +11037,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA6_transition;
         }
         public String getDescription() {
-            return "357:4: ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )";
+            return "368:4: ({...}? => pragmaContent | templateDef | functionDeclaration | externDeclarations | varDecl ';' | objCClassDef | typeDef | forwardClassDecl | 'namespace' ns= IDENTIFIER '{' (subD= declaration )* '}' )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11045,7 +11056,7 @@ public class ObjCppParser extends Parser {
 
                         else if ( ((synpred9_ObjCpp()&&( next("extern") ))) ) {s = 17;}
 
-                        else if ( (((synpred10_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred10_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred10_ObjCpp()&&( next("__success") ))||(synpred10_ObjCpp()&&( next("extern") ))||synpred10_ObjCpp()||(synpred10_ObjCpp()&&( next("__pragma") ))||(synpred10_ObjCpp()&&( Modifier.parseModifier(next()) != null )))) ) {s = 10;}
+                        else if ( (((synpred10_ObjCpp()&&( next("__success") ))||(synpred10_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred10_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||synpred10_ObjCpp()||(synpred10_ObjCpp()&&( next("extern") ))||(synpred10_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred10_ObjCpp()&&( next("__pragma") )))) ) {s = 10;}
 
                          
                         input.seek(index6_1);
@@ -11210,7 +11221,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "476:5: (m2= modifiers nb= enumBody | )";
+            return "487:5: (m2= modifiers nb= enumBody | )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11223,7 +11234,7 @@ public class ObjCppParser extends Parser {
                         int index12_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred21_ObjCpp()&&( next("__pragma") ))||(synpred21_ObjCpp()&&( next("extern") ))||(synpred21_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred21_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred21_ObjCpp()&&( next("__success") ))||(synpred21_ObjCpp()&&( Modifier.parseModifier(next()) != null )))) ) {s = 2;}
+                        if ( (((synpred21_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred21_ObjCpp()&&( next("extern") ))||(synpred21_ObjCpp()&&( next("__pragma") ))||(synpred21_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred21_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred21_ObjCpp()&&( next("__success") )))) ) {s = 2;}
 
                         else if ( (true) ) {s = 3;}
 
@@ -11296,7 +11307,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA18_transition;
         }
         public String getDescription() {
-            return "541:6: (fv= varDecl ';' | functionPointerVarDecl )";
+            return "552:6: (fv= varDecl ';' | functionPointerVarDecl )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11309,7 +11320,7 @@ public class ObjCppParser extends Parser {
                         int index18_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred31_ObjCpp()&&( next("__success") ))||(synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( next("__pragma") ))||synpred31_ObjCpp())) ) {s = 8;}
+                        if ( (((synpred31_ObjCpp()&&( next("__success") ))||(synpred31_ObjCpp()&&( next("__pragma") ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 8;}
 
                         else if ( (true) ) {s = 10;}
 
@@ -11498,7 +11509,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA29_transition;
         }
         public String getDescription() {
-            return "()* loopback of 627:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )*";
+            return "()* loopback of 638:4: ( ( 'public' | 'private' | 'protected' ) ':' | declaration | fv= varDecl ':' bits= DECIMAL_NUMBER ';' )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11513,7 +11524,7 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred46_ObjCpp()) ) {s = 6;}
 
-                        else if ( (((synpred47_ObjCpp()&&( next("extern") ))||(synpred47_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||synpred47_ObjCpp()||(synpred47_ObjCpp()&&( next("__pragma") ))||(synpred47_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred47_ObjCpp()&&( next("__success") ))||(synpred47_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 20;}
+                        else if ( (((synpred47_ObjCpp()&&( next("__success") ))||(synpred47_ObjCpp()&&( next("__pragma") ))||(synpred47_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred47_ObjCpp()&&( next("extern") ))||(synpred47_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||synpred47_ObjCpp()||(synpred47_ObjCpp()&&( Modifier.parseModifier(next()) != null )))) ) {s = 20;}
 
                          
                         input.seek(index29_5);
@@ -11693,7 +11704,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA32_transition;
         }
         public String getDescription() {
-            return "681:5: ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | )";
+            return "692:5: ( (m2= modifiers ( ':' ( 'public' )? parent= qualifiedIdentifier )? nb= structBody ) | )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11706,7 +11717,7 @@ public class ObjCppParser extends Parser {
                         int index32_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred53_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred53_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred53_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred53_ObjCpp()&&( next("__pragma") ))||(synpred53_ObjCpp()&&( next("__success") ))||(synpred53_ObjCpp()&&( next("extern") )))) ) {s = 3;}
+                        if ( (((synpred53_ObjCpp()&&( next("__success") ))||(synpred53_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred53_ObjCpp()&&( next("__pragma") ))||(synpred53_ObjCpp()&&( next("extern") ))||(synpred53_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred53_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 3;}
 
                         else if ( (true) ) {s = 4;}
 
@@ -11797,7 +11808,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA59_transition;
         }
         public String getDescription() {
-            return "()* loopback of 941:3: ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )*";
+            return "()* loopback of 952:3: ( (m1= typeMutator ) | (f1= functionSignatureSuffix ) )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11912,7 +11923,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA76_transition;
         }
         public String getDescription() {
-            return "1226:1: typeRefOrExpression returns [Expression expr] : (tr= mutableTypeRef | e= topLevelExpr );";
+            return "1237:1: typeRefOrExpression returns [Expression expr] : (tr= mutableTypeRef | e= topLevelExpr );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -11925,7 +11936,7 @@ public class ObjCppParser extends Parser {
                         int index76_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred134_ObjCpp()&&( next("extern") ))||(synpred134_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred134_ObjCpp()&&( next("__success") ))||(synpred134_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred134_ObjCpp()&&( next("__pragma") ))||synpred134_ObjCpp()||(synpred134_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )))) ) {s = 2;}
+                        if ( (((synpred134_ObjCpp()&&( next("__success") ))||(synpred134_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred134_ObjCpp()&&( next("extern") ))||(synpred134_ObjCpp()&&( next("__pragma") ))||(synpred134_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred134_ObjCpp()||(synpred134_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 2;}
 
                         else if ( (true) ) {s = 11;}
 
@@ -12068,7 +12079,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA79_transition;
         }
         public String getDescription() {
-            return "1237:3: ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )?";
+            return "1248:3: ( '<' (a1= typeRefOrExpression ( ',' ax= typeRefOrExpression )* )? '>' )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12155,7 +12166,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA85_transition;
         }
         public String getDescription() {
-            return "1314:3: (op= assignmentOp f= assignmentExpr )?";
+            return "1325:3: (op= assignmentOp f= assignmentExpr )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12251,7 +12262,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA96_transition;
         }
         public String getDescription() {
-            return "()* loopback of 1410:3: (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )*";
+            return "()* loopback of 1421:3: (op= ( '<' | '<=' | '>' | '>=' ) f= shiftExpr )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12344,7 +12355,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA97_transition;
         }
         public String getDescription() {
-            return "1416:1: castExpr returns [Expression expr] : ( '(' tr= mutableTypeRef ')' inner= castExpr | e= unaryExpr );";
+            return "1427:1: castExpr returns [Expression expr] : ( '(' tr= mutableTypeRef ')' inner= castExpr | e= unaryExpr );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12437,7 +12448,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA98_transition;
         }
         public String getDescription() {
-            return "1425:12: ( '(' tr= mutableTypeRef ')' | unaryExpr )";
+            return "1436:12: ( '(' tr= mutableTypeRef ')' | unaryExpr )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12555,7 +12566,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA109_transition;
         }
         public String getDescription() {
-            return "1508:1: statement returns [Statement stat] : (b= statementsBlock | declaration | es= expression ';' | rt= 'return' rex= expression ';' | IDENTIFIER ':' | 'break' ';' | 'if' '(' topLevelExpr ')' statement ( 'else' statement )? | 'while' '(' topLevelExpr ')' statement | 'do' statement 'while' '(' topLevelExpr ')' ';' | 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}' | ';' | {...}? IDENTIFIER '(' varDecl ':' expression ')' statement );";
+            return "1519:1: statement returns [Statement stat] : (b= statementsBlock | declaration | es= expression ';' | rt= 'return' rex= expression ';' | IDENTIFIER ':' | 'break' ';' | 'if' '(' topLevelExpr ')' statement ( 'else' statement )? | 'while' '(' topLevelExpr ')' statement | 'do' statement 'while' '(' topLevelExpr ')' ';' | 'for' '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement | 'switch' '(' expression ')' '{' ( 'case' topLevelExpr ':' | statement )* '}' | ';' | {...}? IDENTIFIER '(' varDecl ':' expression ')' statement );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12735,7 +12746,7 @@ public class ObjCppParser extends Parser {
             this.transition = DFA120_transition;
         }
         public String getDescription() {
-            return "541:6: (fv= varDecl ';' | functionPointerVarDecl )";
+            return "552:6: (fv= varDecl ';' | functionPointerVarDecl )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -12748,7 +12759,7 @@ public class ObjCppParser extends Parser {
                         int index120_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred31_ObjCpp()&&( next("__pragma") ))||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( next("__success") )))) ) {s = 8;}
+                        if ( (((synpred31_ObjCpp()&&( next("__pragma") ))||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred31_ObjCpp()&&( next("__success") ))||(synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 8;}
 
                         else if ( (true) ) {s = 10;}
 

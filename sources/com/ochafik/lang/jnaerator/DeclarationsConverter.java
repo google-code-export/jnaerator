@@ -293,6 +293,9 @@ public class DeclarationsConverter {
 			if ((prim == null || tr == null) && signalErrors) {
 				return new EmptyDeclaration("Failed to infer type of " + converted);
 			} else if (prim != JavaPrim.Void && tr != null) {
+//				if (prim == JavaPrim.Int)
+//					tr = typeRef("long");
+				
 				if (signatures.variablesSignatures.add(name)) {
 					String t = converted.toString();
 					if (t.contains("sizeof")) {

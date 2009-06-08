@@ -136,7 +136,7 @@ public class ObjectiveCGenerator {
 				instanceStruct.addParent(id.clone());
 		}
 		for (Identifier p : parentsForClass) {
-			Identifier id = result.typeConverter.findObjCClassIdent(p);
+			Identifier id = p == NSClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
 			if (id != null)
 				classStruct.addParent(
 						id.clone());

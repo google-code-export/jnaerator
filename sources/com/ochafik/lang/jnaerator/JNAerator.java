@@ -160,9 +160,10 @@ public class JNAerator {
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
 //						"/Users/ochafik/Prog/Java/testxp/test.h",
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
-						"-library", "objc",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-						"-framework", "Foundation", 
+//						"-library", "objc",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
+						"-framework", "Foundation",
+						"-framework", "AppKit",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
@@ -584,6 +585,9 @@ public class JNAerator {
 			if (fakePointers != null)
 			for (String fakePointerName : fakePointers) {
 				Identifier fakePointer = ident(fakePointerName);
+				if (!signatures.classSignatures.add(fakePointer))
+					continue;
+					
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
 					new Arg("pointer", typeRef(Pointer.class))

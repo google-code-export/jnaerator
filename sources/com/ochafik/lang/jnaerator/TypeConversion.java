@@ -315,7 +315,14 @@ public class TypeConversion {
 						return;
 					
 					Identifier name = ((SimpleTypeRef) simpleTypeRef).getName();
-					if (name != null && name.equals("id"))
+//					Identifier oc = findObjCClassIdent(name);
+//					if (oc != null) {
+//						name.replaceBy(oc);
+//					}
+					if (name != null && (
+							name.equals("id") ||
+							name.equals("SEL") ||
+							name.equals("IMP")))
 						return; // TODO limit to Objc
 					
 					Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
@@ -842,6 +849,10 @@ public class TypeConversion {
 				SimpleIdentifier sname = (SimpleIdentifier)name;
 				String n = sname.getName();
 				TypeRef objCClass = null;
+				TypeRef tr = findObjCClass(sname);
+				if (tr != null)
+					return tr;
+				
 				if (n.equals("id") && sname.getTemplateArguments().size() == 1 && conversionMode != TypeConversionMode.NativeParameter) {
 					Expression x = sname.getTemplateArguments().get(0);
 					TypeRefExpression trx = x instanceof TypeRefExpression ? (TypeRefExpression)x : null;
@@ -888,9 +899,6 @@ public class TypeConversion {
 	}
 	public Identifier findObjCClassIdent(Identifier name) {
 
-		if (!name.isPlain())
-			return name;
-		
 		if (name.equals("id"))
 			return ident(NSObject.class);
 	
@@ -905,6 +913,9 @@ public class TypeConversion {
 		
 		if (name.equals("NSObject"))
 			return ident(org.rococoa.NSObject.class);
+		
+		if (name.equals("NSClass"))
+			return ident(org.rococoa.NSClass.class);
 		
 		Struct s = result.getObjcCClassOrProtocol(name);
 		if (s != null)
