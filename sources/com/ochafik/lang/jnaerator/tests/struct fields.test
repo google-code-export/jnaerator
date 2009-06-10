@@ -1,0 +1,13 @@
+struct S {
+	S byVal;
+	S* byRef;
+};
+
+--
+import test.*;
+import static test.TestLibrary.*;
+
+S s = new S();
+Structure.ByValue v = (S.ByValue)s.byVal;
+Structure.ByReference r = (S.ByReference)s.byRef;
+
