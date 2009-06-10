@@ -297,6 +297,32 @@ public class TypeConversion {
 		
 	}
 	
+	public Pair<TypeDef,Declarator> getTypeDef(Identifier name) {
+		if (name == null)
+			return null;
+		
+		Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
+		if (p == null)
+			return null;
+		
+		Declarator value = p.getValue();
+		String rname = value == null ? null : value.resolveName();
+		if (rname != null) {
+			if (name.equals("id"))
+				return null;
+			
+			if (name.equals("SEL"))
+				return null;
+
+			if (name.equals("IMP"))
+				return null;
+			
+			if (name.equals("BOOL"))
+				if (rname.equals("byte"))
+					return null;
+		}
+		return p;
+	}
 	public TypeRef resolveTypeDef(TypeRef valueType, final Identifier libraryClassName, final boolean convertToJavaRef) {
 		if (valueType == null)
 			return null;
@@ -319,13 +345,8 @@ public class TypeConversion {
 //					if (oc != null) {
 //						name.replaceBy(oc);
 //					}
-					if (name != null && (
-							name.equals("id") ||
-							name.equals("SEL") ||
-							name.equals("IMP")))
-						return; // TODO limit to Objc
 					
-					Pair<TypeDef,Declarator> p = result.typeDefs.get(name);
+					Pair<TypeDef,Declarator> p = getTypeDef(name);
 					if (p != null) {
 						TypeRef tr = as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
 						
@@ -356,12 +377,12 @@ public class TypeConversion {
 						return;
 					}
 					
-					TypeRef structRef = typeRef(result.typeConverter.findStructRef(name, libraryClassName));
-					if (structRef != null) {
-						if (!convertToJavaRef)
-							return;
-						simpleTypeRef.replaceBy(structRef);
-					}
+//					TypeRef structRef = typeRef(result.typeConverter.findStructRef(name, libraryClassName));
+//					if (structRef != null) {
+//						if (!convertToJavaRef)
+//							return;
+//						simpleTypeRef.replaceBy(structRef);
+//					}
 					
 					Define define = result.defines.get(name);
 					Expression expression = define == null ? null : define.getValue();
@@ -453,7 +474,7 @@ public class TypeConversion {
 //			name = name;
 		Struct s = result.structsByName.get(name);
 		if (s == null) {
-			Pair<TypeDef, Declarator> pair = result.typeDefs.get(name);
+			Pair<TypeDef, Declarator> pair = getTypeDef(name);
 			if (pair == null)
 				return null;
 			if (pair.getFirst() == null || pair.getSecond() == null)
@@ -843,7 +864,7 @@ public class TypeConversion {
 				throw new UnsupportedConversionException(valueType, null);
 			
 			if (isResolved((SimpleTypeRef) valueType))
-					return valueType;
+				return valueType;
 			
 			if (name instanceof SimpleIdentifier) {
 				SimpleIdentifier sname = (SimpleIdentifier)name;

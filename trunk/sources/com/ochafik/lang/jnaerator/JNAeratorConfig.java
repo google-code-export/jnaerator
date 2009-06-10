@@ -73,6 +73,7 @@ public class JNAeratorConfig {
 	
 	public final JNAeratorConfig.PreprocessorConfig preprocessorConfig = new JNAeratorConfig.PreprocessorConfig();
 	public boolean followIncludes = false;
+	public boolean logPreProcessedSources, logMacros;
 	public String entryName;
 	
 	//List<File> files = new ArrayList<File>();

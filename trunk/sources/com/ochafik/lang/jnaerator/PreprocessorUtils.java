@@ -59,8 +59,11 @@ public class PreprocessorUtils {
 		
 		Map<String, Macro> macros = preProcessor.getMacros();
 		
-		WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
-		WriteText.writeText(StringUtils.implode(macros.entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
+		if (config.logPreProcessedSources)
+			WriteText.writeText(sourceContent, new File("_jnaerator_debug.preprocessed.c"));
+		
+		if (config.logMacros)
+			WriteText.writeText(StringUtils.implode(macros.entrySet(), "\n"), new File("_jnaerator_debug.macros.cpp"));
 		
 		for (String k : config.preprocessorConfig.macros.keySet())
 			macros.remove(k);

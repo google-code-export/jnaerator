@@ -229,6 +229,7 @@ public class JNAerator {
 //			System.out.println(StringUtils.implode(args));
 			
 			final JNAeratorConfig config = new JNAeratorConfig();
+			config.logMacros = config.logPreProcessedSources = false;
 			
 			List<String> frameworks = new ArrayList<String>();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
