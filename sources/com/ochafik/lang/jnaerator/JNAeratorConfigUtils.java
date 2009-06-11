@@ -99,6 +99,30 @@ public class JNAeratorConfigUtils {
 		} else {
 			DEFAULT_INCLUDE_PATH = Arrays.asList(".");
 		}
+		if (SystemUtils.isUnix()) {
+			DEFAULT_INCLUDE_PATH.add("/usr/include");
+		
+			/*
+			 * /usr/include/c++ is likely to contain directories with versions such as 4.0.0, 4.4.0...
+			 * We try to take the greatest version (in lexicographic order of matching dir names) and check that it contains "new" and "map" files
+			 */
+			File cppi = new File("/usr/include/c++");
+			TreeSet<String> versions = new TreeSet<String>();
+			for (File f : cppi.listFiles()) {
+				if (!f.isDirectory())
+					continue;
+				String n = f.getName();
+				if (!n.matches("[\\d+](\\.[\\d+])*"))
+					continue;
+				if (!(new File(f, "new").exists() && new File(f, "map").exists()))
+					continue;
+				versions.add(n);
+			}
+			if (!versions.isEmpty()) {
+				File d = new File(cppi, versions.last());
+					DEFAULT_INCLUDE_PATH.add(d.toString());
+			}
+		} 
 	}
 
 	static final Set<String> objCppExtensions = new TreeSet<String>();
@@ -301,11 +325,11 @@ public class JNAeratorConfigUtils {
 	}
 
 	private static Collection<? extends String> getDefaultFrameworkPath() {
-		return Arrays.asList(getProp("JNAERATOR_INCLUDE_PATH", StringUtils.implode(DEFAULT_FRAMEWORKS_PATH, File.pathSeparator)).split(File.pathSeparator));
+		return Arrays.asList(getProp("JNAERATOR_FRAMEWORKS_PATH", StringUtils.implode(DEFAULT_FRAMEWORKS_PATH, File.pathSeparator)).split(File.pathSeparator));
 	}
 
 	private static Collection<? extends String> getDefaultIncludePath() {
-		return Arrays.asList(getProp("JNAERATOR_FRAMEWORKS_PATH", StringUtils.implode(DEFAULT_INCLUDE_PATH, File.pathSeparator)).split(File.pathSeparator));
+		return Arrays.asList(getProp("JNAERATOR_INCLUDE_PATH", StringUtils.implode(DEFAULT_INCLUDE_PATH, File.pathSeparator)).split(File.pathSeparator));
 		
 	}
 
