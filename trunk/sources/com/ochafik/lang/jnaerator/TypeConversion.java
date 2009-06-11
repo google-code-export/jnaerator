@@ -35,8 +35,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.rococoa.NSObject;
-
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
@@ -921,7 +919,7 @@ public class TypeConversion {
 	public Identifier findObjCClassIdent(Identifier name) {
 
 		if (name.equals("id"))
-			return ident(NSObject.class);
+			return ident(org.rococoa.ID.class);
 	
 		if (name.equals("SEL"))
 			return ident(org.rococoa.Selector.class);
