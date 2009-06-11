@@ -1,9 +1,16 @@
 package com.ochafik.lang.jnaerator;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.rococoa.NSClass;
 import org.rococoa.NSObject;
@@ -11,6 +18,7 @@ import org.rococoa.Rococoa;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
+import com.ochafik.io.ReadText;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
@@ -38,10 +46,44 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.CompoundCollection;
 
+/*
+include com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data
+ */
 public class ObjectiveCGenerator {
 	String classClassName = "_class_", classInstanceName = "_CLASS_", classInstanceGetterName = "_getCLASS_";
 	boolean AUTO_RELEASE_IN_FACTORIES = false;
 
+	static Map<String, Set<String>> methodsExcludedFromStaticForwarding;
+	public static boolean isMethodExcludedFromStaticForwarding(Function m) {
+		if (methodsExcludedFromStaticForwarding == null) {
+			methodsExcludedFromStaticForwarding = new HashMap<String, Set<String>>();
+			try {
+				InputStream in = ObjectiveCGenerator.class.getClassLoader().getResourceAsStream("com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data");
+//				InputStream in = new FileInputStream("/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data");
+				List<String> lines = ReadText.readLines(in);
+				for (String line : lines) {
+					line = line.trim();
+					if (line.startsWith("//") || line.startsWith("#"))
+						continue;
+					String[] tks = line.split("\\|");
+					String className = tks[0].trim(), methodSignature = tks[1].trim();
+					Set<String> set = methodsExcludedFromStaticForwarding.get(className);
+					if (set == null)
+						methodsExcludedFromStaticForwarding.put(className, set = new HashSet<String>());
+					set.add(methodSignature);
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		if (!(m.getParentElement() instanceof Struct))
+			return false;
+		
+		Struct s = (Struct)m.getParentElement();
+		String cn = s.getTag() == null ? "" : s.getTag().toString();
+		Set<String> set = methodsExcludedFromStaticForwarding.get(cn);
+		return set != null && set.contains(m.computeSignature(true));
+	}
 	public ObjectiveCGenerator(Result result) {
 		this.result = result;
 	}
@@ -249,25 +291,8 @@ public class ObjectiveCGenerator {
 					for (Declaration decl : decls) {
 						classStruct.addDeclaration(decl);
 						
-						if (!isProtocol && decl instanceof Function) {
-							Function meth = (Function)decl;
-							//String name = meth.getName().toString();
-//							
-							Function proxyCopy = meth.clone();
-							proxyCopy.addModifiers(Modifier.Public, Modifier.Static);
-							proxyCopy.reorganizeModifiers();
-							
-							Expression[] args = new Expression[meth.getArgs().size()];
-							int i = 0;
-							for (Arg arg : meth.getArgs())
-								args[i++] = varRef(arg.getName());
-							
-							Expression val = methodCall(methodCall(null, null, classInstanceGetterName), Expression.MemberRefStyle.Dot, meth.getName().toString(), args);
-							proxyCopy.setBody(new Block(
-								meth.getValueType() == null || "void".equals(meth.getValueType().toString()) ? stat(val) : new Statement.Return(val)
-							));
-							instanceStruct.addDeclaration(proxyCopy);
-						}
+						if (!isProtocol && decl instanceof Function)
+							instanceStruct.addDeclaration(createProxyCopy(f, (Function)decl));
 
 						if (classStruct.getType() == Type.JavaClass)
 							decl.addModifiers(Modifier.Public, Modifier.Abstract);
@@ -277,52 +302,7 @@ public class ObjectiveCGenerator {
 						instanceStruct.addDeclaration(decl);
 						
 						if (!isProtocol && decl instanceof Function) {
-							Function meth = (Function)decl;
-							
-							String name = meth.getName().toString();
-							if (name.matches("^init([A-Z].*|)$"))
-							//if (name.startsWith("init") && (name.equals("init") || !Character.isUpperCase(name.charAt("init".length())))) 
-							{
-								
-								// add createXXXWithYYY factories
-								Function createCopy = meth.clone();
-								createCopy.setCommentBefore("Factory method");
-								createCopy.addToCommentBefore("@see #" + meth.computeSignature(false));
-								createCopy.setName(ident("create" + name.substring("init".length())));
-								createCopy.addModifiers(Modifier.Public, Modifier.Static);
-								createCopy.reorganizeModifiers();
-								
-								Expression[] args = new Expression[meth.getArgs().size()];
-								int i = 0;
-								for (Arg arg : meth.getArgs())
-									args[i++] = varRef(arg.getName());
-								
-								Expression val = methodCall(
-									methodCall(
-										methodCall(null, null, classInstanceGetterName), 
-										Expression.MemberRefStyle.Dot, 
-										"alloc"
-									), 
-									Expression.MemberRefStyle.Dot, 
-									meth.getName().toString(), 
-									args
-								);
-								
-								if (AUTO_RELEASE_IN_FACTORIES) {
-									val = methodCall(val, MemberRefStyle.Dot, "autorelease");
-									val =
-										methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "cast",
-											val,
-											memberRef(expr(typeRef(instanceStruct.getTag())), MemberRefStyle.Dot, "class")
-										)
-									;
-								}
-								createCopy.setBody(new Block(new Statement.Return(val)));
-								instanceStruct.addDeclaration(createCopy);
-								
-								//methCopy = meth.clone();
-							}
-							
+							instanceStruct.addDeclaration(createCreateCopyFromInit((Function)decl, instanceStruct));
 							if (instanceStruct.getType() == Type.JavaClass)
 								decl.addModifiers(Modifier.Public, Modifier.Abstract);
 						}
@@ -349,6 +329,73 @@ public class ObjectiveCGenerator {
 			iChild[0]++;
 		}
 
+	}
+	
+	/**
+	 * Create a createXXXWithYYY factory
+	 * @param meth
+	 * @param instanceStruct 
+	 * @return
+	 */
+	private Declaration createCreateCopyFromInit(Function meth, TaggedTypeRef instanceStruct) {
+		String name = meth.getName().toString();
+		if (!name.matches("^init([A-Z].*|)$"))
+			return null;
+		//if (name.startsWith("init") && (name.equals("init") || !Character.isUpperCase(name.charAt("init".length())))) 
+			
+		Function createCopy = meth.clone();
+		createCopy.setCommentBefore("Factory method");
+		createCopy.addToCommentBefore("@see #" + meth.computeSignature(false));
+		createCopy.setName(ident("create" + name.substring("init".length())));
+		createCopy.addModifiers(Modifier.Public, Modifier.Static);
+		createCopy.reorganizeModifiers();
+		
+		Expression[] args = new Expression[meth.getArgs().size()];
+		int i = 0;
+		for (Arg arg : meth.getArgs())
+			args[i++] = varRef(arg.getName());
+		
+		Expression val = methodCall(
+			methodCall(
+				methodCall(null, null, classInstanceGetterName), 
+				Expression.MemberRefStyle.Dot, 
+				"alloc"
+			), 
+			Expression.MemberRefStyle.Dot, 
+			meth.getName().toString(), 
+			args
+		);
+		
+		if (AUTO_RELEASE_IN_FACTORIES) {
+			val = methodCall(val, MemberRefStyle.Dot, "autorelease");
+			val =
+				methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "cast",
+					val,
+					memberRef(expr(typeRef(instanceStruct.getTag())), MemberRefStyle.Dot, "class")
+				)
+			;
+		}
+		createCopy.setBody(new Block(new Statement.Return(val)));
+		return createCopy;
+	}
+	private Function createProxyCopy(Function originalMethod, Function meth) {
+		if (isMethodExcludedFromStaticForwarding(originalMethod))
+			return null;
+		
+		Function proxyCopy = meth.clone();
+		proxyCopy.addModifiers(Modifier.Public, Modifier.Static);
+		proxyCopy.reorganizeModifiers();
+		
+		Expression[] args = new Expression[meth.getArgs().size()];
+		int i = 0;
+		for (Arg arg : meth.getArgs())
+			args[i++] = varRef(arg.getName());
+		
+		Expression val = methodCall(methodCall(null, null, classInstanceGetterName), Expression.MemberRefStyle.Dot, meth.getName().toString(), args);
+		proxyCopy.setBody(new Block(
+			meth.getValueType() == null || "void".equals(meth.getValueType().toString()) ? stat(val) : new Statement.Return(val)
+		));
+		return proxyCopy;
 	}
 	
 //	protected static _class_ _CLASS_ = org.rococoa.Rococoa.createClass("NSURL", _class_.class);
