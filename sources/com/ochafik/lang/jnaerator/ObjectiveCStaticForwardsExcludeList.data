@@ -1,0 +1,2 @@
+NSControl|+(Class)cellClass
+NSControl|+(void)setCellClass:(Class)
