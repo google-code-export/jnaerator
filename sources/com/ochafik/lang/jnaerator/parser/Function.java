@@ -228,26 +228,57 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 
 	public String computeSignature(boolean addReturnType) {
 		StringBuilder b = new StringBuilder();
-		if (addReturnType && getValueType() != null) {
-			TypeRef t = getValueType().clone();
-			t.stripDetails();
+		
+		if (type == Type.ObjCMethod) {
+			b.append(modifiers.contains(Modifier.Static) ? "+" : "-");
+			b.append("(");
+			TypeRef t = getValueType();
+			t.setCommentAfter(null);
+			t.setCommentBefore(null);
 			b.append(t);
-			b.append(' ');
-		}
-		b.append(getName());
-		boolean first = true;
-		b.append('(');
-		for (Arg arg : getArgs()) {
-			if (first) {
-				first = false;
-			} else 
-				b.append(", ");
-			TypeRef t = arg.createMutatedType();
-			if (t != null)
+			b.append(")");
+			b.append(getName());
+			boolean firstArg = true;
+			for (Arg arg : args) {
+				if (arg.isVarArg()) {
+					if (!firstArg)
+						b.append(", ");
+					b.append("...");
+				} else {
+					if (!firstArg)
+						b.append(" " + arg.getSelector());
+					b.append(":(");
+					t = arg.createMutatedType();
+					t.setCommentAfter(null);
+					t.setCommentBefore(null);
+					b.append(t);
+					b.append(')');
+					//No arg name in signature : b.append(arg.getName()); 
+				}
+				firstArg = false;
+			}
+		} else {
+			if (addReturnType && getValueType() != null) {
+				TypeRef t = getValueType().clone();
 				t.stripDetails();
-			b.append(t);
+				b.append(t);
+				b.append(' ');
+			}
+			b.append(getName());
+			boolean first = true;
+			b.append('(');
+			for (Arg arg : getArgs()) {
+				if (first) {
+					first = false;
+				} else 
+					b.append(", ");
+				TypeRef t = arg.createMutatedType();
+				if (t != null)
+					t.stripDetails();
+				b.append(t);
+			}
+			b.append(')');
 		}
-		b.append(')');
 		return b.toString();
 	}
 
