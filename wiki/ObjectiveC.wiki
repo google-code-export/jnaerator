@@ -9,6 +9,9 @@ JNAerator can generate ready-to-use JARs that make any Objective-C framework ava
 
 JNAerator gathers the methods found in class definitions and protocols. It will add all the methods defined in other frameworks, provided they are parsed.
 
+ * ObjectiveC classes end up in abstract java classes.
+ * ObjectiveC protocols end up in java interfaces
+
 = Examples =
 
 Create a JAR with wrappings for the AppKit and Foundation frameworks :
