@@ -389,7 +389,7 @@ public class JNAerator {
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
 				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(Locale.getDefault()));//.toUri());
 			}
-			System.out.println(sb);
+			//System.out.println(sb);
 			throw new SyntaxException(sb.toString());
 		}
 		List<Pair<String, File>> additionalFiles = new ArrayList<Pair<String,File>>();

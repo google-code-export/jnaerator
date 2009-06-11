@@ -117,7 +117,7 @@ public class ObjCppElementsTests {
 			
 			if (fieldType instanceof Class<?> && Element.class.isAssignableFrom((Class<?>) fieldType)) {
 				testSetNewInstancesOf(fieldType, implementations, element, fieldName, p.setter, p.getter, null);
-				System.err.println();
+				//System.err.println();
 			} else if (fieldType instanceof ParameterizedType) {
 				ParameterizedType paramType = (ParameterizedType) fieldType;
 				Type rawType = paramType.getRawType();
