@@ -484,7 +484,7 @@ public class JNAeratorStudio extends JPanel {
 					sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(getLocale()));//.toUri());
 			}
 			if (sb.length() > 0) {
-				System.out.println(sb);
+				//System.out.println(sb);
 				throw new SyntaxException(sb.toString());
 			}
 		}
