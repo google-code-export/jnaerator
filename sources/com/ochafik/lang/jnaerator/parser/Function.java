@@ -233,9 +233,13 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 			b.append(modifiers.contains(Modifier.Static) ? "+" : "-");
 			b.append("(");
 			TypeRef t = getValueType();
-			t.setCommentAfter(null);
-			t.setCommentBefore(null);
-			b.append(t);
+			if (t == null)
+				b.append("id");
+			else {
+				t.setCommentAfter(null);
+				t.setCommentBefore(null);
+				b.append(t);
+			}
 			b.append(")");
 			b.append(getName());
 			boolean firstArg = true;
@@ -249,9 +253,11 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 						b.append(" " + arg.getSelector());
 					b.append(":(");
 					t = arg.createMutatedType();
-					t.setCommentAfter(null);
-					t.setCommentBefore(null);
-					b.append(t);
+					if (t != null) {
+						t.setCommentAfter(null);
+						t.setCommentBefore(null);
+						b.append(t);
+					}
 					b.append(')');
 					//No arg name in signature : b.append(arg.getName()); 
 				}
