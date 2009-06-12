@@ -9,4 +9,4 @@ import static test.TestLibrary.*;
 IntByReference pInt = TestLibrary.pInt.get().value;
 PointerByReference pVoid = TestLibrary.pVoid.get();
 IntByReference i = TestLibrary.i.get();
-TestLibrary.fptr.get().value.invoke(10);
+//TestLibrary.fptr.get().value.invoke(10);
