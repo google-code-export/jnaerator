@@ -95,9 +95,9 @@ public class JNAeratorConfigUtils {
 		} else if (SystemUtils.isWindows()) {
 			ArrayList<String> list = new ArrayList<String>(VisualStudioUtils.getMicrosoftIncludes());
 			list.add(".");
-			DEFAULT_INCLUDE_PATH = Collections.unmodifiableList(list);
+			DEFAULT_INCLUDE_PATH = list;
 		} else {
-			DEFAULT_INCLUDE_PATH = Arrays.asList(".");
+			DEFAULT_INCLUDE_PATH = new ArrayList<String>(Arrays.asList("."));
 		}
 		if (SystemUtils.isUnix()) {
 			DEFAULT_INCLUDE_PATH.add("/usr/include");
@@ -123,6 +123,7 @@ public class JNAeratorConfigUtils {
 					DEFAULT_INCLUDE_PATH.add(d.toString());
 			}
 		} 
+		DEFAULT_INCLUDE_PATH = Collections.unmodifiableList(DEFAULT_INCLUDE_PATH);
 	}
 
 	static final Set<String> objCppExtensions = new TreeSet<String>();
@@ -386,6 +387,9 @@ public class JNAeratorConfigUtils {
 		config.rootDirectoriesPrefixesForSourceComments.add(projectFile.getParentFile().getCanonicalPath() + File.separator);
 		
 		if (projectFileName.endsWith(".sln")) {
+			if (configName == null)
+				configName = "Release|Win32";
+			
 			for (String include : VisualStudioUtils.getMicrosoftIncludes()) {
 				include = new File(include).getCanonicalPath();
 				config.preprocessorConfig.includes.add(include);
