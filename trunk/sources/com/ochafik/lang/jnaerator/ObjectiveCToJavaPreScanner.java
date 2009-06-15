@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Identifier;
@@ -25,9 +26,10 @@ import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
-
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 
 /**
  * <ul>
@@ -46,15 +48,16 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 //	}
 	@Override
 	public void visitEnum(Enum e) {
-		if (e.getTag() == null) {
+		Element parent = e.getParentElement();
+		if (e.getTag() == null || !(parent instanceof TypeDef)) {
 			// Hack to infer the enum name from the next typedef NSUInteger NSSomethingThatLooksLikeTheEnumsIdentifiers
-			Element base = e.getParentElement() instanceof TaggedTypeRefDeclaration ? e.getParentElement() : e;
+			Element base = parent instanceof Declaration ? e.getParentElement() : e;
 			Element next = base.getNextSibling();
-			if (!handle(next, e)) {
+			if (!handleAppleEnumTypeDef(next, e)) {
 				Element previous = base.getPreviousSibling();
 				Element beforePrevious = previous == null ? null : previous.getPreviousSibling();
 				if (previous != null && !(beforePrevious instanceof TaggedTypeRefDeclaration && ((TaggedTypeRefDeclaration)beforePrevious).getTaggedTypeRef() instanceof Enum)) {
-					handle(previous, e);
+					handleAppleEnumTypeDef(previous, e);
 				}
 			}
 		}
@@ -64,40 +67,55 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 		}
 		super.visitEnum(e);
 	}
-
-	private boolean handle(Element nextDeclaration, Enum e) {
-		if (nextDeclaration instanceof TypeDef) {
-			TypeDef typeDef = (TypeDef) nextDeclaration;
-			TypeRef type = typeDef.getValueType();
-			if (type instanceof TypeRef.SimpleTypeRef) {
-				Identifier simpleType = ((TypeRef.SimpleTypeRef)type).getName();
-				if (simpleType.equals("NSUInteger") || 
-						simpleType.equals("NSInteger") ||
-						simpleType.equals("CFIndex")) 
-				{
-					Declarator bestPlainStorage = null;
-					for (Declarator st : typeDef.getDeclarators()) {
-						if (st instanceof Declarator.DirectDeclarator) {
-							boolean niceName = !st.resolveName().startsWith("_");
-							if (bestPlainStorage == null || niceName) {
-								bestPlainStorage = st;
-								if (niceName)
-									break;
-							}
-						}
-					}
-					if (bestPlainStorage != null) {
-						String name = bestPlainStorage.resolveName();
-						System.err.println("Automatic struct name matching : " + name);
-						e.setTag(ident(name));
-						bestPlainStorage.replaceBy(null);
-						if (typeDef.getDeclarators().isEmpty())
-							typeDef.replaceBy(null);
-						return true;
-					}
-				}
-			}
-		}
+	@Override
+	public void visitVariablesDeclaration(VariablesDeclaration v) {
+		if (v.getDeclarators().isEmpty() && v.getValueType() instanceof TaggedTypeRef) {
+			TaggedTypeRefDeclaration d = new TaggedTypeRefDeclaration((TaggedTypeRef)v.getValueType());
+			d.importDetails(v, false);
+			v.replaceBy(d);
+			d.accept(this);
+		} else
+			super.visitVariablesDeclaration(v);
+	}
+	private boolean handleAppleEnumTypeDef(Element nextDeclaration, Enum e) {
+		if (!(nextDeclaration instanceof TypeDef))
+			return false;
+		
+		TypeDef typeDef = (TypeDef) nextDeclaration;
+		if (typeDef.getDeclarators().size() != 1)
+			return false;
+		
+		Declarator decl = typeDef.getDeclarators().get(0);
+		if (!(decl instanceof DirectDeclarator))
+			return false;
+		
+		TypeRef type = typeDef.getValueType();
+		if (!(type instanceof TypeRef.SimpleTypeRef))
+			return false;
+		
+		Identifier simpleType = ((TypeRef.SimpleTypeRef)type).getName();
+		if (!(
+			simpleType.equals("NSUInteger") || 
+			simpleType.equals("NSInteger") ||
+			simpleType.equals("int32_t") ||
+			simpleType.equals("uint32_t") ||
+			simpleType.equals("CFIndex")
+		))
+			return false;
+		
+		String name = decl.resolveName();
+		if (e.getTag() != null && !e.getTag().equals("_" + name))
+			return false;
+		
+		Element ep = e.getParentElement();
+		ep.addToCommentBefore(typeDef.getCommentBefore());
+		ep.addToCommentBefore(typeDef.getCommentAfter());
+		typeDef.importDetails(ep, true);
+		ep.replaceBy(null);
+		typeDef.setValueType(e);
+		
+		System.err.println("Automatic struct name matching : " + name);
+		
 		return false;
 	}
 }
