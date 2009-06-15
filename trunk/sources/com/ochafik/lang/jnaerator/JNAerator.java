@@ -439,7 +439,40 @@ public class JNAerator {
 		dir.mkdirs();
 		return dir;
 	}
-	
+	static boolean isHexDigit(char c) {
+		return 
+			c >= 'A' && c <= 'F' ||
+			c >= 'a' && c <= 'f' ||
+			Character.isDigit(c);
+	}
+	static void escapeUnicode(String s, StringBuilder bout) {
+		bout.setLength(0);
+		char[] chars = s.toCharArray();
+		for (int iChar = 0, nChars = chars.length; iChar < nChars; iChar++) {
+			char c = chars[iChar];
+			int v = (int)c;
+			if (v > 127) {
+				bout.append("\\u");
+				String h = Integer.toHexString(v);
+				for (int i = 4 - h.length(); i-- != 0;)
+					bout.append('0');
+				bout.append(h);
+			} else {
+				// handle \\uXXXX -> \\uuXXXX transformation :
+//				if (c == '\\' && 
+//						iChar < nChars - 5 && 
+//						chars[iChar + 1] == 'u' &&
+//						isHexDigit(chars[iChar + 2]) &&
+//						isHexDigit(chars[iChar + 3]) &&
+//						isHexDigit(chars[iChar + 4]) &&
+//						isHexDigit(chars[iChar + 5])
+//				) {
+//					bout.append("\\u");
+//				}
+				bout.append(c);
+			}
+		}
+	}
 	public void jnaerate() throws IOException, LexerException, RecognitionException {
 		SourceFiles sourceFiles = parse();
 		jnaerate(sourceFiles, new ClassOutputter() {
@@ -626,8 +659,24 @@ public class JNAerator {
 		return new Result(config, outputter);
 	}
 	
-	public void jnaerate(SourceFiles sourceFiles, ClassOutputter outputter) throws IOException, LexerException, RecognitionException {
+	public void jnaerate(SourceFiles sourceFiles, final ClassOutputter _outputter) throws IOException, LexerException, RecognitionException {
 		
+		/// Ensure all outputs are unicode-escaped.
+		ClassOutputter outputter = new ClassOutputter() {
+			@Override
+			public PrintWriter getClassSourceWriter(String className)
+					throws IOException {
+				PrintWriter w = _outputter.getClassSourceWriter(className);
+				return new PrintWriter(w) {
+					StringBuilder bout = new StringBuilder();
+					@Override
+					public void print(String s) {
+						escapeUnicode(s, bout);
+						super.print(bout.toString());
+					}
+				};
+			}
+		};
 		Result result = createResult(outputter);
 		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
