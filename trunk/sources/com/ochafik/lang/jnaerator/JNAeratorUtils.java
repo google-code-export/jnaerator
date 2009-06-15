@@ -30,6 +30,7 @@ import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 public class JNAeratorUtils {
 	static String getExactTypeDefName(Element e) {
 		Element parent = e.getParentElement();
@@ -81,18 +82,37 @@ public class JNAeratorUtils {
 		if (sd == null)
 			return null;
 		
-		Declarator bestPlainStorage = null;
+		TaggedTypeRef ttr = sd.getValueType() instanceof TaggedTypeRef  ? (TaggedTypeRef)sd.getValueType() : null;
+		String idealName = null;
+		if (ttr != null && ttr.getTag() != null) {
+			String tn = ttr.getTag().toString();
+			if (tn.startsWith("_"))
+				idealName = tn.substring(1);
+		}
+		DirectDeclarator plainDecl = null, idealDecl = null;
+		boolean plainHasNiceName = false, hasMoreThanOnePlainDecl = false;
 		for (Declarator st : sd.getDeclarators()) {
 			if (st instanceof DirectDeclarator) {
-				boolean niceName = !((DirectDeclarator)st).getName().startsWith("_");
-				if (bestPlainStorage == null || niceName) {
-					bestPlainStorage = st;
-					if (niceName)
-						break;
+				DirectDeclarator decl = (DirectDeclarator)st;
+				String name = decl.getName();
+				if (name.equals(idealName)) {
+					idealDecl = decl;
+					break;
 				}
+				boolean hasNiceName = !decl.getName().startsWith("_");
+				if (hasMoreThanOnePlainDecl || plainDecl != null && !(!plainHasNiceName && hasNiceName)) {
+					hasMoreThanOnePlainDecl = true;
+					continue;
+				}
+				plainDecl = decl;
+				plainHasNiceName = hasNiceName;
 			}
 			// TODO play with other names ("pointed_by", "returned_by"...)
 		}
-		return bestPlainStorage != null ? bestPlainStorage.resolveName() : null;
+		return 
+			idealDecl != null ? idealDecl.resolveName() :
+			plainDecl != null && !hasMoreThanOnePlainDecl ? plainDecl.resolveName() :
+			null
+		;
 	}
 }
