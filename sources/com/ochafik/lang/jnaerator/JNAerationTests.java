@@ -73,7 +73,7 @@ public class JNAerationTests {
 		public TestDesc addMainContentSource(String className, String javaContent) {
 			Set<String> imports = new TreeSet<String>();
 			List<String> content = new ArrayList<String>();
-			String lib = libraryName + "." + StringUtils.capitalize(libraryName) + "Library";
+			//String lib = libraryName + "." + StringUtils.capitalize(libraryName) + "Library";
 			//imports.add("import " + lib + ";");
 			//imports.add("import static " + lib + ".*;");
 			imports.add("import com.sun.jna.*;");

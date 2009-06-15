@@ -319,16 +319,25 @@ public class JNAerator {
 				else {
 					String lib = currentLibrary;
 					File f = new File(arg);
-					if (lib == null) {
-						String name = f.getName();
-						int i = name.indexOf('.');
-						if (i >= 0)
-							name = name.substring(0, i).trim();
-						if (name.length() > 0)
-							lib = name;
-						System.out.println("Warning: no -library option for file '" + f.getName() + "', using \"" + lib + "\".");
+					if (f.isDirectory() && f.getName().endsWith(".framework")) {
+						JNAeratorConfigUtils.addFramework(config, arg);
+					} else if (
+						f.isDirectory() && f.getName().endsWith(".xcode") ||
+						f.isFile() && f.getName().toLowerCase().endsWith(".sln")
+					) {
+						JNAeratorConfigUtils.readProjectConfig(f, null, config);
+					} else {
+						if (lib == null) {
+							String name = f.getName();
+							int i = name.indexOf('.');
+							if (i >= 0)
+								name = name.substring(0, i).trim();
+							if (name.length() > 0)
+								lib = name;
+							System.out.println("Warning: no -library option for file '" + f.getName() + "', using \"" + lib + "\".");
+						}
+						config.addFile(f, lib);//config.defaultLibrary);
 					}
-					config.addFile(f, lib);//config.defaultLibrary);
 				}
 			}
 			
