@@ -358,6 +358,19 @@ externDeclarations returns [ExternDeclarations declarations]
 
 declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex]
 scope IsTypeDef;
+@after {
+	try {
+		int i = $start.getTokenIndex();
+		if (i > 0) {
+			String s1 = getTokenStream().get(i - 1).getText(), s2 = i > 1 ? getTokenStream().get(i - 2).getText() : null;
+           		String s = (s2 == null ? "" : s2) + s1;
+           		if (s.matches(".*\n\\s*\n"))
+				$declarations.add(0, new EmptyDeclaration());
+		}
+	} catch (Exception ex) {
+		ex.printStackTrace();
+	}
+}
 	:	
 		{ $declarations = new ArrayList<Declaration>(); 
 		  $modifiers = new ArrayList<Modifier>();
