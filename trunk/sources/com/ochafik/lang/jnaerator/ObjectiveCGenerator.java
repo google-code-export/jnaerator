@@ -1,6 +1,5 @@
 package com.ochafik.lang.jnaerator;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
