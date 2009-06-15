@@ -554,7 +554,7 @@ public class DeclarationsConverter {
 				structName = new Identifier.SimpleIdentifier(JNAeratorUtils.findBestPlainStorageName(parentDef));
 			}
 		}
-		if (structName == null)
+		if (structName == null || structName.toString().equals(""))
 			structName = tag;
 		return structName;
 	}
