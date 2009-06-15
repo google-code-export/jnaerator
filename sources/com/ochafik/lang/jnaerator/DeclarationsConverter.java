@@ -199,9 +199,12 @@ public class DeclarationsConverter {
 		
 		Struct enumInterf = null;
 		Identifier enumName = getActualTaggedTypeName(e);
+		boolean repeatFullEnumComment;
 		if (enumName != null && enumName.resolveLastSimpleIdentifier().getName() != null) {
 			if (!signatures.classSignatures.add(enumName))
 				return;
+			
+			repeatFullEnumComment = false;
 			
 			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
 			if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
@@ -210,6 +213,8 @@ public class DeclarationsConverter {
 			
 			localSignatures = new Signatures();
 			localOut = enumInterf;
+		} else {
+			repeatFullEnumComment = true;
 		}
 		Integer lastAdditiveValue = null;
 		Expression lastRefValue = null;
@@ -267,11 +272,22 @@ public class DeclarationsConverter {
 				out.addDeclaration(skipDeclaration(item));
 			else {
 				try {
-					localOut.addDeclaration(outputConstant(item.getName(), result.typeConverter.convertExpressionToJava(resultingExpression, libraryClassName), localSignatures, item, "enum item", 
-							libraryClassName, 
-							enumInterf == null,
-							true
-					));
+					Declaration ct = outputConstant(
+						item.getName(), 
+						result.typeConverter.convertExpressionToJava(resultingExpression, libraryClassName), 
+						localSignatures, 
+						item, 
+						"enum item", 
+						libraryClassName, 
+						enumInterf == null,
+						true
+					);
+					if (ct != null && repeatFullEnumComment) {
+						String c = ct.getCommentBefore();
+						ct.setCommentBefore(e.getCommentBefore());
+						ct.addToCommentBefore(c);
+					}
+					localOut.addDeclaration(ct);
 				} catch (Exception ex) {
 					out.addDeclaration(skipDeclaration(item, ex.toString()));
 				}
