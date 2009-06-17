@@ -162,8 +162,10 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
 //						"-library", "objc",
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-						"-framework", "Foundation",
-						"-framework", "AppKit",
+//						"-framework", "Foundation",
+//						"-framework", "AppKit",
+//						"-framework", "CoreFoundation",
+						"-framework", "IOKit",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
@@ -213,7 +215,7 @@ public class JNAerator {
 					int iAdd = i;
 					for (Iterator<String> it = lines.iterator(); it.hasNext();) {
 						String trl = it.next().trim();
-						if (trl.length() == 0 || trl.matches("^(//|#)"))
+						if (trl.length() == 0 || trl.matches("^(//|#).*"))
 							continue;
 						for (String s : trl.split("\\s+")) {
 							if (s.contains("*"))
