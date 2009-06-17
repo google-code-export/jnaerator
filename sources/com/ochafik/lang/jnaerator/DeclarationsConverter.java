@@ -717,9 +717,10 @@ public class DeclarationsConverter {
 				}
 				VariablesDeclaration vd = convertVariablesDeclaration(name, mutatedType, iChild, callerLibraryClass, v, vs);
 				if (vd != null) {
-					if (v.getBits() > 0) {
+					Declarator d = v.getDeclarators().get(0);
+					if (d.getBits() > 0) {
 						//vd.addAnnotation(new Annotation(Bits.class, new Constant(Constant.Type.Int, v.getBits())));
-						vd.addAnnotation(new Annotation(Bits.class, "(" + v.getBits() + ")"));
+						vd.addAnnotation(new Annotation(Bits.class, "(" + d.getBits() + ")"));
 					}
 					out.addDeclaration(vd);
 				}

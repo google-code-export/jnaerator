@@ -657,9 +657,7 @@ structBody returns [Struct struct]
 				declaration {
 					$struct.addDeclarations($declaration.declarations);
 				} |
-				fv=varDecl ':' bits=DECIMAL_NUMBER ';' { 
-					if ($bits.text != null) 
-						$fv.decl.setBits(Integer.parseInt($bits.text));
+				fv=varDecl ';' {
 					$struct.addDeclaration($fv.decl);
 				}
 			)*
@@ -1004,7 +1002,7 @@ nonMutableTypeRef returns [TypeRef type]
 	;
 
 declarator  returns [Declarator declarator]
-	:	
+	:
 		modifiers
 		(
 			( 
@@ -1019,6 +1017,12 @@ declarator  returns [Declarator declarator]
 				} 
 			)
 		)
+		(
+			':' bits=DECIMAL_NUMBER {
+				if ($declarator != null)
+					$declarator.setBits(Integer.parseInt($bits.text));
+			}
+		)?
 		(
 			'=' 
 			dv=topLevelExpr {
@@ -1085,12 +1089,6 @@ declaratorsList returns [List<Declarator> declarators]
 	;
 
 directDeclarator returns [Declarator declarator]
-/*@before {
-	Declarator decl = null;
-}
-@after {
-	$declarator = decl;
-}*/
 	:	
 		(
 			{ Modifier.parseModifier(next()) == null }?=> IDENTIFIER {
@@ -1108,13 +1106,14 @@ directDeclarator returns [Declarator declarator]
 		(
 			'[' 
 			(
-				expression {
-					if ($declarator instanceof ArrayDeclarator)
-						((ArrayDeclarator)$declarator).addDimension($expression.expr);
-					else
-						$declarator = new ArrayDeclarator($declarator, $expression.expr);
-				} | {
-					$declarator = new ArrayDeclarator($declarator, new Expression.EmptyArraySize());
+				expression? {
+					if ($expression.text != null) {
+						if ($declarator instanceof ArrayDeclarator)
+							((ArrayDeclarator)$declarator).addDimension($expression.expr);
+						else
+							$declarator = new ArrayDeclarator($declarator, $expression.expr);
+					} else
+						$declarator = new ArrayDeclarator($declarator, new Expression.EmptyArraySize());
 				}
 			)
 			']' | 

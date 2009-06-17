@@ -174,7 +174,7 @@ public class PreprocessorUtils {
 			//	continue;
 			
 			try {
-				Expression expression = JNAeratorParser.newObjCppParser(macro.getText(), verbose).expression();//.expr;
+				Expression expression = JNAeratorParser.newObjCppParser(macro.getText(), verbose).expression().expr;
 				if (expression == null)
 					continue;
 			

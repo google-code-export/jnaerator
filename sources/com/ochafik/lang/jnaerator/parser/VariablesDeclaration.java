@@ -25,19 +25,11 @@ import com.ochafik.util.string.StringUtils;
 
 public class VariablesDeclaration extends StoredDeclarations {
 
-	int bits = -1;
-	
 	public VariablesDeclaration() {}
 	public VariablesDeclaration(TypeRef valueType, Declarator...declarators) {
 		this(valueType, Arrays.asList(declarators));
 	}
 	
-	public int getBits() {
-		return bits;
-	}
-	public void setBits(int bits) {
-		this.bits = bits;
-	}
 	public VariablesDeclaration(TypeRef valueType, List<Declarator> declarators) {
 		setValueType(valueType);
 		setDeclarators(declarators);
@@ -60,7 +52,7 @@ public class VariablesDeclaration extends StoredDeclarations {
 		return formatComments(indent, false, true, true) +
 			pre + 
 			getModifiersStringPrefix() + getValueTypeAndStorageSuffix(indent) +
-			(bits < 0 ? "" : ":" + bits) + 
+			//(bits < 0 ? "" : ":" + bits) + 
 			";"
 			+ (commentAfter == null ? "" : " " + commentAfter.trim())
 		;
