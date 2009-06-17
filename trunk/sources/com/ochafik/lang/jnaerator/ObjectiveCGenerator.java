@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.rococoa.NSClass;
-import org.rococoa.NSObject;
+import org.rococoa.foundation.NSClass;
+import org.rococoa.foundation.NSObject;
 import org.rococoa.Rococoa;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;

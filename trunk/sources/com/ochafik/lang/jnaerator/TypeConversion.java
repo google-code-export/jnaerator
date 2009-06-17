@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.rococoa.foundation.NSClass;
+import org.rococoa.foundation.NSObject;
+
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
@@ -346,14 +349,20 @@ public class TypeConversion {
 					
 					Pair<TypeDef,Declarator> p = getTypeDef(name);
 					if (p != null) {
-						TypeRef tr = as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
-						
+						TypeRef tr = p.getFirst().getValueType();//as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
+						if (tr instanceof TaggedTypeRef) {
+							Identifier name2 = result.declarationsConverter.getActualTaggedTypeName((TaggedTypeRef)tr);
+							if (name2 != null)
+								name = name2;
+						}
 						if (convertToJavaRef && tr instanceof Struct) {
 							Struct s = (Struct)tr;
 							if (s.isForwardDeclaration())
 								return;
 							
-							tr = typeRef(findRef(name, s, libraryClassName));
+							Identifier ident = result.getStructIdentifierInJava(s);
+							if (ident != null)
+							tr = typeRef(ident);//findRef(name, s, libraryClassName));
 							
 						}
 						if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
@@ -375,12 +384,12 @@ public class TypeConversion {
 						return;
 					}
 					
-//					TypeRef structRef = typeRef(result.typeConverter.findStructRef(name, libraryClassName));
-//					if (structRef != null) {
-//						if (!convertToJavaRef)
-//							return;
-//						simpleTypeRef.replaceBy(structRef);
-//					}
+					TypeRef structRef = typeRef(result.typeConverter.findStructRef(name, libraryClassName));
+					if (structRef != null) {
+						if (!convertToJavaRef)
+							return;
+						simpleTypeRef.replaceBy(structRef);
+					}
 					
 					Define define = result.defines.get(name);
 					Expression expression = define == null ? null : define.getValue();
@@ -773,9 +782,10 @@ public class TypeConversion {
 				if (name != null) {
 					/// Pointer to Objective-C class ?
 					convArgType = findObjCClass(name);
-					if (convArgType == null) {
+					boolean isQualStruct = result.structsFullNames.contains(name);
+					if (convArgType == null || isQualStruct) {
 						/// Pointer to C structure
-						Identifier structRef = findStructRef(name, libraryClassName);
+						Identifier structRef = isQualStruct ? name : findStructRef(name, libraryClassName);
 						if (structRef != null) {//result.cStructNames.contains(name)) {
 			 				switch (conversionMode) {
 								case ExpressionType:
@@ -861,7 +871,8 @@ public class TypeConversion {
 			if (name == null)
 				throw new UnsupportedConversionException(valueType, null);
 			
-			if (isResolved((SimpleTypeRef) valueType))
+			boolean isQualStruct = result.structsFullNames.contains(name);
+			if (!isQualStruct && isResolved((SimpleTypeRef) valueType))
 				return valueType;
 			
 			if (name instanceof SimpleIdentifier) {
@@ -885,7 +896,7 @@ public class TypeConversion {
 				if (objCClass != null)
 					return objCClass;
 			}
-			Identifier structRef = findStructRef(name, libraryClassName);
+			Identifier structRef = isQualStruct ? name : findStructRef(name, libraryClassName);
 			if (structRef != null) {
 				switch (conversionMode) {
 				case PointedValue:
@@ -925,16 +936,16 @@ public class TypeConversion {
 			return ident(org.rococoa.Selector.class);
 		
 		if (name.equals("Class"))
-			return ident(org.rococoa.NSClass.class);
+			return ident(NSClass.class);
 		
 		if (name.equals("Protocol"))
-			return ident(org.rococoa.NSClass.class);
+			return ident(NSClass.class);
 		
 		if (name.equals("NSObject"))
-			return ident(org.rococoa.NSObject.class);
+			return ident(NSObject.class);
 		
 		if (name.equals("NSClass"))
-			return ident(org.rococoa.NSClass.class);
+			return ident(NSClass.class);
 		
 		Struct s = result.getObjcCClassOrProtocol(name);
 		if (s != null)

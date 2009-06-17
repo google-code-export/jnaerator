@@ -58,6 +58,8 @@ public class Result extends Scanner {
 	public final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
 	public final ObjectiveCGenerator objectiveCGenerator = new ObjectiveCGenerator(this);
 	
+	public final Set<Identifier> structsFullNames = new HashSet<Identifier>();
+	
 	/**
 	 * @param aerator
 	 */
@@ -264,6 +266,17 @@ public class Result extends Scanner {
 		getList(functionsByLibrary, getLibrary(function)).add(function);
 	}
 	
+	public Identifier getStructIdentifierInJava(Struct s) {
+		Identifier name = declarationsConverter.getActualTaggedTypeName(s);
+		if (name == null)
+			return null;
+		
+		String library = getLibrary(s);
+		if (library == null)
+			return null;
+		
+		return typeConverter.libMember(getLibraryClassFullName(library), null, name);
+	}
 	@Override
 	public void visitStruct(Struct struct) {
 		super.visitStruct(struct);
@@ -278,6 +291,11 @@ public class Result extends Scanner {
 					structsByName.put(name, struct);
 				
 				getList(structsByLibrary, getLibrary(struct)).add(struct);
+				
+				Identifier identifier = getStructIdentifierInJava(struct);
+				if (identifier != null)
+					structsFullNames.add(identifier);
+				
 				break;
 			case ObjCClass:
 			case ObjCProtocol:
