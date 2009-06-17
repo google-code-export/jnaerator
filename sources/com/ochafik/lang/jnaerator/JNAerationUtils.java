@@ -11,7 +11,7 @@ import javax.tools.JavaFileObject;
 
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
-import org.rococoa.NSClass;
+import org.rococoa.foundation.NSClass;
 
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;

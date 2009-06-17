@@ -25,7 +25,7 @@ import static com.ochafik.lang.SyntaxUtils.as;
 import java.io.File;
 import java.util.*;
 
-import org.rococoa.NSObject;
+import org.rococoa.foundation.NSObject;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
@@ -94,6 +94,10 @@ public class DeclarationsConverter {
 			for (FunctionSignature functionSignature : functionSignatures) {
 				if (functionSignature.findParentOfType(Struct.class) != null)
 					continue;
+				
+				Arg a = functionSignature.findParentOfType(Arg.class);
+				if (a != null && a.getParentElement() == null)
+					continue;//TODO understand why we end up having an orphan Arg here !!!!
 					
 				convertCallback(functionSignature, signatures, out, libraryClassName);
 			}

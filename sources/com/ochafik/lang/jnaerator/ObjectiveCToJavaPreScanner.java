@@ -94,7 +94,8 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 			return false;
 		
 		Identifier simpleType = ((TypeRef.SimpleTypeRef)type).getName();
-		if (!(
+		if (simpleType == null ||
+		!(
 			simpleType.equals("NSUInteger") || 
 			simpleType.equals("NSInteger") ||
 			simpleType.equals("int32_t") ||

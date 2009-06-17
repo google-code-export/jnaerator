@@ -42,7 +42,7 @@ import javax.tools.JavaFileObject;
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
-import org.rococoa.NSClass;
+import org.rococoa.foundation.NSClass;
 
 import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;

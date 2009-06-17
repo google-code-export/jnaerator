@@ -71,7 +71,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.Diagnostic.Kind;
 
-import org.rococoa.NSClass;
+import org.rococoa.foundation.NSClass;
 
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
