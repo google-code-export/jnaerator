@@ -378,7 +378,7 @@ inline  void  cvDecRefData( CvArr* arr )
 --
 struct {
 	int i:13;
-	unsigned j:1;
+	unsigned j:1, jj:2;
 	signed k:2;
 	long l:3;
 	short m:2;
