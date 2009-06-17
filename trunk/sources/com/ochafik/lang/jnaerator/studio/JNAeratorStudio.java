@@ -437,7 +437,7 @@ public class JNAeratorStudio extends JPanel {
 						if (resultsListCombo.getItemCount() > 0)
 							resultsListCombo.setSelectedIndex(0);
 					}});
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					error(null, "Error while JNAerating", e);
 					e.printStackTrace();
 				} finally {
@@ -452,7 +452,7 @@ public class JNAeratorStudio extends JPanel {
 				}
 				try {
 					compile();
-				} catch (Exception ex) {
+				} catch (Throwable ex) {
 					error(null, "Compilation error !", ex);
 					//JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
 				}

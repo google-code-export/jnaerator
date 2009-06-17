@@ -140,9 +140,9 @@ public class JNAeratorParser {
 							SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 							//sourceFile.setElementFile(slice.file);
 							return sourceFile;
-						} catch (Exception ex) {
+						} catch (Throwable ex) {
 							ex.printStackTrace();
-							throw ex;
+							throw new Exception(ex);
 						} finally {
 							resultCountHolder.nSlicesParsed++;
 						}

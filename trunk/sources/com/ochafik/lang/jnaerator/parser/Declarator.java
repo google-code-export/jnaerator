@@ -35,6 +35,13 @@ import com.ochafik.util.string.StringUtils;
 public abstract class Declarator extends ModifiableElement {
 	protected Expression defaultValue;
 	boolean parenthesized = false;
+	int bits = -1;
+	public int getBits() {
+		return bits;
+	}
+	public void setBits(int bits) {
+		this.bits = bits;
+	}
 	
 	public static interface MutableByDeclarator {
 		MutableByDeclarator clone();
@@ -63,10 +70,14 @@ public abstract class Declarator extends ModifiableElement {
 	public abstract MutableByDeclarator mutateType(MutableByDeclarator t);
 	
 	public static class DirectDeclarator extends Declarator {
+		public DirectDeclarator(String name, int bits) {
+			setName(name);
+			setBits(bits);
+		}
 		public DirectDeclarator(String name) {
 			setName(name);
 		}
-
+		
 		public DirectDeclarator(String name, Expression defaultValue) {
 			setName(name);
 			setDefaultValue(defaultValue);
@@ -188,6 +199,8 @@ public abstract class Declarator extends ModifiableElement {
 			b.append(getPointerStyle());
 			if (getTarget() != null)
 				b.append(getTarget().toString(indent));
+			if (getBits() >= 0)
+				b.append(":" + getBits());
 			if (getDefaultValue() != null)
 				b.append(" = " + getDefaultValue());
 			return b.toString();
