@@ -86,7 +86,7 @@ public class CToJavaPreScanner extends Scanner {
 			Declarator.MutableByDeclarator type = vs.mutateType(v.getValueType());
 			if (type instanceof TypeRef) {
 				TypeRef tr = (TypeRef)type;
-				decl = new StoredDeclarations.TypeDef(tr, new DirectDeclarator(vs.resolveName()));
+				decl = new StoredDeclarations.TypeDef(tr, new DirectDeclarator(vs.resolveName(), vs.getBits()));
 				decl.importDetails(v, false);
 				decl.importDetails(vs, false);
 				decl.importDetails(tr, true);
@@ -140,7 +140,7 @@ public class CToJavaPreScanner extends Scanner {
 			MutableByDeclarator type = d.mutateType(arg.getValueType());
 			if (type instanceof TypeRef) {
 				arg.setValueType((TypeRef)type);
-				arg.setDeclarator(new DirectDeclarator(d.resolveName()));
+				arg.setDeclarator(new DirectDeclarator(d.resolveName(), d.getBits()));
 			} else {
 				type = null;
 			}
@@ -164,7 +164,7 @@ public class CToJavaPreScanner extends Scanner {
 			Declarator.MutableByDeclarator type = vs.mutateType(v.getValueType());
 			if (type instanceof TypeRef) {
 				TypeRef tr = (TypeRef)type;
-				decl = new VariablesDeclaration(tr, new DirectDeclarator(vs.resolveName()));
+				decl = new VariablesDeclaration(tr, new DirectDeclarator(vs.resolveName(), vs.getBits()));
 				decl.importDetails(v, false);
 				decl.importDetails(vs, false);
 				decl.importDetails(tr, true);
