@@ -199,10 +199,10 @@ public abstract class Declarator extends ModifiableElement {
 			b.append(getPointerStyle());
 			if (getTarget() != null)
 				b.append(getTarget().toString(indent));
-			if (getBits() >= 0)
-				b.append(":" + getBits());
-			if (getDefaultValue() != null)
-				b.append(" = " + getDefaultValue());
+//			if (getBits() >= 0)
+//				b.append(":" + getBits());
+			//if (getDefaultValue() != null)
+			//	b.append(" = " + getDefaultValue());
 			return b.toString();
 		}
 	}
@@ -369,8 +369,10 @@ public abstract class Declarator extends ModifiableElement {
 				b.append(getTarget().toString(indent));
 			//if (!getDimensions().isEmpty())
 				b.append("[" + StringUtils.implode(getDimensions(), "][") + "]");
-			if (getDefaultValue() != null)
-				b.append(" = " + getDefaultValue());
+//				if (getBits() >= 0)
+//					b.append(":" + getBits());
+//				if (getDefaultValue() != null)
+//				b.append(" = " + getDefaultValue());
 			return b.toString();
 		}
 	}
@@ -414,6 +416,8 @@ public abstract class Declarator extends ModifiableElement {
 		b.append(toCoreString(indent));
 		if (isParenthesized())
 			b.append(')');
+		if (getBits() >= 0)
+			b.append(":" + getBits());
 		if (getDefaultValue() != null) {
 			b.append(" = ");
 			b.append(getDefaultValue().toString(indent));

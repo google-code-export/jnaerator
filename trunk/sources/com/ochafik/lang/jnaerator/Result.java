@@ -275,6 +275,7 @@ public class Result extends Scanner {
 		if (library == null)
 			return null;
 		
+		name = name.clone();
 		return typeConverter.libMember(getLibraryClassFullName(library), null, name);
 	}
 	@Override
