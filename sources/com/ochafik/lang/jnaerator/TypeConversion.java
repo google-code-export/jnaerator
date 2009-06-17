@@ -366,7 +366,7 @@ public class TypeConversion {
 							
 						}
 						if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
-							simpleTypeRef.replaceBy(tr);
+							simpleTypeRef.replaceBy(tr.clone());
 							if (depth < 10) {
 								tr.accept(this);
 							} else {
@@ -412,7 +412,8 @@ public class TypeConversion {
 				}
 			}
 		});
-		return holder.getValueType();
+		TypeRef tr = holder.getValueType();
+		return tr;// == null ? null : tr.clone();
 	}
 	
 	public static boolean resolvesToPrimitive(String name) {
