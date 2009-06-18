@@ -1,0 +1,34 @@
+
+union U {
+	int a; // first
+	float b; // second
+	const char* str;
+};
+
+// test struct
+struct S {
+// first value
+	int a;
+	float b; // second one
+	double d;
+};
+
+--
+
+import test.*;
+import static test.TestLibrary.*;
+
+new U(0);
+new U(0f);
+new U((ByteByReference)null);
+new U.ByValue(0);
+new U.ByValue(0f);
+new U.ByValue((ByteByReference)null);
+new U.ByReference(0);
+new U.ByReference(0f);
+new U.ByReference((ByteByReference)null);
+
+new S(0, 0f, 0.0);
+new S.ByValue(0, 0f, 0.0);
+new S.ByReference(0, 0f, 0.0);
+
