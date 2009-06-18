@@ -3,6 +3,9 @@ typedef enum _E1
     E1A, E1B
 } F, E1;
 
+f1_(_E1);
+f1(E1);
+
 typedef enum _E2
 {
     E2A, E2B

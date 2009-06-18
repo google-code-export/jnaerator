@@ -43,6 +43,7 @@ import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
+import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Platform;
@@ -266,7 +267,7 @@ public class Result extends Scanner {
 		getList(functionsByLibrary, getLibrary(function)).add(function);
 	}
 	
-	public Identifier getStructIdentifierInJava(Struct s) {
+	public Identifier getTaggedTypeIdentifierInJava(TaggedTypeRef s) {
 		Identifier name = declarationsConverter.getActualTaggedTypeName(s);
 		if (name == null)
 			return null;
@@ -293,7 +294,7 @@ public class Result extends Scanner {
 				
 				getList(structsByLibrary, getLibrary(struct)).add(struct);
 				
-				Identifier identifier = getStructIdentifierInJava(struct);
+				Identifier identifier = getTaggedTypeIdentifierInJava(struct);
 				if (identifier != null)
 					structsFullNames.add(identifier);
 				

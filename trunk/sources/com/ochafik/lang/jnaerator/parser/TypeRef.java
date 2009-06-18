@@ -220,6 +220,7 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			cPrimitiveTypes.add("long");
 			cPrimitiveTypes.add("int");
 			cPrimitiveTypes.add("short");
+			cPrimitiveTypes.add("bool");
 			cPrimitiveTypes.add("char");
 			cPrimitiveTypes.add("void");
 			cPrimitiveTypes.add("double");
