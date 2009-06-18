@@ -523,6 +523,10 @@ public class DeclarationsConverter {
 		if (function.getType() == Type.ObjCMethod)
 			return;
 		
+		String elementFile = function.getElementFile();
+		if (elementFile != null && elementFile.contains(".framework/"))
+			return;
+		
 		ExternDeclarations externDeclarations = function.findParentOfType(ExternDeclarations.class);
 		if (externDeclarations != null && !"C++".equals(externDeclarations.getLanguage()))
 			return;
