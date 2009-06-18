@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.rococoa.foundation.NSClass;
 import org.rococoa.foundation.NSObject;
+import org.rococoa.foundation.NSString;
 import org.rococoa.Rococoa;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
@@ -98,11 +99,12 @@ public class ObjectiveCGenerator {
 		
 		if (struct.getType() == Struct.Type.ObjCClass) {
 			String name = String.valueOf(struct.getTag());
-			if (name.equals("NSObject") ||
-					name.equals("NSClass"))
-				return ident("org", "rococoa");
+			if (name.equals("NSObject"))
+				return ident(NSObject.class.getPackage().getName().split("\\."));
+			if (name.equals("NSClass"))
+				return ident(NSClass.class.getPackage().getName().split("\\."));
 			else if (name.equals("NSString"))
-				return ident("org", "rococoa", "cocoa");
+				return ident(NSString.class.getPackage().getName().split("\\."));
 		}
 		
 		String library = result.getLibrary(struct);
