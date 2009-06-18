@@ -24,7 +24,8 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		QualifiedIdentifier qi = new QualifiedIdentifier(separator);
 		qi.add(this);
 		for (Identifier i : subIdentifiers)
-			qi.add(i);
+			if (i != null)
+				qi.add(i);
 		return qi;
 	}
 	public QualifiedIdentifier derive(QualificationSeparator separator, String... subIdentifiers) {
