@@ -23,6 +23,11 @@ public class ElementsHelper {
 	public static Expression varRef(SimpleIdentifier name) {
 		return new Expression.VariableRef(name);
 	}
+	public static Identifier ident(String[] others) {
+		if (others.length > 0)
+			return ident(others[0], Arrays.copyOfRange(others, 1, others.length));
+		return null;
+	}
 	public static Identifier ident(String name, String... others) {
 		if (name == null) {
 			if (others.length > 0)

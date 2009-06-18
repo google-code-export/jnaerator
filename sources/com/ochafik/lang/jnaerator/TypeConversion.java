@@ -342,6 +342,11 @@ public class TypeConversion {
 						return;
 					
 					Identifier name = ((SimpleTypeRef) simpleTypeRef).getName();
+					if (name == null)
+						return;
+					
+					if (resolvesToPrimitive(name.toString()))
+						return;
 //					Identifier oc = findObjCClassIdent(name);
 //					if (oc != null) {
 //						name.replaceBy(oc);
@@ -355,14 +360,18 @@ public class TypeConversion {
 							if (name2 != null)
 								name = name2;
 						}
-						if (convertToJavaRef && tr instanceof Struct) {
-							Struct s = (Struct)tr;
+						if (convertToJavaRef && tr instanceof TaggedTypeRef) {
+							TaggedTypeRef s = (TaggedTypeRef)tr;
 							if (s.isForwardDeclaration())
 								return;
 							
-							Identifier ident = result.getStructIdentifierInJava(s);
-							if (ident != null)
-							tr = typeRef(ident);//findRef(name, s, libraryClassName));
+							if (tr instanceof Enum) {
+								tr = typeRef(s.getTag());
+							} else {
+								Identifier ident = result.getTaggedTypeIdentifierInJava(s);
+								if (ident != null)
+									tr = typeRef(ident);//findRef(name, s, libraryClassName));
+							}
 							
 						}
 						if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
@@ -433,6 +442,26 @@ public class TypeConversion {
 //		return tr;
 //	}
 		
+	public static class JavaPrimitive extends Primitive {
+		JavaPrim javaPrim;
+		public JavaPrimitive() {}
+		public JavaPrimitive(JavaPrim javaPrim) {
+			super(javaPrim.toString());
+			this.javaPrim = javaPrim;
+		}
+		public JavaPrim getJavaPrim() {
+			return javaPrim;
+		}
+		public void setJavaPrim(JavaPrim javaPrim) {
+			this.javaPrim = javaPrim;
+		}
+		@Override
+		public String toString(CharSequence indent) {
+			return toPrimString(javaPrim);
+		}
+	}
+	
+	
 	JavaPrim getPrimitive(TypeRef valueType, Identifier libraryClassName) {
 		
 		valueType = resolveTypeDef(valueType, libraryClassName, true);
@@ -441,6 +470,9 @@ public class TypeConversion {
 		Identifier name = null;
 		List<Modifier> mods = valueType.getModifiers();
 		int longCount = Modifier.Long.countIn(mods);
+		if (valueType instanceof JavaPrimitive) {
+			return ((JavaPrimitive)valueType).getJavaPrim();
+		}
 		if (valueType instanceof Primitive) {
 			name = ((Primitive)valueType).getName();
 			if (name == null) {
@@ -647,7 +679,8 @@ public class TypeConversion {
 		//typeRef(ident(result.getLibraryClassFullName(library), inferCallBackName(s, true)));	
 	}
 	static TypeRef primRef(JavaPrim p) {
-		return new SimpleTypeRef(toString(p));
+		return new JavaPrimitive(p);
+//		return new SimpleTypeRef(toString(p));
 	}
 	boolean isResolved(SimpleTypeRef tr) {
 		return tr.isMarkedAsResolved() || isResolved(tr.getName());
@@ -1102,6 +1135,12 @@ public class TypeConversion {
 			if (c != null)
 				return new SimpleTypeRef(c.getName());
 		}
+		if (x instanceof VariableRef) {
+			VariableRef vr = (VariableRef)x;
+			Identifier n = vr.getName();
+			if (n != null && (n.equals("true") || n.equals("false")))
+				return primRef(JavaPrim.Boolean);
+		}
 //		if (x instanceof MemberRef) {
 //			return null;
 //			//if (x instanceof FieldRef) {
@@ -1408,7 +1447,7 @@ public class TypeConversion {
 		}
 	}
 
-	public static String toString(JavaPrim prim) {
+	public static String toPrimString(JavaPrim prim) {
 		if (prim == JavaPrim.NativeLong)
 			return NativeLong.class.getName();
 		return prim.toString().toLowerCase();
