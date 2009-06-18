@@ -178,7 +178,7 @@ public class DeclarationsConverter {
 					continue;
 				
 				try {
-					out.addDeclaration(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", libraryClassName, true, false));
+					out.addDeclaration(outputConstant(define.getName(), define.getValue(), signatures, define.getValue(), "define", libraryClassName, true, false, false));
 				} catch (UnsupportedConversionException ex) {
 					out.addDeclaration(skipDeclaration(define, ex.toString()));
 				}
@@ -284,6 +284,7 @@ public class DeclarationsConverter {
 						"enum item", 
 						libraryClassName, 
 						enumInterf == null,
+						true,
 						true
 					);
 					if (ct != null && repeatFullEnumComment) {
@@ -302,7 +303,7 @@ public class DeclarationsConverter {
 	}
 
 	@SuppressWarnings("static-access")
-	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment, boolean signalErrors) throws UnsupportedConversionException {
+	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment, boolean signalErrors, boolean forceInteger) throws UnsupportedConversionException {
 		try {
 			if (result.typeConverter.isJavaKeyword(name))
 				throw new UnsupportedConversionException(element, "The name '" + name + "' is invalid for a Java field.");
@@ -310,6 +311,13 @@ public class DeclarationsConverter {
 			Expression converted = result.typeConverter.convertExpressionToJava(x, libraryClassName);
 			TypeRef tr = result.typeConverter.inferJavaType(converted);
 			JavaPrim prim = result.typeConverter.getPrimitive(tr, libraryClassName);
+			
+			if (forceInteger && prim == JavaPrim.Boolean) {
+				prim = JavaPrim.Int;
+				tr = typeRef("int");
+				converted = expr(Constant.Type.Int, "true".equals(String.valueOf(converted.toString())) ? 1 : 0);
+			}
+			
 			if ((prim == null || tr == null) && signalErrors) {
 				return new EmptyDeclaration("Failed to infer type of " + converted);
 			} else if (prim != JavaPrim.Void && tr != null) {
