@@ -1158,6 +1158,19 @@ public class TypeConversion {
 			if (enumItem != null)
 				return typeRef(Integer.TYPE);
 		}
+		if (x instanceof TypeRefExpression) {
+			TypeRefExpression tre = (TypeRefExpression)x;
+			TypeRef tr = tre.getType();
+			if (tr instanceof SimpleTypeRef) {
+				SimpleTypeRef str = (SimpleTypeRef)tr;
+				Identifier ident = str.getName();
+				if (ident != null) {
+					if (result.enumItemsFullName.contains(ident)) {
+						return typeRef(Integer.TYPE);
+					}
+				}
+			}
+		}
 		return null;
 	}
 	
@@ -1248,6 +1261,10 @@ public class TypeConversion {
 				}	
 			} else
 				res = new VariableRef(name);
+		}
+		if (x instanceof TypeRefExpression) {
+			if (((TypeRefExpression)x).getType().isMarkedAsResolved())
+				return x;
 		}
 		if (res == null) {
 //			return convertExpressionToJava(x);
@@ -1341,10 +1358,8 @@ public class TypeConversion {
 			return null;
 		
 		Enum e = (Enum)parent;
-		Expression cl = expr(typeRef(result.getLibraryClassFullName(library)));
-		if (e.getTag() != null)
-			cl = memberRef(cl, MemberRefStyle.Dot, e.getTag());
-		return memberRef(cl, MemberRefStyle.Dot, enumItem.getName());
+		Identifier ident = ident(result.getLibraryClassFullName(library), result.declarationsConverter.getActualTaggedTypeName(e), ident(enumItem.getName()));
+		return expr(typeRef(ident).setMarkedAsResolved(true));
 	}
 	/// @see http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
 	public static Set<String> JAVA_KEYWORDS = new HashSet<String>(Arrays.asList(

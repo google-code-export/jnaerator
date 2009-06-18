@@ -203,6 +203,18 @@ public class Result extends Scanner {
 	public void visitEnumItem(EnumItem enumItem) {
 		super.visitEnumItem(enumItem);
 		enumItems.put(enumItem.getName(), enumItem);
+		
+		String library = getLibrary(enumItem);
+		if (library == null)
+			return;
+		
+		Element parent = enumItem.getParentElement();
+		if (parent == null || !(parent instanceof Enum))
+			return;
+		
+		Enum e = (Enum)parent;
+		Identifier ident = ident(getLibraryClassFullName(library), declarationsConverter.getActualTaggedTypeName(e), ident(enumItem.getName()));
+		enumItemsFullName.add(ident);
 	}
 	
 
@@ -344,6 +356,7 @@ public class Result extends Scanner {
 
 	Set<String> libraries = new HashSet<String>();
 	Map<String, Identifier> javaPackageByLibrary = new HashMap<String, Identifier>();
+	public Set<Identifier> enumItemsFullName = new HashSet<Identifier>();
 	
 	public Identifier getLibraryPackage(String library) {
 		if (library == null)
