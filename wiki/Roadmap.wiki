@@ -21,6 +21,7 @@ public class MyLibrary {
 	}
 }
 }}}
+    Once this is done, test some demanding library (OpenGL, for instance)...
   # *OK* include libraries in generated JARs, w/ auto extract
   # allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
   # *OK* create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
