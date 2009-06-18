@@ -95,6 +95,7 @@ import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.ptr.ShortByReference;
+import com.sun.org.apache.xml.internal.utils.UnImplNode;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
@@ -142,7 +143,7 @@ public class TypeConversion {
 		Boolean, 
 		Float, 
 		Double, 
-		NativeLong
+		NativeLong;
 	}
 	static {
 		prim("void", JavaPrim.Void);
@@ -1468,5 +1469,32 @@ public class TypeConversion {
 		return prim.toString().toLowerCase();
 	}
 
-	
+	public Expression getJavaClassLitteralExpression(TypeRef tr) {
+		JavaPrim prim = result.typeConverter.getPrimitive(tr, null);
+		if (prim != null) {
+			switch (prim) {
+			case Boolean:
+			case Byte:
+			case Double:
+			case Long:
+			case Short:
+			case Float:
+				return memberRef(expr(typeRef(ident(prim.toString()))), MemberRefStyle.Dot, ident("TYPE"));
+			case Char:
+				return memberRef(expr(typeRef(ident(Character.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
+			case Int:
+				return memberRef(expr(typeRef(ident(Integer.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
+			case NativeLong:
+				return memberRef(expr(typeRef(ident(Long.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
+			case Void:
+				return null;
+			}
+		}
+		return memberRef(expr(tr.clone()), MemberRefStyle.Dot, ident("class"));
+	}
+
+
+	public Expression getJavaClassLitteralExpression() {
+		throw new UnsupportedOperationException(getClass().getName() + "." + toString() + " not handled !");
+	}
 }
