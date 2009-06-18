@@ -35,6 +35,7 @@ import com.ochafik.lang.jnaerator.parser.*;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.Statement.Block;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 import com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import com.ochafik.lang.jnaerator.parser.Expression.*;
@@ -47,6 +48,8 @@ import com.sun.jna.Pointer;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class DeclarationsConverter {
+	private static final int MAX_FIELDS_FOR_VALUES_CONSTRUCTORS = 10;
+
 	public DeclarationsConverter(Result result) {
 		this.result = result;
 	}
@@ -607,12 +610,6 @@ public class DeclarationsConverter {
 		Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
 		Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByValue"));
 		
-		if (result.config.features.contains(GenFeatures.StructConstructors))
-			addStructConstructors(structName, structJavaClass, byRef, byVal);
-		
-		structJavaClass.addDeclaration(decl(byRef));
-		structJavaClass.addDeclaration(decl(byVal));
-		
 		final int iChild[] = new int[] {0};
 		
 		//cl.addDeclaration(new EmptyDeclaration())
@@ -638,7 +635,12 @@ public class DeclarationsConverter {
 				}
 			}
 		}
-		//structJavaClass.addDeclarations(children);
+		if (result.config.features.contains(GenFeatures.StructConstructors))
+			addStructConstructors(structName, structJavaClass, byRef, byVal);
+		
+		structJavaClass.addDeclaration(decl(byRef));
+		structJavaClass.addDeclaration(decl(byVal));
+		
 		out.addDeclaration(decl(structJavaClass));
 	}
 
@@ -775,6 +777,29 @@ public class DeclarationsConverter {
 		emptyConstructor = emptyConstructor.clone();
 		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByVal struct on the heap");
 		addConstructor(byVal, emptyConstructor);
+		
+		Function fieldsConstr = new Function(Function.Type.JavaMethod, structName, null);
+		fieldsConstr.setBody(new Block()).addModifiers(Modifier.Public);
+		fieldsConstr.getBody().addStatement(stat(methodCall("super")));
+		for (Declaration d : structJavaClass.getDeclarations()) {
+			if (!(d instanceof VariablesDeclaration))
+				continue;
+				
+			VariablesDeclaration vd = (VariablesDeclaration)d;
+			if (vd.getDeclarators().size() != 1)
+				continue; // should not happen !
+			String name = vd.getDeclarators().get(0).resolveName();
+			
+			if (vd.getCommentBefore() != null)
+				fieldsConstr.addToCommentBefore("@param " + name + " " + vd.getCommentBefore());
+			fieldsConstr.addArg(new Arg(name, vd.getValueType().clone()));
+			fieldsConstr.getBody().addStatement(stat(new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(name))));
+		}
+		if (fieldsConstr.getArgs().size() < MAX_FIELDS_FOR_VALUES_CONSTRUCTORS) {
+			structJavaClass.addDeclaration(fieldsConstr);
+			byRef.addDeclaration(fieldsConstr.clone().setName(byRef.getTag().clone()));
+			byVal.addDeclaration(fieldsConstr.clone().setName(byVal.getTag().clone()));
+		}
 		
 		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName, null, 
 			new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),

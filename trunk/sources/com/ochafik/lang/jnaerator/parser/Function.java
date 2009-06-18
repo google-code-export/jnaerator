@@ -36,8 +36,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 
 	Identifier name;
 	
-	public void setName(Identifier name) {
+	public Function setName(Identifier name) {
 		this.name = changeValue(this, this.name, name);
+		return this;
 	}
 	public Identifier getName() {
 		return name;
