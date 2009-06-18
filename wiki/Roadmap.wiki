@@ -4,7 +4,23 @@
 
 = New features =
 
-  # generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+]
+  # generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
+{{{
+public class MyLibrary {
+	public static class MyStruct extends Structure {
+		int a;
+		float b;
+	}
+	private MyLibraryInterface INSTANCE = Native.loadLibrary("my", MyLibraryInterface.class);
+	public interface MyLibraryInterface extends NativeLibrary {
+		boolean complexFunction(MyStruct pStruct);
+	}
+	public static native int simpleFunction(float a, double b);
+	public static boolean complexFunction(MyStruct pStruct) {
+		return INSTANCE.complexFunction(pStruct);
+	}
+}
+}}}
   # *OK* include libraries in generated JARs, w/ auto extract
   # allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
   # *OK* create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
