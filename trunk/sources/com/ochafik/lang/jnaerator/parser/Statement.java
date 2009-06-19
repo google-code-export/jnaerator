@@ -218,6 +218,11 @@ public abstract class Statement extends Element {
 
 		boolean compact;
 		
+		@Override
+		public Block clone() {
+			return (Block)super.clone();
+		}
+		
 		public Block setCompact(boolean compact) {
 			this.compact = compact;
 			return this;
