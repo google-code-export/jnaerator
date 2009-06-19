@@ -306,9 +306,11 @@ public class Result extends Scanner {
 				
 				getList(structsByLibrary, getLibrary(struct)).add(struct);
 				
-				Identifier identifier = getTaggedTypeIdentifierInJava(struct);
-				if (identifier != null)
-					structsFullNames.add(identifier);
+				if (!struct.isForwardDeclaration()) {
+					Identifier identifier = getTaggedTypeIdentifierInJava(struct);
+					if (identifier != null)
+						structsFullNames.add(identifier);
+				}
 				
 				break;
 			case ObjCClass:
