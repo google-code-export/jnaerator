@@ -598,7 +598,7 @@ public class DeclarationsConverter {
 		if (structName == null)
 			return;
 		
-		if (struct.isForwardDeclaration() && !result.structsByName.get(structName).isForwardDeclaration())
+		if (struct.isForwardDeclaration())// && !result.structsByName.get(structName).isForwardDeclaration())
 			return;
 		
 		if (!signatures.classSignatures.add(structName))

@@ -514,7 +514,7 @@ public class TypeConversion {
 //		if (name != null && name.toString().equals("u_union"))
 //			name = name;
 		Struct s = result.structsByName.get(name);
-		if (s == null) {
+		if (s == null || s.isForwardDeclaration()) {
 			Pair<TypeDef, Declarator> pair = getTypeDef(name);
 			if (pair == null)
 				return null;
