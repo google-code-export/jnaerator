@@ -13,4 +13,4 @@ pt = new UnknownPtr();
 pt = new OpaqueStruct((Pointer)null);
 pt = new UnknownPtr((Pointer)null);
 
-OpaqueStruct s = GetInterestingMessage(null);
+OpaqueStruct s = INSTANCE.GetInterestingMessage(null);
