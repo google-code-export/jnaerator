@@ -115,8 +115,8 @@ public class ObjectiveCToJavaPreScanner extends Scanner {
 		ep.replaceBy(null);
 		typeDef.setValueType(e);
 		
-		System.err.println("Automatic struct name matching : " + name);
 		
+		System.err.println("Inferred enum name : " + name);
 		return false;
 	}
 }
