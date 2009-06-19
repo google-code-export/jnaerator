@@ -781,19 +781,29 @@ public class DeclarationsConverter {
 	}
 	private void addStructConstructors(Identifier structName, Struct structJavaClass, Struct byRef,
 			Struct byVal, Struct nativeStruct) {
-		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName, null).addModifiers(Modifier.Public);
-		emptyConstructor.setBody(block());
 		
-		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
+		List<Declaration> initialMembers = new ArrayList<Declaration>(structJavaClass.getDeclarations());
+		Set<String> signatures = new TreeSet<String>();
+		
+		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null).addModifiers(Modifier.Public);
+		emptyConstructor.setBody(block(stat(methodCall("super"))));
+		
+		//emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
 		addConstructor(byRef, emptyConstructor);
 		
 		emptyConstructor = emptyConstructor.clone();
-		emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByVal struct on the heap");
+		//emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByVal struct on the heap");
 		addConstructor(byVal, emptyConstructor);
+		
+		emptyConstructor = emptyConstructor.clone();
+		//emptyConstructor.setCommentBefore("Allocate a new " + structName + " struct on the heap");
+		addConstructor(structJavaClass, emptyConstructor);
+		
 		
 		boolean isUnion = nativeStruct.getType() == Struct.Type.CUnion;
 		if (isUnion) {
-			for (Declaration d : new ArrayList<Declaration>(structJavaClass.getDeclarations())) {
+			Map<String, Pair<TypeRef, List<Pair<String, String>>>> fieldsAndCommentsByTypeStr = new HashMap<String, Pair<TypeRef, List<Pair<String, String>>>>();
+			for (Declaration d : initialMembers) {
 				if (!(d instanceof VariablesDeclaration))
 					continue;
 					
@@ -802,24 +812,50 @@ public class DeclarationsConverter {
 					continue; // should not happen !
 				String name = vd.getDeclarators().get(0).resolveName();
 				TypeRef tr = vd.getValueType();
+				
+				String trStr = tr.toString();
+				Pair<TypeRef, List<Pair<String, String>>> pair = fieldsAndCommentsByTypeStr.get(trStr);
+				if (pair == null)
+					fieldsAndCommentsByTypeStr.put(trStr, pair = new Pair<TypeRef, List<Pair<String, String>>>(tr, new ArrayList<Pair<String, String>>()));
+				
+				pair.getSecond().add(new Pair<String, String>(vd.getCommentBefore(), name));
+			}
+			for (Pair<TypeRef, List<Pair<String, String>>> pair : fieldsAndCommentsByTypeStr.values()) {
+				List<String> commentBits = new ArrayList<String>(), nameBits = new ArrayList<String>();
+				for (Pair<String, String> p : pair.getValue()) {
+					if (p.getFirst() != null)
+						commentBits.add(p.getFirst());
+					nameBits.add(p.getValue());
+				}
+				String name = StringUtils.implode(nameBits, "_or_");
+				TypeRef tr = pair.getFirst();
 				Function unionValConstr = new Function(Function.Type.JavaMethod, structName.clone(), null, new Arg(name, tr.clone()));
-				if (vd.getCommentBefore() != null)
-					unionValConstr.addToCommentBefore("@param " + name + " " + vd.getCommentBefore());
+				if (!commentBits.isEmpty())
+					unionValConstr.addToCommentBefore("@param " + name + " " + StringUtils.implode(commentBits, ", or "));
+				
 				unionValConstr.addModifiers(Modifier.Public);
+				
+				Expression assignmentExpr = varRef(name);
+				for (Pair<String, String> p : pair.getValue())
+					assignmentExpr = new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(p.getValue())), AssignmentOperator.Equal, assignmentExpr);
+				
 				unionValConstr.setBody(block(
 					stat(methodCall("super")),
-					stat(new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(name))),
+					stat(assignmentExpr),
 					stat(methodCall("setType", result.typeConverter.getJavaClassLitteralExpression(tr)))
 				));
-				structJavaClass.addDeclaration(unionValConstr);
-				byRef.addDeclaration(unionValConstr.clone().setName(byRef.getTag().clone()));
-				byVal.addDeclaration(unionValConstr.clone().setName(byVal.getTag().clone()));
+				
+				if (signatures.add(unionValConstr.computeSignature(false))) {
+					structJavaClass.addDeclaration(unionValConstr);
+					byRef.addDeclaration(unionValConstr.clone().setName(byRef.getTag().clone()));
+					byVal.addDeclaration(unionValConstr.clone().setName(byVal.getTag().clone()));
+				}
 			}
 		} else {
 			Function fieldsConstr = new Function(Function.Type.JavaMethod, structName.clone(), null);
 			fieldsConstr.setBody(new Block()).addModifiers(Modifier.Public);
 			fieldsConstr.getBody().addStatement(stat(methodCall("super")));
-			for (Declaration d : new ArrayList<Declaration>(structJavaClass.getDeclarations())) {
+			for (Declaration d : initialMembers) {
 				if (!(d instanceof VariablesDeclaration))
 					continue;
 					
@@ -833,57 +869,71 @@ public class DeclarationsConverter {
 				fieldsConstr.addArg(new Arg(name, vd.getValueType().clone()));
 				fieldsConstr.getBody().addStatement(stat(new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(name))));
 			}
-			if (fieldsConstr.getArgs().size() < MAX_FIELDS_FOR_VALUES_CONSTRUCTORS) {
-				structJavaClass.addDeclaration(fieldsConstr);
-				byRef.addDeclaration(fieldsConstr.clone().setName(byRef.getTag().clone()));
-				byVal.addDeclaration(fieldsConstr.clone().setName(byVal.getTag().clone()));
+			int nArgs = fieldsConstr.getArgs().size();
+			if (nArgs == 0)
+				System.err.println("Struct with no field : " + structName);
+			
+			if (nArgs > 0 && nArgs < MAX_FIELDS_FOR_VALUES_CONSTRUCTORS) {
+				if (signatures.add(fieldsConstr.computeSignature(false))) {
+					structJavaClass.addDeclaration(fieldsConstr);
+					byRef.addDeclaration(fieldsConstr.clone().setName(byRef.getTag().clone()));
+					byVal.addDeclaration(fieldsConstr.clone().setName(byVal.getTag().clone()));
+				}
 			}
 		}
 		
-		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName, null, 
+		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null, 
 			new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),
 			new Arg("offset", new TypeRef.Primitive("int"))
-		).addModifiers(Modifier.Public);
-		
-		//pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByRef struct");
-		pointerConstructor.setBody(block(
-				stat(methodCall("super", varRef("pointer"), varRef("offset")))
+		).addModifiers(Modifier.Public).setBody(block(
+			stat(methodCall("super", varRef("pointer"), varRef("offset")))
 		).setCompact(true));
-		//byRef.addDeclaration(pointerConstructor);
-		//pointerConstructor = pointerConstructor.clone();
-		//pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + ".ByValue struct");
-		//byVal.addDeclaration(pointerConstructor);
-		
-		String copyArgName = isUnion ? "otherUnion" : "otherStruct";
-		Function shareMemConstructor = new Function(Function.Type.JavaMethod, structName, null, 
-			new Arg(copyArgName, new TypeRef.SimpleTypeRef(structName))
-		).addModifiers(Modifier.Public);
-		
-		shareMemConstructor.setBody(block(
-			stat(methodCall("super", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
-		).setCompact(true));
-		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
-		addConstructor(byRef, shareMemConstructor);
-		shareMemConstructor = shareMemConstructor.clone();
-		addConstructor(byVal, shareMemConstructor);
-	
-		emptyConstructor = emptyConstructor.clone();
-		emptyConstructor.setCommentBefore("Allocate a new " + structName + " struct on the heap");
-		addConstructor(structJavaClass, emptyConstructor);
-		
-		pointerConstructor = pointerConstructor.clone();
 		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + " struct");
 		pointerConstructor.setBody(block(
-				stat(methodCall("super")),
-				stat(methodCall("useMemory", varRef("pointer"), varRef("offset"))),
-				stat(methodCall("read"))
+			stat(methodCall("super")),
+			stat(methodCall("useMemory", varRef("pointer"), varRef("offset"))),
+			stat(methodCall("read"))
 		));
-		addConstructor(structJavaClass, pointerConstructor);
-		shareMemConstructor = shareMemConstructor.clone();
-		shareMemConstructor.setBody(block(
-			stat(methodCall("this", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
-		).setCompact(true));
-		addConstructor(structJavaClass, shareMemConstructor);
+		boolean addedPointerConstructor = false;
+		if (signatures.add(pointerConstructor.computeSignature(false))) {
+			addConstructor(structJavaClass, pointerConstructor);
+			addedPointerConstructor = true;
+		}
+		
+		String copyArgName = isUnion ? "otherUnion" : "otherStruct";
+		Function shareMemConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null, 
+			new Arg(copyArgName, new TypeRef.SimpleTypeRef(structName.clone()))
+		).addModifiers(Modifier.Public);
+		
+		Block useCopyMem = addedPointerConstructor ? 
+			null : 
+			block(
+					stat(methodCall("super")),
+					stat(methodCall("useMemory", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0))),
+					stat(methodCall("read"))
+			)
+		;
+		shareMemConstructor.setBody(addedPointerConstructor ? 
+			block(
+					stat(methodCall("super", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
+			).setCompact(true) :
+			useCopyMem
+		);
+		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
+		if (signatures.add(shareMemConstructor.computeSignature(false))) {
+			addConstructor(byRef, shareMemConstructor);
+			shareMemConstructor = shareMemConstructor.clone();
+			addConstructor(byVal, shareMemConstructor);
+		
+			shareMemConstructor = shareMemConstructor.clone();
+			shareMemConstructor.setBody(addedPointerConstructor ?
+				block(
+					stat(methodCall("this", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
+				).setCompact(true) :
+				useCopyMem.clone()
+			);
+			addConstructor(structJavaClass, shareMemConstructor);
+		}
 	}
 	
 	void addConstructor(Struct s, Function f) {
