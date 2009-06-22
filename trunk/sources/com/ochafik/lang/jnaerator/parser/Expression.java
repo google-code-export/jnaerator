@@ -364,6 +364,10 @@ public abstract class Expression extends Element {
 			setType(type);
 			setConstruction(construction);
 		}
+		public New(TypeRef type, Expression... arguments) {
+			setType(type);
+			setConstruction(new FunctionCall(null, arguments));
+		}
 		public New() {}
 		public void setType(TypeRef type) {
 			this.type = changeValue(this, this.type, type);

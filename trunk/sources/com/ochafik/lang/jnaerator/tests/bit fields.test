@@ -10,7 +10,7 @@ struct BF {
 import test.*;
 import static test.TestLibrary.*;
 
-TestLibrary.BF b = new TestLibrary.BF();
+BF b = new BF();
 b.i = b.j = b.k = 1;
 b.f = 1f;
 byte i8 = b.i8;

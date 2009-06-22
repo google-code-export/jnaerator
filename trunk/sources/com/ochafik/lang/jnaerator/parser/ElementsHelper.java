@@ -80,10 +80,12 @@ public class ElementsHelper {
 	public static FunctionCall methodCall(Expression x, MemberRefStyle style, String name, Expression... exprs) {
 		return new FunctionCall(memberRef(x, style, name), exprs);
 	}
-	public static Expression methodCall(String name, Expression... exprs) {
+	public static FunctionCall methodCall(String name, Expression... exprs) {
 		return new FunctionCall(memberRef(null, null, name), exprs);
 	}
 	public static TypeRef typeRef(Class<?> cl) {
+		if (cl.isArray())
+			return new TypeRef.ArrayRef(typeRef(cl.getComponentType()));
 		return new SimpleTypeRef(cl.getName());
 	}
 
@@ -95,6 +97,10 @@ public class ElementsHelper {
 	}
 	public static Statement stat(Expression x) {
 		return new ExpressionStatement(x);
+	}
+	public static Statement stat(TypeRef tr, String varName, Expression ass) {
+		VariablesDeclaration vd = new VariablesDeclaration(tr, new Declarator.DirectDeclarator(varName, ass));
+		return new Statement.DeclarationStatement(vd);
 	}
 	public static Block block(Statement... x) {
 		return new Block(x);

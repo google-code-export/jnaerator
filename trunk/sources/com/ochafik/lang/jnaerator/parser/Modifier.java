@@ -180,7 +180,7 @@ public enum Modifier {
 	Warn_unused_result(Kind.Attribute),
 	Weak(Kind.Attribute), 
 	
-	Synchronized;
+	Synchronized, Native;
 	
 	EnumSet<Modifier.Kind> kinds = EnumSet.noneOf(Modifier.Kind.class);
 	Modifier alias;

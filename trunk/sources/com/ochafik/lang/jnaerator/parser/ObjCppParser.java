@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-06-18 00:59:12
+// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-06-22 22:21:34
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -2755,7 +2755,7 @@ public class ObjCppParser extends Parser {
                     {
                     int LA35_1 = input.LA(2);
 
-                    if ( (((synpred56_ObjCpp()&&( next("__pragma") ))||(synpred56_ObjCpp()&&( next("__success") ))||(synpred56_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred56_ObjCpp()&&( next("extern") ))||(synpred56_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||synpred56_ObjCpp()||(synpred56_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {
+                    if ( (((synpred56_ObjCpp()&&( next("__success") ))||(synpred56_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred56_ObjCpp()&&( next("extern") ))||(synpred56_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred56_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred56_ObjCpp()||(synpred56_ObjCpp()&&( next("__pragma") )))) ) {
                         alt35=1;
                     }
                     }
@@ -3057,7 +3057,7 @@ public class ObjCppParser extends Parser {
                 if ( (LA40_0==IDENTIFIER) ) {
                     int LA40_2 = input.LA(2);
 
-                    if ( (((synpred61_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred61_ObjCpp()&&( next("__success") ))||(synpred61_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred61_ObjCpp()&&( next("__pragma") ))||(synpred61_ObjCpp()&&( next("extern") ))||(synpred61_ObjCpp()&&( Modifier.parseModifier(next()) != null )))) ) {
+                    if ( (((synpred61_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred61_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred61_ObjCpp()&&( next("extern") ))||(synpred61_ObjCpp()&&( next("__success") ))||(synpred61_ObjCpp()&&( next("__pragma") ))||(synpred61_ObjCpp()&&( Modifier.parseModifier(next()) != null )))) ) {
                         alt40=1;
                     }
 
@@ -11115,7 +11115,7 @@ public class ObjCppParser extends Parser {
 
                         else if ( ((synpred9_ObjCpp()&&( next("extern") ))) ) {s = 17;}
 
-                        else if ( (((synpred10_ObjCpp()&&( next("__pragma") ))||(synpred10_ObjCpp()&&( next("__success") ))||(synpred10_ObjCpp()&&( next("extern") ))||synpred10_ObjCpp()||(synpred10_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred10_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred10_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 10;}
+                        else if ( (((synpred10_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred10_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred10_ObjCpp()&&( next("__success") ))||(synpred10_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred10_ObjCpp()||(synpred10_ObjCpp()&&( next("extern") ))||(synpred10_ObjCpp()&&( next("__pragma") )))) ) {s = 10;}
 
                          
                         input.seek(index6_1);
@@ -11293,7 +11293,7 @@ public class ObjCppParser extends Parser {
                         int index12_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred21_ObjCpp()&&( next("extern") ))||(synpred21_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred21_ObjCpp()&&( next("__pragma") ))||(synpred21_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred21_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred21_ObjCpp()&&( next("__success") )))) ) {s = 2;}
+                        if ( (((synpred21_ObjCpp()&&( next("extern") ))||(synpred21_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred21_ObjCpp()&&( next("__success") ))||(synpred21_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred21_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred21_ObjCpp()&&( next("__pragma") )))) ) {s = 2;}
 
                         else if ( (true) ) {s = 3;}
 
@@ -11379,7 +11379,7 @@ public class ObjCppParser extends Parser {
                         int index18_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred31_ObjCpp()&&( next("__pragma") ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred31_ObjCpp()&&( next("__success") ))||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 8;}
+                        if ( (((synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( next("__pragma") ))||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( next("__success") ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )))) ) {s = 8;}
 
                         else if ( (true) ) {s = 10;}
 
@@ -11584,7 +11584,7 @@ public class ObjCppParser extends Parser {
                         s = -1;
                         if ( (synpred46_ObjCpp()) ) {s = 6;}
 
-                        else if ( ((synpred47_ObjCpp()||(synpred47_ObjCpp()&&( next("extern") ))||(synpred47_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred47_ObjCpp()&&( next("__pragma") ))||(synpred47_ObjCpp()&&( next("__success") ))||(synpred47_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred47_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 20;}
+                        else if ( (((synpred47_ObjCpp()&&( next("__pragma") ))||synpred47_ObjCpp()||(synpred47_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred47_ObjCpp()&&( next("extern") ))||(synpred47_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred47_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred47_ObjCpp()&&( next("__success") )))) ) {s = 20;}
 
                          
                         input.seek(index29_5);
@@ -11792,7 +11792,7 @@ public class ObjCppParser extends Parser {
                         int index32_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred53_ObjCpp()&&( next("__success") ))||(synpred53_ObjCpp()&&( next("__pragma") ))||(synpred53_ObjCpp()&&( next("extern") ))||(synpred53_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred53_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred53_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )))) ) {s = 3;}
+                        if ( (((synpred53_ObjCpp()&&( next("__pragma") ))||(synpred53_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred53_ObjCpp()&&( next("__success") ))||(synpred53_ObjCpp()&&( next("extern") ))||(synpred53_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred53_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") )))) ) {s = 3;}
 
                         else if ( (true) ) {s = 4;}
 
@@ -12011,7 +12011,7 @@ public class ObjCppParser extends Parser {
                         int index77_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred135_ObjCpp()&&( next("extern") ))||(synpred135_ObjCpp()&&( next("__pragma") ))||(synpred135_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred135_ObjCpp()&&( next("__success") ))||(synpred135_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred135_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred135_ObjCpp())) ) {s = 2;}
+                        if ( (((synpred135_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred135_ObjCpp()&&( next("__success") ))||(synpred135_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred135_ObjCpp()&&( next("extern") ))||(synpred135_ObjCpp()&&( next("__pragma") ))||synpred135_ObjCpp()||(synpred135_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) )))) ) {s = 2;}
 
                         else if ( (true) ) {s = 11;}
 
@@ -12834,7 +12834,7 @@ public class ObjCppParser extends Parser {
                         int index121_1 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( next("__pragma") ))||(synpred31_ObjCpp()&&( next("extern") ))||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred31_ObjCpp()&&( next("__success") )))) ) {s = 8;}
+                        if ( (((synpred31_ObjCpp()&&( next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) ))||(synpred31_ObjCpp()&&( next("extern") ))||synpred31_ObjCpp()||(synpred31_ObjCpp()&&( Modifier.parseModifier(next()) != null ))||(synpred31_ObjCpp()&&( next("__success") ))||(synpred31_ObjCpp()&&( next("__declspec", "__attribute__", "__asm") ))||(synpred31_ObjCpp()&&( next("__pragma") )))) ) {s = 8;}
 
                         else if ( (true) ) {s = 10;}
 

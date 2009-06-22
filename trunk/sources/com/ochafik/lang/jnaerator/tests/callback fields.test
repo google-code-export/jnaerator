@@ -7,10 +7,10 @@ struct S {
 import test.*;
 import static test.TestLibrary.*;
 
-S s = new TestLibrary.S();
+S s = new S();
 s.functions[0].invoke((Pointer)null);
 s.fptr.invoke();
 S.foo_callback_arg1_union u = new S.foo_callback_arg1_union();
 u.l = (NativeLong)null;
 u.i = 12;
-s.foo[0].invoke(new S.foo_callback_arg1_union.ByValue(u));
+s.foo[0].invoke(u.byValue());

@@ -18,6 +18,10 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.ident;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.typeRef;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +48,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		return name;
 	}
 	public enum Type {
-		CFunction, ObjCMethod, CppMethod, JavaMethod
+		CFunction, ObjCMethod, CppMethod, JavaMethod, StaticInit
 	}
 
 	public void setInitializers(List<FunctionCall> initializers) {
@@ -182,11 +186,15 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		if (!getAnnotations().isEmpty())
 			pre += StringUtils.implode(getAnnotations(), "\n" + indent) + "\n" + indent;
 		
+		String preMods;
 		switch (type) {
+		case StaticInit:
+			preMods = StringUtils.implode(modifiers, " ") + (modifiers.isEmpty() ? "" : " ");
+			return pre + preMods + (body == null ? ";" : body.toString(indent)) + post;
 		case CFunction:
 		case CppMethod:
 		case JavaMethod:
-			String preMods = StringUtils.implode(modifiers, " ") + (modifiers.isEmpty() ? "" : " ");
+			preMods = StringUtils.implode(modifiers, " ") + (modifiers.isEmpty() ? "" : " ");
 			s = preMods + 
 				(valueType == null ? "" : valueType + " ") +
 				name + "(" +
@@ -289,5 +297,35 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		return b.toString();
 	}
 
+	public static Function fromMethod(Method m) {
+		Function f = new Function(
+			Function.Type.JavaMethod, 
+			ident(m.getName()),
+			m.getReturnType() == null ? typeRef("void") : typeRef(m.getReturnType())
+		);
+		int i = 0;
+		for (Class<?> c : m.getParameterTypes()) {
+			f.addArg(new Arg("arg" + (i++), typeRef(c)));
+		}
+		int modifiers = m.getModifiers();
+		if (java.lang.reflect.Modifier.isPrivate(modifiers))
+			f.addModifiers(Modifier.Private);
+		if (java.lang.reflect.Modifier.isProtected(modifiers))
+			f.addModifiers(Modifier.Protected);
+		if (java.lang.reflect.Modifier.isPublic(modifiers))
+			f.addModifiers(Modifier.Public);
+		if (java.lang.reflect.Modifier.isStatic(modifiers))
+			f.addModifiers(Modifier.Static);
+		
+		if (java.lang.reflect.Modifier.isAbstract(modifiers))
+			f.addModifiers(Modifier.Abstract);
+		if (java.lang.reflect.Modifier.isFinal(modifiers))
+			f.addModifiers(Modifier.Final);
+		if (java.lang.reflect.Modifier.isNative(modifiers))
+			f.addModifiers(Modifier.Native);
+		if (java.lang.reflect.Modifier.isSynchronized(modifiers))
+			f.addModifiers(Modifier.Synchronized);
+		return f;
+	}
 
 }

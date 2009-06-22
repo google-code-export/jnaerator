@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,13 +43,17 @@ import javax.tools.JavaFileObject;
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
+import org.rococoa.Rococoa;
 import org.rococoa.foundation.NSClass;
+import org.rococoa.foundation.NSObject;
 
 import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;
+import com.ochafik.lang.ClassUtils;
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryJavaFile;
+import com.ochafik.lang.compiler.URLFileObject;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -68,10 +73,13 @@ import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
+import com.ochafik.net.URLUtils;
+import com.ochafik.util.listenable.Filter;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
@@ -80,6 +88,7 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 //include com/ochafik/lang/jnaerator/parser/*.mm
 //include com/ochafik/lang/jnaerator/parser/ObjCpp.g
  */
+
 
 /**
  * java -Xmx2000m -jar ../bin/jnaerator.jar `for F in /System/Library/Frameworks/*.framework ; do echo $F| sed -E 's/^.*\/([^/]+)\.framework$/-framework \1/' ; done` -out apple-frameworks.jar
@@ -100,6 +109,7 @@ public class JNAerator {
 		JNAeratorTests.class,
 		JNAeratorStudio.class
 	};
+	private static final String DEFAULT_CONFIG_FILE = "config.jnaerator";
 
 	private static void displayHelp() {
 		System.out.println("Credits:   JNAerator is Copyright (c) 2008-2009 Olivier Chafik");
@@ -162,14 +172,13 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
 //						"-library", "objc",
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-//						"-framework", "Foundation",
+						"-framework", "Foundation",
 //						"-framework", "AppKit",
 //						"-framework", "CoreFoundation",
-						"-framework", "IOKit",
+//						"-framework", "IOKit",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
-//						"-framework", "CoreFoundation",
 //						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
@@ -188,13 +197,15 @@ public class JNAerator {
 //						"/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
-						"-o", "/Users/ochafik/Prog/Java/test/foundation",
-						
+						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
+//						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
 //						"-o", "/Users/ochafik/src/opencl",
 						//"-v"
 				};
+			} else if (new File(DEFAULT_CONFIG_FILE).exists()){
+				argsArray = new String[] { "@", DEFAULT_CONFIG_FILE };
 			} else {
 				displayHelp();
 				return;
@@ -270,6 +281,10 @@ public class JNAerator {
 					config.verbose = true;
 				else if (arg.equals("-noauto"))
 					auto = false;
+				else if (arg.equals("-direct"))
+					config.useJNADirectCalls = true;
+				else if (arg.equals("-structsInLibrary"))
+					config.putTopStructsInSeparateFiles = false;
 				else if (arg.equals("-package"))
 					config.packageName = args.get(++iArg);
 				else if (arg.equals("-jar")) {
@@ -386,6 +401,8 @@ public class JNAerator {
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		
+		writeRuntimeClasses(mfm);
+		
 		jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 			@Override
 			public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
@@ -398,7 +415,7 @@ public class JNAerator {
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(Locale.getDefault()));//.toUri());
+				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()));//.toUri());
 			}
 			//System.out.println(sb);
 			throw new SyntaxException(sb.toString());
@@ -427,7 +444,31 @@ public class JNAerator {
 					libraryFile
 				));
 		}
+		
+//		writeRuntimeClasses(mfm);
+		
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
+	}
+	private static void writeRuntimeClasses(MemoryFileManager mfm) throws IOException {
+		for (URL sourceJar : new URL[] {
+				ClassUtils.getClassPath(NativeLibrary.class),
+				ClassUtils.getClassPath(Rococoa.class)
+		})
+			for (URL resURL : URLUtils.listFiles(sourceJar, null/*new Filter<String>() {
+				@Override
+				public boolean accept(String path) {
+					return path.toLowerCase().endsWith(".test");// && path.contains("objective");
+				}
+			}*/)) {
+				String s = resURL.getFile();
+				if (s.startsWith("META-INF"))
+					continue;
+				
+				if (!mfm.outputs.containsKey(s)) {
+					mfm.outputs.put(s, new URLFileObject(resURL));
+				}
+			}
+		
 	}
 	public static File getDir(String name) {
 		File dir = new File(getDir(), name);
@@ -513,7 +554,7 @@ public class JNAerator {
 		}
 	}
 	
-	private static void generateLibraryFiles(SourceFiles sourceFiles, Result result, ClassOutputter outputter) throws IOException {
+	private static void generateLibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
 		
 		Struct librariesHub = null;
 		PrintWriter hubOut = null;
@@ -523,7 +564,7 @@ public class JNAerator {
 			librariesHub.setType(Type.JavaClass);
 			librariesHub.addModifiers(Modifier.Public);
 			librariesHub.setTag(ident(result.config.entryName));
-			hubOut = outputter.getClassSourceWriter(result.config.entryName.toLowerCase() + "." + librariesHub.getTag().toString());
+			hubOut = result.classOutputter.getClassSourceWriter(result.config.entryName.toLowerCase() + "." + librariesHub.getTag().toString());
 			hubOut.println("package " + result.config.entryName.toLowerCase() + ";");
 			for (Identifier pn : result.javaPackages)
 				if (!pn.equals(""))
@@ -538,28 +579,6 @@ public class JNAerator {
 			Identifier libraryClassName = result.getLibraryClassSimpleName(library);
 			
 			Identifier fullLibraryClassName = ident(javaPackage, libraryClassName);
-			final PrintWriter out = outputter.getClassSourceWriter(fullLibraryClassName.toString());
-			
-			//out.println("///\n/// This file was autogenerated by JNAerator (http://jnaerator.googlecode.com/), \n/// a tool written by Olivier Chafik (http://ochafik.free.fr/).\n///"); 
-			if (javaPackage != null)
-				out.println("package " + javaPackage + ";");
-			
-			for (Identifier pn : result.javaPackages) {
-				if (pn.equals(""))
-					continue;
-				
-				if (pn.equals(javaPackage))
-					continue;
-				out.println("import " + pn + ".*;");
-			}
-			for (String otherLibrary : result.libraries) {
-				if (otherLibrary == null)
-					continue;
-				
-				Identifier otherJavaPackage = result.javaPackageByLibrary.get(otherLibrary);
-				Identifier otherLibraryClassName = result.getLibraryClassSimpleName(otherLibrary);
-				out.println("import static " + ident(otherJavaPackage, otherLibraryClassName) + ".*;");
-			}
 			//if (!result.objCClasses.isEmpty())
 			//	out.println("import org.rococoa.ID;");
 			
@@ -571,55 +590,59 @@ public class JNAerator {
 			if (hubOut != null)
 				interf.addToCommentBefore("@see " + result.config.entryName + "." + library);
 			
-			interf.addToCommentBefore(
-				"This file was autogenerated by <a href=\"http://jnaerator.googlecode.com/\">JNAerator</a>, ",
-				"a tool written by <a href=\"http://ochafik.free.fr/\">Olivier Chafik</a> that <a href=\"http://code.google.com/p/jnaerator/wiki/CreditsAndLicense\">uses a few opensource projects.</a>.",
-				"For help, please visit <a href=\"http://nativelibs4java.googlecode.com/\">NativeLibs4Java</a>, " +
-				"<a href=\"http://rococoa.dev.java.net/\">Rococoa</a>, " +
-				"or <a href=\"http://jna.dev.java.net/\">JNA</a>."
-			); 
-			
-			interf.setType(Type.JavaInterface);
 			interf.addModifiers(Modifier.Public);
 			interf.setTag(libraryClassName);
-			interf.setParents(ident(Library.class));
+			Identifier libSuperInter = ident(Library.class);
+			if (result.config.useJNADirectCalls) {
+				interf.setProtocols(libSuperInter);
+				interf.setType(Type.JavaClass);
+			} else {
+				interf.setParents(libSuperInter);
+				interf.setType(Type.JavaInterface);
+			}
 			
 			Expression libNameExpr = opaqueExpr(result.getLibraryFileExpression(library));
 			TypeRef libTypeRef = typeRef(libraryClassName);
 			Expression libClassLiteral = memberRef(expr(libTypeRef), MemberRefStyle.Dot, "class");
 			
-			VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator(
-				librariesHub == null ? "INSTANCE" : library,
-				cast(
-					libTypeRef, 
-					methodCall(
+			Expression libraryPathGetterExpr = methodCall(
+				expr(typeRef(LibraryExtractor.class)),
+				MemberRefStyle.Dot,
+				"getLibraryPath",
+				libNameExpr,
+				expr(Expression.Constant.Type.Bool, true),
+				libClassLiteral
+			);
+			
+			if (result.config.useJNADirectCalls) {
+				interf.addDeclaration(new Function(Function.Type.StaticInit, null, null).setBody(block(
+					stat(methodCall(
 						expr(typeRef(Native.class)),
 						MemberRefStyle.Dot,
-						"loadLibrary",
+						"register",
+						libraryPathGetterExpr
+					))
+				)).addModifiers(Modifier.Static));
+			} else {
+				VariablesDeclaration instanceDecl = new VariablesDeclaration(libTypeRef, new Declarator.DirectDeclarator(
+					librariesHub == null ? "INSTANCE" : library,
+					cast(
+						libTypeRef, 
 						methodCall(
-							expr(typeRef(LibraryExtractor.class)),
+							expr(typeRef(Native.class)),
 							MemberRefStyle.Dot,
-							"getLibraryPath",
-							libNameExpr,
-							expr(Expression.Constant.Type.Bool, true),
-							libClassLiteral
-						),
-						libClassLiteral,
-						memberRef(expr(typeRef(MangledFunctionMapper.class)), MemberRefStyle.Dot, "DEFAULT_OPTIONS")
+							"loadLibrary",
+							libraryPathGetterExpr,
+							libClassLiteral,
+							memberRef(expr(typeRef(MangledFunctionMapper.class)), MemberRefStyle.Dot, "DEFAULT_OPTIONS")
+						)
 					)
-				)
-			)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
-			if (librariesHub != null) {
-				librariesHub.addDeclaration(instanceDecl);
-//				TypeRef fullLibRef = typeRef(fullLibraryClassName);
-//				librariesHub.addDeclaration(
-//					new VariablesDeclaration(fullLibRef, new Declarator.DirectDeclarator(
-//							library,
-//							memberRef(expr(fullLibRef), MemberRefStyle.Dot, "INSTANCE")
-//					)).addModifiers(Modifier.Static).addModifiers(Modifier.Final)
-//				);
-			} else
-				interf.addDeclaration(instanceDecl);
+				)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
+				if (librariesHub != null)
+					librariesHub.addDeclaration(instanceDecl);
+				else
+					interf.addDeclaration(instanceDecl);
+			}
 			
 			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
 			
@@ -643,6 +666,7 @@ public class JNAerator {
 					continue;
 					
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
+				ptClass.addToCommentBefore("Pointer to unknown (opaque) type");
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
 					new Arg("pointer", typeRef(Pointer.class))
 				).addModifiers(Modifier.Public).setBody(
@@ -656,21 +680,27 @@ public class JNAerator {
 				interf.addDeclaration(decl(ptClass));
 			}
 			
-			out.println(interf);
-			out.close();
+			interf = result.notifyBeforeWritingClass(fullLibraryClassName, interf, signatures);
+			if (interf != null) {
+				final PrintWriter out = result.classOutputter.getClassSourceWriter(fullLibraryClassName.toString());
+				
+				//out.println("///\n/// This file was autogenerated by JNAerator (http://jnaerator.googlecode.com/), \n/// a tool written by Olivier Chafik (http://ochafik.free.fr/).\n///");
+				result.printJavaHeader(javaPackage, out);
+				out.println(interf);
+				out.close();
+			}
 		}
 		if (hubOut != null) {
 			hubOut.println(librariesHub.toString());
 			hubOut.close();
 		}
 	}
-
 	/// To be overridden
 	public Result createResult(ClassOutputter outputter) {
 		return new Result(config, outputter);
 	}
 	
-	public void jnaerate(SourceFiles sourceFiles, final ClassOutputter _outputter) throws IOException, LexerException, RecognitionException {
+	public Result jnaerate(SourceFiles sourceFiles, final ClassOutputter _outputter) throws IOException, LexerException, RecognitionException {
 		
 		/// Ensure all outputs are unicode-escaped.
 		ClassOutputter outputter = new ClassOutputter() {
@@ -778,11 +808,13 @@ public class JNAerator {
 			}
 		}
 		
-		generateLibraryFiles(sourceFiles, result, outputter);
+		generateLibraryFiles(sourceFiles, result);
 
 		//if (config.verbose)
 			for (String unknownType : result.typeConverter.unknownTypes) 
 				System.out.println("Unknown Type: " + unknownType);
+			
+		return result;
 	}
 
 }

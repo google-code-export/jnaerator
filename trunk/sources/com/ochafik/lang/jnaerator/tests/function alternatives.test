@@ -4,8 +4,8 @@ int process(void* ptr);
 import test.*;
 import static test.TestLibrary.*;
 
-TestLibrary.INSTANCE.CopyBytes((ByteByReference)null, (ByteByReference)null, (ShortByReference)null, (NativeLong)null, (IntByReference)null);
-TestLibrary.INSTANCE.CopyBytes((ByteBuffer)null, (String)null, (WString)null, (NativeLong)null, (IntBuffer)null);
-TestLibrary.INSTANCE.CopyBytes((ByteBuffer)null, (String)null, (WString)null, (NativeLong)null, (int[])null);
+INSTANCE.CopyBytes((ByteByReference)null, (ByteByReference)null, (ShortByReference)null, (NativeLong)null, (IntByReference)null);
+INSTANCE.CopyBytes((ByteBuffer)null, (String)null, (WString)null, (NativeLong)null, (IntBuffer)null);
+INSTANCE.CopyBytes((ByteBuffer)null, (String)null, (WString)null, (NativeLong)null, (int[])null);
 
-TestLibrary.INSTANCE.process((Pointer)null);
+INSTANCE.process((Pointer)null);

@@ -9,7 +9,7 @@ struct B {
 import test.*;
 import static test.TestLibrary.*;
 
-TestLibrary.B b = new TestLibrary.B();
-b.a = new TestLibrary.A.ByValue();
-b.pa = new TestLibrary.A.ByReference();
+B b = new B();
+b.a = new A.ByValue();
+b.pa = new A.ByReference();
 int i = b.pa.i = 10;

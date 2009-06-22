@@ -24,6 +24,84 @@ import java.util.List;
 
 public abstract class Statement extends Element {
 	
+	public static class Throw extends Statement {
+		Expression expression;
+		public Expression getExpression() {
+			return expression;
+		}
+		public void setExpression(Expression expression) {
+			this.expression = changeValue(this, this.expression, expression);
+		}
+		public Throw(Expression expression) {
+			setExpression(expression);
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitThrow(this);
+		}
+
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getExpression()) {
+				setExpression((Expression)by);
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String toString(CharSequence indent) {
+			return "throw " + getExpression().toString(indent) + ";";
+		}
+
+	}
+	public static class DeclarationStatement extends Statement {
+		Declaration declaration;
+		public void setDeclaration(Declaration declaration) {
+			this.declaration = changeValue(this, this.declaration, declaration);
+		}
+		public Declaration getDeclaration() {
+			return declaration;
+		}
+		
+		public DeclarationStatement(Declaration declaration) {
+			setDeclaration(declaration);
+		}
+		@Override
+		public void accept(Visitor visitor) {
+			visitor.visitDeclarationStatement(this);
+		}
+		@Override
+		public Element getNextChild(Element child) {
+			return null;
+		}
+		@Override
+		public Element getPreviousChild(Element child) {
+			return null;
+		}
+		@Override
+		public boolean replaceChild(Element child, Element by) {
+			if (child == getDeclaration()) {
+				setDeclaration((Declaration)by);
+				return true;
+			}
+			return false;
+		}
+		@Override
+		public String toString(CharSequence indent) {
+			return getDeclaration() == null ? "" : getDeclaration().toString(indent);
+		}
+	}
 	public static class Return extends Statement {
 		Expression value;
 		

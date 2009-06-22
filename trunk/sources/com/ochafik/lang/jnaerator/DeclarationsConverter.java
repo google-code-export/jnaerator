@@ -20,9 +20,10 @@ package com.ochafik.lang.jnaerator;
 
 import static com.ochafik.lang.SyntaxUtils.as;
 
-
-
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.*;
 
 import org.rococoa.foundation.NSObject;
@@ -45,6 +46,7 @@ import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;
 import com.sun.jna.Pointer;
+import com.sun.tools.corba.se.idl.InvalidArgument;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class DeclarationsConverter {
@@ -143,13 +145,16 @@ public class DeclarationsConverter {
 						continue; // TODO provide a mapping of exported values
 					
 					TypeRef mutatedType = (TypeRef) vs.mutateType(v.getValueType());
-					if (mutatedType == null || !mutatedType.getModifiers().contains(Modifier.Const))
-						return;
+					if (mutatedType == null || 
+							!mutatedType.getModifiers().contains(Modifier.Const) ||
+							mutatedType.getModifiers().contains(Modifier.Extern) ||
+							vs.getDefaultValue() == null)
+						continue;
 					
 					//TypeRef type = v.getValueType();
 					JavaPrim prim = result.typeConverter.getPrimitive(mutatedType, libraryClassName);
 					if (prim == null)
-						return;
+						continue;
 					
 					try {
 						
@@ -189,6 +194,15 @@ public class DeclarationsConverter {
 		}
 	}
 
+	public void addMissingMethods(Class<?> originalLib, Signatures existingSignatures, Struct outputLib) {
+		for (Method m : originalLib.getDeclaredMethods()) {
+			Function f = Function.fromMethod(m);
+			String ms = f.computeSignature(false);
+			if (existingSignatures.methodsSignatures.add(ms))
+				outputLib.addDeclaration(f);
+		}
+	}
+	
 	EmptyDeclaration skipDeclaration(Element e, String... preMessages) {
 		List<String> mess = new ArrayList<String>();
 		if (preMessages != null)
@@ -405,6 +419,9 @@ public class DeclarationsConverter {
 		//	natFunc.addAnnotation(new Annotation(Namespace.class, "(value=" + namespaceArrayStr + (isMethod ? ", isClass=true" : "") + ")"));
 		
 		natFunc.setType(Function.Type.JavaMethod);
+		if (result.config.useJNADirectCalls && !isCallback) {
+			natFunc.addModifiers(Modifier.Public, Modifier.Static, Modifier.Native);
+		}
 		try {
 			//StringBuilder outPrefix = new StringBuilder();
 			TypeRef returnType = null;
@@ -593,7 +610,7 @@ public class DeclarationsConverter {
 			structName = tag;
 		return structName;
 	}
-	void convertStruct(Struct struct, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryClass) {
+	void convertStruct(Struct struct, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryClass) throws IOException {
 		Identifier structName = getActualTaggedTypeName(struct);
 		if (structName == null)
 			return;
@@ -606,7 +623,7 @@ public class DeclarationsConverter {
 		
 		Identifier baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
 		
-		final Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
+		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
 		Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
 		Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByValue"));
 		
@@ -636,15 +653,47 @@ public class DeclarationsConverter {
 			}
 		}
 		if (result.config.features.contains(GenFeatures.StructConstructors))
-			addStructConstructors(structName, structJavaClass, byRef, byVal, struct);
+			addStructConstructors(structName, structJavaClass/*, byRef, byVal*/, struct);
+		
+		structJavaClass.addDeclaration(createAsStructMethod("byReference", byRef));
+		structJavaClass.addDeclaration(createAsStructMethod("byValue", byVal));
+		structJavaClass.addDeclaration(createAsStructMethod("clone", structJavaClass));
 		
 		structJavaClass.addDeclaration(decl(byRef));
 		structJavaClass.addDeclaration(decl(byVal));
 		
-		out.addDeclaration(decl(structJavaClass));
+		if (result.config.putTopStructsInSeparateFiles && struct.findParentOfType(Struct.class) == null) {
+			String library = result.getLibrary(struct);
+			Identifier javaPackage = result.getLibraryPackage(library);
+			Identifier fullClassName = ident(javaPackage, structJavaClass.getTag());
+			
+			structJavaClass.removeModifiers(Modifier.Static);
+			structJavaClass = result.notifyBeforeWritingClass(fullClassName, structJavaClass, signatures);
+			if (structJavaClass != null) {
+				PrintWriter pout = result.classOutputter.getClassSourceWriter(fullClassName.toString());
+				result.printJavaHeader(javaPackage, pout);
+				pout.println(structJavaClass);
+				pout.close();
+			}
+		} else
+			out.addDeclaration(decl(structJavaClass));
 	}
 
-	public void convertStructs(List<Struct> structs, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
+	private Function createAsStructMethod(String name, Struct byRef) {
+		TypeRef tr = typeRef(byRef.getTag().clone());
+		Function f = new Function(Function.Type.JavaMethod, ident(name), tr);
+		String varName = "s";
+		f.addModifiers(Modifier.Public).setBody(block(
+			stat(tr.clone(), varName, new Expression.New(tr.clone(), methodCall(null))),
+			stat(methodCall(varRef(varName), MemberRefStyle.Dot, "useMemory", methodCall("getPointer"))),
+			stat(methodCall("write")),
+			stat(methodCall(varRef(varName), MemberRefStyle.Dot, "read")),
+			new Statement.Return(varRef(varName))
+		));
+		return f;
+	}
+
+	public void convertStructs(List<Struct> structs, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) throws IOException {
 		if (structs != null) {
 			for (Struct struct : structs) {
 				if (struct.findParentOfType(Struct.class) != null)
@@ -779,24 +828,14 @@ public class DeclarationsConverter {
 		cl.addModifiers(Modifier.Public, Modifier.Static);
 		return cl;
 	}
-	private void addStructConstructors(Identifier structName, Struct structJavaClass, Struct byRef,
-			Struct byVal, Struct nativeStruct) {
+	private void addStructConstructors(Identifier structName, Struct structJavaClass/*, Struct byRef,
+			Struct byVal*/, Struct nativeStruct) {
 		
 		List<Declaration> initialMembers = new ArrayList<Declaration>(structJavaClass.getDeclarations());
 		Set<String> signatures = new TreeSet<String>();
 		
 		Function emptyConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null).addModifiers(Modifier.Public);
 		emptyConstructor.setBody(block(stat(methodCall("super"))));
-		
-		//emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByRef struct on the heap");
-		addConstructor(byRef, emptyConstructor);
-		
-		emptyConstructor = emptyConstructor.clone();
-		//emptyConstructor.setCommentBefore("Allocate a new " + structName + ".ByVal struct on the heap");
-		addConstructor(byVal, emptyConstructor);
-		
-		emptyConstructor = emptyConstructor.clone();
-		//emptyConstructor.setCommentBefore("Allocate a new " + structName + " struct on the heap");
 		addConstructor(structJavaClass, emptyConstructor);
 		
 		
@@ -841,14 +880,15 @@ public class DeclarationsConverter {
 				
 				unionValConstr.setBody(block(
 					stat(methodCall("super")),
+					tr instanceof TypeRef.ArrayRef ? throwIfArraySizeDifferent(name) : null,
 					stat(assignmentExpr),
 					stat(methodCall("setType", result.typeConverter.getJavaClassLitteralExpression(tr)))
 				));
 				
 				if (signatures.add(unionValConstr.computeSignature(false))) {
 					structJavaClass.addDeclaration(unionValConstr);
-					byRef.addDeclaration(unionValConstr.clone().setName(byRef.getTag().clone()));
-					byVal.addDeclaration(unionValConstr.clone().setName(byVal.getTag().clone()));
+//					byRef.addDeclaration(unionValConstr.clone().setName(byRef.getTag().clone()));
+//					byVal.addDeclaration(unionValConstr.clone().setName(byVal.getTag().clone()));
 				}
 			}
 		} else {
@@ -867,6 +907,9 @@ public class DeclarationsConverter {
 				if (vd.getCommentBefore() != null)
 					fieldsConstr.addToCommentBefore("@param " + name + " " + vd.getCommentBefore());
 				fieldsConstr.addArg(new Arg(name, vd.getValueType().clone()));
+
+				if (vd.getValueType() instanceof TypeRef.ArrayRef)
+					fieldsConstr.getBody().addStatement(throwIfArraySizeDifferent(name));
 				fieldsConstr.getBody().addStatement(stat(new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(name))));
 			}
 			int nArgs = fieldsConstr.getArgs().size();
@@ -876,66 +919,74 @@ public class DeclarationsConverter {
 			if (nArgs > 0 && nArgs < MAX_FIELDS_FOR_VALUES_CONSTRUCTORS) {
 				if (signatures.add(fieldsConstr.computeSignature(false))) {
 					structJavaClass.addDeclaration(fieldsConstr);
-					byRef.addDeclaration(fieldsConstr.clone().setName(byRef.getTag().clone()));
-					byVal.addDeclaration(fieldsConstr.clone().setName(byVal.getTag().clone()));
 				}
 			}
 		}
 		
-		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null, 
-			new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),
-			new Arg("offset", new TypeRef.Primitive("int"))
-		).addModifiers(Modifier.Public).setBody(block(
-			stat(methodCall("super", varRef("pointer"), varRef("offset")))
-		).setCompact(true));
-		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + " struct");
-		pointerConstructor.setBody(block(
-			stat(methodCall("super")),
-			stat(methodCall("useMemory", varRef("pointer"), varRef("offset"))),
-			stat(methodCall("read"))
-		));
-		boolean addedPointerConstructor = false;
-		if (signatures.add(pointerConstructor.computeSignature(false))) {
-			addConstructor(structJavaClass, pointerConstructor);
-			addedPointerConstructor = true;
-		}
+//		Function pointerConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null, 
+//			new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName())),
+//			new Arg("offset", new TypeRef.Primitive("int"))
+//		).addModifiers(Modifier.Public).setBody(block(
+//			stat(methodCall("super", varRef("pointer"), varRef("offset")))
+//		).setCompact(true));
+//		pointerConstructor.setCommentBefore("Cast data at given memory location (pointer + offset) as an existing " + structName + " struct");
+//		pointerConstructor.setBody(block(
+//			stat(methodCall("super")),
+//			stat(methodCall("useMemory", varRef("pointer"), varRef("offset"))),
+//			stat(methodCall("read"))
+//		));
+//		boolean addedPointerConstructor = false;
+//		if (signatures.add(pointerConstructor.computeSignature(false))) {
+//			addConstructor(structJavaClass, pointerConstructor);
+//			addedPointerConstructor = true;
+//		}
 		
-		String copyArgName = isUnion ? "otherUnion" : "otherStruct";
-		Function shareMemConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null, 
-			new Arg(copyArgName, new TypeRef.SimpleTypeRef(structName.clone()))
-		).addModifiers(Modifier.Public);
+//		String copyArgName = isUnion ? "otherUnion" : "otherStruct";
+//		Function shareMemConstructor = new Function(Function.Type.JavaMethod, structName.clone(), null, 
+//			new Arg(copyArgName, new TypeRef.SimpleTypeRef(structName.clone()))
+//		).addModifiers(Modifier.Public);
 		
-		Block useCopyMem = addedPointerConstructor ? 
-			null : 
-			block(
-					stat(methodCall("super")),
-					stat(methodCall("useMemory", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0))),
-					stat(methodCall("read"))
-			)
-		;
-		shareMemConstructor.setBody(addedPointerConstructor ? 
-			block(
-					stat(methodCall("super", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
-			).setCompact(true) :
-			useCopyMem
-		);
-		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
-		if (signatures.add(shareMemConstructor.computeSignature(false))) {
-			addConstructor(byRef, shareMemConstructor);
-			shareMemConstructor = shareMemConstructor.clone();
-			addConstructor(byVal, shareMemConstructor);
-		
-			shareMemConstructor = shareMemConstructor.clone();
-			shareMemConstructor.setBody(addedPointerConstructor ?
-				block(
-					stat(methodCall("this", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
-				).setCompact(true) :
-				useCopyMem.clone()
-			);
-			addConstructor(structJavaClass, shareMemConstructor);
-		}
+//		Block useCopyMem = //addedPointerConstructor ? 
+//			//null : 
+//			block(
+//					stat(methodCall("super")),
+//					stat(methodCall("useMemory", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0))),
+//					stat(methodCall("read"))
+//			)
+//		;
+//		shareMemConstructor.setBody(//addedPointerConstructor ? 
+////			block(
+////					stat(methodCall("super", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
+////			).setCompact(true) :
+//			useCopyMem
+//		);
+//		shareMemConstructor.setCommentBefore("Create an instance that shares its memory with another " + structName + " instance");
+//		if (signatures.add(shareMemConstructor.computeSignature(false))) {
+////			addConstructor(byRef, shareMemConstructor);
+////			shareMemConstructor = shareMemConstructor.clone();
+////			addConstructor(byVal, shareMemConstructor);
+//		
+//			shareMemConstructor = shareMemConstructor.clone();
+//			shareMemConstructor.setBody(/*addedPointerConstructor ?
+//				block(
+//					stat(methodCall("this", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
+//				).setCompact(true) :*/
+//				useCopyMem.clone()
+//			);
+//			addConstructor(structJavaClass, shareMemConstructor);
+//		}
 	}
-	
+	Statement throwIfArraySizeDifferent(String varAndFieldName) {
+		return new Statement.If(
+			expr(
+				memberRef(varRef(varAndFieldName), MemberRefStyle.Dot, "length"), 
+				BinaryOperator.IsDifferent,
+				memberRef(memberRef(varRef("this"), MemberRefStyle.Dot, varAndFieldName), MemberRefStyle.Dot, "length")
+			),
+			new Statement.Throw(new Expression.New(typeRef(IllegalArgumentException.class), expr(Constant.Type.String, "Wrong array size !"))),
+			null
+		);
+	}
 	void addConstructor(Struct s, Function f) {
 		Identifier structName = getActualTaggedTypeName(s);
 		

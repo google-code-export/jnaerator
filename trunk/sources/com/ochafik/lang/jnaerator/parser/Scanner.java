@@ -47,9 +47,11 @@ import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.ochafik.lang.jnaerator.parser.Identifier.QualifiedIdentifier;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
+import com.ochafik.lang.jnaerator.parser.Statement.DeclarationStatement;
 import com.ochafik.lang.jnaerator.parser.Statement.ExpressionStatement;
 import com.ochafik.lang.jnaerator.parser.Statement.If;
 import com.ochafik.lang.jnaerator.parser.Statement.Return;
+import com.ochafik.lang.jnaerator.parser.Statement.Throw;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.ArrayRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -65,11 +67,9 @@ public class Scanner implements Visitor {
 	public void visitArg(Arg arg) {
 		visitDeclaration(arg);
 		
-		if (arg.getDefaultValue() != null)
-			arg.getDefaultValue().accept(this);
+		visit(arg.getDefaultValue());
 		
-		if (arg.getDeclarator() != null)
-			arg.getDeclarator().accept(this);
+		visit(arg.getDeclarator());
 	}
 
 	public void visitConstant(Constant constant) {
@@ -83,37 +83,30 @@ public class Scanner implements Visitor {
 	public void visitEnum(Enum enum1) {
 		visitTaggedTypeRef(enum1);
 		for (EnumItem item : copy(enum1.getItems()))
-			if (item != null)
-				item.accept(this);
+			visit(item);
 	}
 
 	public void visitFunction(Function function) {
 		visitDeclaration(function);
 		for (Arg arg : copy(function.getArgs()))
-			if (arg != null)
-				arg.accept(this);
+			visit(arg);
 		
 		for (FunctionCall fc : function.getInitializers())
-			if (fc != null)
-				fc.accept(this);
+			visit(fc);
 		
-		if (function.getBody() != null)
-			function.getBody().accept(this);
-		if (function.getName() != null)
-			function.getName().accept(this);
+		visit(function.getBody());
+		visit(function.getName());
 	}
 
 	public void visitFunctionPointerDeclaration(FunctionPointerDeclaration f) {
 		visitDeclaration(f);
-		if (f.getDefaultValue() != null)
-			f.getDefaultValue().accept(this);
+		visit(f.getDefaultValue());
 	}
 	
 	protected void visitDeclaration(Declaration d) {
 		visitModifiableElement(d);
 		
-		if (d.getValueType() != null)
-			d.getValueType().accept(this);
+		visit(d.getValueType());
 		
 		/*visitModifiers(d.getModifiers(), d);
 		
@@ -170,8 +163,7 @@ public class Scanner implements Visitor {
 	protected void visitStoredDeclarations(StoredDeclarations d) {
 		visitDeclaration(d);
 		for (Declarator s : copy(d.getDeclarators()))
-			if (s != null)
-				s.accept(this);
+			visit(s);
 	}
 
 	protected void visitCPPClass(Struct struct) {
@@ -181,14 +173,11 @@ public class Scanner implements Visitor {
 	protected void doVisitStruct(Struct struct) {
 		visitTaggedTypeRef(struct);
 		for (Declaration m : copy(struct.getDeclarations()))
-			if (m != null)
-				m.accept(this);
+			visit(m);
 		for (Identifier i : struct.getProtocols())
-			if (i != null)
-				i.accept(this);
+			visit(i);
 		for (Identifier i : struct.getParents())
-			if (i != null)
-				i.accept(this);
+			visit(i);
 	}
 
 	protected void visitCStruct(Struct struct) {
@@ -210,8 +199,7 @@ public class Scanner implements Visitor {
 	public void visitArray(ArrayRef array) {
 		visitTargettedTypeRef(array);
 		for (Expression x : copy(array.getDimensions()))
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	protected void visitTypeRef(TypeRef array) {
@@ -220,14 +208,13 @@ public class Scanner implements Visitor {
 
 	protected void visitTargettedTypeRef(TargettedTypeRef targettedTypeRef) {
 		visitTypeRef(targettedTypeRef);
-		if (targettedTypeRef.getTarget() != null)
-			targettedTypeRef.getTarget().accept(this);
+		visit(targettedTypeRef.getTarget());
 	}
 
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
 		visitTypeRef(functionSignature);
-		if (functionSignature != null  && functionSignature.getFunction() != null)
-			functionSignature.getFunction().accept(this);
+		if (functionSignature != null)
+			visit(functionSignature.getFunction());
 	}
 
 	public void visitPointer(Pointer pointer) {
@@ -241,8 +228,7 @@ public class Scanner implements Visitor {
 	public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
 		visitTypeRef(simpleTypeRef);
 
-		if (simpleTypeRef.getName() != null)
-			simpleTypeRef.getName().accept(this);
+		visit(simpleTypeRef.getName());
 	}
 
 	static <T> Collection<T> copy(Collection<T> col) {
@@ -251,48 +237,38 @@ public class Scanner implements Visitor {
 	public void visitSourceFile(SourceFile header) {
 		visitElement(header);
 		for (Declaration d : copy(header.getDeclarations()))
-			if (d != null)
-				d.accept(this);
+			visit(d);
 	}
 
 	public void visitEnumItem(EnumItem enumItem) {
 		visitElement(enumItem);
-		if (enumItem.getValue() != null)
-			enumItem.getValue().accept(this);
+		visit(enumItem.getValue());
 	}
 
 	public void visitUnaryOp(UnaryOp unaryOp) {
 		visitExpression(unaryOp);
-		if (unaryOp.getOperand() != null)
-			unaryOp.getOperand().accept(this);
+		visit(unaryOp.getOperand());
 	}
 
 	public void visitVariableRef(VariableRef variableRef) {
 		visitExpression(variableRef);
-		if (variableRef.getName() != null)
-			variableRef.getName().accept(this);
+		visit(variableRef.getName());
 	}
 
 	public void visitBinaryOp(BinaryOp binaryOp) {
 		visitExpression(binaryOp);
-		if (binaryOp.getFirstOperand() != null)
-			binaryOp.getFirstOperand().accept(this);
-		
-		if (binaryOp.getSecondOperand() != null)
-			binaryOp.getSecondOperand().accept(this);
+		visit(binaryOp.getFirstOperand());
+		visit(binaryOp.getSecondOperand());
 	}
 
 	public void visitFunctionCall(FunctionCall functionCall) {
 		visitMemberRef(functionCall);
-		if (functionCall.getTarget() != null)
-			functionCall.getTarget().accept(this);
-		if (functionCall.getFunction() != null)
-			functionCall.getFunction().accept(this);
+		visit(functionCall.getTarget());
+		visit(functionCall.getFunction());
 		
-		for (Pair<String, Expression> x : copy(functionCall.getArguments())) {
-			if (x != null && x.getSecond() != null)
-				x.getSecond().accept(this);
-		}
+		for (Pair<String, Expression> x : copy(functionCall.getArguments()))
+			if (x != null)
+				visit(x.getSecond());
 	}
 
 	/*public void visitAssignment(Assignment assignment) {
@@ -304,39 +280,32 @@ public class Scanner implements Visitor {
 	public void visitMemberRef(MemberRef memberRef) {
 		visitExpression(memberRef);
 
-		if (memberRef.getTarget() != null)
-			memberRef.getTarget().accept(this);
-		if (memberRef.getName() != null)
-			memberRef.getName().accept(this);
+		visit(memberRef.getTarget());
+		visit(memberRef.getName());
 		
 	}
 
 	public void visitCast(Cast cast) {
 		visitExpression(cast);
-		if (cast.getType() != null)
-			cast.getType().accept(this);
-		if (cast.getTarget() != null)
-			cast.getTarget().accept(this);
+		visit(cast.getType());
+		visit(cast.getTarget());
 	}
 	
 	public void visitDeclarator(Declarator declarator) {
 		visitModifiableElement(declarator);
 		
-		if (declarator.getDefaultValue() != null)
-			declarator.getDefaultValue().accept(this);
+		visit(declarator.getDefaultValue());
 	}
 
 	public void visitVariablesDeclaration(VariablesDeclaration v) {
 		visitDeclaration(v);
 		for (Declarator vs : copy(v.getDeclarators()))
-			if (vs != null)
-				vs.accept(this);
+			visit(vs);
 	}
 
 	public void visitTaggedTypeRefDeclaration(TaggedTypeRefDeclaration taggedTypeRefDeclaration) {
 		visitDeclaration(taggedTypeRefDeclaration);
-		if (taggedTypeRefDeclaration.getTaggedTypeRef() != null)
-			taggedTypeRefDeclaration.getTaggedTypeRef().accept(this);
+		visit(taggedTypeRefDeclaration.getTaggedTypeRef());
 	}
 
 	public void visitEmptyArraySize(EmptyArraySize emptyArraySize) {
@@ -345,31 +314,26 @@ public class Scanner implements Visitor {
 
 	public void visitDefine(Define define) {
 		visitDeclaration(define);
-		if (define.getValue() != null)
-			define.getValue().accept(this);
+		visit(define.getValue());
 	}
 
 	public void visitTypeRefExpression(TypeRefExpression typeRefExpression) {
 		visitExpression(typeRefExpression);
-		if (typeRefExpression.getType() != null)
-			typeRefExpression.getType().accept(this);
+		visit(typeRefExpression.getType());
 	}
 
 	public void visitNew(New new1) {
 		visitExpression(new1);
-		if (new1.getType() != null)
-			new1.getType().accept(this);
+		visit(new1.getType());
 		
-		if (new1.getConstruction() != null)
-			new1.getConstruction().accept(this);
+		visit(new1.getConstruction());
 	}
 
 	@Override
 	public void visitAnnotation(Annotation annotation) {
 		visitElement(annotation);
 		for (Expression x : annotation.getArguments())
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	@Override
@@ -380,19 +344,16 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitNewArray(NewArray newArray) {
 		visitExpression(newArray);
-		if (newArray.getType() != null)
-			newArray.getType().accept(this);
+		visit(newArray.getType());
 		for (Expression x : newArray.getDimensions())
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	@Override
 	public void visitArrayDeclarator(ArrayDeclarator arrayDeclarator) {
 		visitTargettedDeclarator(arrayDeclarator);
 		for (Expression x : arrayDeclarator.getDimensions())
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	@Override
@@ -404,8 +365,7 @@ public class Scanner implements Visitor {
 	public void visitFunctionDeclarator(FunctionDeclarator functionDeclarator) {
 		visitTargettedDeclarator(functionDeclarator);
 		for (Arg arg : functionDeclarator.getArgs())
-			if (arg != null)
-				arg.accept(this);
+			visit(arg);
 	}
 
 	@Override
@@ -415,26 +375,21 @@ public class Scanner implements Visitor {
 
 	private void visitTargettedDeclarator(TargettedDeclarator targettedDeclarator) {
 		visitDeclarator(targettedDeclarator);
-		if (targettedDeclarator.getTarget() != null) {
-			targettedDeclarator.getTarget().accept(this);
-		}
+		visit(targettedDeclarator.getTarget());
 	}
 
 	@Override
 	public void visitModifiableElement(ModifiableElement modifiableElement) {
 		visitElement(modifiableElement);
 		for (Annotation a : modifiableElement.getAnnotations())
-			if (a != null)
-				a.accept(this);
+			visit(a);
 	}
 
 	@Override
 	public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
 		visitTypeRef(taggedTypeRef);
-		if (taggedTypeRef.getTag() != null)
-			taggedTypeRef.getTag().accept(this);
-		if (taggedTypeRef.getOriginalTag() != null)
-			taggedTypeRef.getOriginalTag().accept(this);
+		visit(taggedTypeRef.getTag());
+		visit(taggedTypeRef.getOriginalTag());
 		
 	}
 
@@ -442,15 +397,13 @@ public class Scanner implements Visitor {
 	public void visitBlock(Block block) {
 		visitStatement(block);
 		for (Statement x : copy(block.getStatements()))
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	@Override
 	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
 		visitStatement(expressionStatement);
-		if (expressionStatement.getExpression() != null)
-			expressionStatement.getExpression().accept(this);
+		visit(expressionStatement.getExpression());
 	}
 
 	public void visitStatement(Statement statement) {
@@ -460,12 +413,9 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitIf(If if1) {
 		visitStatement(if1);
-		if (if1.getCondition() != null)
-			if1.getCondition().accept(this);
-		if (if1.getThenBranch() != null)
-			if1.getThenBranch().accept(this);
-		if (if1.getElseBranch() != null)
-			if1.getElseBranch().accept(this);
+		visit(if1.getCondition());
+		visit(if1.getThenBranch());
+		visit(if1.getElseBranch());
 	}
 
 	@Override
@@ -476,16 +426,14 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitReturn(Return return1) {
 		visitStatement(return1);
-		if (return1.getValue() != null)
-			return1.getValue().accept(this);
+		visit(return1.getValue());
 	}
 
 	@Override
 	public void visitExternDeclarations(ExternDeclarations externDeclarations) {
 		visitDeclaration(externDeclarations);
 		for (Declaration d : new ArrayList<Declaration>(externDeclarations.getDeclarations()))
-			if (d != null)
-				d.accept(this);
+			visit(d);
 	}
 
 	@Override
@@ -496,32 +444,25 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitArrayAccess(ArrayAccess arrayAccess) {
 		visitExpression(arrayAccess);
-		if (arrayAccess.getTarget() != null)
-			arrayAccess.getTarget().accept(this);
-		if (arrayAccess.getIndex() != null)
-			arrayAccess.getIndex().accept(this);
+		visit(arrayAccess.getTarget());
+		visit(arrayAccess.getIndex());
 	}
 
 	@Override
 	public void visitAssignmentOp(AssignmentOp assignment) {
 		visitExpression(assignment);
-		if (assignment.getTarget() != null)
-			assignment.getTarget().accept(this);
+		visit(assignment.getTarget());
 		
-		if (assignment.getValue() != null)
-			assignment.getValue().accept(this);
+		visit(assignment.getValue());
 	}
 
 	@Override
 	public void visitConditionalExpression(
 			ConditionalExpression conditionalExpression) {
 		visitExpression(conditionalExpression);
-		if (conditionalExpression.getTest() != null)
-			conditionalExpression.getTest().accept(this);
-		if (conditionalExpression.getThenValue() != null)
-			conditionalExpression.getThenValue().accept(this);
-		if (conditionalExpression.getElseValue() != null)
-			conditionalExpression.getElseValue().accept(this);
+		visit(conditionalExpression.getTest());
+		visit(conditionalExpression.getThenValue());
+		visit(conditionalExpression.getElseValue());
 		
 	}
 
@@ -529,16 +470,14 @@ public class Scanner implements Visitor {
 	public void visitExpressionSequence(ExpressionSequence expressionSequence) {
 		visitExpression(expressionSequence);
 		for (Expression x : expressionSequence.getSequence())
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	@Override
 	public void visitSimpleIdentifier(SimpleIdentifier simpleIdentifier) {
 		visitIdentifier(simpleIdentifier);
 		for (Expression x : simpleIdentifier.getTemplateArguments())
-			if (x != null)
-				x.accept(this);
+			visit(x);
 	}
 
 	private void visitIdentifier(Identifier identifier) {
@@ -549,8 +488,25 @@ public class Scanner implements Visitor {
 	public void visitQualifiedIdentifier(QualifiedIdentifier qualifiedIdentifier) {
 		visitIdentifier(qualifiedIdentifier);
 		for (SimpleIdentifier i : qualifiedIdentifier.getIdentifiers())
-			if (i != null)
-				i.accept(this);
+			visit(i);
+	}
+
+	@Override
+	public void visitDeclarationStatement(
+			DeclarationStatement declarationStatement) {
+		visitStatement(declarationStatement);
+		visit(declarationStatement.getDeclaration());
+	}
+	
+	protected final void visit(Element e) {
+		if (e != null)
+			e.accept(this);
+	}
+
+	@Override
+	public void visitThrow(Throw t) {
+		visitStatement(t);
+		visit(t.getExpression());
 	}
 
 }
