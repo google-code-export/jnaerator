@@ -14,7 +14,7 @@ JNAerator ships with the following libraries :
  * [http://jedit.org/ jEdit] 2.2.1 syntax highlighting package ([http://www.arachnoid.com/arachnophilia/Documentation/README.txt released to the public domain], Copyright 1998-1999 Slava Pestov, Artur Biesiadowski, Clancy Malcolm, Jonathan Revusky, Juha Lindfors and Mike Dillon)
  * [http://jalico.googlecode.com/ JaLiCo], also written by Olivier Chafik (Apache 2.0 license).
  * [http://www.junit.org JUnit 4.4] ([http://junit.sourceforge.net/cpl-v10.html CPL license]), Copyright Kent Beck, Erich Gamma, and David Saff 
- * [http://download.eclipse.org/eclipse/downloads/drops/R-3.4.2-200902111700/details.php#JDTCORE Eclipse standalone compiler 3.5M6] is linked to by [http://ochafik.free.fr/Java/JNAeratorStudio.jnlp JNAeratorStudio.jnlp] but not bundled in jnaerator.jar. It is released under the [http://www.eclipse.org/legal/epl-v10.html Eclipse Public License 1.0] and its source is available on Eclipse's website.
+ * [http://download.eclipse.org/eclipse/downloads/drops/S-3.5RC4-200906051444/index.php#JDTCORE Eclipse standalone compiler 3.5RC4]. It is released under the [http://www.eclipse.org/legal/epl-v10.html Eclipse Public License 1.0] and its source is available on Eclipse's website.
 
 Please read the following sections for licensing details related to the aforementioned libraries.
 
