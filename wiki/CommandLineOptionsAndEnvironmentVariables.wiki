@@ -34,6 +34,10 @@
    Set the Java package in which all the output will reside (by default, set to the library name).
  * *-jar outputJar*
    Jar file where all generated sources and the compiled classes go.
+ * *-direct* 
+   Experimental JNA direct call support : creates classes with native methods instead of interfaces
+ * *-structsInLibrary*
+   Forces structures as inner classes of their library (otherwise, each top-level structure is defined as a top-level class in its library's package)
  * *-framework FrameworkName*
    Parse all the headers defined in a framework.
  * *-frameworksPath path1:path2...*
