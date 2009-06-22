@@ -1085,6 +1085,7 @@ public class DeclarationsConverter {
 			argName = baseArgName + (i == 1 ? "" : i + "");
 			i++;
 		} while (names.contains(argName) || TypeConversion.isJavaKeyword(argName));
+		names.add(argName);
 		return argName;
 	}
 
