@@ -34,6 +34,14 @@ The [http://jna.dev.java.net/ Java Native Access (JNA)] library is distributed u
 
 [https://jna.dev.java.net/servlets/ProjectDocumentList Its sources are available here].
 
+= Rococoa =
+
+Copyright (c) Duncan McGregor, Harald Kuhr, David Kocher and [https://rococoa.dev.java.net/rococoa-acknowledgements.html others]
+
+The [http://rococoa.dev.java.net/ Rococoa] library is distributed under the terms of the [http://www.gnu.org/copyleft/lesser.html LGPL license].
+
+[https://rococoa.dev.java.net/servlets/ProjectDocumentList Its sources are available here], and the [http://ochafik.free.fr/nativelibs4java/rococoa-jnaerator.zip modified sources used in JNAerator are available here].
+
 = ANTLR Runtime =
 
 [http://www.antlr.org/ ANTLR 3] and its runtime library are released under [http://www.antlr.org/license.html the following license] :
