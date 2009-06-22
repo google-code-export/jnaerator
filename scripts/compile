@@ -15,7 +15,7 @@ if [[ $? == 0 ]] ; then
 	
 	echo Copying resources
 	for f in $RESOURCES ; do 
-		mkdir -p "../classes/`echo $f| sed -E 's/\/[^\/]+$//g'`" 
+		mkdir -p "../classes/`echo $f| sed 's/\/[^\/]+$//g'`" 
 		cp "$f" "../classes/$f" ; 
 	done
 	cd ..

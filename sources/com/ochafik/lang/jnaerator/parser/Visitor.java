@@ -23,8 +23,10 @@ import com.ochafik.lang.jnaerator.parser.Declarator.FunctionDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOp;
 import com.ochafik.lang.jnaerator.parser.Statement.Block;
+import com.ochafik.lang.jnaerator.parser.Statement.DeclarationStatement;
 import com.ochafik.lang.jnaerator.parser.Statement.If;
 import com.ochafik.lang.jnaerator.parser.Statement.Return;
+import com.ochafik.lang.jnaerator.parser.Statement.Throw;
 import com.ochafik.lang.jnaerator.parser.Expression.ArrayAccess;
 import com.ochafik.lang.jnaerator.parser.Expression.AssignmentOp;
 import com.ochafik.lang.jnaerator.parser.Expression.Cast;
@@ -152,5 +154,9 @@ public interface Visitor {
 	void visitSimpleIdentifier(SimpleIdentifier simpleIdentifier);
 
 	void visitQualifiedIdentifier(QualifiedIdentifier qualifiedIdentifier);
+
+	void visitDeclarationStatement(DeclarationStatement declarationStatement);
+
+	void visitThrow(Throw t);
 	
 }

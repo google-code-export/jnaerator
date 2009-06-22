@@ -116,10 +116,13 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		protocol.setParentElement(this);
 		protocols.add(protocol);
 	}
+	public void setProtocols(Identifier... protocols) {
+		setProtocols(Arrays.asList(protocols));
+	}
 	public void setProtocols(List<Identifier> protocols) {
 		changeValue(this, this.protocols, protocols);
 	}
-	public void setType(Type type) {
+	public Struct setType(Type type) {
 		this.type = type;
 		switch (type) {
 		case ObjCClass:
@@ -136,6 +139,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		default:
 			break;
 		}
+		return this;
 	}
 	public Type getType() {
 		return type;

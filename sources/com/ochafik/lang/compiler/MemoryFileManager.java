@@ -21,6 +21,7 @@ package com.ochafik.lang.compiler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,14 +41,14 @@ import com.ochafik.util.listenable.Pair;
 
 public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 	public final Map<String, MemoryJavaFile> inputs = new HashMap<String, MemoryJavaFile>();
-	public final Map<String, MemoryFileObject> outputs = new HashMap<String, MemoryFileObject>();
+	public final Map<String, FileObject> outputs = new HashMap<String, FileObject>();
 
 	public void writeJar(OutputStream out, boolean outputSources, List<Pair<String, File>> additionalFiles) throws IOException {
 		JarOutputStream jout = new JarOutputStream(out);
 		if (outputSources)
 			for (MemoryFileObject o : inputs.values())
 				writeEntry(o, jout);
-		for (MemoryFileObject o : outputs.values())
+		for (FileObject o : outputs.values())
 			writeEntry(o, jout);
 		
 		if (additionalFiles != null)
@@ -61,18 +62,33 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 			}
 		jout.close();
 	}
-	protected void writeEntry(MemoryFileObject o, JarOutputStream jout) throws IOException {
-		byte[] c = o.getContent();
-		if (c == null)
-			return;
-
-		String path = o.getPath();
-		if (path.startsWith("file:///"))
-			path = path.substring("file:///".length());
-		JarEntry e = new JarEntry(path);
-		jout.putNextEntry(e);
-		jout.write(c);
-		jout.closeEntry();
+	protected void writeEntry(FileObject o, JarOutputStream jout) throws IOException {
+		if (o instanceof MemoryFileObject) {
+			MemoryFileObject mo = (MemoryFileObject)o;
+			byte[] c = mo.getContent();
+			if (c == null)
+				return;
+	
+			String path = mo.getPath();
+			if (path.startsWith("file:///"))
+				path = path.substring("file:///".length());
+			JarEntry e = new JarEntry(path);
+			jout.putNextEntry(e);
+			jout.write(c);
+			jout.closeEntry();
+		} else if (o instanceof URLFileObject) {
+			URLFileObject uo = (URLFileObject)o;
+			String path = uo.url.getFile();
+			if (path.startsWith("/"))
+				path = path.substring(1);
+			JarEntry e = new JarEntry(path);
+			jout.putNextEntry(e);
+			InputStream in = uo.url.openStream();
+			IOUtils.readWrite(in, jout);
+			in.close();
+			jout.closeEntry();
+		} else
+			throw new UnsupportedOperationException("Dunno how to deal with " + o);
 	}
 	public MemoryFileManager(JavaFileManager fm) {
 		super(fm);
@@ -125,7 +141,7 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	@Override
 	public FileObject getFileForOutput(Location location, String packageName, String relativeName, FileObject sibling) throws IOException {
 //		System.out.println("getFileForOutput(relativeName = " + relativeName + ")");
-		MemoryFileObject out = outputs.get(relativeName);
+		FileObject out = outputs.get(relativeName);
 		if (out == null) {
 			out = new MemoryFileObject(relativeName, (String)null);
 			outputs.put(relativeName, out);

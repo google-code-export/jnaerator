@@ -74,9 +74,9 @@ public class JNAeratorConfig {
 	public final JNAeratorConfig.PreprocessorConfig preprocessorConfig = new JNAeratorConfig.PreprocessorConfig();
 	public boolean followIncludes = false;
 	public boolean logPreProcessedSources, logMacros;
+	public boolean useJNADirectCalls = false;
+	public boolean putTopStructsInSeparateFiles = true;
 	public String entryName;
-	
-	//List<File> files = new ArrayList<File>();
 	
 	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
 	

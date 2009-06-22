@@ -18,17 +18,11 @@ struct S {
 import test.*;
 import static test.TestLibrary.*;
 
-new U(0);
-new U(0f);
-new U((ByteByReference)null);
-new U.ByValue(0);
-new U.ByValue(0f);
-new U.ByValue((ByteByReference)null);
-new U.ByReference(0);
-new U.ByReference(0f);
-new U.ByReference((ByteByReference)null);
+U c 			 = new U(0).clone();
+U.ByValue bv 	 = new U(0f).byValue();
+U.ByReference br = new U((ByteByReference)null).byReference();
 
-new S(0, 0f, 0.0);
-new S.ByValue(0, 0f, 0.0);
-new S.ByReference(0, 0f, 0.0);
+S sc 			  = new S(0, 0f, 0.0).clone();
+S.ByValue sbv 	  = new S(0, 0f, 0.0).byValue();
+S.ByReference sbr = new S(0, 0f, 0.0).byReference();
 

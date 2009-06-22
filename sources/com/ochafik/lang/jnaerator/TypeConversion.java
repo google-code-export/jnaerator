@@ -179,6 +179,7 @@ public class TypeConversion {
 		prim("SInt32", JavaPrim.Int);
 		prim("UInt32", JavaPrim.Int);
 		prim("GLint", JavaPrim.Int);
+		prim("GLuint", JavaPrim.Int);
 		prim("GLenum", JavaPrim.Int);
 		prim("GLsizei", JavaPrim.Int);
 		prim("__darwin_size_t", JavaPrim.Int);
@@ -525,10 +526,13 @@ public class TypeConversion {
 				return null;
 			s = (Struct)td;
 			name = result.declarationsConverter.getActualTaggedTypeName((TaggedTypeRef)pair.getFirst().getValueType());
+			
+			return findRef(name, s, libraryClassName, !result.config.putTopStructsInSeparateFiles);
 		} else {
-			name = result.declarationsConverter.getActualTaggedTypeName(s);
+			return result.getTaggedTypeIdentifierInJava(s);
+			//name = result.declarationsConverter.getActualTaggedTypeName(s);
 		}
-		return findRef(name, s, libraryClassName);
+		
 	}
 //	public String find(String name, Element e, String callerLibraryClass) {
 //		if (e == null)
@@ -543,12 +547,21 @@ public class TypeConversion {
 		return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
 		//return member; //TODODODODODODODODOoOOOOO
 	}
-	public Identifier findRef(Identifier name, Element e, Identifier libraryClassName) {
+	public Identifier findRef(Identifier name, Element e, Identifier libraryClassName, boolean inLibClass) {
 		if (e == null || !name.isPlain())
 			return null;
 		String library = result.getLibrary(e);
 		if (library == null)
 			return null;
+		
+//		e = e.getParentElement();
+		Struct parentStruct = e instanceof Struct ? (Struct)e : e.findParentOfType(Struct.class);
+		if (!inLibClass && parentStruct != null) {
+			if (parentStruct == e)
+				return ident(result.getLibraryPackage(library), name);
+			
+			return ident(result.getTaggedTypeIdentifierInJava(parentStruct), name);
+		}
 		return libMember(result.getLibraryClassFullName(library), libraryClassName, name);
 	}
 	public SimpleTypeRef findEnum(Identifier name, Identifier libraryClassName) {
@@ -758,8 +771,8 @@ public class TypeConversion {
 						case PrimitiveParameter:
 						case ReturnType:
 						case PrimitiveReturnType:
-							return typeRef(tr);
 						case FieldType:
+							return typeRef(tr);
 						case StaticallySizedArrayField:
 						case ExpressionType:
 						default:
@@ -825,7 +838,9 @@ public class TypeConversion {
 			 				switch (conversionMode) {
 								case ExpressionType:
 								case FieldType:
-									convArgType = typeRef(ident(structRef, ident("ByReference")));
+									convArgType = valueType instanceof TypeRef.ArrayRef ?
+											typeRef(structRef) :
+											typeRef(ident(structRef, ident("ByReference")));
 									if (valueType instanceof Pointer)
 										return convArgType;
 									break;
@@ -935,6 +950,7 @@ public class TypeConversion {
 			if (structRef != null) {
 				switch (conversionMode) {
 				case PointedValue:
+				case FieldType:
 					return typeRef(structRef);
 				default:
 					return typeRef(ident(structRef, "ByValue"));

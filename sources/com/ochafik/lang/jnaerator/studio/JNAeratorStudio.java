@@ -481,7 +481,7 @@ public class JNAeratorStudio extends JPanel {
 				if (diagnostic.getKind() == Kind.ERROR)
 				//diagnostic.getKind()
 				//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
-					sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getLineNumber() + " in " + diagnostic.getSource() + "\n\t" + diagnostic.getMessage(getLocale()));//.toUri());
+					sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(getLocale()));//.toUri());
 			}
 			if (sb.length() > 0) {
 				//System.out.println(sb);
