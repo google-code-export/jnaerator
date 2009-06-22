@@ -9,7 +9,7 @@ JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/
 JNAerator ships with the following libraries :
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : [http://code.google.com/p/jnaerator/source/browse/trunk/#trunk/libraries/anarres patched with a few fixes and enhancements (all contributed back)]
  * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license, Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others) : [http://code.google.com/p/jnaerator/source/list?path=/trunk/libraries/jna/src/com/sun/jna/Structure.java patched] with support for bit fields (TODO: finalize tests and contribute back to JNA)
- * [https://rococoa.dev.java.net/ Rococoa] (LGPL license, Copyright Duncan McGregor... TODO) : [http://ochafik.free.fr/nativelibs4java/rococoa-jnaerator.zip slightly modified to make NSObject an abstract class]
+ * [https://rococoa.dev.java.net/ Rococoa] (LGPL license, Copyright Duncan McGregor and others, see below) : [http://ochafik.free.fr/nativelibs4java/rococoa-jnaerator.zip slightly modified to make NSObject an abstract class]
  * [http://www.antlr.org/ ANTLR's runtime] (BSD license, Copyright (c) 2003-2008, Terence Parr) : unmodified
  * [http://jedit.org/ jEdit] 2.2.1 syntax highlighting package ([http://www.arachnoid.com/arachnophilia/Documentation/README.txt released to the public domain], Copyright 1998-1999 Slava Pestov, Artur Biesiadowski, Clancy Malcolm, Jonathan Revusky, Juha Lindfors and Mike Dillon)
  * [http://jalico.googlecode.com/ JaLiCo], also written by Olivier Chafik (Apache 2.0 license).
