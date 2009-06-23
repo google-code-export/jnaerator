@@ -50,7 +50,11 @@ import com.ochafik.util.CompoundCollection;
 include com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data
  */
 public class ObjectiveCGenerator {
-	String classClassName = "_class_", classInstanceName = "_CLASS_", classInstanceGetterName = "_getCLASS_";
+	String 
+		classClassName = "_class_", 
+		classInterfaceNameInCategoriesAndProtocols = "_static_", 
+		classInstanceName = "_CLASS_", 
+		classInstanceGetterName = "_getCLASS_";
 	boolean AUTO_RELEASE_IN_FACTORIES = false;
 
 	static Map<String, Set<String>> methodsExcludedFromStaticForwarding;
@@ -101,28 +105,30 @@ public class ObjectiveCGenerator {
 		if (struct == null)
 			return null;
 		
+		String library = result.getLibrary(struct);
+		Identifier javaPackage = result.getLibraryPackage(library);
+		
 		if (struct.getType() == Struct.Type.ObjCClass) {
 			String name = String.valueOf(struct.getTag());
 			if (name.equals("NSObject"))
-				return ident(NSObject.class.getPackage().getName().split("\\."));
-			if (name.equals("NSClass"))
-				return ident(NSClass.class.getPackage().getName().split("\\."));
+				javaPackage = ident(NSObject.class.getPackage().getName().split("\\."));
+			else if (name.equals("NSClass"))
+				javaPackage = ident(NSClass.class.getPackage().getName().split("\\."));
 			else if (name.equals("NSString"))
-				return ident(NSString.class.getPackage().getName().split("\\."));
+				javaPackage = ident(NSString.class.getPackage().getName().split("\\."));
 		}
 		
-		String library = result.getLibrary(struct);
-		Identifier javaPackage = result.getLibraryPackage(library);
 		if (struct.getType() == Type.ObjCProtocol)
 			javaPackage = ident(javaPackage, "protocols");
-		
+		else if (struct.getCategoryName() != null)
+			javaPackage = ident(javaPackage, "categories");
 		return javaPackage;
 	}
 	public Identifier getFullClassName(Struct struct) {
 		if (struct == null)
 			return null;
 		Identifier javaPackage = getPackageName(struct);
-		return ident(javaPackage, struct.getTag());
+		return ident(javaPackage, struct.getCategoryName() == null ? struct.getTag().clone() : ident(struct.getCategoryName()));
 	}
 	public void generateObjectiveCClasses() throws IOException {
 		for (Struct in : Result.getMap(result.classes, Type.ObjCClass).values()) {
@@ -133,19 +139,11 @@ public class ObjectiveCGenerator {
 		}
 	}
 	public void outputObjectiveCClass(Struct in) throws IOException {
-		Identifier javaPackage = getPackageName(in);
 		Identifier fullClassName = getFullClassName(in);
-		PrintWriter out = result.classOutputter.getClassSourceWriter(fullClassName.toString());
-		if (javaPackage != null)
-			out.println("package " + javaPackage + ";");
 		
-//		for (String library : result.libraries) {
-//			String p = library == null ? null : result.javaPackageByLibrary.get(library);
-//			if (p == null || p.equals(javaPackage))
-//				continue;
-//			out.println("import " + p + ".*;");
-//		}
-	
+		PrintWriter out = result.classOutputter.getClassSourceWriter(fullClassName.toString());
+		result.printJavaHeader(getPackageName(in), out);
+		
 		Signatures signatures = new Signatures();
 
 		Struct s = generateObjectiveCClass(in, signatures);
@@ -158,14 +156,14 @@ public class ObjectiveCGenerator {
 		NSObjectIdent = ident(NSObject.class), 
 		NSClassIdent = ident(NSClass.class);
 	public Struct generateObjectiveCClass(Struct in, Signatures signatures) throws IOException {
-		boolean isProtocol = in.getType() == Type.ObjCProtocol;
+		boolean isProtocol = in.getType() == Type.ObjCProtocol, isCategory = in.getCategoryName() != null;
 		
 		Struct instanceStruct = new Struct().addModifiers(Modifier.Public);
 		
 		instanceStruct.setCommentBefore(in.getCommentBefore());
 		instanceStruct.addToCommentBefore(in.getCommentAfter());
-		instanceStruct.setTag(in.getTag().clone());
-		if (isProtocol)
+		instanceStruct.setTag(isCategory ? ident(in.getCategoryName()) : in.getTag().clone());
+		if (isProtocol || isCategory)
 			instanceStruct.setType(Type.JavaInterface);
 		else
 			instanceStruct.addModifiers(Modifier.Abstract).setType(Type.JavaClass);
@@ -176,13 +174,25 @@ public class ObjectiveCGenerator {
 		classStruct.addModifiers(Modifier.Public, Modifier.Abstract);
 		
 		List<Identifier> 
+			interfacesForInstance = new ArrayList<Identifier>(), 
+			interfacesForClass = new ArrayList<Identifier>();
+
+		List<Identifier> 
 			parentsForInstance = new ArrayList<Identifier>(in.getParents()),
-			parentsForClass = new ArrayList<Identifier>(in.getParents());
-		if (parentsForInstance.isEmpty() && !isProtocol && !in.getTag().equals(NSObjectIdent))
+			parentsForClass = new ArrayList<Identifier>();
+
+		if (parentsForInstance.isEmpty() && !(isProtocol || isCategory) && !in.getTag().equals(NSObjectIdent))
 			parentsForInstance.add(NSObjectIdent);
-//		if (parentsForClass.isEmpty())
-		parentsForClass.clear();
-			parentsForClass.add(NSClassIdent);
+		
+		parentsForClass.add(NSClassIdent);
+		
+		if (!isCategory)
+			for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
+				Identifier catId = getFullClassName(catIn);
+				interfacesForInstance.add(catId);
+				interfacesForClass.add(ident(catId, classInterfaceNameInCategoriesAndProtocols));
+				outputObjectiveCClass(catIn);
+			}	
 				
 		for (Identifier p : parentsForInstance) {
 			Identifier id = result.typeConverter.findObjCClassIdent(p);
@@ -192,36 +202,40 @@ public class ObjectiveCGenerator {
 		for (Identifier p : parentsForClass) {
 			Identifier id = p == NSClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
 			if (id != null)
-				classStruct.addParent(
-						id.clone());
-						//ident(id.clone(), classClassName));
+				classStruct.addParent(id.clone());
+		}
+		for (Identifier id : interfacesForClass) {
+			classStruct.addProtocol(id);
 		}
 		
 		for (Identifier p : in.getProtocols()) {
 			Identifier id = getFullClassName(getStruct(p, Type.ObjCProtocol));
-			if (id != null) {
-				if (isProtocol)
-					instanceStruct.addParent(id);
-				else
-					instanceStruct.addProtocol(id);
-			}
+			if (id != null)
+				interfacesForInstance.add(id);
+		}
+		for (Identifier id : interfacesForInstance) {
+			if (isProtocol || isCategory)
+				instanceStruct.addParent(id);
+			else
+				instanceStruct.addProtocol(id);
 		}
 		
-		CompoundCollection<Declaration> declarations = new CompoundCollection<Declaration>();
-		declarations.addComponent(in.getDeclarations());
-		for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
-			for (Declaration d : catIn.getDeclarations())
-				d.addToCommentBefore("From category " + catIn.getCategoryName());
-			declarations.addComponent(catIn.getDeclarations());
-			
-			if (catIn.getCommentBefore() != null)
-				instanceStruct.addToCommentBefore("<p>Category " + catIn.getTag()+ " : " + catIn.getCommentBefore() +"</p>");
-		}
+//		CompoundCollection<Declaration> declarations = new CompoundCollection<Declaration>();
+//		declarations.addComponent(in.getDeclarations());
+//		for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
+//			for (Declaration d : catIn.getDeclarations())
+//				d.addToCommentBefore("From category " + catIn.getCategoryName());
+//			declarations.addComponent(catIn.getDeclarations());
+//			
+//			if (catIn.getCommentBefore() != null)
+//				instanceStruct.addToCommentBefore("<p>Category " + catIn.getTag()+ " : " + catIn.getCommentBefore() +"</p>");
+//		}
 		
 		
 		StoredDeclarations classHolder = new VariablesDeclaration();
-		if (!isProtocol)
+		if (!(isProtocol || isCategory))
 			classHolder.addModifiers(Modifier.Private, Modifier.Static);
+		
 		classHolder.setValueType(typeRef(classClassName));
 		
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
@@ -229,7 +243,7 @@ public class ObjectiveCGenerator {
 		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
 		
 		Function classGetter;
-		if (isProtocol) {
+		if (isProtocol || isCategory) {
 			classGetter = null;
 			classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName, call));
 		} else {
@@ -257,17 +271,26 @@ public class ObjectiveCGenerator {
 			));
 		}
 		
-		if (!isProtocol)
-			addAllocIfMissing(in);
-		outputMembers(signatures, in, instanceStruct, classStruct, declarations, isProtocol);
+		Struct classInterfaceStruct = null, structThatReceivesStaticMethods;
+		if (isProtocol || isCategory) {
+			structThatReceivesStaticMethods = classInterfaceStruct = new Struct();
+			classInterfaceStruct.setType(Struct.Type.JavaInterface);
+			classInterfaceStruct.setTag(ident(classInterfaceNameInCategoriesAndProtocols));
+			classStruct.addProtocol(ident(classInterfaceNameInCategoriesAndProtocols));
+		} else
+			structThatReceivesStaticMethods = classStruct;
 		
-		if (!classStruct.getDeclarations().isEmpty()) {
+		outputMembers(signatures, in, instanceStruct, structThatReceivesStaticMethods, in.getDeclarations(), isProtocol || isCategory);
+		
+		if (!(isProtocol || isCategory))
+			addAllocIfMissing(in);
+		
+		instanceStruct.addDeclaration(decl(classInterfaceStruct));
+		if (!isCategory && !structThatReceivesStaticMethods.getDeclarations().isEmpty()) {
 			instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
-			instanceStruct.addDeclaration(classHolder);
 			instanceStruct.addDeclaration(classGetter);
-			
-		}
-			
+			instanceStruct.addDeclaration(classHolder);
+		}	
 		return instanceStruct;
 	}
 
@@ -290,8 +313,9 @@ public class ObjectiveCGenerator {
 			in.addDeclaration(new Function(Function.Type.ObjCMethod, ident("alloc"), typeRef(in.getTag())).addModifiers(Modifier.Static));
 		
 	}
+	
 	private void outputMembers(Signatures signatures, Struct in, Struct instanceStruct,
-			Struct classStruct, CompoundCollection<Declaration> declarations, boolean isProtocol) throws IOException {
+			Struct classStruct, List<Declaration> declarations, boolean isProtocol) throws IOException {
 		
 		Identifier fullClassName = getFullClassName(in);
 		

@@ -498,9 +498,10 @@ public class Scanner implements Visitor {
 		visit(declarationStatement.getDeclaration());
 	}
 	
-	protected final void visit(Element e) {
+	protected Scanner visit(Element e) {
 		if (e != null)
 			e.accept(this);
+		return this;
 	}
 
 	@Override

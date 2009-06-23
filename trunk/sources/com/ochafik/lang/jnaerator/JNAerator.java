@@ -178,7 +178,7 @@ public class JNAerator {
 //						"-framework", "IOKit",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
+						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
 //						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
@@ -415,7 +415,7 @@ public class JNAerator {
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()));//.toUri());
+				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
 			}
 			//System.out.println(sb);
 			throw new SyntaxException(sb.toString());
