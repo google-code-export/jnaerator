@@ -280,13 +280,13 @@ public class ObjectiveCGenerator {
 		} else
 			structThatReceivesStaticMethods = classStruct;
 		
-		outputMembers(signatures, in, instanceStruct, structThatReceivesStaticMethods, in.getDeclarations(), isProtocol || isCategory);
-		
 		if (!(isProtocol || isCategory))
 			addAllocIfMissing(in);
 		
+		outputMembers(signatures, in, instanceStruct, structThatReceivesStaticMethods, in.getDeclarations(), isProtocol || isCategory);
+		
 		instanceStruct.addDeclaration(decl(classInterfaceStruct));
-		if (!isCategory && !structThatReceivesStaticMethods.getDeclarations().isEmpty()) {
+		if (!isCategory) {// && !structThatReceivesStaticMethods.getDeclarations().isEmpty()) {
 			instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
 			instanceStruct.addDeclaration(classGetter);
 			instanceStruct.addDeclaration(classHolder);
