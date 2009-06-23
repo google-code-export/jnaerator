@@ -95,7 +95,6 @@ import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.ptr.ShortByReference;
-import com.sun.org.apache.xml.internal.utils.UnImplNode;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 

@@ -46,7 +46,6 @@ import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;
 import com.sun.jna.Pointer;
-import com.sun.tools.corba.se.idl.InvalidArgument;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class DeclarationsConverter {
