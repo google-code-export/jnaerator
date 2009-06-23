@@ -116,8 +116,10 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		protocol.setParentElement(this);
 		protocols.add(protocol);
 	}
-	public void setProtocols(Identifier... protocols) {
-		setProtocols(Arrays.asList(protocols));
+	public void addProtocols(Identifier... protocols) {
+		List<Identifier> l = new ArrayList<Identifier>(getProtocols());
+		l.addAll(Arrays.asList(protocols));
+		setProtocols(l);
 	}
 	public void setProtocols(List<Identifier> protocols) {
 		changeValue(this, this.protocols, protocols);

@@ -510,4 +510,10 @@ public class Scanner implements Visitor {
 		visit(t.getExpression());
 	}
 
+	@Override
+	public void visitProperty(Property property) {
+		visitDeclaration(property);
+		visit(property.getDeclaration());
+	}
+
 }

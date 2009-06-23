@@ -32,6 +32,7 @@ public abstract class Statement extends Element {
 		public void setExpression(Expression expression) {
 			this.expression = changeValue(this, this.expression, expression);
 		}
+		public Throw() {}
 		public Throw(Expression expression) {
 			setExpression(expression);
 		}
@@ -73,7 +74,7 @@ public abstract class Statement extends Element {
 		public Declaration getDeclaration() {
 			return declaration;
 		}
-		
+		public DeclarationStatement() {}
 		public DeclarationStatement(Declaration declaration) {
 			setDeclaration(declaration);
 		}

@@ -443,12 +443,12 @@ forwardClassDecl returns [List<Declaration> declarations]
 		';' 
 	;
 	
-functionPointerVarDecl  returns [List<? extends Declaration> declarations]
+functionPointerVarDecl  returns [Declaration decl]
 	:	tr=mutableTypeRef {
 			($tr.type instanceof FunctionSignature) && 
 			((FunctionSignature)$tr.type).getFunction().getName() != null
 		}? {
-			$declarations = Arrays.asList(new FunctionPointerDeclaration(((FunctionSignature)$tr.type)));
+			$decl = new FunctionPointerDeclaration(((FunctionSignature)$tr.type));
 		}
 		';'
 	;
@@ -562,14 +562,9 @@ objCClassDef returns [Struct struct]
 				'@private' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Private); } | 
 				'@protected' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Protected); } |
 				(
-					(
-						fv=varDecl ';' {
-							$struct.addDeclaration($fv.decl);
-						} |
-						functionPointerVarDecl { 
-							$struct.addDeclarations($functionPointerVarDecl.declarations); 
-						}
-					)
+					functionPointerOrSimpleVarDecl ';' {
+						$struct.addDeclaration($functionPointerOrSimpleVarDecl.decl);
+					}
 				)
 			)* 
 			'}'
@@ -578,6 +573,9 @@ objCClassDef returns [Struct struct]
 		(
 			objCMethodDecl { 
 				$struct.addDeclaration($objCMethodDecl.function); 
+			} |
+			objCPropertyDecl {
+				$struct.addDeclaration($objCPropertyDecl.property); 
 			} |
 			typeDef {
 				$struct.addDeclaration($typeDef.typeDef); 
@@ -589,6 +587,23 @@ objCClassDef returns [Struct struct]
 		'@end'
 	;						
 
+functionPointerOrSimpleVarDecl returns [Declaration decl]
+	:
+		fv=varDecl {
+			$decl = $fv.decl;
+		} |
+		functionPointerVarDecl { 
+			$decl = $functionPointerVarDecl.decl; 
+		}
+	;
+					
+objCPropertyDecl returns [Property property]
+	:
+		'@property' functionPointerOrSimpleVarDecl ';' {
+			$property = new Property($functionPointerOrSimpleVarDecl.decl);
+		}
+	;
+	
 objCMethodDecl returns [Function function]
 	:	{ 	
 			$function = new Function(); 
@@ -613,7 +628,7 @@ objCMethodDecl returns [Function function]
 				}
 			')'
 		)?
-		methodName=IDENTIFIER { 
+		methodName=(IDENTIFIER | 'class') { 
 			$function.setName(new SimpleIdentifier($methodName.text)); 
 			$function.setCommentAfter(getCommentAfterOnSameLine($methodName.getTokenIndex()));
 		} 
@@ -689,7 +704,9 @@ scope Symbols;
 	}
 }
 	:	
-		{ next("struct", "class", "union") }?=> typeToken=IDENTIFIER
+		//{ next("struct", "class", "union") }?=> typeToken=IDENTIFIER
+		//typeToken=('struct' | 'union' | { next("class") }?=> IDENTIFIER)
+		typeToken=('struct' | 'union' | 'class')
 		(
 			m1=modifiers { modifiers.addAll($m1.modifiers); }
 			(

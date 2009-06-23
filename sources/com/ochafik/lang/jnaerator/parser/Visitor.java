@@ -158,5 +158,7 @@ public interface Visitor {
 	void visitDeclarationStatement(DeclarationStatement declarationStatement);
 
 	void visitThrow(Throw t);
+
+	void visitProperty(Property property);
 	
 }
