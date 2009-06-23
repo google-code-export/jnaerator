@@ -594,7 +594,7 @@ public class JNAerator {
 			interf.setTag(libraryClassName);
 			Identifier libSuperInter = ident(Library.class);
 			if (result.config.useJNADirectCalls) {
-				interf.setProtocols(libSuperInter);
+				interf.addProtocols(libSuperInter);
 				interf.setType(Type.JavaClass);
 			} else {
 				interf.setParents(libSuperInter);
