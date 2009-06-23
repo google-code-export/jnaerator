@@ -689,7 +689,7 @@ scope Symbols;
 	}
 }
 	:	
-		typeToken=('struct' | 'class' | 'union')
+		{ next("struct", "class", "union") }?=> typeToken=IDENTIFIER
 		(
 			m1=modifiers { modifiers.addAll($m1.modifiers); }
 			(
@@ -1149,26 +1149,6 @@ argList returns [List<Arg> args, boolean isObjC]
 		)?
 		cp=')'
 	;
-
-/*
-primitiveTypeName returns [String name, int line]
-	:	
-		t=(
-			'long' |
-			'int' |
-			'short' |
-			'double' |
-			'float' |
-			'char' |
-			'bool' |
-			'void' |
-			'__int8' | '__int16' | '__int32' | '__int64'
-		) {
-			$name = $t.text;
-			$line = getLine($t);
-		}
-	;
-//*/
 
 typeRefCore returns [TypeRef type]
 @init {

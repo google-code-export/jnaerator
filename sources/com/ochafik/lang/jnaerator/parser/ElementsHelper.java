@@ -107,7 +107,7 @@ public class ElementsHelper {
 	}
 	
 	public static TaggedTypeRefDeclaration decl(TaggedTypeRef tr) {
-		return new TaggedTypeRefDeclaration(tr);
+		return tr == null ? null : new TaggedTypeRefDeclaration(tr);
 	}
 /*
 

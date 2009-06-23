@@ -74,10 +74,6 @@ public class PrintScanner extends Scanner {
 	protected void addException(Exception ex) {
 		exceptions.add(ex);
 	}
-	public PrintScanner visit(Element e) {
-		e.accept(this);
-		return this;
-	}
 	
 	@Override
 	public String toString() {
