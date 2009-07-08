@@ -172,7 +172,7 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
 //						"-library", "objc",
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-						"-framework", "Foundation",
+//						"-framework", "Foundation",
 //						"-framework", "AppKit",
 //						"-framework", "CoreFoundation",
 //						"-framework", "IOKit",
@@ -265,7 +265,7 @@ public class JNAerator {
 				} else if (arg.startsWith("-D")) {
 					int k = arg.indexOf('=');
 					String key = arg.substring("-D".length(), k > 0 ? k : arg.length()),
-						value = k > 0 ? arg.substring(k) : "";
+						value = k > 0 ? arg.substring(k + 1) : "";
 					config.preprocessorConfig.macros.put(key, value);
 //				} else if (arg.equals("-auto")) {
 //					auto = true;
