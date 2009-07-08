@@ -71,7 +71,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.Diagnostic.Kind;
 
-import org.rococoa.foundation.NSClass;
+import org.rococoa.Rococoa;
 
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
@@ -474,7 +474,7 @@ public class JNAeratorStudio extends JPanel {
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
 			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", getDir("cache"), Pointer.class, JNAerator.class, NSClass.class, Mangling.class);
+		CompilerUtils.compile(c, mfm, diagnostics, "1.5", getDir("cache"), Pointer.class, JNAerator.class, Rococoa.class, Mangling.class);
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {

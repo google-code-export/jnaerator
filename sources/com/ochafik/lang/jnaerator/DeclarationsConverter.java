@@ -26,7 +26,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import org.rococoa.foundation.NSObject;
+import org.rococoa.cocoa.foundation.NSObject;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
 import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
@@ -219,6 +219,9 @@ public class DeclarationsConverter {
 	}
 	
 	EmptyDeclaration skipDeclaration(Element e, String... preMessages) {
+		if (result.config.limitComments)
+			return null;
+		
 		List<String> mess = new ArrayList<String>();
 		if (preMessages != null)
 			mess.addAll(Arrays.asList(preMessages));
@@ -351,6 +354,9 @@ public class DeclarationsConverter {
 			}
 			
 			if ((prim == null || tr == null) && signalErrors) {
+				if (result.config.limitComments)
+					return null;
+				
 				return new EmptyDeclaration("Failed to infer type of " + converted);
 			} else if (prim != JavaPrim.Void && tr != null) {
 //				if (prim == JavaPrim.Int)
@@ -551,7 +557,8 @@ public class DeclarationsConverter {
 				}
 			}
 		} catch (UnsupportedConversionException ex) {
-			out.addDeclaration(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
+			if (!result.config.limitComments)
+				out.addDeclaration(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
 		}
 	}
 
@@ -818,7 +825,8 @@ public class DeclarationsConverter {
 				iChild[0]++;
 			}
 		} catch (UnsupportedConversionException e) {
-			out.addDeclaration(new EmptyDeclaration(e.toString()));
+			if (!result.config.limitComments)
+				out.addDeclaration(new EmptyDeclaration(e.toString()));
 		}
 	}
 	TaggedTypeRefDeclaration publicStaticClassDecl(Identifier name, Identifier parentName, Struct.Type type, Element toCloneCommentsFrom, Identifier... interfaces) {
@@ -1027,6 +1035,9 @@ public class DeclarationsConverter {
 		return null;
 	}
 	String getFileCommentContent(Element e) {
+		if (result.config.limitComments)
+			return null;
+		
 		String f = Element.getFileOfAscendency(e);
 		if (f == null && e != null && e.getElementLine() >= 0)
 			return "<i>native declaration : line " + e.getElementLine() + "</i>";

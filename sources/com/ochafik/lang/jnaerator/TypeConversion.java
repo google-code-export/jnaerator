@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.rococoa.foundation.NSClass;
-import org.rococoa.foundation.NSObject;
+import org.rococoa.cocoa.foundation.NSClass;
+import org.rococoa.cocoa.foundation.NSObject;
 
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;

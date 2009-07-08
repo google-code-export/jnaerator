@@ -44,8 +44,8 @@ import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 import org.rococoa.Rococoa;
-import org.rococoa.foundation.NSClass;
-import org.rococoa.foundation.NSObject;
+import org.rococoa.cocoa.foundation.NSClass;
+import org.rococoa.cocoa.foundation.NSObject;
 
 import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;
@@ -124,7 +124,9 @@ public class JNAerator {
 		System.out.println("\t\tAdd include path.");
 		System.out.println("\t-v");
 		System.out.println("\t\tVerbose mode.");
-		System.out.println("\t-macrosOut");
+		System.out.println("\t-limitComments");
+		System.out.println("\t\tAvoid useless comments (source file + line, skipped items...)");
+		System.out.println("\t-macrosOut outFile");
 		System.out.println("\t\tDebug option that writes the preprocessor macros in a file (automatically set when -v is used).");
 		System.out.println("\t-preprocessingOut");
 		System.out.println("\t\tDebug option that writes the preprocessor output in a file (automatically set when -v is used).");
@@ -287,6 +289,8 @@ public class JNAerator {
 					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args.get(++iArg).split(":")));
 				} else if (arg.equals("-v"))
 					config.verbose = true;
+				else if (arg.equals("-limitComments"))
+					config.limitComments = true;
 				else if (arg.equals("-noauto"))
 					auto = false;
 				else if (arg.equals("-direct"))
