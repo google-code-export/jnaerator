@@ -73,7 +73,7 @@ public class JNAeratorConfig {
 	
 	public final JNAeratorConfig.PreprocessorConfig preprocessorConfig = new JNAeratorConfig.PreprocessorConfig();
 	public boolean followIncludes = false;
-	public boolean logPreProcessedSources, logMacros;
+	public File preprocessingOutFile, macrosOutFile;
 	public boolean useJNADirectCalls = false;
 	public boolean putTopStructsInSeparateFiles = true;
 	public String entryName;
