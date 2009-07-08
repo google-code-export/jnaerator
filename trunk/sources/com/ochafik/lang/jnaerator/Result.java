@@ -28,10 +28,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.rococoa.foundation.FoundationLibrary;
-import org.rococoa.foundation.NSClass;
-import org.rococoa.foundation.NSObject;
-import org.rococoa.foundation.NSString;
+import org.rococoa.cocoa.foundation.FoundationLibrary;
+import org.rococoa.cocoa.foundation.NSClass;
+import org.rococoa.cocoa.foundation.NSInvocation;
+import org.rococoa.cocoa.foundation.NSMethodSignature;
+import org.rococoa.cocoa.foundation.NSObject;
+import org.rococoa.cocoa.foundation.NSString;
 
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -418,7 +420,11 @@ public class Result extends Scanner {
 
 
 	Class<?>[] overwrittenClassesThatNeedToKeepAllTheirMethods = new Class[] {
-		NSObject.class, NSClass.class, FoundationLibrary.class	
+		NSObject.class, 
+		NSClass.class,
+		NSMethodSignature.class,
+		NSInvocation.class,
+		FoundationLibrary.class	
 	};
 	public Struct notifyBeforeWritingClass(Identifier fullClassName, Struct interf, Signatures signatures) {
 		for (Class<?> c : overwrittenClassesThatNeedToKeepAllTheirMethods) {

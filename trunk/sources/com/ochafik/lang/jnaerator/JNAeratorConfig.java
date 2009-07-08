@@ -75,6 +75,7 @@ public class JNAeratorConfig {
 	public boolean followIncludes = false;
 	public File preprocessingOutFile, macrosOutFile;
 	public boolean useJNADirectCalls = false;
+	public boolean limitComments = false;
 	public boolean putTopStructsInSeparateFiles = true;
 	public String entryName;
 	
