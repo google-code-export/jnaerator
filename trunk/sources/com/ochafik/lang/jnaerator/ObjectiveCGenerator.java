@@ -88,9 +88,13 @@ public class ObjectiveCGenerator {
 		if (n != null && n.equals("NSObject") || n.equals("NSClass"))
 			return true;
 		
+		String sig = m.computeSignature(false);
+		if (DeclarationsConverter.getMethodsAndTheirSignatures(NSObject.class).getSecond().contains(sig))
+			return true;
+		
 		String cn = s.getTag() == null ? "" : s.getTag().toString();
 		Set<String> set = methodsExcludedFromStaticForwarding.get(cn);
-		return set != null && set.contains(m.computeSignature(true));
+		return set != null && set.contains(sig);
 	}
 	public ObjectiveCGenerator(Result result) {
 		this.result = result;
@@ -319,6 +323,9 @@ public class ObjectiveCGenerator {
 		
 		Identifier fullClassName = getFullClassName(in);
 		
+		Set<String> objSigs = DeclarationsConverter.getMethodsAndTheirSignatures(NSObject.class).getSecond(),
+			clasSigs = DeclarationsConverter.getMethodsAndTheirSignatures(NSClass.class).getSecond();
+		
 		int[] iChild = new int[1];
 		for (Declaration d : declarations) {
 			if (d instanceof Function) {
@@ -328,7 +335,8 @@ public class ObjectiveCGenerator {
 				
 				if (f.getModifiers().contains(Modifier.Static)) {
 					for (Declaration decl : decls) {
-						classStruct.addDeclaration(decl);
+						if (!add(classStruct, decl, signatures, objSigs, clasSigs))
+							continue;
 						
 						if (!isProtocol && decl instanceof Function)
 							instanceStruct.addDeclaration(createProxyCopy(f, (Function)decl));
@@ -338,7 +346,8 @@ public class ObjectiveCGenerator {
 					}
 				} else {
 					for (Declaration decl : decls) {
-						instanceStruct.addDeclaration(decl);
+						if (!add(instanceStruct, decl, signatures, objSigs))
+							continue;
 						
 						if (!isProtocol && decl instanceof Function) {
 							instanceStruct.addDeclaration(createCreateCopyFromInit((Function)decl, instanceStruct));
@@ -370,6 +379,17 @@ public class ObjectiveCGenerator {
 
 	}
 	
+	private boolean add(Struct classStruct, Declaration decl, Signatures signatures, Set<?>... additionalMethodSignatures) {
+		if (decl instanceof Function) {
+			String sig = ((Function)decl).computeSignature(false);
+			for (Set<?> sigs : additionalMethodSignatures)
+				if (sigs.contains(sig))
+					return false;
+			return signatures.methodsSignatures.add(sig);
+		}
+		classStruct.addDeclaration(decl);
+		return true;
+	}
 	/**
 	 * Create a createXXXWithYYY factory
 	 * @param meth
