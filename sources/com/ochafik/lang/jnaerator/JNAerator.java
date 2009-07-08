@@ -45,7 +45,6 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
 import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSClass;
-import org.rococoa.cocoa.foundation.NSObject;
 
 import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;
@@ -74,8 +73,9 @@ import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.net.URLUtils;
-import com.ochafik.util.listenable.Filter;
+import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Pair;
+import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -228,7 +228,16 @@ public class JNAerator {
 						args.remove(i + 1);
 					}
 					args.remove(i);
-					List<String> lines = ReadText.readLines(includedArgsFile);
+					List<String> lines = Arrays.asList(RegexUtils.regexReplace(Pattern.compile("\\$\\(([^)]+)\\)"), ReadText.readText(new File(includedArgsFile)), new Adapter<String[], String>() {
+						@Override
+						public String adapt(String[] value) {
+							String n = value[1];
+							String v = System.getProperty(n);
+							if (v == null)
+								v = System.getenv(n);
+							return v;
+						}
+					}).split("\n"));
 					int iAdd = i;
 					for (Iterator<String> it = lines.iterator(); it.hasNext();) {
 						String trl = it.next().trim();
