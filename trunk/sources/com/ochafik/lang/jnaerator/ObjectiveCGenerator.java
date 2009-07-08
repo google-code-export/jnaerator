@@ -44,7 +44,6 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
-import com.ochafik.util.CompoundCollection;
 
 /*
 include com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data

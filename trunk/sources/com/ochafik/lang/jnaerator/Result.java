@@ -55,7 +55,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Platform;
-import com.sun.jna.Union;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
