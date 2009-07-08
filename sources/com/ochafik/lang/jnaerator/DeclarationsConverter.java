@@ -193,13 +193,29 @@ public class DeclarationsConverter {
 		}
 	}
 
-	public void addMissingMethods(Class<?> originalLib, Signatures existingSignatures, Struct outputLib) {
-		for (Method m : originalLib.getDeclaredMethods()) {
-			Function f = Function.fromMethod(m);
-			String ms = f.computeSignature(false);
-			if (existingSignatures.methodsSignatures.add(ms))
-				outputLib.addDeclaration(f);
+	static Map<Class<?>, Pair<List<Pair<Function, String>>, Set<String>>> cachedForcedMethodsAndTheirSignatures;
+	
+	public static synchronized Pair<List<Pair<Function,String>>,Set<String>> getMethodsAndTheirSignatures(Class<?> originalLib) {
+		if (cachedForcedMethodsAndTheirSignatures == null)
+			cachedForcedMethodsAndTheirSignatures = new HashMap<Class<?>, Pair<List<Pair<Function, String>>,Set<String>>>();
+
+		Pair<List<Pair<Function, String>>, Set<String>> pair = cachedForcedMethodsAndTheirSignatures.get(originalLib);
+		if (pair == null) {
+			pair = new Pair<List<Pair<Function, String>>, Set<String>>(new ArrayList<Pair<Function, String>>(), new HashSet<String>());
+			for (Method m : originalLib.getDeclaredMethods()) {
+				Function f = Function.fromMethod(m);
+				String sig = f.computeSignature(false);
+				pair.getFirst().add(new Pair<Function, String>(f, sig));
+				pair.getSecond().add(sig);
+			}
 		}
+		return pair;
+	}
+	
+	public void addMissingMethods(Class<?> originalLib, Signatures existingSignatures, Struct outputLib) {
+		for (Pair<Function, String> f : getMethodsAndTheirSignatures(originalLib).getFirst())
+			if (existingSignatures.methodsSignatures.add(f.getSecond()))
+				outputLib.addDeclaration(f.getFirst().clone());
 	}
 	
 	EmptyDeclaration skipDeclaration(Element e, String... preMessages) {
