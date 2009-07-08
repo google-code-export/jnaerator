@@ -124,6 +124,10 @@ public class JNAerator {
 		System.out.println("\t\tAdd include path.");
 		System.out.println("\t-v");
 		System.out.println("\t\tVerbose mode.");
+		System.out.println("\t-macrosOut");
+		System.out.println("\t\tDebug option that writes the preprocessor macros in a file (automatically set when -v is used).");
+		System.out.println("\t-preprocessingOut");
+		System.out.println("\t\tDebug option that writes the preprocessor output in a file (automatically set when -v is used).");
 		System.out.println("\t-Dsymbol[=value]");
 		System.out.println("\t\tDefine a preprocessor symbol.");
 		System.out.println("\t-library name");
@@ -242,7 +246,7 @@ public class JNAerator {
 //			System.out.println(StringUtils.implode(args));
 			
 			final JNAeratorConfig config = new JNAeratorConfig();
-			config.logMacros = config.logPreProcessedSources = false;
+			//config.logMacros = config.logPreProcessedSources = false;
 			
 			List<String> frameworks = new ArrayList<String>();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
@@ -274,6 +278,10 @@ public class JNAerator {
 					config.rootPackageName = args.get(++iArg);
 				else if (arg.equals("-entry"))
 					config.entryName = args.get(++iArg);
+				else if (arg.equals("-macrosOut"))
+					config.macrosOutFile = new File(args.get(++iArg));
+				else if (arg.equals("-preprocessingOut"))
+					config.preprocessingOutFile = new File(args.get(++iArg));
 				else if (arg.equals("-frameworksPath")) {
 					config.preprocessorConfig.frameworksPath.clear();
 					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args.get(++iArg).split(":")));
@@ -366,6 +374,13 @@ public class JNAerator {
 				try {
 					config.addRootDir(new File(i));
 				} catch (Exception ex) {}
+			}
+			
+			if (config.verbose) {
+				if (config.macrosOutFile == null)
+					config.macrosOutFile = new File("_jnaerator_debug.macros.cpp");
+				if (config.preprocessingOutFile == null)
+					config.preprocessingOutFile = new File("_jnaerator_debug.preprocessed.c");
 			}
 			
 			if (auto)
