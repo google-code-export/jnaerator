@@ -4,7 +4,7 @@
 
 = New features =
 
-  # *OK, done (-direct switch)* generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
+  # *IN PROGRESS (-direct switch)* generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
 {{{
 public class MyLibrary {
 	public static class MyStruct extends Structure {
