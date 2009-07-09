@@ -12,7 +12,7 @@ java -jar jnaerator.jar -test
 }}}
 
 
-= JNAerated Artifacts Tests =
+= JNAerated Artifacts Compilation Tests =
 
 These are launched by [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/JNAerationTests.java JNAerationTests.java] and operate on the `*`.test files in the [http://code.google.com/p/jnaerator/source/browse/trunk/sources/com/ochafik/lang/jnaerator/tests JNAerator tests folder].
 
