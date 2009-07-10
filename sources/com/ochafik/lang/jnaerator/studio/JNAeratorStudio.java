@@ -47,6 +47,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -110,6 +111,9 @@ public class JNAeratorStudio extends JPanel {
 	JLabel classCountLabel = new JLabel("JNAerated class :");
 //	JList resultsList = new JList();
 	JComboBox resultsListCombo = new JComboBox();
+	JCheckBox directCallingCb = new JCheckBox("Direct Calling (experimental)", false),
+		structsAsTopLevelClassesCb = new JCheckBox("Structs as Top-Level classes", true);
+		
 	JTextArea errorsArea = new JTextArea();
 	JSplitPane sp;
 	ListenableList<ResultContent> results = ListenableCollections.listenableList(new ArrayList<ResultContent>());
@@ -316,7 +320,14 @@ public class JNAeratorStudio extends JPanel {
 		libBox.add(new JLabel("Library Name :", JLabel.RIGHT));
 		libBox.add(libraryName);
 		
-		sourcePane.add("North", libBox);//raryName);
+		Box optBox = Box.createVerticalBox();
+		optBox.add(libBox);
+		optBox.add(directCallingCb);
+		optBox.add(structsAsTopLevelClassesCb);
+		for (Component c : optBox.getComponents())
+			((JComponent)c).setAlignmentX(0);
+		
+		sourcePane.add("North", optBox);//raryName);
 		sourcePane.add("Center", sourceArea);
 		sourceTabs.addTab("Source", sourcePane);
 		
@@ -394,6 +405,8 @@ public class JNAeratorStudio extends JPanel {
 				try {
 					
 					JNAeratorConfig config = new JNAeratorConfig();
+					config.useJNADirectCalls = directCallingCb.isSelected();
+					config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
 					config.defaultLibrary = libraryName.getText();
 					config.libraryForElementsInNullFile = libraryName.getText();
 //					config.addFile(getFile(), "");
