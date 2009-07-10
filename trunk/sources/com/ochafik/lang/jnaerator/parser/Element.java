@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -294,6 +295,12 @@ public abstract class Element {
 		return clone;
 	}
 	public Element clone() {
+		return clone(new HashSet<Integer>());
+	}
+	public Element clone(Set<Integer> clonedObjectIds) {
+		if (!clonedObjectIds.add(getId()))
+			return null;
+		
 		String fieldName = null;
 		try {
 //			if (this instanceof Function) {
@@ -312,7 +319,7 @@ public abstract class Element {
 					continue;
 				
 				Object value = p.getter.invoke(this);
-				Object clonedValue = cloneObject(value);
+				Object clonedValue = cloneObject(value, clonedObjectIds);
 				p.setter.invoke(clone, clonedValue);
 			}
 			return clone;
@@ -322,29 +329,29 @@ public abstract class Element {
 		return null;
 	}
 	
-	protected static Object cloneObject(Object value) throws CloneNotSupportedException {
+	protected static Object cloneObject(Object value, Set<Integer> clonedObjectIds) throws CloneNotSupportedException {
 		if (value == null)
 			return null;
 		
 		Class<?> type = value.getClass();
 		if (Element.class.isAssignableFrom(type))
-			return ((Element)value).clone();
+			return ((Element)value).clone(clonedObjectIds);
 		else if (EnumSet.class.isAssignableFrom(type))
 			return ((EnumSet<?>)value).clone();
 		else if (Collection.class.isAssignableFrom(type))
-			return cloneElements((Collection<?>) value);
+			return cloneElements((Collection<?>) value, clonedObjectIds);
 		else if (Map.class.isAssignableFrom(type))
-			return cloneElements((Map<?, ?>) value);
+			return cloneElements((Map<?, ?>) value, clonedObjectIds);
 		else if (Pair.class.isAssignableFrom(type)) {
 			Pair<?, ?> pair = (Pair<?, ?>)value;
-			return new Pair<Object, Object>(cloneObject(pair.getFirst()), cloneObject(pair.getSecond()));
+			return new Pair<Object, Object>(cloneObject(pair.getFirst(), clonedObjectIds), cloneObject(pair.getSecond(), clonedObjectIds));
 		}
 		//else if (value instanceof String || type.isPrimitive())
 		return value;
 		
 		//throw new CloneNotSupportedException();	
 	}
-	public static Collection<?> cloneElements(Collection<?> col) throws CloneNotSupportedException {
+	public static Collection<?> cloneElements(Collection<?> col, Set<Integer> clonedObjectIds) throws CloneNotSupportedException {
 		Collection<Object> colClone;
 		if (col instanceof List<?>)
 			colClone = new ArrayList<Object>(col.size());
@@ -360,13 +367,13 @@ public abstract class Element {
 			throw new CloneNotSupportedException();
 		
 		for (Object o : col) {
-			o = cloneObject(o);
+			o = cloneObject(o, clonedObjectIds);
 			colClone.add(o);
 		}
 		return colClone;
 	}
 	
-	public static Map<?, ?> cloneElements(Map<?, ?> col) throws CloneNotSupportedException {
+	public static Map<?, ?> cloneElements(Map<?, ?> col, Set<Integer> clonedObjectIds) throws CloneNotSupportedException {
 		Map<Object, Object> colClone;
 		if (col instanceof LinkedHashMap<?,?>)
 			colClone = new LinkedHashMap<Object, Object>(col.size());
@@ -380,7 +387,7 @@ public abstract class Element {
 			throw new CloneNotSupportedException();
 		
 		for (Map.Entry<?, ?> entry : col.entrySet())
-			colClone.put(cloneObject(entry.getKey()), cloneObject(entry.getValue()));
+			colClone.put(cloneObject(entry.getKey(), clonedObjectIds), cloneObject(entry.getValue(), clonedObjectIds));
 
 		return colClone;
 	}
