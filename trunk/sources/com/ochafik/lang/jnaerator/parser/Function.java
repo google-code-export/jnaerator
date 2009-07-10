@@ -18,14 +18,15 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.ident;
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.typeRef;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import org.rococoa.ReturnType;
 
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.util.string.StringUtils;
@@ -325,6 +326,11 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 			f.addModifiers(Modifier.Native);
 		if (java.lang.reflect.Modifier.isSynchronized(modifiers))
 			f.addModifiers(Modifier.Synchronized);
+		
+		ReturnType returnType = m.getAnnotation(ReturnType.class);
+		if (returnType != null) {
+			f.addAnnotation(new Annotation(ReturnType.class, expr(typeRef(returnType.value()))));
+		}
 		return f;
 	}
 
