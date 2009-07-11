@@ -630,7 +630,7 @@ public class DeclarationsConverter {
 		}
 		if (structName == null || structName.toString().equals(""))
 			structName = tag;
-		return structName;
+		return structName == null ? null : structName.clone();
 	}
 	void convertStruct(Struct struct, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryClass) throws IOException {
 		Identifier structName = getActualTaggedTypeName(struct);
@@ -687,7 +687,7 @@ public class DeclarationsConverter {
 		if (result.config.putTopStructsInSeparateFiles && struct.findParentOfType(Struct.class) == null) {
 			String library = result.getLibrary(struct);
 			Identifier javaPackage = result.getLibraryPackage(library);
-			Identifier fullClassName = ident(javaPackage, structJavaClass.getTag());
+			Identifier fullClassName = ident(javaPackage, structJavaClass.getTag().clone());
 			
 			structJavaClass.removeModifiers(Modifier.Static);
 			structJavaClass = result.notifyBeforeWritingClass(fullClassName, structJavaClass, signatures);

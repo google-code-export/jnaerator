@@ -38,8 +38,8 @@ import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
-import com.ochafik.math.graph.BinaryEdgeSet;
-import com.ochafik.math.graph.impl.FastSparseBinaryEdgeSet;
+//import com.ochafik.math.graph.BinaryEdgeSet;
+//import com.ochafik.math.graph.impl.FastSparseBinaryEdgeSet;
 import com.ochafik.util.SortedIntArray;
 public class DefinitionsVisitor extends Scanner {
 	BinaryEdgeSet elementsToChildren = new FastSparseBinaryEdgeSet(true);

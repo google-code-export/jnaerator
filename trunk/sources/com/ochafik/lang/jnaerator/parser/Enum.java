@@ -142,7 +142,7 @@ public class Enum extends TaggedTypeRef {
 		String indentt = "\n" + nindent;
 		return 
 			"enum " +
-			(getTag() != null ? getTag() + " " : "")+ 
+			(getTag() != null ? getTag().toString(indentt) + " " : "")+ 
 			"{" + 
 			indentt + implode(items, ",\n" + nindent, nindent) + "\n" + indent + "}";
 	}

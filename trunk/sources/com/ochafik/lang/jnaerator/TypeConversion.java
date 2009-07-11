@@ -367,7 +367,7 @@ public class TypeConversion {
 								return;
 							
 							if (tr instanceof Enum) {
-								tr = typeRef(s.getTag());
+								tr = typeRef(s.getTag().clone());
 							} else {
 								Identifier ident = result.getTaggedTypeIdentifierInJava(s);
 								if (ident != null)
@@ -599,6 +599,8 @@ public class TypeConversion {
 	public Identifier inferCallBackName(FunctionSignature functionSignature, boolean prependNamespaces) {
 		List<String> nameElements = new ArrayList<String>();
 		Identifier name = functionSignature.getFunction().getName();
+		if (name != null)
+			name = name.clone();
 		
 		Element parent = functionSignature.getParentElement();
 		//if (parent == null) {
@@ -787,7 +789,7 @@ public class TypeConversion {
 			if (tr != null)
 				return tr;
 			else
-				return typeRef(((FunctionSignature)valueType).getFunction().getName());
+				return typeRef(((FunctionSignature)valueType).getFunction().getName().clone());
 		}
 		if (valueType instanceof TargettedTypeRef) {
 			//TypeRef target = resolveTypeDef(((TargettedTypeRef) valueType).getTarget(), callerLibraryClass);
