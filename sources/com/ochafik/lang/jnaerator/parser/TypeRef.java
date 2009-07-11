@@ -44,13 +44,14 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			return tag;
 		}
 		public void setTag(Identifier tag) {
-			if (tag != null && tag.equals("UInt8"))
-				new Exception("Recursion too deep " + tag).printStackTrace();
+//			if (tag != null && tag.equals("lc_category_struct"))
+//				tag = tag;
+//				new Exception("Recursion too deep " + tag).printStackTrace();
 			
 			
 			this.tag = changeValue(this, this.tag, tag);
-			if (originalTag == null)
-				setOriginalTag(tag);
+			if (originalTag == null && tag != null)
+				setOriginalTag(tag.clone());
 		}
 		@Override
 		public boolean replaceChild(Element child, Element by) {

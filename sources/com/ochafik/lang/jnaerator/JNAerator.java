@@ -789,6 +789,8 @@ public class JNAerator {
 		/// Build JavaDoc comments where applicable
 		sourceFiles.accept(new JavaDocCreator(result));
 		
+		//checkNoCycles(sourceFiles);
+		
 		//##################################################################
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######
 		//##################################################################
@@ -843,6 +845,17 @@ public class JNAerator {
 				System.out.println("Unknown Type: " + unknownType);
 			
 		return result;
+	}
+	private void checkNoCycles(SourceFiles sourceFiles) {
+		final HashSet<Integer> ids = new HashSet<Integer>(new Arg().getId());
+		sourceFiles.accept(new Scanner() {
+			@Override
+			protected void visitElement(Element d) {
+				if (d != null && !ids.add(d.getId()))
+					throw new RuntimeException("Cycle : " + d);
+				super.visitElement(d);
+			}
+		});
 	}
 
 }

@@ -130,6 +130,7 @@ public class MissingNamesChooser extends Scanner {
 		DeclarationsHolder holder = functionSignature.findParentOfType(DeclarationsHolder.class);
 		Function f = functionSignature.getFunction();
 		if (holder != null && f != null && !isNull(f.getName())) {
+			Identifier fnameClone = f.getName().clone();
 			StoredDeclarations d = as(functionSignature.getParentElement(), StoredDeclarations.class);
 			if (d instanceof TypeDef)
 				return;
@@ -137,16 +138,16 @@ public class MissingNamesChooser extends Scanner {
 			if (d != null && d.getDeclarators().isEmpty()) {
 				if (d instanceof VariablesDeclaration) {
 					VariablesDeclaration pvd = (VariablesDeclaration) d;
-					pvd.addDeclarator(new DirectDeclarator(f.getName().toString()));
-					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
+					pvd.addDeclarator(new DirectDeclarator(fnameClone.toString()));
+					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(fnameClone));
 				} else
 					d.replaceBy(null); // special case of C++-like struct sub-type definition 
 			} else
-				functionSignature.replaceBy(new TypeRef.SimpleTypeRef(f.getName()));
+				functionSignature.replaceBy(new TypeRef.SimpleTypeRef(fnameClone.clone()));
 			TypeDef td = new TypeDef();
 			td.importDetails(functionSignature, true);
 			td.setValueType(functionSignature);
-			td.addDeclarator(new DirectDeclarator(f.getName().toString()));
+			td.addDeclarator(new DirectDeclarator(fnameClone.toString()));
 			holder.addDeclaration(td);
 			td.accept(this);
 		}
@@ -169,7 +170,7 @@ public class MissingNamesChooser extends Scanner {
 					taggedTypeRef.importDetails(parent, false);
 					parent.replaceBy(null);
 				} else {
-					TypeRef tr = new TypeRef.SimpleTypeRef(taggedTypeRef.getTag());
+					TypeRef tr = new TypeRef.SimpleTypeRef(taggedTypeRef.getTag().clone());
 					taggedTypeRef.replaceBy(tr);
 					if (taggedTypeRef instanceof Struct)
 						tr.setMarkedAsResolved(true);
@@ -223,7 +224,7 @@ public class MissingNamesChooser extends Scanner {
 				betterTag = ident(chooseName(taggedTypeRef, ownerNames));
 			}
 			if (!isNull(betterTag)) {
-				taggedTypeRef.setTag(betterTag);
+				taggedTypeRef.setTag(betterTag.clone());
 				taggedTypeRef.accept(this);
 				return true;
 			}

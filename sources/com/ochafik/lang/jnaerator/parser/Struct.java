@@ -189,7 +189,7 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 			getModifiersStringPrefix();
 			//commentBefore + "\n" + indent;//(indent, mergeCommentsBeforeAndAfter);
 		
-		String nameStr = (getTag() == null ? "" : " " + getTag());
+		String nameStr = (getTag() == null ? "" : " " + getTag().toString(indent));
 //		String javaPublicity = getModifiers().contains(Modifier.Public) ? "public " :
 //			getModifiers().contains(Modifier.Protected) ? "protected " :
 //			"";

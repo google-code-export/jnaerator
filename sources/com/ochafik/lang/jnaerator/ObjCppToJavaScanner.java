@@ -117,7 +117,7 @@ public class ObjCppToJavaScanner extends Scanner {
 					if (library == null)
 						throw new RuntimeException(new UnsupportedConversionException(simpleTypeRef, "struct " + structName + " is not bound to a library"));
 					
-					TypeRef tr = typeRef(ident(ident(getLibraryClassSimpleName(library)), structName));
+					TypeRef tr = typeRef(ident(ident(getLibraryClassSimpleName(library)), structName.clone()));
 					simpleTypeRef.replaceBy(tr);
 					tr.accept(this);
 				}

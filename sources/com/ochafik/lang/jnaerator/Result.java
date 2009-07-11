@@ -332,8 +332,8 @@ public class Result extends Scanner {
 				break;
 			case ObjCClass:
 			case ObjCProtocol:
-				if (name.equals("NSObject"))
-					name = name.clone();
+//				if (name.equals("NSObject"))
+//					name = name.clone();
 				
 				if (struct.isForwardDeclaration())
 					break;
