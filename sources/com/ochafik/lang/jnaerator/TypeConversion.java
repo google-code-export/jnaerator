@@ -329,10 +329,10 @@ public class TypeConversion {
 		if (valueType == null)
 			return null;
 		
-		valueType = valueType.clone();
+		final TypeRef valueTypeCl = valueType.clone();
 		Arg holder = new Arg();
-		holder.setValueType(valueType);
-		valueType.accept(new Scanner() {
+		holder.setValueType(valueTypeCl);
+		valueTypeCl.accept(new Scanner() {
 			int depth = 0;
 			@Override
 			public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
@@ -346,7 +346,11 @@ public class TypeConversion {
 					if (name == null)
 						return;
 					
-					if (resolvesToPrimitive(name.toString()))
+					String nameStr = name.toString();
+					if (resolvesToPrimitive(nameStr))
+						return;
+					
+					if (nameStr != null && nameStr.equals(valueTypeCl.toString()))
 						return;
 //					Identifier oc = findObjCClassIdent(name);
 //					if (oc != null) {
