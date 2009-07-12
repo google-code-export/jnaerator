@@ -53,7 +53,7 @@ public class TextAreaDefaults
 	public static TextAreaDefaults getDefaults()
 	{
 		/*if(DEFAULTS == null)
-		{*/ // on est obligé de créer un objet nouveau à chaque fois
+		{*/ // we have to create a new object each time
 			TextAreaDefaults DEFAULTS;
 			DEFAULTS = new TextAreaDefaults();
 
