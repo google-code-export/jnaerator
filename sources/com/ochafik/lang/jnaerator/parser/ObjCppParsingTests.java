@@ -15,7 +15,7 @@
 	
 	You should have received a copy of the GNU Lesser General Public License
 	along with JNAerator.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package com.ochafik.lang.jnaerator.parser;
 
 import java.io.ByteArrayOutputStream;
@@ -44,22 +44,23 @@ import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.grammar.DummyDebugEventListener;
 
 /*
-include com/ochafik/lang/jnaerator/parser/ObjCppTest.mm
+ include com/ochafik/lang/jnaerator/parser/ObjCppTest.mm
  */
 @SuppressWarnings("unused")
 @RunWith(ParameterizedWithDescription.class)
-//@RunWith(Parameterized.class)
+// @RunWith(Parameterized.class)
 public class ObjCppParsingTests {
-	static final String TEST_FILE = "/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
-	
+	static final String TEST_FILE = "com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
+
 	Class<?> elementsTests = ObjCppElementsTests.class;
-	
+
 	enum TestOption {
 		ParseAndPrettyPrint, ParseOnly, ParseMustFail
 	};
-	
+
 	String string;
 	TestOption testOption;
+
 	public ObjCppParsingTests(String string, TestOption testOption) {
 		this.string = string;
 		this.testOption = testOption;
@@ -73,43 +74,43 @@ public class ObjCppParsingTests {
 		PrintStream pout = new PrintStream(bout);
 		System.setOut(pout);
 		System.setErr(pout);
-		
+
 		boolean ok = false;
-		//List<? extends Declaration> decls = null;
 		SourceFile sourceFile = null;
-		
+
 		try {
-			
+
 			switch (testOption) {
 			case ParseMustFail:
 				try {
-					sourceFile = newParser(string).sourceFile();//.sourceFile;
-					assertTrue("Expression should not have been parsed : " + string, false);
+					sourceFile = newParser(string).sourceFile();// .sourceFile;
+					assertTrue("Expression should not have been parsed : "
+							+ string, false);
 				} catch (Throwable t) {
 					ok = true;
 				}
 				break;
 			case ParseOnly:
 			case ParseAndPrettyPrint:
-				sourceFile = newParser(string).sourceFile();//.sourceFile;
+				sourceFile = newParser(string).sourceFile();
 				assertNotNull(string, sourceFile);
 				if (testOption == TestOption.ParseAndPrettyPrint) {
-					//assertEquals(string, 1, decls.size());
-					//Declaration firstDecl = decls.get(0);
-					//assertNotNull(string, firstDecl);
-					if (!SyntaxUtils.equal(string, sourceFile == null ? null : sourceFile.toString()))
-						sourceFile = newParser(string).sourceFile();//.sourceFile;
-					
-					assertEquals(string, string.trim(), sourceFile == null ? null : sourceFile.toString().trim());
+					if (!SyntaxUtils.equal(string, sourceFile == null ? null
+							: sourceFile.toString()))
+						sourceFile = newParser(string).sourceFile();
+
+					assertEquals(string, string.trim(),
+							sourceFile == null ? null : sourceFile.toString()
+									.trim());
 				}
 				ok = true;
 				break;
 			}
-			
+
 			for (Declaration decl : sourceFile.getDeclarations()) {
 				if (decl == null)
 					continue;
-					
+
 				String declStr = decl.toString();
 				Declaration clo = decl.clone();
 				assertNotNull("Null clone !", clo);
@@ -135,16 +136,15 @@ public class ObjCppParsingTests {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	@Parameters
 	public static List<Object[]> readDataFromFile() throws IOException {
-		//List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource(TEST_FILE));
-		List<String> lines = ReadText.readLines(TEST_FILE);
+		List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource(TEST_FILE));
 		TestOption testOption = TestOption.ParseAndPrettyPrint;
 		List<Object[]> data = new ArrayList<Object[]>();
-		
+
 		StringBuilder b = new StringBuilder();
 		for (String line : lines) {
 			String trl = line.trim().replaceAll("\\s+", " ");
@@ -158,8 +158,7 @@ public class ObjCppParsingTests {
 				System.err.println("Unknown #pragma : " + line);
 			else if (trl.startsWith("#")) {
 				// skip
-			}
-			else if (trl.equals("--")) {
+			} else if (trl.equals("--")) {
 				if (b.length() > 0) {
 					data.add(new Object[] { b.toString(), testOption });
 					b.delete(0, b.length());
@@ -168,22 +167,18 @@ public class ObjCppParsingTests {
 				if (b.length() > 0)
 					b.append('\n');
 				b.append(line);
-			}	
+			}
 		}
 		if (b.length() > 0)
 			data.add(new Object[] { b.toString(), testOption });
-		
+
 		return data;
 	}
 
 	public static ObjCppParser newParser(String s) throws IOException {
-		return new ObjCppParser(
-			new CommonTokenStream(
-				new ObjCppLexer(
-					new ANTLRReaderStream(new StringReader(s))
-				)
-			)
-			//, new DummyDebugEventListener()
+		return new ObjCppParser(new CommonTokenStream(new ObjCppLexer(
+				new ANTLRReaderStream(new StringReader(s))))
+		// , new DummyDebugEventListener()
 		);
 	}
 }
