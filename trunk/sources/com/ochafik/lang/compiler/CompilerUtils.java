@@ -141,14 +141,13 @@ public class CompilerUtils {
 	}
 	
 	public static JavaCompiler getJavaCompiler() throws FileNotFoundException {
-//		JavaCompiler compiler = null;
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		if (compiler == null) {
-			try {
-				compiler = (JavaCompiler)Class.forName("org.eclipse.jdt.internal.compiler.tool.EclipseCompiler").newInstance();
-			} catch (Exception e) {
+		JavaCompiler compiler;
+		try {
+			compiler = (JavaCompiler)Class.forName("org.eclipse.jdt.internal.compiler.tool.EclipseCompiler").newInstance();
+		} catch (Exception e) {
+			compiler = ToolProvider.getSystemJavaCompiler();
+			if (compiler == null)
 				throw new FileNotFoundException("No Java compiler found (not run from JDK, no Eclipse Compiler in classpath)");
-			}
 		}
 		return compiler;
 	}
