@@ -246,8 +246,8 @@ public class StringUtils {
 							int n=Integer.parseInt(nb,16);
 							b.append((char)n);
 							i+=4;
-						} catch (Throwable t) {
-							throw new IllegalArgumentException("Chaîne non correctement échappée");
+						} catch (Exception ex) {
+							throw new IllegalArgumentException("Illegal unicode escaping in string \"" + s + "\" at index " + i, ex);
 						}
 						break;
 					default:
