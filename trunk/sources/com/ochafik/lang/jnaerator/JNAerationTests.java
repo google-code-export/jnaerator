@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -129,12 +130,10 @@ public class JNAerationTests {
 		//List<URL> list = URLUtils.listFiles(new URL("jar:file:/Users/ochafik/Prog/Java/bin/jnaerator.jar!/com/ochafik/lang/jnaerator"), null);
 		List<Object[]> data = new ArrayList<Object[]>();
 		
-		URL dir = JNAerationTests.class.getClassLoader().getResource("/com/ochafik/lang/jnaerator/tests");
-		File debugLocalDir = new File("/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/tests");
-		if (debugLocalDir.exists())
-			dir = debugLocalDir.toURI().toURL();
-		
-		for (URL testURL : URLUtils.listFiles(dir, new Filter<String>() {
+		URL dir = JNAerationTests.class.getClassLoader().getResource("com/ochafik/lang/jnaerator/tests");
+		if(dir == null)
+			throw new FileNotFoundException("Could not find test files !");
+ 		for (URL testURL : URLUtils.listFiles(dir, new Filter<String>() {
 			@Override
 			public boolean accept(String path) {
 				return path.toLowerCase().endsWith(".test");// && path.contains("objective");
