@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ import org.rococoa.cocoa.foundation.NSInvocation;
 import org.rococoa.cocoa.foundation.NSMethodSignature;
 import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -54,6 +57,8 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
+import com.ochafik.xml.XMLUtils;
+import com.ochafik.xml.XPathUtils;
 import com.sun.jna.Platform;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
@@ -85,6 +90,8 @@ public class Result extends Scanner {
 	Map<Struct.Type, Map<Identifier, Struct>> classes = new TreeMap<Struct.Type, Map<Identifier, Struct>>();
 	Map<Identifier, Map<String, Struct>> objCCategoriesByTargetType = new HashMap<Identifier, Map<String,Struct>>();
 	Map<String, Struct> objCCategoriesByName = new HashMap<String, Struct>();
+	
+	Map<String, Map<String, String>> stringConstants = new HashMap<String, Map<String,String>>();
 	//Set<String> 
 		//cStructNames = new HashSet<String>(), 
 		//enumNames = new HashSet<String>();
@@ -405,6 +412,7 @@ public class Result extends Scanner {
 		libraries.addAll(enumsByLibrary.keySet());
 		libraries.addAll(globalsByLibrary.keySet());
 		libraries.addAll(definesByLibrary.keySet());
+		libraries.addAll(stringConstants.keySet());
 		
 		for (String library : libraries) {
 			Identifier javaPackage = getLibraryPackage(library);

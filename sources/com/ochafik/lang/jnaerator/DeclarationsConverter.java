@@ -118,8 +118,10 @@ public class DeclarationsConverter {
 			
 		}
 	}
-	void convertConstants(List<Define> defines, Element sourcesRoot, final Signatures signatures, final DeclarationsHolder out, final Identifier libraryClassName) {
+	void convertConstants(String library, List<Define> defines, Element sourcesRoot, final Signatures signatures, final DeclarationsHolder out, final Identifier libraryClassName) {
 		//final List<Define> defines = new ArrayList<Define>();
+		final Map<String, String> constants = Result.getMap(result.stringConstants, library);
+//		
 		sourcesRoot.accept(new Scanner() {
 //			@Override
 //			public void visitDefine(Define define) {
@@ -139,35 +141,43 @@ public class DeclarationsConverter {
 				if (v.getValueType() instanceof FunctionSignature)
 					return;
 					
-				for (Declarator vs : v.getDeclarators()) {
-					if (!(vs instanceof DirectDeclarator))
+				for (Declarator decl : v.getDeclarators()) {
+					if (!(decl instanceof DirectDeclarator))
 						continue; // TODO provide a mapping of exported values
 					
-					TypeRef mutatedType = (TypeRef) vs.mutateType(v.getValueType());
+					TypeRef mutatedType = (TypeRef) decl.mutateType(v.getValueType());
 					if (mutatedType == null || 
 							!mutatedType.getModifiers().contains(Modifier.Const) ||
 							mutatedType.getModifiers().contains(Modifier.Extern) ||
-							vs.getDefaultValue() == null)
+							decl.getDefaultValue() == null)
 						continue;
 					
 					//TypeRef type = v.getValueType();
+					String name = decl.resolveName();
+					
 					JavaPrim prim = result.typeConverter.getPrimitive(mutatedType, libraryClassName);
-					if (prim == null)
+					if (prim == null) {
+						if (mutatedType.toString().contains("NSString")) {
+							String value = constants.get(name);
+							if (value != null)
+								outputNSString(name, value, out, signatures, v, decl);
+						}
 						continue;
+					}
 					
 					try {
 						
-						DirectDeclarator dd = (DirectDeclarator)vs;
-						Expression val = result.typeConverter.convertExpressionToJava(vs.getDefaultValue(), libraryClassName);
+						//DirectDeclarator dd = (DirectDeclarator)decl;
+						Expression val = result.typeConverter.convertExpressionToJava(decl.getDefaultValue(), libraryClassName);
 						
-						if (!signatures.variablesSignatures.add(vs.resolveName()))
+						if (!signatures.variablesSignatures.add(name))
 							continue;
 						
 						TypeRef tr = result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName);
-						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(dd.getName(), val));
+						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, val));
 						vd.setCommentBefore(v.getCommentBefore());
-						vd.addToCommentBefore(vs.getCommentBefore());
-						vd.addToCommentBefore(vs.getCommentAfter());
+						vd.addToCommentBefore(decl.getCommentBefore());
+						vd.addToCommentBefore(decl.getCommentAfter());
 						vd.addToCommentBefore(v.getCommentAfter());
 						
 						out.addDeclaration(vd);
@@ -177,6 +187,7 @@ public class DeclarationsConverter {
 					
 				}
 			}
+
 		});
 		
 		if (defines != null) {
@@ -191,8 +202,25 @@ public class DeclarationsConverter {
 				}
 			}
 		}
+		for (Map.Entry<String, String> e : constants.entrySet()) {
+			outputNSString(e.getKey(), e.getValue(), out, signatures);
+		}
 	}
 
+
+	private void outputNSString(String name, String value, DeclarationsHolder out, Signatures signatures, Element... elementsToTakeCommentsFrom) {
+
+		if (!signatures.variablesSignatures.add(name))
+			return;
+		
+		TypeRef tr = typeRef(String.class);
+		VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, expr(Constant.Type.String, value)));
+		for (Element e : elementsToTakeCommentsFrom) {
+			vd.addToCommentBefore(e.getCommentBefore());
+			vd.addToCommentBefore(e.getCommentAfter());
+		}
+		out.addDeclaration(vd);
+	}
 	static Map<Class<?>, Pair<List<Pair<Function, String>>, Set<String>>> cachedForcedMethodsAndTheirSignatures;
 	
 	public static synchronized Pair<List<Pair<Function,String>>,Set<String>> getMethodsAndTheirSignatures(Class<?> originalLib) {

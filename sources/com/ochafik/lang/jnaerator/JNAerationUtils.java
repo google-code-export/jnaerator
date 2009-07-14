@@ -20,7 +20,7 @@ import com.sun.jna.Pointer;
 
 public class JNAerationUtils {
 
-	public static MemoryFileManager jnaerateAndCompile(String cSource, Map<String, String> classNameToJavaSource, final String libraryName, DiagnosticCollector<JavaFileObject> diagnostics) throws SyntaxException, IOException, LexerException, RecognitionException {
+	public static MemoryFileManager jnaerateAndCompile(String cSource, Map<String, String> classNameToJavaSource, final String libraryName, DiagnosticCollector<JavaFileObject> diagnostics, boolean preferJavac) throws SyntaxException, IOException, LexerException, RecognitionException {
 
 		JNAeratorConfig config = new JNAeratorConfig();
 		config.defaultLibrary = libraryName;
@@ -33,7 +33,7 @@ public class JNAerationUtils {
 		SourceFiles sourceFiles = jnaerator.parse();
 		//final SourceFiles sourceFilesClone = sourceFiles;//.clone();
 		
-		JavaCompiler c = CompilerUtils.getJavaCompiler();
+		JavaCompiler c = CompilerUtils.getJavaCompiler(preferJavac);
 		//DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		

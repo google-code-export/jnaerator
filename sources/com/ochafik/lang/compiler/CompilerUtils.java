@@ -142,8 +142,13 @@ public class CompilerUtils {
 		}
 	}
 	
-	public static JavaCompiler getJavaCompiler() throws FileNotFoundException {
+	public static JavaCompiler getJavaCompiler(boolean preferJavac) throws FileNotFoundException {
 		JavaCompiler compiler;
+		if (preferJavac) {
+			compiler = ToolProvider.getSystemJavaCompiler();
+			if (compiler != null)
+				return compiler;
+		}
 		try {
 			compiler = (JavaCompiler)Class.forName("org.eclipse.jdt.internal.compiler.tool.EclipseCompiler").newInstance();
 		} catch (Exception e) {
@@ -157,7 +162,7 @@ public class CompilerUtils {
 		try {
 			String jarOut = args.length == 0 ? "out.jar" : args[0];
 
-			JavaCompiler compiler = getJavaCompiler();
+			JavaCompiler compiler = getJavaCompiler(false);
 			
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 			MemoryFileManager fileManager = new MemoryFileManager(compiler.getStandardFileManager(diagnostics, null, null));

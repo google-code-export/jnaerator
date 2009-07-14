@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -169,6 +172,8 @@ public class JNAeratorConfig {
 	public String libraryForElementsInNullFile;
 	public String cPlusPlusNameSpaceSeparator = "_";
 	public boolean useJNAeratorUnionAndStructClasses = true;
+	public boolean preferJavac = false;
+	public Set<File> bridgeSupportFiles = new HashSet<File>();
 	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)

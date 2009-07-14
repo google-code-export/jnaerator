@@ -102,7 +102,7 @@ public class JNAerationTests {
 	@Test
 	public void test() throws SyntaxException, IOException, LexerException, RecognitionException {
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-		MemoryFileManager mfm = JNAerationUtils.jnaerateAndCompile(test.cSource, test.classNameToJavaContent, test.libraryName, diagnostics);
+		MemoryFileManager mfm = JNAerationUtils.jnaerateAndCompile(test.cSource, test.classNameToJavaContent, test.libraryName, diagnostics, false);
 		boolean hasErrors = false;
 		for (Diagnostic<? extends JavaFileObject> d : diagnostics.getDiagnostics()) {
 			if (d.getKind() == Diagnostic.Kind.ERROR) {

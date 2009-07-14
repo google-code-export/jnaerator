@@ -40,6 +40,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
@@ -484,7 +485,7 @@ public class JNAeratorStudio extends JPanel {
 
 	protected void compile(JNAerator jnaerator, Result result) throws SyntaxException, IOException {
 		
-		JavaCompiler c = CompilerUtils.getJavaCompiler();
+		JavaCompiler c = CompilerUtils.getJavaCompiler(false);
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		for (ResultContent rc : results)
@@ -550,6 +551,17 @@ public class JNAeratorStudio extends JPanel {
 	}
 	
 	public static void main(String[] args) {
+		if (args.length > 0)
+		{
+			List<String> list = new ArrayList<String>();
+			for (String arg : args)
+			{
+				list.add("@");
+				list.add(arg);
+			}
+			JNAerator.main(list.toArray(new String[list.size()]));
+			return;
+		}
 		try {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
