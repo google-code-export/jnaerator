@@ -85,6 +85,7 @@ import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
 import com.ochafik.lang.jnaerator.Mangling;
+import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.SourceFiles;
 import com.ochafik.swing.UndoRedoUtils;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
@@ -412,12 +413,12 @@ public class JNAeratorStudio extends JPanel {
 				
 				JNAeratorConfigUtils.autoConfigure(config);
 				JNAerator jnaerator = new JNAerator(config);
-				
+				Result result = null;
 				try {
 					
 					SourceFiles sourceFiles = jnaerator.parse();
 					final SourceFiles sourceFilesClone = sourceFiles;//.clone();
-					jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
+					result = jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 						@Override
 						public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
 							ResultContent c = new ResultContent(className);
@@ -465,7 +466,7 @@ public class JNAeratorStudio extends JPanel {
 					}});	
 				}
 				try {
-					compile(jnaerator);
+					compile(jnaerator, result);
 				} catch (Throwable ex) {
 					error(null, "Compilation error !", ex);
 					//JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
@@ -481,7 +482,7 @@ public class JNAeratorStudio extends JPanel {
 		}
 	}
 
-	protected void compile(JNAerator jnaerator) throws SyntaxException, IOException {
+	protected void compile(JNAerator jnaerator, Result result) throws SyntaxException, IOException {
 		
 		JavaCompiler c = CompilerUtils.getJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
@@ -502,7 +503,7 @@ public class JNAeratorStudio extends JPanel {
 				throw new SyntaxException(sb.toString());
 			}
 		}
-		jnaerator.writeRuntimeClasses(mfm);
+		jnaerator.writeRuntimeClasses(jnaerator, result, mfm);
 		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true, null);
 		showJarButton.setEnabled(true);
 	}

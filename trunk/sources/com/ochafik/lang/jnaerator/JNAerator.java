@@ -43,12 +43,10 @@ import javax.tools.JavaFileObject;
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.runner.JUnitCore;
-import org.rococoa.Rococoa;
 import org.rococoa.cocoa.foundation.NSClass;
 
 import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;
-import com.ochafik.lang.ClassUtils;
 import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryJavaFile;
@@ -72,14 +70,12 @@ import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
-import com.ochafik.net.URLUtils;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
@@ -429,9 +425,9 @@ public class JNAerator {
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		
-		writeRuntimeClasses(mfm);
+		//writeRuntimeClasses(jnaerator, mfm);
 		
-		jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
+		Result result = jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 			@Override
 			public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
 				MemoryJavaFile c = new MemoryJavaFile(className.replace('.', '/') + ".java", (String)null, JavaFileObject.Kind.SOURCE);
@@ -473,11 +469,11 @@ public class JNAerator {
 				));
 		}
 		
-		writeRuntimeClasses(mfm);
+		writeRuntimeClasses(jnaerator, result, mfm);
 		
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
 	}
-	public static void writeRuntimeClasses(MemoryFileManager mfm) throws IOException {
+	public static void writeRuntimeClasses(JNAerator jnaerator, Result result, MemoryFileManager mfm) throws IOException {
 		ClassLoader classLoader = JNAerator.class.getClassLoader();
 		String listingFile = "META-INF/jnaerator-runtime.jar.files";
 		List<String> files = ReadText.readLines(classLoader.getResourceAsStream(listingFile ));
@@ -487,7 +483,14 @@ public class JNAerator {
 		if (files == null)
 			new FileNotFoundException("Warning: Could not find JNAerator listing file '" + listingFile + "' : JNAerated files will need JNAerator in the path to execute.").printStackTrace();
 		
+		boolean needsObjCRuntime = result.hasObjectiveC();
 		for (String file : files) {
+			if (!needsObjCRuntime) {
+				if (!file.startsWith("com/ochafik") &&
+						!file.startsWith("com/sun/jna"))
+					continue;
+			}
+			
 			URL url = classLoader.getResource(file);
 			if (url == null)
 				throw new FileNotFoundException(file);
@@ -558,9 +561,9 @@ public class JNAerator {
 			}
 		}
 	}
-	public void jnaerate() throws IOException, LexerException, RecognitionException {
+	public Result jnaerate() throws IOException, LexerException, RecognitionException {
 		SourceFiles sourceFiles = parse();
-		jnaerate(sourceFiles, new ClassOutputter() {
+		return jnaerate(sourceFiles, new ClassOutputter() {
 			public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
 				File file = new File(JNAerator.this.config.outputDir, className.replace('.', File.separatorChar) + ".java");
 				File parent = file.getParentFile();
@@ -618,9 +621,9 @@ public class JNAerator {
 //				library = "";
 			
 			Identifier javaPackage = result.javaPackageByLibrary.get(library);
-			Identifier libraryClassName = result.getLibraryClassSimpleName(library);
+			Identifier simpleLibraryClassName = result.getLibraryClassSimpleName(library);
 			
-			Identifier fullLibraryClassName = ident(javaPackage, libraryClassName);
+			Identifier fullLibraryClassName = result.getLibraryClassFullName(library);//ident(javaPackage, libraryClassName);
 			//if (!result.objCClasses.isEmpty())
 			//	out.println("import org.rococoa.ID;");
 			
@@ -633,7 +636,7 @@ public class JNAerator {
 				interf.addToCommentBefore("@see " + result.config.entryName + "." + library);
 			
 			interf.addModifiers(Modifier.Public);
-			interf.setTag(libraryClassName);
+			interf.setTag(simpleLibraryClassName);
 			Identifier libSuperInter = ident(Library.class);
 			if (result.config.useJNADirectCalls) {
 				interf.addProtocols(libSuperInter);
@@ -644,7 +647,7 @@ public class JNAerator {
 			}
 			
 			Expression libNameExpr = opaqueExpr(result.getLibraryFileExpression(library));
-			TypeRef libTypeRef = typeRef(libraryClassName);
+			TypeRef libTypeRef = typeRef(fullLibraryClassName);
 			Expression libClassLiteral = memberRef(expr(libTypeRef), MemberRefStyle.Dot, "class");
 			
 			Expression libraryPathGetterExpr = methodCall(
@@ -688,19 +691,19 @@ public class JNAerator {
 			
 			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
 			
-			Signatures signatures = result.getSignaturesForOutputClass(libraryClassName);
+			Signatures signatures = result.getSignaturesForOutputClass(fullLibraryClassName);
 			result.typeConverter.allowFakePointers = true;
-			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, libraryClassName);
-			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, interf, libraryClassName);
-			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, libraryClassName);
-			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, libraryClassName);
-			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, libraryClassName);
+			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, fullLibraryClassName);
+			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, interf, fullLibraryClassName);
+			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
+			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
+			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
 
-			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, libraryClassName, library);
+			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, fullLibraryClassName, library);
 			
 			result.typeConverter.allowFakePointers = false;
 			
-			Set<String> fakePointers = result.fakePointersByLibrary.get(libraryClassName);
+			Set<String> fakePointers = result.fakePointersByLibrary.get(fullLibraryClassName);
 			if (fakePointers != null)
 			for (String fakePointerName : fakePointers) {
 				Identifier fakePointer = ident(fakePointerName);
@@ -803,7 +806,7 @@ public class JNAerator {
 		/// Build JavaDoc comments where applicable
 		sourceFiles.accept(new JavaDocCreator(result));
 		
-		//checkNoCycles(sourceFiles);
+		assert checkNoCycles(sourceFiles);
 		
 		//##################################################################
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######
@@ -860,7 +863,7 @@ public class JNAerator {
 			
 		return result;
 	}
-	private void checkNoCycles(SourceFiles sourceFiles) {
+	private boolean checkNoCycles(SourceFiles sourceFiles) {
 		final HashSet<Integer> ids = new HashSet<Integer>(new Arg().getId());
 		sourceFiles.accept(new Scanner() {
 			@Override
@@ -870,6 +873,7 @@ public class JNAerator {
 				super.visitElement(d);
 			}
 		});
+		return true;
 	}
 
 }
