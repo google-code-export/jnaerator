@@ -38,15 +38,46 @@ import com.sun.jna.Platform;
  *
  */
 public class LibraryExtractor {
+	public static String getCurrentOSAndArchString() {
+		String os = System.getProperty("os.name"), arch = System.getProperty("os.arch");
+
+		if (os.equals("Mac OS X")) {
+			os = "darwin";
+			arch = "fat";
+			//arch = Platform.is64Bit() ? "64" : "32";
+		} else if (os.startsWith("Windows")) {
+			return "win" + (Platform.is64Bit() ? "64" : "32");
+		} else if (os.matches("SunOS|Solaris"))
+			os = "solaris";
+		
+		return os + "-" + arch;
+	}
 	public static String getLibraryPath(String libraryName, boolean extractAllLibraries, Class<?> cl) {
 		try {
 			//ClassLoader cl = LibraryExtractor.class.getClassLoader();
 			String prefix = (Platform.isWindows() || Platform.isWindowsCE() ? libraryName : "lib" + libraryName).toLowerCase() + ".";
 			URL sourceURL = null;
 			List<URL> otherURLs = new ArrayList<URL>();
-			URL libURL = URLUtils.getResource(cl, "libraries");
-			System.out.println("libURL = " + libURL);
-			for (URL url : URLUtils.listFiles(libURL, null)) {
+			
+
+			String arch = getCurrentOSAndArchString();
+			//System.out.println("libURL = " + libURL);
+			List<URL> list = URLUtils.listFiles(URLUtils.getResource(cl, "libraries/" + arch), null);
+			if (list.isEmpty()) {
+				for (URL u : URLUtils.listFiles(URLUtils.getResource(cl, "libraries"), null)) {
+					String f = u.getFile();
+					int i = f.lastIndexOf('/');
+					if (i >= 0)
+						f = f.substring(i + 1);
+					if (arch.startsWith(f)) {
+						list = URLUtils.listFiles(u, null);
+						break;
+					}
+				}
+				
+			}
+			
+			for (URL url : list) {
 				String fileName = new File(url.toString()).getName();
 				if (fileName.toLowerCase().startsWith(prefix))
 					sourceURL = url;
