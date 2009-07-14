@@ -475,8 +475,10 @@ public class JNAerator {
 		ClassLoader classLoader = JNAerator.class.getClassLoader();
 		String listingFile = "META-INF/jnaerator-runtime.jar.files";
 		List<String> files = ReadText.readLines(classLoader.getResourceAsStream(listingFile ));
-		if (files == null)
-			files = ReadText.readLines("/Users/ochafik/Prog/Java/bin/jnaerator-runtime.jar.files");
+		try {
+			if (files == null)
+				files = ReadText.readLines("/Users/ochafik/Prog/Java/bin/jnaerator-runtime.jar.files");
+		} catch (Exception ex) {}
 		
 		if (files == null)
 			new FileNotFoundException("Warning: Could not find JNAerator listing file '" + listingFile + "' : JNAerated files will need JNAerator in the path to execute.").printStackTrace();

@@ -886,6 +886,8 @@ public class DeclarationsConverter {
 					continue; // should not happen !
 				String name = vd.getDeclarators().get(0).resolveName();
 				TypeRef tr = vd.getValueType();
+				if (!isField(vd))
+					continue;
 				
 				String trStr = tr.toString();
 				Pair<TypeRef, List<Pair<String, String>>> pair = fieldsAndCommentsByTypeStr.get(trStr);
@@ -937,6 +939,9 @@ public class DeclarationsConverter {
 				VariablesDeclaration vd = (VariablesDeclaration)d;
 				if (vd.getDeclarators().size() != 1)
 					continue; // should not happen !
+
+				if (!isField(vd))
+					continue;
 				String name = vd.getDeclarators().get(0).resolveName();
 				
 				if (vd.getCommentBefore() != null)
@@ -1011,6 +1016,13 @@ public class DeclarationsConverter {
 //			addConstructor(structJavaClass, shareMemConstructor);
 //		}
 	}
+	private boolean isField(VariablesDeclaration vd) {
+		List<Modifier> mods = vd.getModifiers();
+		if (Modifier.Final.isContainedBy(mods))
+			return false;
+		return true;
+	}
+
 	Statement throwIfArraySizeDifferent(String varAndFieldName) {
 		return new Statement.If(
 			expr(
