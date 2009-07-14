@@ -124,6 +124,7 @@ public class MissingNamesChooser extends Scanner {
 	
 	@Override
 	public void visitFunctionSignature(FunctionSignature functionSignature) {
+		Identifier origName = functionSignature.getFunction() == null ? null : functionSignature.getFunction().getName();
 		if (!chooseNameIfMissing(functionSignature))
 			super.visitFunctionSignature(functionSignature);
 		
@@ -138,7 +139,7 @@ public class MissingNamesChooser extends Scanner {
 			if (d != null && d.getDeclarators().isEmpty()) {
 				if (d instanceof VariablesDeclaration) {
 					VariablesDeclaration pvd = (VariablesDeclaration) d;
-					pvd.addDeclarator(new DirectDeclarator(fnameClone.toString()));
+					pvd.addDeclarator(new DirectDeclarator((origName == null ? fnameClone : origName).toString()));
 					functionSignature.replaceBy(new TypeRef.SimpleTypeRef(fnameClone));
 				} else
 					d.replaceBy(null); // special case of C++-like struct sub-type definition 
@@ -188,13 +189,15 @@ public class MissingNamesChooser extends Scanner {
 	 */
 	private boolean chooseNameIfMissing(FunctionSignature functionSignature) {
 		Function function = functionSignature.getFunction();
-		if (function != null && isNull(function.getName())) {// || parent instanceof VariablesDeclaration) {
+		if (function != null && (isNull(function.getName()) || functionSignature.getParentElement() instanceof VariablesDeclaration)) {
 			String name = null;
 			String exact = JNAeratorUtils.getExactTypeDefName(functionSignature);
 			if (exact != null)
 				name = exact;
 			else {
 				List<String> ownerNames = JNAeratorUtils.guessOwnerName(function);
+				if (function.getName() != null)
+					ownerNames.add(function.getName().toString());
 				name = chooseName(functionSignature, ownerNames);
 			}
 			if (name != null) {

@@ -427,6 +427,7 @@ public class TypeConversion {
 			}
 		});
 		TypeRef tr = holder.getValueType();
+		tr.setParentElement(valueType.getParentElement());
 		return tr;// == null ? null : tr.clone();
 	}
 	
@@ -515,9 +516,10 @@ public class TypeConversion {
 	}
 	
 	public Identifier findStructRef(Identifier name, Identifier libraryClassName) {
-//		if (name != null && name.toString().equals("u_union"))
-//			name = name;
-		Struct s = result.structsByName.get(name);
+		return findStructRef(result.structsByName.get(name), name, libraryClassName);
+	}
+	
+	public Identifier findStructRef(Struct s, Identifier name, Identifier libraryClassName) {
 		if (s == null || s.isForwardDeclaration()) {
 			Pair<TypeDef, Declarator> pair = getTypeDef(name);
 			if (pair == null)
@@ -535,7 +537,9 @@ public class TypeConversion {
 			return result.getTaggedTypeIdentifierInJava(s);
 			//name = result.declarationsConverter.getActualTaggedTypeName(s);
 		}
-		
+	}
+	public Identifier findStructRef(Struct s, Identifier libraryClassName) {
+		return findStructRef(s, result.declarationsConverter.getActualTaggedTypeName(s), libraryClassName);	
 	}
 //	public String find(String name, Element e, String callerLibraryClass) {
 //		if (e == null)
@@ -547,7 +551,8 @@ public class TypeConversion {
 //		return SyntaxUtils.equal(libClass, callerLibraryClass) ? name : libClass + "." + name;
 //	}
 	public Identifier libMember(Identifier libClass, Identifier libraryClassName, Identifier member) {
-		return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
+		//return ident(SyntaxUtils.equal(libClass, libraryClassName) ? null : libClass, member);
+		return ident(libClass, member);
 		//return member; //TODODODODODODODODOoOOOOO
 	}
 	public Identifier findRef(Identifier name, Element e, Identifier libraryClassName, boolean inLibClass) {
@@ -615,12 +620,16 @@ public class TypeConversion {
 		boolean firstParent = true;
 		while (parent != null) {
 			if (parent instanceof Struct) {
-				Identifier structName = result.declarationsConverter.getActualTaggedTypeName((Struct) parent);
-				if (structName != null) {
-					parentIdent = findStructRef(structName, null); 
-					break;
-//					nameElements.add(0, structName.toString());
-				}
+				parentIdent = findStructRef((Struct)parent, null);
+				break;
+//				Identifier structName = result.declarationsConverter.getActualTaggedTypeName((Struct) parent);
+//				if (structName != null) {
+////					if (firstParent) {
+//						parentIdent = findStructRef(structName, null); 
+//						break;
+////					} else
+////						nameElements.add(0, structName.toString());
+//				}
 			} else if (firstParent) {
 				if (name == null && parent instanceof TypeDef) {
 					Declarator simpleSto = null;
@@ -649,13 +658,22 @@ public class TypeConversion {
 						break;
 					}
 				} else if (firstParent) {
-					if (parent instanceof VariablesDeclaration || parent instanceof FunctionPointerDeclaration) {
-						nameElements.add("Callback");
-					}
+//					if (//parent instanceof VariablesDeclaration || 
+//							parent instanceof FunctionPointerDeclaration
+//							//|| parent instanceof TypeDef
+//					) {
+//						nameElements.add("Callback");
+//					}
 				}
 			}
 			parent = parent.getParentElement();
 			firstParent = false;
+		}
+		
+		if (qualify && parentIdent == null) {
+			String library = result.getLibrary(functionSignature);
+			if (library != null)
+				parentIdent = result.getLibraryClassFullName(library);
 		}
 		
 		if (prependNamespaces) {
@@ -703,7 +721,7 @@ public class TypeConversion {
 				typeRef(ident(structName, inferCallBackName(s, true, true)));
 		}
 		return typeRef(inferCallBackName(s, true, true));
-		//libMember(result.getLibraryClassFullName(library), inferCallBackName(s, true));
+//		return typeRef(libMember(result.getLibraryClassFullName(library), callerLibraryClass, inferCallBackName(s, true, true)));
 		//typeRef(ident(result.getLibraryClassFullName(library), inferCallBackName(s, true)));	
 	}
 	static TypeRef primRef(JavaPrim p) {
@@ -992,25 +1010,24 @@ public class TypeConversion {
 		unknownTypes.add(String.valueOf(valueType));
 		throw new UnsupportedConversionException(valueType, null);
 	}
-	public Identifier findObjCClassIdent(Identifier name) {
-
-		if (name.equals("id"))
-			return ident(org.rococoa.ID.class);
+	static Map<String, Class<?>> predefObjCClasses = new HashMap<String, Class<?>>();
+	static {
+		predefObjCClasses.put("id", org.rococoa.ID.class);
+		predefObjCClasses.put("SEL",org.rococoa.Selector.class);
+		
+		predefObjCClasses.put("Class", NSClass.class);
 	
-		if (name.equals("SEL"))
-			return ident(org.rococoa.Selector.class);
-		
-		if (name.equals("Class"))
-			return ident(NSClass.class);
-		
-		if (name.equals("Protocol"))
-			return ident(NSClass.class);
-		
-		if (name.equals("NSObject"))
-			return ident(NSObject.class);
-		
-		if (name.equals("NSClass"))
-			return ident(NSClass.class);
+		predefObjCClasses.put("Protocol", NSClass.class);
+	
+		predefObjCClasses.put("NSObject", NSObject.class);
+	
+		predefObjCClasses.put("NSClass", NSClass.class);
+	
+	}
+	public Identifier findObjCClassIdent(Identifier name) {
+		Class<?> class1 = predefObjCClasses.get(name.toString());
+		if (class1 != null)
+			return ident(class1);
 		
 		Struct s = result.getObjcCClassOrProtocol(name);
 		if (s != null)

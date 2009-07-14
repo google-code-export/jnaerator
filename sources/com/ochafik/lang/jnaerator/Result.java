@@ -481,7 +481,7 @@ public class Result extends Scanner {
 //			Identifier otherLibraryClassName = getLibraryClassSimpleName(otherLibrary);
 //			out.println("import static " + ident(otherJavaPackage, otherLibraryClassName) + ".*;");
 //		}
-		out.println("@SuppressWarnings(\"unused\")");
+//		out.println("@SuppressWarnings(\"unused\")");
 	}
 	public boolean hasObjectiveC() {
 		if (!objCCategoriesByName.isEmpty())
