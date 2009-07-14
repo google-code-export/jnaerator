@@ -205,7 +205,8 @@ public class JNAerator {
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
 //						"-framework", "CoreGraphics"
 						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
-//						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
+						"-noRuntime",
+						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
 //						"-o", "/Users/ochafik/src/opencl",
@@ -306,6 +307,8 @@ public class JNAerator {
 					config.verbose = true;
 				else if (arg.equals("-limitComments"))
 					config.limitComments = true;
+				else if (arg.equals("-noRuntime"))
+					config.bundleRuntime = false;
 				else if (arg.equals("-noauto"))
 					auto = false;
 				else if (arg.equals("-direct"))
@@ -497,11 +500,15 @@ public class JNAerator {
 				
 			}
 		}
+		
 		writeRuntimeClasses(jnaerator, result, mfm);
 		
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
 	}
 	public static void writeRuntimeClasses(JNAerator jnaerator, Result result, MemoryFileManager mfm) throws IOException {
+		if (!result.config.bundleRuntime)
+			return;
+		
 		ClassLoader classLoader = JNAerator.class.getClassLoader();
 		String listingFile = "META-INF/jnaerator-runtime.jar.files";
 		List<String> files = ReadText.readLines(classLoader.getResourceAsStream(listingFile ));

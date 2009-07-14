@@ -80,6 +80,7 @@ public class JNAeratorConfig {
 	public boolean useJNADirectCalls = false;
 	public boolean limitComments = false;
 	public boolean putTopStructsInSeparateFiles = true;
+	public boolean bundleRuntime = true;
 	public String entryName;
 	
 	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
