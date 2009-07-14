@@ -20,9 +20,11 @@ package com.ochafik.lang.compiler;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,10 +48,10 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	public void writeJar(OutputStream out, boolean outputSources, List<Pair<String, File>> additionalFiles) throws IOException {
 		JarOutputStream jout = new JarOutputStream(out);
 		if (outputSources)
-			for (MemoryFileObject o : inputs.values())
-				writeEntry(o, jout);
-		for (FileObject o : outputs.values())
-			writeEntry(o, jout);
+			for (Map.Entry<String, MemoryJavaFile> e : inputs.entrySet())
+				writeEntry(e.getKey(), e.getValue(), jout);
+		for (Map.Entry<String, FileObject> e : outputs.entrySet())
+			writeEntry(e.getKey(), e.getValue(), jout);
 		
 		if (additionalFiles != null)
 			for (Pair<String, File> additionalFile : additionalFiles) {
@@ -62,28 +64,34 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 			}
 		jout.close();
 	}
-	protected void writeEntry(FileObject o, JarOutputStream jout) throws IOException {
+	protected void writeEntry(String path, FileObject o, JarOutputStream jout) throws IOException {
+		if (path.startsWith("/"))
+			path = path.substring(1);
+
 		if (o instanceof MemoryFileObject) {
 			MemoryFileObject mo = (MemoryFileObject)o;
 			byte[] c = mo.getContent();
 			if (c == null)
 				return;
 	
-			String path = mo.getPath();
-			if (path.startsWith("file:///"))
-				path = path.substring("file:///".length());
+//			String path = mo.getPath();
+//			if (path.startsWith("file:///"))
+//				path = path.substring("file:///".length());
 			JarEntry e = new JarEntry(path);
 			jout.putNextEntry(e);
 			jout.write(c);
 			jout.closeEntry();
 		} else if (o instanceof URLFileObject) {
 			URLFileObject uo = (URLFileObject)o;
-			String path = uo.url.getFile();
-			if (path.startsWith("/"))
-				path = path.substring(1);
+//			String path = uo.url.getFile();
+//			if (path.startsWith("/"))
+//				path = path.substring(1);
+			
 			JarEntry e = new JarEntry(path);
 			jout.putNextEntry(e);
 			InputStream in = uo.url.openStream();
+			if (in == null)
+				throw new FileNotFoundException(path);
 			IOUtils.readWrite(in, jout);
 			in.close();
 			jout.closeEntry();

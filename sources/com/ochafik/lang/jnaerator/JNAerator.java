@@ -473,21 +473,35 @@ public class JNAerator {
 				));
 		}
 		
-//		writeRuntimeClasses(mfm);
+		writeRuntimeClasses(mfm);
 		
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
 	}
-	private static void writeRuntimeClasses(MemoryFileManager mfm) throws IOException {
+	public static void writeRuntimeClasses(MemoryFileManager mfm) throws IOException {
+		ClassLoader classLoader = JNAerator.class.getClassLoader();
+		String listingFile = "META-INF/jnaerator-runtime.jar.files";
+		List<String> files = ReadText.readLines(classLoader.getResourceAsStream(listingFile ));
+		if (files == null)
+			files = ReadText.readLines("/Users/ochafik/Prog/Java/bin/jnaerator-runtime.jar.files");
+		
+		if (files == null)
+			new FileNotFoundException("Warning: Could not find JNAerator listing file '" + listingFile + "' : JNAerated files will need JNAerator in the path to execute.").printStackTrace();
+		
+		for (String file : files) {
+			URL url = classLoader.getResource(file);
+			if (url == null)
+				throw new FileNotFoundException(file);
+			
+			if (!mfm.outputs.containsKey(file)) {
+				mfm.outputs.put(file, new URLFileObject(url));
+			}
+		}
+		/*
 		for (URL sourceJar : new URL[] {
 				ClassUtils.getClassPath(NativeLibrary.class),
 				ClassUtils.getClassPath(Rococoa.class)
 		})
-			for (URL resURL : URLUtils.listFiles(sourceJar, null/*new Filter<String>() {
-				@Override
-				public boolean accept(String path) {
-					return path.toLowerCase().endsWith(".test");// && path.contains("objective");
-				}
-			}*/)) {
+			for (URL resURL : URLUtils.listFiles(sourceJar, null)) {
 				String s = resURL.getFile();
 				if (s.startsWith("META-INF"))
 					continue;
@@ -496,7 +510,7 @@ public class JNAerator {
 					mfm.outputs.put(s, new URLFileObject(resURL));
 				}
 			}
-		
+		*/
 	}
 	public static File getDir(String name) {
 		File dir = new File(getDir(), name);
