@@ -351,12 +351,13 @@ public class ObjectiveCGenerator {
 							continue;
 						
 						if (!isProtocol && decl instanceof Function) {
-							if (instanceStruct.getType() == Type.JavaClass)
-								decl.addModifiers(Modifier.Public, Modifier.Abstract);
-							
+//							
 							Function addedF = createCreateCopyFromInit((Function)decl, instanceStruct);
 							signatures.methodsSignatures.add(((Function)decl).computeSignature(false));
 							instanceStruct.addDeclaration(addedF);
+							
+							if (instanceStruct.getType() == Type.JavaClass)
+								decl.addModifiers(Modifier.Public, Modifier.Abstract);
 						}
 					}
 				}
