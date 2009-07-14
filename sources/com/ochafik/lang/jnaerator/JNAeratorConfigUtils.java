@@ -447,7 +447,7 @@ public class JNAeratorConfigUtils {
 	public static void addFramework(JNAeratorConfig config, String framework) throws IOException {
 
 		File file = new File(framework);
-		if (!file.exists()) {
+		if (!file.getName().matches("\\.framework$") || !file.exists()) {
 			for (String pathEl : config.preprocessorConfig.frameworksPath) {
 				File f = new File(pathEl, framework + ".framework");
 				if (f.exists() && f.isDirectory()) {

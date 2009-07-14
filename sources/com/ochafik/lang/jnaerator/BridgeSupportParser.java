@@ -36,7 +36,22 @@ public class BridgeSupportParser {
 			framework = framework.substring(0, framework.length() - ".bridgesupport".length());
 		
 		Document xml = XMLUtils.readXML(bsf);
+		
 		parseStringConstants(framework, xml);
+		parseFunctions(framework, xml);
+		//TODO parse all the rest !!!
+	}
+
+	private void parseFunctions(String framework, Document xml) throws XPathExpressionException {
+		for (Node function : XPathUtils.findNodesIterableByXPath("signatures/function", xml)) {
+			String name = XMLUtils.getAttribute(function, "name");
+			String already_retained = XPathUtils.findStringByXPath("retval/@already_retained", function);
+			if (already_retained != null && (already_retained = already_retained.trim()).length() > 0)
+			{
+				boolean alreadyRetained = "true".equals(already_retained);
+				Result.getMap(result.retainedRetValFunctions, framework).put(name, alreadyRetained);
+			}
+		}
 	}
 
 	private void parseStringConstants(String framework, Document xml) throws XPathExpressionException {

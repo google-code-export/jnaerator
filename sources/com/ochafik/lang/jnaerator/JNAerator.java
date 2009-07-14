@@ -178,7 +178,7 @@ public class JNAerator {
 //						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
 //						"-framework", "Foundation",
 //						"-framework", "AppKit",
-//						"-framework", "CoreFoundation",
+						"-framework", "CoreFoundation",
 //						"-framework", "IOKit",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
@@ -202,8 +202,9 @@ public class JNAerator {
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
-						"-framework", "CoreGraphics"
-//						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
+//						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
+//						"-framework", "CoreGraphics"
+						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
