@@ -128,21 +128,20 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 		return super.getJavaFileForInput(location, className, kind);
 	}
 
-	public static String getPathForClass(String className, String extension) {
-		return "file:///" + className.replace('.', '/') + "." + extension;
+	public static String getFullPathForClass(String className, String extension) {
+		return "file:///" + getSimplePathForClass(className, extension);
+	}
+	public static String getSimplePathForClass(String className, String extension) {
+		return className.replace('.', '/') + "." + extension;
 	}
 	@Override
 	public JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
 //		System.out.println("getJavaFileForOutput(className = " + className + ", location = " + location + ", kind = " + kind + ")");
 		MemoryJavaFile jo = null;
 		if (kind == JavaFileObject.Kind.CLASS) {
-			String path = getPathForClass(className, "class");
-			outputs.put(path, jo = new MemoryJavaFile(path, null, kind));
-//			System.out.println("getJavaFileForOutput(path = " + path + ")");
+			outputs.put(getSimplePathForClass(className, "class"), jo = new MemoryJavaFile(getFullPathForClass(className, "class"), null, kind));
 		} else if (kind == JavaFileObject.Kind.SOURCE) {
-			String path = getPathForClass(className, "java");
-			inputs.put(path, jo = new MemoryJavaFile(path, null, kind));
-//			System.out.println("getJavaFileForOutput(path = " + path + ")");
+			inputs.put(getSimplePathForClass(className, "java"), jo = new MemoryJavaFile(getFullPathForClass(className, "java"), null, kind));
 		}
 
 		return jo == null ? super.getJavaFileForInput(location, className, kind) : jo;
@@ -150,6 +149,9 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	@Override
 	public FileObject getFileForOutput(Location location, String packageName, String relativeName, FileObject sibling) throws IOException {
 //		System.out.println("getFileForOutput(relativeName = " + relativeName + ")");
+		if (relativeName.startsWith("file:///"))
+			relativeName = relativeName.substring("file:///".length());
+		
 		FileObject out = outputs.get(relativeName);
 		if (out == null) {
 			out = new MemoryFileObject(relativeName, (String)null);
