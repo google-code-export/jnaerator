@@ -172,6 +172,8 @@ public class ReadText {
 		return r;
 	}
 	public static final List<String> readLines(InputStream in) throws IOException {
+		if (in == null)
+			return null;
 		List<String> r = readLines(new InputStreamReader(in));
 		in.close();
 		return r;

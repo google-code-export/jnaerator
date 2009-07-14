@@ -402,18 +402,19 @@ public class JNAeratorStudio extends JPanel {
 				System.setOut(pto);
 				System.setErr(pto);
 				
+				JNAeratorConfig config = new JNAeratorConfig();
+				config.useJNADirectCalls = directCallingCb.isSelected();
+				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
+				config.defaultLibrary = libraryName.getText();
+				config.libraryForElementsInNullFile = libraryName.getText();
+//				config.addFile(getFile(), "");
+				config.preprocessorConfig.includeStrings.add(sourceArea.getText());
+				
+				JNAeratorConfigUtils.autoConfigure(config);
+				JNAerator jnaerator = new JNAerator(config);
+				
 				try {
 					
-					JNAeratorConfig config = new JNAeratorConfig();
-					config.useJNADirectCalls = directCallingCb.isSelected();
-					config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
-					config.defaultLibrary = libraryName.getText();
-					config.libraryForElementsInNullFile = libraryName.getText();
-//					config.addFile(getFile(), "");
-					config.preprocessorConfig.includeStrings.add(sourceArea.getText());
-					
-					JNAeratorConfigUtils.autoConfigure(config);
-					JNAerator jnaerator = new JNAerator(config);
 					SourceFiles sourceFiles = jnaerator.parse();
 					final SourceFiles sourceFilesClone = sourceFiles;//.clone();
 					jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
@@ -464,7 +465,7 @@ public class JNAeratorStudio extends JPanel {
 					}});	
 				}
 				try {
-					compile();
+					compile(jnaerator);
 				} catch (Throwable ex) {
 					error(null, "Compilation error !", ex);
 					//JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
@@ -480,7 +481,7 @@ public class JNAeratorStudio extends JPanel {
 		}
 	}
 
-	protected void compile() throws SyntaxException, IOException {
+	protected void compile(JNAerator jnaerator) throws SyntaxException, IOException {
 		
 		JavaCompiler c = CompilerUtils.getJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
@@ -501,6 +502,7 @@ public class JNAeratorStudio extends JPanel {
 				throw new SyntaxException(sb.toString());
 			}
 		}
+		jnaerator.writeRuntimeClasses(mfm);
 		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true, null);
 		showJarButton.setEnabled(true);
 	}
