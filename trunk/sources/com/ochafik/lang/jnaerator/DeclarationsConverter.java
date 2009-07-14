@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import org.rococoa.AlreadyRetained;
 import org.rococoa.cocoa.foundation.NSObject;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
@@ -431,6 +432,7 @@ public class DeclarationsConverter {
 			return;
 		
 		//if (function.findParentOfType(Template))
+		String library = result.getLibrary(function);
 		Identifier functionName = function.getName();
 		if (functionName == null) {
 			if (function.getParentElement() instanceof FunctionSignature)
@@ -461,6 +463,13 @@ public class DeclarationsConverter {
 			case CPPClass:
 				ns.add(((Struct)parent).getTag().toString());
 				break;
+			}
+		}
+		
+		if (!isMethod && library != null) {
+			Boolean alreadyRetained = Result.getMap(result.retainedRetValFunctions, library).get(functionName.toString());
+			if (alreadyRetained != null && alreadyRetained) {
+				natFunc.addAnnotation(new Annotation(AlreadyRetained.class, expr(Constant.Type.Bool, alreadyRetained)));
 			}
 		}
 		//String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";

@@ -92,6 +92,8 @@ public class Result extends Scanner {
 	Map<String, Struct> objCCategoriesByName = new HashMap<String, Struct>();
 	
 	Map<String, Map<String, String>> stringConstants = new HashMap<String, Map<String,String>>();
+	Map<String, Map<String, Boolean>> retainedRetValFunctions = new HashMap<String, Map<String,Boolean>>();
+	
 	//Set<String> 
 		//cStructNames = new HashSet<String>(), 
 		//enumNames = new HashSet<String>();
