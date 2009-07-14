@@ -49,7 +49,6 @@ import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
-import com.ochafik.lang.jnaerator.parser.FunctionPointerDeclaration;
 import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
@@ -1014,15 +1013,10 @@ public class TypeConversion {
 	static {
 		predefObjCClasses.put("id", org.rococoa.ID.class);
 		predefObjCClasses.put("SEL",org.rococoa.Selector.class);
-		
 		predefObjCClasses.put("Class", NSClass.class);
-	
 		predefObjCClasses.put("Protocol", NSClass.class);
-	
 		predefObjCClasses.put("NSObject", NSObject.class);
-	
 		predefObjCClasses.put("NSClass", NSClass.class);
-	
 	}
 	public Identifier findObjCClassIdent(Identifier name) {
 		Class<?> class1 = predefObjCClasses.get(name.toString());

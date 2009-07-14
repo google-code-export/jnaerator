@@ -254,7 +254,7 @@ public class JNAeratorStudio extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					URL url = new URL("http://code.google.com/p/jnaerator/wiki/AboutJNAeratorStudio");
+					URL url = new URL("http://code.google.com/p/jnaerator/wiki/AboutJNAerator");
 					System.out.println("About JNAerator: " + url);
 					SystemUtils.runSystemOpenURL(url);
 				} catch (Exception ex) {
@@ -503,7 +503,7 @@ public class JNAeratorStudio extends JPanel {
 				throw new SyntaxException(sb.toString());
 			}
 		}
-		jnaerator.writeRuntimeClasses(jnaerator, result, mfm);
+		JNAerator.writeRuntimeClasses(jnaerator, result, mfm);
 		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true, null);
 		showJarButton.setEnabled(true);
 	}

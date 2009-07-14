@@ -66,7 +66,7 @@ public class ObjectiveCGenerator {
 				List<String> lines = ReadText.readLines(in);
 				for (String line : lines) {
 					line = line.trim();
-					if (line.startsWith("//") || line.startsWith("#"))
+					if (line.startsWith("//") || line.startsWith("#") || line.length() == 0)
 						continue;
 					String[] tks = line.split("\\|");
 					String className = tks[0].trim(), methodSignature = tks[1].trim();
@@ -93,6 +93,10 @@ public class ObjectiveCGenerator {
 		
 		String cn = s.getTag() == null ? "" : s.getTag().toString();
 		Set<String> set = methodsExcludedFromStaticForwarding.get(cn);
+		if (set != null && set.contains(sig))
+			return true;
+		
+		set = methodsExcludedFromStaticForwarding.get("");
 		return set != null && set.contains(sig);
 	}
 	public ObjectiveCGenerator(Result result) {
