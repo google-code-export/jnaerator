@@ -11,18 +11,25 @@ if [[ $? == 0 ]] ; then
 	echo Main-Class: com.ochafik.lang.jnaerator.JNAerator> classes/mf
 
 	cd sources
-	RESOURCES=`find com ! -iname '*.g' ! -ipath '*/.svn/*' ! -iname '*.java' -type f -print`
+	RESOURCES=`find com ! -iname '*~' ! -iname '.*' ! -iname '*.g' ! -ipath '*/.svn/*' ! -iname '*.java' -type f -print`
 	
 	echo Copying resources
 	for f in $RESOURCES ; do 
-		mkdir -p "../classes/`echo $f| sed 's/\/[^\/]+$//g'`" 
-		cp "$f" "../classes/$f" ; 
+		if [[ -f "$f" ]] ; then
+			mkdir -p "../classes/`echo $f| sed 's/\/[a-zA-Z.]*$//g'`" 
+			cp "$f" "../classes/$f" ;
+		fi ;
 	done
+	mkdir -p classes/com/ochafik/lang/jnaerator/tests
+	cp com/ochafik/lang/jnaerator/tests/*.test classes/com/ochafik/lang/jnaerator/tests
 	cd ..
+	
+	mkdir classes/META-INF
+	cp bin/jnaerator-runtime.jar.files classes/META-INF
 	
 	cd classes
 	echo Merging thirdparty libraries
-	for l in `ls ../libraries/*.jar` ../libraries/anarres/build/tar/lib/anarres-cpp.jar `ls ../libraries/jna/dist/*.jar`  ; do
+	for l in `ls ../libraries/*.jar` ../libraries/anarres/build/tar/lib/anarres-cpp.jar  ; do
 		if [[ "$l" != "../libraries/trove.jar" ]] ; then
 			jar xf "$l" ;
 		fi ;
@@ -31,7 +38,7 @@ if [[ $? == 0 ]] ; then
 	
 	#find com ! -ipath '*/.svn/*' ! -iname '*.java' -type f -exec cp '{}' '../classes/{}' ';'
 	echo Creating JAR
-	pwd
+	
 	jar cfm bin/jnaerator.jar classes/mf -C classes .
 	
 	ls -l bin/jnaerator.jar
