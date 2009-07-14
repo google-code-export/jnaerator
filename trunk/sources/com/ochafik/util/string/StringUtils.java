@@ -206,7 +206,7 @@ public class StringUtils {
 								b.append(nb);
 								break;
 							default:
-								throw new IllegalArgumentException("aye ca devrait pas se produire !");
+								throw new IllegalArgumentException("Should not happen !");
 						}
 					} else b.append(c);
 			}
@@ -251,7 +251,7 @@ public class StringUtils {
 						}
 						break;
 					default:
-						throw new IllegalArgumentException("Caractère inconnu : \"\\"+String.valueOf(c)+"...\"");
+						throw new IllegalArgumentException("Unknown character: \"\\"+String.valueOf(c)+"...\"");
 				}
 			} else b.append(c);
 		}
