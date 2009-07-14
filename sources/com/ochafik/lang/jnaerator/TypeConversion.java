@@ -680,7 +680,7 @@ public class TypeConversion {
 	
 		Struct parentStruct = s.findParentOfType(Struct.class);
 		if (parentStruct != null && (parentStruct.getType() == Struct.Type.ObjCClass || parentStruct.getType() == Struct.Type.ObjCProtocol)) {
-			Identifier structName = result.declarationsConverter.getActualTaggedTypeName(parentStruct);
+			//Identifier structName = result.declarationsConverter.getActualTaggedTypeName(parentStruct);
 			return //result.result.getObjCClass(parentStruct.getName()).
 				typeRef(//libMember(structName, libraryClassName, 
 						inferCallBackName(s, true, true)//)

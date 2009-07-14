@@ -464,23 +464,36 @@ public class Result extends Scanner {
 		if (javaPackage != null)
 			out.println("package " + javaPackage + ";");
 		
-		for (Identifier pn : javaPackages) {
-			if (pn.equals(""))
-				continue;
-			
-			if (pn.equals(javaPackage))
-				continue;
-			out.println("import " + pn + ".*;");
-		}
-		for (String otherLibrary : libraries) {
-			if (otherLibrary == null)
-				continue;
-			if (otherLibrary.equals(javaPackage))
-				continue;
-			Identifier otherJavaPackage = javaPackageByLibrary.get(otherLibrary);
-			Identifier otherLibraryClassName = getLibraryClassSimpleName(otherLibrary);
-			out.println("import static " + ident(otherJavaPackage, otherLibraryClassName) + ".*;");
-		}
+//		for (Identifier pn : javaPackages) {
+//			if (pn.equals(""))
+//				continue;
+//			
+//			if (pn.equals(javaPackage))
+//				continue;
+//			out.println("import " + pn + ".*;");
+//		}
+//		for (String otherLibrary : libraries) {
+//			if (otherLibrary == null)
+//				continue;
+//			if (otherLibrary.equals(javaPackage))
+//				continue;
+//			Identifier otherJavaPackage = javaPackageByLibrary.get(otherLibrary);
+//			Identifier otherLibraryClassName = getLibraryClassSimpleName(otherLibrary);
+//			out.println("import static " + ident(otherJavaPackage, otherLibraryClassName) + ".*;");
+//		}
 		out.println("@SuppressWarnings(\"unused\")");
+	}
+	public boolean hasObjectiveC() {
+		if (!objCCategoriesByName.isEmpty())
+			return true;
+		
+		Map<Identifier, Struct> m;
+
+		if ((m = classes.get(Struct.Type.ObjCClass)) != null && !m.isEmpty())
+			return true;
+
+		if ((m = classes.get(Struct.Type.ObjCProtocol)) != null && !m.isEmpty())
+			return true;
+		return false;
 	}
 }
