@@ -643,7 +643,11 @@ public class DeclarationsConverter {
 		if (!signatures.classSignatures.add(structName))
 			return;
 		
-		Identifier baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
+		Identifier baseClass;
+		if (result.config.useJNAeratorUnionAndStructClasses)
+			baseClass = ident(struct.getType() == Struct.Type.CUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class);
+		else
+			baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
 		
 		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
 		Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
@@ -705,13 +709,21 @@ public class DeclarationsConverter {
 		TypeRef tr = typeRef(byRef.getTag().clone());
 		Function f = new Function(Function.Type.JavaMethod, ident(name), tr);
 		String varName = "s";
-		f.addModifiers(Modifier.Public).setBody(block(
-			stat(tr.clone(), varName, new Expression.New(tr.clone(), methodCall(null))),
-			stat(methodCall(varRef(varName), MemberRefStyle.Dot, "useMemory", methodCall("getPointer"))),
-			stat(methodCall("write")),
-			stat(methodCall(varRef(varName), MemberRefStyle.Dot, "read")),
-			new Statement.Return(varRef(varName))
-		));
+
+		f.addModifiers(Modifier.Public);
+		if (result.config.useJNAeratorUnionAndStructClasses) {
+			f.setBody(block(
+				new Statement.Return(methodCall("setupClone", new Expression.New(tr.clone(), methodCall(null))))
+			).setCompact(true));
+		} else {
+			f.setBody(block(
+				stat(tr.clone(), varName, new Expression.New(tr.clone(), methodCall(null))),
+				stat(methodCall(varRef(varName), MemberRefStyle.Dot, "useMemory", methodCall("getPointer"))),
+				stat(methodCall("write")),
+				stat(methodCall(varRef(varName), MemberRefStyle.Dot, "read")),
+				new Statement.Return(varRef(varName))
+			));
+		}
 		return f;
 	}
 
