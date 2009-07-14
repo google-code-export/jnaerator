@@ -24,7 +24,7 @@ public class MyLibrary {
   # Once this is done, test some demanding library (OpenGL, for instance)...
   # allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
   # make jnaeration features selectable from the GUI & CLI
-  # *IN PROGRESS* include jna.jar & rococoa.jar in generated JARs (optional, otherwise link to them in classpath)
+  # *OK* include jna.jar & rococoa.jar in generated JARs (optional, otherwise link to them in classpath)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
   # define source annotations in c comments to alter jmaerator behaviour
@@ -34,13 +34,13 @@ public class MyLibrary {
 
 = Enhancements =
 
-  # *in progress (-limitComments switch)* add option not to keep comments (then by default, do not include sources in generated JAR)
   # Add runtime tests to existing parsing/compilation tests
   # add option to switch NativeLong off : on MSVC++ 64bits, long is 32 bits !
   # add progression bar to studio
   # enhance the error reporting of parsing (work on antlr grammar) and of compilation
   # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
   # select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
+  # *OK* add option not to keep comments (then by default, do not include sources in generated JAR)
   # *OK* cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
   # *OK* prefer simple names for structs and enums (S typedef instead of `_`S tag)
   # *OK* automated tests for Objective-C (long time no try !)
