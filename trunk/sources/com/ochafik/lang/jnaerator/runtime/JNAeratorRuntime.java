@@ -4,6 +4,8 @@ public class JNAeratorRuntime {
 	@SuppressWarnings("unused")
 	private static final Class<?>[] dependencies = new Class<?>[] {
 		LibraryExtractor.class,
-		MangledFunctionMapper.class
+		MangledFunctionMapper.class,
+		Structure.class,
+		Union.class
 	};
 }

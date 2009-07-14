@@ -440,6 +440,9 @@ public class Result extends Scanner {
 			}
 		}
 		
+		if (fullClassName.resolveLastSimpleIdentifier().equals("char"))
+			return null;
+		
 		if (fullClassName.equals(NSString.class)) {
 			/*
 		    @Override

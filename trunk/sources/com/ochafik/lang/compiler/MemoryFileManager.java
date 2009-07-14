@@ -47,8 +47,11 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	public void writeJar(OutputStream out, boolean outputSources, List<Pair<String, File>> additionalFiles) throws IOException {
 		JarOutputStream jout = new JarOutputStream(out);
 		if (outputSources)
-			for (Map.Entry<String, MemoryJavaFile> e : inputs.entrySet())
+			for (Map.Entry<String, MemoryJavaFile> e : inputs.entrySet()) {
+//				if (e.getKey().contains(".class"))
+//					continue;
 				writeEntry(e.getKey(), e.getValue(), jout);
+			}
 		for (Map.Entry<String, FileObject> e : outputs.entrySet())
 			writeEntry(e.getKey(), e.getValue(), jout);
 		

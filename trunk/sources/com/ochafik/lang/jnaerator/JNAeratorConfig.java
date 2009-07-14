@@ -167,6 +167,7 @@ public class JNAeratorConfig {
 	
 	public String libraryForElementsInNullFile;
 	public String cPlusPlusNameSpaceSeparator = "_";
+	public boolean useJNAeratorUnionAndStructClasses = true;
 	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)

@@ -150,7 +150,6 @@ public class ObjectiveCGenerator {
 	}
 	public void outputObjectiveCClass(Struct in) throws IOException {
 		Identifier fullClassName = getFullClassName(in);
-		
 		PrintWriter out = result.classOutputter.getClassSourceWriter(fullClassName.toString());
 		result.printJavaHeader(getPackageName(in), out);
 		
