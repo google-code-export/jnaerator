@@ -52,7 +52,7 @@ public abstract class Element {
 	int elementLine = -1;
 	String commentBefore, commentAfter;
 	static int nextId = 1;
-	private int id = nextId++;
+	private final int id = nextId++;
 	protected EnumSet<Language> possibleLanguages;
 	
 	public EnumSet<Language> getPossibleLanguages() {
@@ -260,8 +260,14 @@ public abstract class Element {
 	}
 	/// final so that it is easier to implement listeners
 	public final void setParentElement(Element parentElement) {
-		if (this.parentElement != null)
-			this.parentElement = null;
+//		if (this.parentElement != null && parentElement != null)
+//			this.parentElement = null;
+		
+//		if ("atexit_arg1_callback".equals(toString()))
+//			parentElement = parentElement;
+		
+		
+//		if ("lc_category_struct".equals(toString()))
 		
 		if (parentElement == null)
 			this.parentElement = null; // break here
@@ -297,8 +303,15 @@ public abstract class Element {
 		return clone(new HashSet<Integer>());
 	}
 	public Element clone(Set<Integer> clonedObjectIds) {
-		if (!clonedObjectIds.add(getId()))
-			return null;
+//		if (getId() == 4529)
+//			clonedObjectIds = clonedObjectIds;
+//		
+//		if (clonedObjectIds.contains(getId()))
+//			return null;
+//		else
+//			clonedObjectIds.add(getId());
+//		if (!clonedObjectIds.add(getId()))
+//			return null;
 		
 		String fieldName = null;
 		try {
@@ -564,10 +577,21 @@ public abstract class Element {
 		}
 	}
 	
-
+//	static int depth;
 	@Override
 	public final String toString() {
-		return toString("");
+//		synchronized(Element.class) {
+//			if (depth > 50)
+//				depth = depth;
+//			depth++;
+//		}
+//		try {
+			return toString("");
+//		} finally {
+//			synchronized(Element.class) {
+//				depth--;
+//			}
+//		}
 	}
 	/*
 	@Override
