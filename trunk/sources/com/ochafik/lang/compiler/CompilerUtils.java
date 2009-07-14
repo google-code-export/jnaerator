@@ -26,6 +26,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 
 import javax.tools.*;
+import javax.tools.Diagnostic.Kind;
 
 import com.ochafik.io.IOUtils;
 import com.ochafik.util.string.StringUtils;
@@ -136,7 +137,8 @@ public class CompilerUtils {
 				continue;
 			//diagnostic.getKind()
 			//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
-			System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
+			if (diagnostic.getKind() == Kind.ERROR)
+				System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
 		}
 	}
 	

@@ -39,6 +39,7 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
+import javax.tools.Diagnostic.Kind;
 
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
@@ -437,10 +438,13 @@ public class JNAerator {
 		if (!diagnostics.getDiagnostics().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-				sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
+				if (diagnostic.getKind() == Kind.ERROR)
+					sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
 			}
-			//System.out.println(sb);
-			throw new SyntaxException(sb.toString());
+			if (sb.length() > 0) {
+				//System.out.println(sb);
+				throw new SyntaxException(sb.toString());
+			}
 		}
 		List<Pair<String, File>> additionalFiles = new ArrayList<Pair<String,File>>();
 		for (String library : new HashSet<String>(jnaerator.config.libraryByFile.values())) {
@@ -462,7 +466,7 @@ public class JNAerator {
 			String arch = e.getKey();
 			for (File libraryFile : e.getValue())
 				additionalFiles.add(new Pair<String, File>(
-					(arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
+					"libraries/" + (arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
 					libraryFile
 				));
 		}
