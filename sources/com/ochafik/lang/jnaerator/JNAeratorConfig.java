@@ -85,6 +85,7 @@ public class JNAeratorConfig {
 	
 	public Map<File, String> libraryByFile = new HashMap<File, String>();
 	public void addLibraryFile(File file, String arch) {
+		
 		List<File> others = libraryFilesByArch.get(arch);
 		if (others == null)
 			libraryFilesByArch.put(arch, others = new ArrayList<File>());

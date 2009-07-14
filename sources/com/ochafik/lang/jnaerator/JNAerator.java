@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -241,9 +242,10 @@ public class JNAerator {
 						if (trl.length() == 0 || trl.matches("^(//|#).*"))
 							continue;
 						for (String s : trl.split("\\s+")) {
+							boolean allowMissing = s.endsWith("?");
 							if (s.contains("*"))
-								for (String r : FileListUtils.resolveShellLikeFileList(s))
-									args.add(iAdd++, r);
+								for (String r : FileListUtils.resolveShellLikeFileList(allowMissing ? s.substring(0, s.length() - 1) : s))
+									args.add(iAdd++, allowMissing ? r + "?" : r);
 							else
 								args.add(iAdd++, s);
 						}
@@ -260,7 +262,7 @@ public class JNAerator {
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 			boolean auto = true;
 			File outputJar = null;
-			String arch = null;
+			String arch = LibraryExtractor.getCurrentOSAndArchString();
 			String currentLibrary = null;
 			for (int iArg = 0, len = args.size(); iArg < len; iArg++) {
 				String arg = args.get(iArg);
@@ -349,9 +351,13 @@ public class JNAerator {
 					frameworks.add(arg);
 				else if (arg.equals("-arch"))
 					arch = args.get(++iArg);
-				else if (isLibraryFile(arg))
-					config.addLibraryFile(new File(arg), arch);
-				else {
+				else if (isLibraryFile(arg)) {
+					boolean allowMissing = arg.endsWith("?");
+					File file = new File(allowMissing ? arg.substring(0, arg.length() - 1) : arg);
+					if (config.verbose)
+						System.out.println("Adding file '" + file + "' for arch '" + arch +"'.");
+					config.addLibraryFile(file, arch);
+				} else {
 					String lib = currentLibrary;
 					File f = new File(arg);
 					if (f.isDirectory() && f.getName().endsWith(".framework")) {
@@ -410,6 +416,9 @@ public class JNAerator {
 	}
 	private static boolean isLibraryFile(String arg) {
 		arg = arg.toLowerCase();
+		boolean allowMissing = arg.endsWith("?");
+		if (allowMissing)
+			arg = arg.substring(0, arg.length() - 1);
 		if (!new File(arg).exists())
 			return false;
 		return 
@@ -446,7 +455,18 @@ public class JNAerator {
 				throw new SyntaxException(sb.toString());
 			}
 		}
-		List<Pair<String, File>> additionalFiles = new ArrayList<Pair<String,File>>();
+		//List<Pair<String, File>> additionalFiles = new ArrayList<Pair<String,File>>();
+		Map<String, File> additionalFiles = new HashMap<String,File>();
+		
+		for (Map.Entry<String, List<File>> e : jnaerator.config.libraryFilesByArch.entrySet()) {
+			String arch = e.getKey();
+			for (File libraryFile : e.getValue())
+				additionalFiles.put(
+					"libraries/" + (arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
+					libraryFile
+				);
+		}
+		
 		for (String library : new HashSet<String>(jnaerator.config.libraryByFile.values())) {
 			String libraryFileName = System.mapLibraryName(library);
 			File libraryFile = new File(libraryFileName); 
@@ -454,23 +474,18 @@ public class JNAerator {
 			if (!libraryFile.exists() && libraryFileName.endsWith(".jnilib"))
 				libraryFile = new File(libraryFileName = libraryFileName.substring(0, libraryFileName.length() - ".jnilib".length()) + ".dylib");
 				
+			String key = "libraries/" + LibraryExtractor.getCurrentOSAndArchString() + "/" + libraryFile.getName();
+			if (additionalFiles.containsKey(key))
+				continue;
+			
 			if (libraryFile.exists()) {
 				System.out.println("Bundling " + libraryFile);
-				additionalFiles.add(new Pair<String, File>("libraries/" + libraryFileName, libraryFile));
+				additionalFiles.put(key, libraryFile);
 			} else {
 				System.out.println("File " + libraryFileName + " not found");
 				
 			}
 		}
-		for (Map.Entry<String, List<File>> e : jnaerator.config.libraryFilesByArch.entrySet()) {
-			String arch = e.getKey();
-			for (File libraryFile : e.getValue())
-				additionalFiles.add(new Pair<String, File>(
-					"libraries/" + (arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
-					libraryFile
-				));
-		}
-		
 		writeRuntimeClasses(jnaerator, result, mfm);
 		
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
