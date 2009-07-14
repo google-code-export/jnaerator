@@ -59,7 +59,7 @@ public class DeclarationsConverter {
 	
 	
 	void convertCallback(FunctionSignature functionSignature, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName) {
-		Identifier name = result.typeConverter.inferCallBackName(functionSignature, false, false);
+		Identifier name = result.typeConverter.inferCallBackName(functionSignature, true, false);
 		if (name == null)
 			return;
 		

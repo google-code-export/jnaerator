@@ -182,7 +182,7 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		}
 	}
 
-	public int compareTo(Object o) {
+	public final int compareTo(Object o) {
 		String s = toString();
 		if (s == null) {
 			return o == null ? 0 : -1;
@@ -191,11 +191,11 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		return os == null ? -1 : s.compareTo(os);
 	}
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		return compareTo(obj) == 0;
 	}
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return toString().hashCode();
 	}
 }
