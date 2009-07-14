@@ -180,8 +180,8 @@ public class JNAerator {
 //						"-framework", "IOKit",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
-						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
-//						"-framework", "CoreGraphics", 
+//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
+						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
 //						"-o", "/Users/ochafik/Prog/Java/test/objc",
@@ -424,8 +424,6 @@ public class JNAerator {
 		JavaCompiler c = CompilerUtils.getJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
-		
-		//writeRuntimeClasses(jnaerator, mfm);
 		
 		Result result = jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
 			@Override

@@ -67,7 +67,9 @@ public class Result extends Scanner {
 	public final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
 	public final ObjectiveCGenerator objectiveCGenerator = new ObjectiveCGenerator(this);
 	
-	public final Set<Identifier> structsFullNames = new HashSet<Identifier>();
+	public final Set<Identifier> 
+		structsFullNames = new HashSet<Identifier>(),
+		callbacksFullNames = new HashSet<Identifier>();
 	
 	/**
 	 * @param aerator
@@ -358,8 +360,13 @@ public class Result extends Scanner {
 		if (function != null) {
 			getList(callbacksByLibrary, getLibrary(functionSignature)).add(functionSignature);
 			Identifier name = typeConverter.inferCallBackName(functionSignature, false, false);
-			if (name != null)
+			if (name != null) {
 				callbacksByName.put(name, functionSignature);
+				Identifier identifier = typeConverter.inferCallBackName(functionSignature, true, true);
+				if (identifier != null)
+					callbacksFullNames.add(identifier);
+				
+			}
 		}
 	}
 

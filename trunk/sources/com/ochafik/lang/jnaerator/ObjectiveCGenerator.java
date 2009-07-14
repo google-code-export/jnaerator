@@ -97,7 +97,10 @@ public class ObjectiveCGenerator {
 			return true;
 		
 		set = methodsExcludedFromStaticForwarding.get("");
-		return set != null && set.contains(sig);
+		if (set != null && set.contains(sig))
+			return true;
+		
+		return false;
 	}
 	public ObjectiveCGenerator(Result result) {
 		this.result = result;
