@@ -330,15 +330,17 @@ public class ObjectiveCGenerator {
 			if (d instanceof Function) {
 				Function f = (Function)d;
 				List<Declaration> decls = new ArrayList<Declaration>();
-				result.declarationsConverter.convertFunction(f, signatures, false, new DeclarationsHolder.ListWrapper(decls), fullClassName);
+				result.declarationsConverter.convertFunction(f, null, false, new DeclarationsHolder.ListWrapper(decls), fullClassName);
 				
 				if (f.getModifiers().contains(Modifier.Static)) {
 					for (Declaration decl : decls) {
 						if (!add(classStruct, decl, signatures, objSigs, clasSigs))
 							continue;
 						
-						if (!isProtocol && decl instanceof Function)
+						if (!isProtocol && decl instanceof Function) {
 							instanceStruct.addDeclaration(createProxyCopy(f, (Function)decl));
+							signatures.methodsSignatures.add(((Function)decl).computeSignature(false));
+						}
 
 						if (classStruct.getType() == Type.JavaClass)
 							decl.addModifiers(Modifier.Public, Modifier.Abstract);
@@ -349,9 +351,12 @@ public class ObjectiveCGenerator {
 							continue;
 						
 						if (!isProtocol && decl instanceof Function) {
-							instanceStruct.addDeclaration(createCreateCopyFromInit((Function)decl, instanceStruct));
 							if (instanceStruct.getType() == Type.JavaClass)
 								decl.addModifiers(Modifier.Public, Modifier.Abstract);
+							
+							Function addedF = createCreateCopyFromInit((Function)decl, instanceStruct);
+							signatures.methodsSignatures.add(((Function)decl).computeSignature(false));
+							instanceStruct.addDeclaration(addedF);
 						}
 					}
 				}
@@ -384,7 +389,11 @@ public class ObjectiveCGenerator {
 			for (Set<?> sigs : additionalMethodSignatures)
 				if (sigs.contains(sig))
 					return false;
-			return signatures.methodsSignatures.add(sig);
+			if (signatures.methodsSignatures.add(sig)) {
+				classStruct.addDeclaration(decl);
+				return true;
+			} else
+				return false;
 		}
 		classStruct.addDeclaration(decl);
 		return true;
@@ -395,7 +404,7 @@ public class ObjectiveCGenerator {
 	 * @param instanceStruct 
 	 * @return
 	 */
-	private Declaration createCreateCopyFromInit(Function meth, TaggedTypeRef instanceStruct) {
+	private Function createCreateCopyFromInit(Function meth, TaggedTypeRef instanceStruct) {
 		String name = meth.getName().toString();
 		if (!name.matches("^init([A-Z].*|)$"))
 			return null;

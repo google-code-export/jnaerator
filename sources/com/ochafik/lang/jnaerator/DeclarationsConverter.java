@@ -59,7 +59,7 @@ public class DeclarationsConverter {
 	
 	
 	void convertCallback(FunctionSignature functionSignature, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName) {
-		Identifier name = result.typeConverter.inferCallBackName(functionSignature, false);
+		Identifier name = result.typeConverter.inferCallBackName(functionSignature, false, false);
 		if (name == null)
 			return;
 		
@@ -534,7 +534,7 @@ public class DeclarationsConverter {
 				primSign = alternativeOutputs ? primFunc.computeSignature(false) : null,
 				bufSign = alternativeOutputs ? bufFunc.computeSignature(false) : null;
 				
-			if (signatures.methodsSignatures.add(natSign)) {
+			if (signatures == null || signatures.methodsSignatures.add(natSign)) {
 				if (alternativeOutputs && !primSign.equals(natSign)) {
 					if (primSign.equals(bufSign))
 						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primSign + "} instead"));
@@ -547,11 +547,11 @@ public class DeclarationsConverter {
 			}
 			
 			if (alternativeOutputs) {
-				if (signatures.methodsSignatures.add(primSign)) {
+				if (signatures == null || signatures.methodsSignatures.add(primSign)) {
 					collectParamComments(primFunc);
 					out.addDeclaration(primFunc);
 				}
-				if (signatures.methodsSignatures.add(bufSign)) {
+				if (signatures == null || signatures.methodsSignatures.add(bufSign)) {
 					collectParamComments(bufFunc);
 					out.addDeclaration(bufFunc);
 				}

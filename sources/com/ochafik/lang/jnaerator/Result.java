@@ -357,7 +357,7 @@ public class Result extends Scanner {
 		Function function = functionSignature.getFunction();
 		if (function != null) {
 			getList(callbacksByLibrary, getLibrary(functionSignature)).add(functionSignature);
-			Identifier name = typeConverter.inferCallBackName(functionSignature, false);
+			Identifier name = typeConverter.inferCallBackName(functionSignature, false, false);
 			if (name != null)
 				callbacksByName.put(name, functionSignature);
 		}

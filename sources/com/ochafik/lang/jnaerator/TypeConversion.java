@@ -350,7 +350,7 @@ public class TypeConversion {
 					if (resolvesToPrimitive(nameStr))
 						return;
 					
-					if (nameStr != null && nameStr.equals(valueTypeCl.toString()))
+					if (nameStr != null && nameStr.equals(valueTypeCl.toString()) && depth > 1)
 						return;
 //					Identifier oc = findObjCClassIdent(name);
 //					if (oc != null) {
@@ -600,11 +600,13 @@ public class TypeConversion {
 		return library == null ? null : javaStaticFieldRef(result.getLibraryClassFullName(library), name);
 	}
 	
-	public Identifier inferCallBackName(FunctionSignature functionSignature, boolean prependNamespaces) {
+	public Identifier inferCallBackName(FunctionSignature functionSignature, boolean prependNamespaces, boolean qualify) {
 		List<String> nameElements = new ArrayList<String>();
 		Identifier name = functionSignature.getFunction().getName();
 		if (name != null)
 			name = name.clone();
+		
+		Identifier parentIdent = null;
 		
 		Element parent = functionSignature.getParentElement();
 		//if (parent == null) {
@@ -614,8 +616,11 @@ public class TypeConversion {
 		while (parent != null) {
 			if (parent instanceof Struct) {
 				Identifier structName = result.declarationsConverter.getActualTaggedTypeName((Struct) parent);
-				if (structName != null)
-					nameElements.add(0, structName.toString());
+				if (structName != null) {
+					parentIdent = findStructRef(structName, null); 
+					break;
+//					nameElements.add(0, structName.toString());
+				}
 			} else if (firstParent) {
 				if (name == null && parent instanceof TypeDef) {
 					Declarator simpleSto = null;
@@ -658,9 +663,9 @@ public class TypeConversion {
 				name = new SimpleIdentifier("callback");
 			
 			nameElements.add(name.toString());
-			return new SimpleIdentifier(StringUtils.implode(nameElements, "_"));
+			return ident(qualify ? parentIdent : null, StringUtils.implode(nameElements, "_"));
 		} else {
-			return name;
+			return ident(qualify ? parentIdent : null, name);
 		}
 	}
 	
@@ -677,9 +682,13 @@ public class TypeConversion {
 		if (parentStruct != null && (parentStruct.getType() == Struct.Type.ObjCClass || parentStruct.getType() == Struct.Type.ObjCProtocol)) {
 			Identifier structName = result.declarationsConverter.getActualTaggedTypeName(parentStruct);
 			return //result.result.getObjCClass(parentStruct.getName()).
-				typeRef(libMember(structName, libraryClassName, inferCallBackName(s, true)));
+				typeRef(//libMember(structName, libraryClassName, 
+						inferCallBackName(s, true, true)//)
+						);
 		}
-		return typeRef(libMember(result.getLibraryClassFullName(library), libraryClassName, inferCallBackName(s, true)));
+		return typeRef(//libMember(result.getLibraryClassFullName(library), libraryClassName, 
+				inferCallBackName(s, true, true)//)
+				);
 	}
 	
 	public TypeRef findCallbackRef(FunctionSignature s, Identifier callerLibraryClass) {
@@ -691,9 +700,9 @@ public class TypeConversion {
 		if (parentStruct != null && (parentStruct.getType() == Struct.Type.ObjCClass || parentStruct.getType() == Struct.Type.ObjCProtocol)) {
 			Identifier structName = result.declarationsConverter.getActualTaggedTypeName(parentStruct);
 			return
-				typeRef(ident(structName, inferCallBackName(s, true)));
+				typeRef(ident(structName, inferCallBackName(s, true, true)));
 		}
-		return typeRef(inferCallBackName(s, true));
+		return typeRef(inferCallBackName(s, true, true));
 		//libMember(result.getLibraryClassFullName(library), inferCallBackName(s, true));
 		//typeRef(ident(result.getLibraryClassFullName(library), inferCallBackName(s, true)));	
 	}
@@ -1480,7 +1489,7 @@ public class TypeConversion {
 		if (isJavaKeyword(name.toString()))
 			return ident(name + "_");
 		else {
-			return ident(name.toString().replaceAll("[^\\w]", "$"));
+			return ident(name.toString().replaceAll("[^\\w]", "\\$"));
 		}
 	}
 
