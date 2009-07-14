@@ -1,2 +1,6 @@
 NSControl|+(Class)cellClass
 NSControl|+(void)setCellClass:(Class)
+
+|+(BOOL)respondsToSelector:(SEL)
+|-(id)class_;
+|+(Class)class;
