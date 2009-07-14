@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +66,8 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	protected void writeEntry(String path, FileObject o, JarOutputStream jout) throws IOException {
 		if (path.startsWith("/"))
 			path = path.substring(1);
+		if (path.startsWith("file:///"))
+			path = path.substring("file:///".length());
 
 		if (o instanceof MemoryFileObject) {
 			MemoryFileObject mo = (MemoryFileObject)o;
