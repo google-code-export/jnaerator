@@ -794,8 +794,6 @@ public class JNAerator {
 		};
 		Result result = createResult(outputter);
 		
-		new BridgeSupportParser(result).parseBridgeSupportFiles();
-		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());
 
@@ -845,6 +843,9 @@ public class JNAerator {
 		
 		/// Gather Objective-C classes
 		sourceFiles.accept(result);
+		
+		new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
+		
 		result.chooseLibraryClasses(config.packageName, config.rootPackageName);
 		
 		//TODO resolve variables in visual studio projects
