@@ -183,7 +183,7 @@ public class JNAerator {
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
-						"-framework", "CoreGraphics", 
+//						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
 //						"-o", "/Users/ochafik/Prog/Java/test/objc",
@@ -201,7 +201,9 @@ public class JNAerator {
 //						"/Users/ochafik/src/opencv-1.1.0/opencv.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
-						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
+//						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
+						"-framework", "CoreGraphics"
+//						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
@@ -226,13 +228,17 @@ public class JNAerator {
 						args.remove(i + 1);
 					}
 					args.remove(i);
-					List<String> lines = Arrays.asList(RegexUtils.regexReplace(Pattern.compile("\\$\\(([^)]+)\\)"), ReadText.readText(new File(includedArgsFile)), new Adapter<String[], String>() {
+					final File argsFile = new File(includedArgsFile);
+					String argsFileContent = ReadText.readText(argsFile);
+					List<String> lines = Arrays.asList(RegexUtils.regexReplace(Pattern.compile("\\$\\(([^)]+)\\)"), argsFileContent, new Adapter<String[], String>() {
 						@Override
 						public String adapt(String[] value) {
 							String n = value[1];
 							String v = System.getProperty(n);
 							if (v == null)
 								v = System.getenv(n);
+							if (v == null && n.equals("DIR"))
+								v = argsFile.getParentFile().getAbsolutePath();
 							return v;
 						}
 					}).split("\n"));
@@ -303,6 +309,8 @@ public class JNAerator {
 					auto = false;
 				else if (arg.equals("-direct"))
 					config.useJNADirectCalls = true;
+				else if (arg.matches(".*\\.bridgesupport"))
+					config.bridgeSupportFiles.add(new File(arg));
 				else if (arg.equals("-structsInLibrary"))
 					config.putTopStructsInSeparateFiles = false;
 				else if (arg.equals("-package"))
@@ -338,6 +346,8 @@ public class JNAerator {
 				}
 				else if (arg.equals("-library"))
 					currentLibrary = args.get(++iArg);
+				else if (arg.equals("-preferJavac"))
+					config.preferJavac = true;
 				else if (arg.equals("-defaultLibrary"))
 					config.defaultLibrary = args.get(++iArg);
 				else if (arg.equals("-framework"))
@@ -431,7 +441,7 @@ public class JNAerator {
 	private static void createJar(JNAerator jnaerator, File outputJar, File cacheDir) throws IOException, LexerException, RecognitionException, SyntaxException {
 		SourceFiles sourceFiles = jnaerator.parse();
 		
-		JavaCompiler c = CompilerUtils.getJavaCompiler();
+		JavaCompiler c = CompilerUtils.getJavaCompiler(jnaerator.config.preferJavac);
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 		final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 		
@@ -713,7 +723,7 @@ public class JNAerator {
 			Signatures signatures = result.getSignaturesForOutputClass(fullLibraryClassName);
 			result.typeConverter.allowFakePointers = true;
 			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-			result.declarationsConverter.convertConstants(result.definesByLibrary.get(library), sourceFiles, signatures, interf, fullLibraryClassName);
+			result.declarationsConverter.convertConstants(library, result.definesByLibrary.get(library), sourceFiles, signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
@@ -783,6 +793,8 @@ public class JNAerator {
 			}
 		};
 		Result result = createResult(outputter);
+		
+		new BridgeSupportParser(result).parseBridgeSupportFiles();
 		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());

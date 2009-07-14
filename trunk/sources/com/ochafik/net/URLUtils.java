@@ -40,7 +40,7 @@ public class URLUtils {
 				JarEntry je;
 				while ((je = jin.getNextJarEntry()) != null) {
 					String p = "/" + je.getName();
-					if (p.startsWith(path))
+					if (p.startsWith(path) && p.indexOf('/', path.length() + 1) < 0)
 						if (pathAccepter == null || pathAccepter.accept(path))
 							ret.add(new URL("jar:" + target + "!" + p));
 				}

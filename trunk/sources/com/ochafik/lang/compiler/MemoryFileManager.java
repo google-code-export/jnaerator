@@ -44,7 +44,7 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	public final Map<String, MemoryJavaFile> inputs = new HashMap<String, MemoryJavaFile>();
 	public final Map<String, FileObject> outputs = new HashMap<String, FileObject>();
 
-	public void writeJar(OutputStream out, boolean outputSources, List<Pair<String, File>> additionalFiles) throws IOException {
+	public void writeJar(OutputStream out, boolean outputSources, Map<String, File> additionalFiles) throws IOException {
 		JarOutputStream jout = new JarOutputStream(out);
 		if (outputSources)
 			for (Map.Entry<String, MemoryJavaFile> e : inputs.entrySet()) {
@@ -56,9 +56,9 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 			writeEntry(e.getKey(), e.getValue(), jout);
 		
 		if (additionalFiles != null)
-			for (Pair<String, File> additionalFile : additionalFiles) {
-				FileInputStream in = new FileInputStream(additionalFile.getSecond());
-				JarEntry e = new JarEntry(additionalFile.getFirst());
+			for (Map.Entry<String, File> additionalFile : additionalFiles.entrySet()) {
+				FileInputStream in = new FileInputStream(additionalFile.getValue());
+				JarEntry e = new JarEntry(additionalFile.getKey());
 				jout.putNextEntry(e);
 				IOUtils.readWrite(in, jout);
 				in.close();
