@@ -21,6 +21,7 @@ package com.ochafik.lang.compiler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +43,13 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 	public final Map<String, MemoryJavaFile> inputs = new HashMap<String, MemoryJavaFile>();
 	public final Map<String, FileObject> outputs = new HashMap<String, FileObject>();
 
+	public void writeJar(File outputJar, boolean outputSources, Map<String, File> additionalFiles) throws IOException {
+
+		File jarDir = outputJar.getParentFile();
+		if (!jarDir.isDirectory())
+			jarDir.mkdirs();
+		writeJar(new FileOutputStream(outputJar), outputSources, additionalFiles);
+	}
 	public void writeJar(OutputStream out, boolean outputSources, Map<String, File> additionalFiles) throws IOException {
 		JarOutputStream jout = new JarOutputStream(out);
 		if (outputSources)

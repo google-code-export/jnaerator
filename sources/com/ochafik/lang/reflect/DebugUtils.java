@@ -68,6 +68,9 @@ public class DebugUtils {
 	public static final void println(Object o) {
 		print(o, System.out, true, false, "", null);
 	}
+	public static final void println(Object o, PrintStream out) {
+		print(o, out, true, false, "", null);
+	}
 
 	public static final void printlnErr(Object o) {
 		print(o, System.err, true, false, "", null);
