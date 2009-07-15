@@ -18,10 +18,6 @@
 */
 package com.ochafik.junit;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,11 +34,7 @@ import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.internal.runners.MethodValidator;
 import org.junit.internal.runners.TestClass;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Suite;
 import org.junit.runners.Parameterized.Parameters;
-
-import com.ochafik.lang.reflect.DebugUtils;
 
 public class ParameterizedWithDescription extends CompositeRunner {
 	static class TestClassRunnerForParameters extends JUnit4ClassRunner {
