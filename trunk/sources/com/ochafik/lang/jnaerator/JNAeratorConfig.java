@@ -83,6 +83,8 @@ public class JNAeratorConfig {
 	public boolean bundleRuntime = true;
 	public String entryName;
 	
+	public Map<String, String> extraJavaSourceFilesContents = new HashMap<String, String>();
+	
 	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
 	
 	public Map<String, List<File>> libraryFilesByArch = new HashMap<String, List<File>>();
@@ -116,7 +118,7 @@ public class JNAeratorConfig {
 //			features.remove(GenFeatures.TypedPointersForForwardDeclarations);
 	}
 	public boolean verbose = false;
-	public File outputDir = new File(".");
+	public File outputDir;
 	public List<String> rootDirectoriesPrefixesForSourceComments = new ArrayList<String>();
 	public Adapter<Function, Boolean> functionsAccepter;
 	public String packageName = null, rootPackageName = null;
@@ -175,6 +177,9 @@ public class JNAeratorConfig {
 	public boolean useJNAeratorUnionAndStructClasses = true;
 	public boolean preferJavac = false;
 	public Set<File> bridgeSupportFiles = new HashSet<File>();
+	public File outputJar;
+	public File cacheDir;
+	public boolean autoConf = true;
 	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)
