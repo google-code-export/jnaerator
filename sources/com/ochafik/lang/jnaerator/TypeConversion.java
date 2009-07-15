@@ -38,8 +38,6 @@ import java.util.TreeMap;
 import org.rococoa.cocoa.foundation.NSClass;
 import org.rococoa.cocoa.foundation.NSObject;
 
-import antlr.collections.Stack;
-
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
@@ -706,9 +704,6 @@ public class TypeConversion {
 	}
 	
 	public TypeRef findCallbackRef(Identifier name, Identifier libraryClassName) {
-		if (name.equals("CGFunctionEvaluateCallback"))
-			name = name;
-		
 		FunctionSignature s = result.callbacksByName.get(name);
 		if (s == null)
 			return null;
