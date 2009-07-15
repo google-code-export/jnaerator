@@ -180,6 +180,8 @@ public class JNAeratorConfig {
 	public File outputJar;
 	public File cacheDir;
 	public boolean autoConf = true;
+	public boolean compile = false;
+	public boolean bundleSources = true;
 	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)

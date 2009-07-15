@@ -73,6 +73,7 @@ import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
+import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.SourceFiles;
 import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.swing.UndoRedoUtils;
@@ -399,6 +400,7 @@ public class JNAeratorStudio extends JPanel {
 				JNAeratorConfig config = new JNAeratorConfig();
 				config.useJNADirectCalls = directCallingCb.isSelected();
 				config.outputJar = getOutputJarFile();
+				config.compile = true;
 				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
 				config.defaultLibrary = libraryName.getText();
 				config.libraryForElementsInNullFile = libraryName.getText();
@@ -436,6 +438,13 @@ public class JNAeratorStudio extends JPanel {
 						error(null, null, e);
 					}
 					@Override
+					public void wrappersGenerated(final Result result) {
+						SwingUtilities.invokeLater(new Runnable() { public void run() {
+							if (resultsListCombo.getItemCount() > 0)
+								resultsListCombo.setSelectedIndex(0);
+						}});
+					}
+					@Override
 					public void sourcesParsed(SourceFiles sourceFiles) {
 						final SourceFiles sourceFilesClone = sourceFiles;
 						SwingUtilities.invokeLater(new Runnable() { public void run() {
@@ -461,8 +470,6 @@ public class JNAeratorStudio extends JPanel {
 							parsePane.add("Center", selectionContent);
 							
 							sourceTabs.addTab(title, parsePane);
-							if (resultsListCombo.getItemCount() > 0)
-								resultsListCombo.setSelectedIndex(0);
 						}});
 					}
 				};
@@ -493,6 +500,7 @@ public class JNAeratorStudio extends JPanel {
 						System.setErr(err);
 						classCountLabel.setText("JNAerated classes (" + results.size() + ") :");
 						setTabTitle(resultTabs, errorsPane, "Logs (" + (errorsArea.getLineCount() - 1) + " lines)");
+						
 					}});	
 				}
 			}
@@ -551,8 +559,7 @@ public class JNAeratorStudio extends JPanel {
 		if (args.length > 0)
 		{
 			if (args.length == 2 && args[0].equals("-open")) {
-				args[0] = "@";
-				JNAerator.main(args);
+				JNAerator.main(new String[] {"@", args[1], "-gui"});
 				return;
 			}
 		}

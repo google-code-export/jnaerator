@@ -108,6 +108,7 @@ public class JNAerationTests {
 		
 		JNAeratorConfig config = new JNAeratorConfig();
 		config.defaultLibrary = test.libraryName;
+		config.compile = true;
 		config.extraJavaSourceFilesContents.putAll(test.extraJavaSourceFilesContents);
 		config.libraryForElementsInNullFile = test.libraryName;//test.classNameToJavaContent;
 //		config.addFile(getFile(), "");
@@ -137,6 +138,12 @@ public class JNAerationTests {
 			
 			@Override
 			public void setFinished(File toOpen) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void wrappersGenerated(Result result) {
 				// TODO Auto-generated method stub
 				
 			}
