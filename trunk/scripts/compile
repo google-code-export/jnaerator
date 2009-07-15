@@ -25,7 +25,7 @@ if [[ $? == 0 ]] ; then
 	cd ..
 	
 	mkdir classes/META-INF
-	cp bin/jnaerator-runtime.jar.files classes/META-INF
+	cp sources/META-INF/jnaerator-runtime.jar.files classes/META-INF
 	
 	cd classes
 	echo Merging thirdparty libraries
