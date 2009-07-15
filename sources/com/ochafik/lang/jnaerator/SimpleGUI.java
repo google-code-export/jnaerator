@@ -155,7 +155,10 @@ public class SimpleGUI implements Feedback {
 	}
 	@Override
 	public void sourcesParsed(SourceFiles sourceFiles) {
-		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void wrappersGenerated(Result result) {
 		
 	}
 
