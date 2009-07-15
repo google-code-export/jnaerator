@@ -220,6 +220,7 @@ public class DeclarationsConverter {
 			vd.addToCommentBefore(e.getCommentBefore());
 			vd.addToCommentBefore(e.getCommentAfter());
 		}
+		vd.addModifiers(Modifier.Public);
 		out.addDeclaration(vd);
 	}
 	static Map<Class<?>, Pair<List<Pair<Function, String>>, Set<String>>> cachedForcedMethodsAndTheirSignatures;

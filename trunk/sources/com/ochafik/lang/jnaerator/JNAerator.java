@@ -190,7 +190,7 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/Test.h",
 //						"/Users/ochafik/Prog/Java/test/JNATest.h",
 						//"-o", "/Users/ochafik/Prog/Java",
-						
+						//"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator"
 //						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
@@ -202,7 +202,7 @@ public class JNAerator {
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
-//						"-framework", "CoreGraphics"
+						"-framework", "CoreGraphics",
 						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 						"-noRuntime",
 						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
