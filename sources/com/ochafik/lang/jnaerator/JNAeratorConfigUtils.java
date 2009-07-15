@@ -465,13 +465,14 @@ public class JNAeratorConfigUtils {
 		else
 			new IOException("No Headers subdirectory in framework '" + framework + "' found here : " + file).printStackTrace();
 		
-		String bsn = framework + ".bridgesupport";
-		String bf = "/Library/BridgeSupport";
-		for (String s : new String[] {bf, "/tmp/BridgeSupportLeopard/Release" + bf, "/tmp/BridgeSupportTiger/Release" + bf}) {
-			File f = new File(new File(s), bsn);
-			if (f.exists())
-				config.bridgeSupportFiles.add(f);
-		}
+		File naturalDir = new File(file, "Resources/BridgeSupport");
+		File f;
+//		f = new File(naturalDir, framework + "Full.bridgesupport");
+//		if (!f.exists())
+			f = new File(naturalDir, framework + ".bridgesupport");
+		
+		if (f.exists())
+			config.bridgeSupportFiles.add(f);
 	}
 
 }
