@@ -43,6 +43,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
+import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;

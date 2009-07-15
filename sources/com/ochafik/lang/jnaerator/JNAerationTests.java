@@ -46,10 +46,12 @@ import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryFileObject;
+import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.net.URLUtils;
 import com.ochafik.util.listenable.Filter;
 import com.ochafik.util.string.StringUtils;
+import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 @RunWith(ParameterizedWithDescription.class)
 public class JNAerationTests {
@@ -63,12 +65,12 @@ public class JNAerationTests {
 	static class TestDesc {
 		String cSource;
 		String libraryName = "test";
-		Map<String, String> classNameToJavaContent = new HashMap<String, String>();
+		Map<String, String> extraJavaSourceFilesContents = new HashMap<String, String>();
 		public TestDesc(String cSource) {
 			this.cSource = cSource;
 		}
 		public TestDesc addSource(String className, String javaContent) {
-			classNameToJavaContent.put(className, javaContent);
+			extraJavaSourceFilesContents.put(className, javaContent);
 			return this;
 		}
 		public TestDesc addMainContentSource(String className, String javaContent) {
@@ -94,32 +96,51 @@ public class JNAerationTests {
 				StringUtils.implode(content, "\n\t\t").trim() + "\n" +
 				"\t}\n}";
 			System.out.println(transformedContent);
-			classNameToJavaContent.put(className, transformedContent);
+			extraJavaSourceFilesContents.put(className.replace('.', '/') + ".java", transformedContent);
 			return this;
 		}
 	}
 	
 	@Test
 	public void test() throws SyntaxException, IOException, LexerException, RecognitionException {
-		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-		MemoryFileManager mfm = JNAerationUtils.jnaerateAndCompile(test.cSource, test.classNameToJavaContent, test.libraryName, diagnostics, false);
-		boolean hasErrors = false;
-		for (Diagnostic<? extends JavaFileObject> d : diagnostics.getDiagnostics()) {
-			if (d.getKind() == Diagnostic.Kind.ERROR) {
-				hasErrors = true;
-			}
-		}
-		if (!diagnostics.getDiagnostics().isEmpty()) {
-			if (hasErrors) {
-				for (MemoryFileObject content : mfm.inputs.values())
-					System.out.println(new String(content.getContent()));
+		DiagnosticCollector<?>[] diagnostics = new DiagnosticCollector<?>[1];
+		MemoryFileManager[] mfm = new MemoryFileManager[1];
+		
+		JNAeratorConfig config = new JNAeratorConfig();
+		config.defaultLibrary = test.libraryName;
+		config.extraJavaSourceFilesContents.putAll(test.extraJavaSourceFilesContents);
+		config.libraryForElementsInNullFile = test.libraryName;//test.classNameToJavaContent;
+//		config.addFile(getFile(), "");
+		config.preprocessorConfig.includeStrings.add(test.cSource);
+		//config.
+		
+		final Exception[] ex = new Exception[1];
+		 
+		new JNAerator(config).jnaerate(new Feedback() {
+			
+			@Override
+			public void sourcesParsed(SourceFiles sourceFiles) {
+				// TODO Auto-generated method stub
 				
-				Assert.assertEquals("Errors occurred during compilation : \n" +
-						//new String(mfm.inputs.get("Test.java").getContent()) + "\n" +
-						StringUtils.implode(diagnostics.getDiagnostics(), "\n"), 
-						0, diagnostics.getDiagnostics().size());
 			}
-		}
+			
+			@Override
+			public void setStatus(String string) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void setFinished(Throwable e) {
+				Assert.assertTrue("Error : " + e, false);
+			}
+			
+			@Override
+			public void setFinished(File toOpen) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	@Parameters

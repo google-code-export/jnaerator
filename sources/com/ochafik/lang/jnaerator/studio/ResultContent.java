@@ -36,6 +36,15 @@ class ResultContent {
 		return out.toString();
 	}
 	public PrintWriter getPrintWriter() {
-		return new PrintWriter(out);
+		return new PrintWriter(out) {
+			@Override
+			public void close() {
+				super.close();
+				closed();
+			}
+		};
+	}
+	protected void closed() {
+		
 	}
 }

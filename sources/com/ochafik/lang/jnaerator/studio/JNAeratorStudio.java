@@ -32,15 +32,12 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
@@ -67,27 +64,17 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.Diagnostic.Kind;
-
-import org.rococoa.Rococoa;
 
 import com.ochafik.io.JTextAreaOutputStream;
 import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.SyntaxUtils;
-import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
-import com.ochafik.lang.jnaerator.JNAeratorConfigUtils;
-import com.ochafik.lang.jnaerator.Mangling;
-import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.SourceFiles;
+import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.swing.UndoRedoUtils;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
@@ -97,7 +84,6 @@ import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.ListenableCollections;
 import com.ochafik.util.listenable.ListenableComboModel;
 import com.ochafik.util.listenable.ListenableList;
-import com.sun.jna.Pointer;
 
 /*
 include com/ochafik/lang/jnaerator/examples/*.h
@@ -142,8 +128,10 @@ public class JNAeratorStudio extends JPanel {
 		}
 		
 	};
-	
 	public void error(String title, String message, Throwable th) {
+		error(this, title, message, th);
+	}
+	public static void error(Component parent, String title, String message, Throwable th) {
 		StringWriter sw = new StringWriter();
 		th.printStackTrace(new PrintWriter(sw));
 		JScrollPane jsp = new JScrollPane(new JTextArea(sw.toString())) {
@@ -153,12 +141,12 @@ public class JNAeratorStudio extends JPanel {
 		};
 //		jsp.setMaximumSize(new Dimension(500, 500));
 		JOptionPane.showMessageDialog(
-			this,
+			parent,
 			new Object[] {
 				message, 
 				jsp
 			},
-			title == null ? "JNAeratorStudio Error" : title,
+			title == null ? "JNAerator Error" : title,
 			-1
 		);
 	}
@@ -287,6 +275,7 @@ public class JNAeratorStudio extends JPanel {
 			}
 		}
 	;
+	JLabel statusLabel = new JLabel("");
 	JButton showJarButton;
 	JPanel errorsPane = new JPanel(new BorderLayout());
 	public JNAeratorStudio() {
@@ -304,6 +293,9 @@ public class JNAeratorStudio extends JPanel {
 		tb.add(aboutJNAAction);
 		//tb.setOrientation(JToolBar.VERTICAL);
 		add("North", tb);
+		
+		add("South", statusLabel);
+		statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 		
 		JComponent sourcePane = new JPanel(new BorderLayout()), resultPane = new JPanel(new BorderLayout());
 		Box libBox = Box.createHorizontalBox();
@@ -381,6 +373,12 @@ public class JNAeratorStudio extends JPanel {
 			e1.printStackTrace();
 		}
 	}
+	
+//	interface ProgressCallbacks {
+//		void sourcesParsed(SourceFiles sf);
+//		void log(String s);
+//		void filesGenerated(File outputDir);
+//	}
 	protected void generate() {
 
 		try {
@@ -393,10 +391,21 @@ public class JNAeratorStudio extends JPanel {
 		errorsArea.setText("");
 		results.clear();
 		resultArea.setText("");
+		generateAction.setEnabled(false);
 		showJarButton.setEnabled(false);
 		
 		new Thread() {
 			public void run() {
+				JNAeratorConfig config = new JNAeratorConfig();
+				config.useJNADirectCalls = directCallingCb.isSelected();
+				config.outputJar = getOutputJarFile();
+				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
+				config.defaultLibrary = libraryName.getText();
+				config.libraryForElementsInNullFile = libraryName.getText();
+//				config.addFile(getFile(), "");
+				config.preprocessorConfig.includeStrings.add(sourceArea.getText());
+				config.cacheDir = getDir("cache");
+				
 				final PrintStream out = System.out;
 				final PrintStream err = System.err;
 				JTextAreaOutputStream to = new JTextAreaOutputStream(errorsArea);
@@ -404,60 +413,80 @@ public class JNAeratorStudio extends JPanel {
 				System.setOut(pto);
 				System.setErr(pto);
 				
-				JNAeratorConfig config = new JNAeratorConfig();
-				config.useJNADirectCalls = directCallingCb.isSelected();
-				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
-				config.defaultLibrary = libraryName.getText();
-				config.libraryForElementsInNullFile = libraryName.getText();
-//				config.addFile(getFile(), "");
-				config.preprocessorConfig.includeStrings.add(sourceArea.getText());
-				
-				JNAeratorConfigUtils.autoConfigure(config);
-				JNAerator jnaerator = new JNAerator(config);
-				Result result = null;
-				try {
+				Feedback feedback = new Feedback() {
 					
-					SourceFiles sourceFiles = jnaerator.parse();
-					final SourceFiles sourceFilesClone = sourceFiles;//.clone();
-					result = jnaerator.jnaerate(sourceFiles, new ClassOutputter() {
-						@Override
-						public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
-							ResultContent c = new ResultContent(className);
-							results.add(c);
-							return c.getPrintWriter();
-						}
-					});
-					SwingUtilities.invokeLater(new Runnable() { public void run() {
-						String title = "Parsing Tree";
-						for (int i = sourceTabs.getTabCount(); i-- != 0;) {
-							if (title.equals(sourceTabs.getTitleAt(i))) {
-								sourceTabs.removeTabAt(i);
-								break;
-							}
-						}
-								
-						final JTree parsedTree = new JTree(new ElementNode(null, "ROOT", sourceFilesClone));
-						final JEditTextArea selectionContent = textArea(new CCTokenMarker());
-						
-						parsedTree.addTreeSelectionListener(new TreeSelectionListener() { public void valueChanged(TreeSelectionEvent e) {
-							TreePath selectionPath = parsedTree.getSelectionPath();
-							AbstractNode c = selectionPath == null ? null : (AbstractNode)selectionPath.getLastPathComponent();
-							selectionContent.setText(c == null ? "" : c.getContent());
-							selectionContent.scrollTo(0, 0);
+					@Override
+					public void setStatus(final String string) {
+						SwingUtilities.invokeLater(new Runnable() { public void run() {
+							statusLabel.setText(string);
 						}});
-						JPanel parsePane = new JPanel(new BorderLayout());
-						parsePane.add("West", new JScrollPane(parsedTree));
-						parsePane.add("Center", selectionContent);
-						
-						sourceTabs.addTab(title, parsePane);
-						if (resultsListCombo.getItemCount() > 0)
-							resultsListCombo.setSelectedIndex(0);
-					}});
-				} catch (Throwable e) {
-					error(null, "Error while JNAerating", e);
-					e.printStackTrace();
+					}
+					
+					@Override
+					public void setFinished(File toOpen) {
+						SwingUtilities.invokeLater(new Runnable() { public void run() {
+							statusLabel.setText("JNAeration completed");
+							showJarButton.setEnabled(true);
+						}});
+					}
+
+					@Override
+					public void setFinished(Throwable e) {
+						setStatus("JNAeration failed : " + e.toString());
+						error(null, null, e);
+					}
+					@Override
+					public void sourcesParsed(SourceFiles sourceFiles) {
+						final SourceFiles sourceFilesClone = sourceFiles;
+						SwingUtilities.invokeLater(new Runnable() { public void run() {
+							String title = "Parsing Tree";
+							for (int i = sourceTabs.getTabCount(); i-- != 0;) {
+								if (title.equals(sourceTabs.getTitleAt(i))) {
+									sourceTabs.removeTabAt(i);
+									break;
+								}
+							}
+									
+							final JTree parsedTree = new JTree(new ElementNode(null, "ROOT", sourceFilesClone));
+							final JEditTextArea selectionContent = textArea(new CCTokenMarker());
+							
+							parsedTree.addTreeSelectionListener(new TreeSelectionListener() { public void valueChanged(TreeSelectionEvent e) {
+								TreePath selectionPath = parsedTree.getSelectionPath();
+								AbstractNode c = selectionPath == null ? null : (AbstractNode)selectionPath.getLastPathComponent();
+								selectionContent.setText(c == null ? "" : c.getContent());
+								selectionContent.scrollTo(0, 0);
+							}});
+							JPanel parsePane = new JPanel(new BorderLayout());
+							parsePane.add("West", new JScrollPane(parsedTree));
+							parsePane.add("Center", selectionContent);
+							
+							sourceTabs.addTab(title, parsePane);
+							if (resultsListCombo.getItemCount() > 0)
+								resultsListCombo.setSelectedIndex(0);
+						}});
+					}
+				};
+				try {
+					new JNAerator(config) {
+						public PrintWriter getClassSourceWriter(final ClassOutputter outputter, final String className) throws IOException {
+							ResultContent c = new ResultContent(className) {
+								protected void closed() {
+									try {
+										PrintWriter w = outputter.getClassSourceWriter(className);
+										w.write(this.getContent());
+										w.close();
+									} catch (Exception ex) {
+										ex.printStackTrace();
+									}
+								};
+							};
+							results.add(c);
+							return c.getPrintWriter(); 
+						};
+					}.jnaerate(feedback);
 				} finally {
 					SwingUtilities.invokeLater(new Runnable() { public void run() {
+						generateAction.setEnabled(true);
 						sourceArea.scrollTo(0, 0);
 						JNAeratorStudio.this.setEnabled(true);
 						System.setOut(out);
@@ -466,13 +495,6 @@ public class JNAeratorStudio extends JPanel {
 						setTabTitle(resultTabs, errorsPane, "Logs (" + (errorsArea.getLineCount() - 1) + " lines)");
 					}});	
 				}
-				try {
-					compile(jnaerator, result);
-				} catch (Throwable ex) {
-					error(null, "Compilation error !", ex);
-					//JOptionPane.showMessageDialog(JNAeratorStudio.this, ex.toString(), "Compilation error !", JOptionPane.ERROR_MESSAGE);
-				}
-				
 			}
 		}.start();
 	}
@@ -483,31 +505,6 @@ public class JNAeratorStudio extends JPanel {
 		}
 	}
 
-	protected void compile(JNAerator jnaerator, Result result) throws SyntaxException, IOException {
-		
-		JavaCompiler c = CompilerUtils.getJavaCompiler(false);
-		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-		MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
-		for (ResultContent rc : results)
-			mfm.addSourceInput(rc.path.replace('.', '/') + ".java", rc.getContent());
-		CompilerUtils.compile(c, mfm, diagnostics, "1.5", getDir("cache"), Pointer.class, JNAerator.class, Rococoa.class, Mangling.class);
-		if (!diagnostics.getDiagnostics().isEmpty()) {
-			StringBuilder sb = new StringBuilder();
-			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-				if (diagnostic.getKind() == Kind.ERROR)
-				//diagnostic.getKind()
-				//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
-					sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(getLocale()) + "\n");//.toUri());
-			}
-			if (sb.length() > 0) {
-				//System.out.println(sb);
-				throw new SyntaxException(sb.toString());
-			}
-		}
-		JNAerator.writeRuntimeClasses(jnaerator, result, mfm);
-		mfm.writeJar(new FileOutputStream(getOutputJarFile()), true, null);
-		showJarButton.setEnabled(true);
-	}
 //	private void displayError(Exception e) {
 //		JOptionPane.showMessageDialog(this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 //	}
@@ -553,14 +550,11 @@ public class JNAeratorStudio extends JPanel {
 	public static void main(String[] args) {
 		if (args.length > 0)
 		{
-			List<String> list = new ArrayList<String>();
-			for (String arg : args)
-			{
-				list.add("@");
-				list.add(arg);
+			if (args.length == 2 && args[0].equals("-open")) {
+				args[0] = "@";
+				JNAerator.main(args);
+				return;
 			}
-			JNAerator.main(list.toArray(new String[list.size()]));
-			return;
 		}
 		try {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
