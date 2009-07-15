@@ -38,6 +38,8 @@ import java.util.TreeMap;
 import org.rococoa.cocoa.foundation.NSClass;
 import org.rococoa.cocoa.foundation.NSObject;
 
+import antlr.collections.Stack;
+
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
@@ -335,96 +337,107 @@ public class TypeConversion {
 		Arg holder = new Arg();
 		holder.setValueType(valueTypeCl);
 		valueTypeCl.accept(new Scanner() {
+			java.util.Stack<String> names = new java.util.Stack<String>();
 			int depth = 0;
 			@Override
 			public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
 				depth++;
+				
 				try {
-					super.visitSimpleTypeRef(simpleTypeRef);
-					if (simpleTypeRef.isMarkedAsResolved())
-						return;
-					
 					Identifier name = ((SimpleTypeRef) simpleTypeRef).getName();
 					if (name == null)
 						return;
 					
 					String nameStr = name.toString();
-					if (resolvesToPrimitive(nameStr))
+					if (nameStr == null)
 						return;
 					
-					if (nameStr != null && nameStr.equals(valueTypeCl.toString()) && depth > 1)
+					if (names.contains(nameStr))
 						return;
-//					Identifier oc = findObjCClassIdent(name);
-//					if (oc != null) {
-//						name.replaceBy(oc);
-//					}
+					names.push(nameStr);
 					
-					Pair<TypeDef,Declarator> p = getTypeDef(name);
-					if (p != null) {
-						TypeRef tr = p.getFirst().getValueType();//as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
-						if (tr instanceof TaggedTypeRef) {
-							Identifier name2 = result.declarationsConverter.getActualTaggedTypeName((TaggedTypeRef)tr);
-							if (name2 != null)
-								name = name2;
-						}
-						if (convertToJavaRef) {
-							if (tr instanceof TaggedTypeRef) {
-								TaggedTypeRef s = (TaggedTypeRef)tr;
-								if (s.isForwardDeclaration())
-									return;
-								
-								if (tr instanceof Enum) {
-									tr = typeRef(s.getTag().clone());
-								} else {
-									Identifier ident = result.getTaggedTypeIdentifierInJava(s);
-									if (ident != null)
-										tr = typeRef(ident);//findRef(name, s, libraryClassName));
-								}
-							} else if (tr instanceof FunctionSignature) {
-								tr = findCallbackRef((FunctionSignature)tr, libraryClassName);
-							}
-						}
-						if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
-							simpleTypeRef.replaceBy(tr.clone());
-							if (depth < 10) {
-								tr.accept(this);
-							} else {
-								System.err.println("Infinite loop in type conversion ? " + tr);
-							}
-						}
-						return;
-					}
-					
-					TypeRef manualTypeRef = manualTypeDefs.get(name);
-					if (manualTypeRef != null) {
-						if (!convertToJavaRef)
+					try {
+						if (resolvesToPrimitive(nameStr))
 							return;
-						simpleTypeRef.replaceBy(manualTypeRef);
-						return;
-					}
-					
-					TypeRef structRef = typeRef(result.typeConverter.findStructRef(name, libraryClassName));
-					if (structRef != null) {
-						if (!convertToJavaRef)
-							return;
-						simpleTypeRef.replaceBy(structRef);
-					}
-					
-					Define define = result.defines.get(name);
-					Expression expression = define == null ? null : define.getValue();
-					if (expression != null) {
-						if (!convertToJavaRef)
-							return;
-						Identifier fieldName = null;
-						if (expression instanceof Expression.VariableRef) 
-							fieldName = ((Expression.VariableRef) expression).getName();
-						else if (expression instanceof MemberRef)
-							fieldName = ((MemberRef) expression).getName();
 						
-						if (fieldName != null && !fieldName.equals(name)) {
-							simpleTypeRef.replaceBy(resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName), libraryClassName, true));
+						super.visitSimpleTypeRef(simpleTypeRef);
+						if (simpleTypeRef.isMarkedAsResolved())
+							return;
+						
+	//					Identifier oc = findObjCClassIdent(name);
+	//					if (oc != null) {
+	//						name.replaceBy(oc);
+	//					}
+						
+						Pair<TypeDef,Declarator> p = getTypeDef(name);
+						if (p != null) {
+							TypeRef tr = p.getFirst().getValueType();//as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
+							if (tr instanceof TaggedTypeRef) {
+								Identifier name2 = result.declarationsConverter.getActualTaggedTypeName((TaggedTypeRef)tr);
+								if (name2 != null)
+									name = name2;
+							}
+							if (convertToJavaRef) {
+								if (tr instanceof TaggedTypeRef) {
+									TaggedTypeRef s = (TaggedTypeRef)tr;
+									if (s.isForwardDeclaration())
+										return;
+									
+									if (tr instanceof Enum) {
+										tr = typeRef(s.getTag().clone());
+									} else {
+										Identifier ident = result.getTaggedTypeIdentifierInJava(s);
+										if (ident != null)
+											tr = typeRef(ident);//findRef(name, s, libraryClassName));
+									}
+								} else if (tr instanceof FunctionSignature) {
+									tr = findCallbackRef((FunctionSignature)tr, libraryClassName);
+								}
+							}
+							if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
+								simpleTypeRef.replaceBy(tr.clone());
+								if (depth < 10) {
+//									tr.accept(this);
+								} else {
+									System.err.println("Infinite loop in type conversion ? " + tr);
+								}
+							}
 							return;
 						}
+						
+						TypeRef manualTypeRef = manualTypeDefs.get(name);
+						if (manualTypeRef != null) {
+							if (!convertToJavaRef)
+								return;
+							simpleTypeRef.replaceBy(manualTypeRef);
+							return;
+						}
+						
+						TypeRef structRef = typeRef(result.typeConverter.findStructRef(name, libraryClassName));
+						if (structRef != null) {
+							if (!convertToJavaRef)
+								return;
+							simpleTypeRef.replaceBy(structRef);
+						}
+						
+						Define define = result.defines.get(name);
+						Expression expression = define == null ? null : define.getValue();
+						if (expression != null) {
+							if (!convertToJavaRef)
+								return;
+							Identifier fieldName = null;
+							if (expression instanceof Expression.VariableRef) 
+								fieldName = ((Expression.VariableRef) expression).getName();
+							else if (expression instanceof MemberRef)
+								fieldName = ((MemberRef) expression).getName();
+							
+							if (fieldName != null && !fieldName.equals(name)) {
+								simpleTypeRef.replaceBy(resolveTypeDef(new TypeRef.SimpleTypeRef(fieldName), libraryClassName, true));
+								return;
+							}
+						}
+					} finally {
+						names.pop();
 					}
 				} finally {
 					depth--;
