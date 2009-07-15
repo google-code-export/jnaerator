@@ -102,6 +102,7 @@ public class JNAerator {
 		void setFinished(File toOpen);
 		void setFinished(Throwable e);
 		void sourcesParsed(SourceFiles sourceFiles);
+		void wrappersGenerated(Result result);
 	}
 	final JNAeratorConfig config;
 	
@@ -203,7 +204,7 @@ public class JNAerator {
 //						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
-						"/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
@@ -231,11 +232,17 @@ public class JNAerator {
 			List<String> args = new ArrayList<String>(Arrays.asList(argsArray));
 			for (int i = args.size(); i-- != 0;) {
 				String arg = args.get(i);
-				if (arg.startsWith("@")) {
-					String includedArgsFile = arg.substring(1);
-					if (includedArgsFile.length() == 0) {
-						includedArgsFile = args.get(i + 1);
-						args.remove(i + 1);
+				boolean startsAt = arg.startsWith("@"), hasExt = arg.toLowerCase().endsWith(".jnaerator"), isConfig = startsAt || hasExt; 
+				if (isConfig) {
+					String includedArgsFile;
+					if (!startsAt)
+						includedArgsFile = arg;
+					else {
+						includedArgsFile = arg.substring(1);
+						if (includedArgsFile.length() == 0) {
+							includedArgsFile = args.get(i + 1);
+							args.remove(i + 1);
+						}
 					}
 					args.remove(i);
 					final File argsFile = new File(includedArgsFile);
@@ -415,6 +422,9 @@ public class JNAerator {
 				} catch (Exception ex) {}
 			}
 			
+			if (config.outputJar != null)
+				config.compile = true;
+			
 			if (config.outputDir == null) 
 				config.outputDir = new File(".");
 			
@@ -458,6 +468,13 @@ public class JNAerator {
 					public void sourcesParsed(SourceFiles sourceFiles) {
 						
 					}
+
+					@Override
+					public void wrappersGenerated(
+							com.ochafik.lang.jnaerator.Result result) {
+						// TODO Auto-generated method stub
+						
+					}
 				}; 
 			}
 			
@@ -491,7 +508,7 @@ public class JNAerator {
 			arg.endsWith(".so") || 
 			arg.endsWith(".jnilib");
 	}
-	public void jnaerate(Feedback feedback) {
+	public void jnaerate(final Feedback feedback) {
 		try {
 			if (config.autoConf) {
 				feedback.setStatus("Auto-configuring parser...");
@@ -502,14 +519,12 @@ public class JNAerator {
 			SourceFiles sourceFiles = parse();
 			feedback.sourcesParsed(sourceFiles);
 			
-			boolean compiles = config.outputJar != null;
-			
-			DiagnosticCollector<JavaFileObject> diagnostics = compiles ? new DiagnosticCollector<JavaFileObject>() : null;
-			JavaCompiler c = compiles ? CompilerUtils.getJavaCompiler(config.preferJavac) : null;
-			final MemoryFileManager mfm = compiles ? new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null)) : null;
+			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+			JavaCompiler c = CompilerUtils.getJavaCompiler(config.preferJavac);
+			final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
 			
 			final ClassOutputter[] classOutputter = new ClassOutputter[1];
-			if (compiles) {
+			if (config.compile) {
 				classOutputter[0] = new ClassOutputter() {
 					@Override
 					public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
@@ -526,8 +541,7 @@ public class JNAerator {
 						if (!parent.exists())
 							parent.mkdirs();
 	
-						//if (config.verbose)
-							System.err.println("Generating: " + file.getAbsolutePath());
+						feedback.setStatus("Generating " + file.getName());
 	
 						return new PrintWriter(file) {
 							@Override
@@ -547,8 +561,9 @@ public class JNAerator {
 					return JNAerator.this.getClassSourceWriter(classOutputter[0], className);
 				}
 			}, feedback);
+			feedback.wrappersGenerated(result);
 			
-			if (compiles) {
+			if (config.compile) {
 				for (Map.Entry<String, String> cnAndSrc : config.extraJavaSourceFilesContents.entrySet()) {
 					mfm.addSourceInput(cnAndSrc.getKey(), cnAndSrc.getValue());
 				}
@@ -565,16 +580,17 @@ public class JNAerator {
 						throw new SyntaxException(sb.toString());
 					}
 				}
-				//List<Pair<String, File>> additionalFiles = new ArrayList<Pair<String,File>>();
-				if (result.config.bundleRuntime) {
+				if (config.outputJar != null && result.config.bundleRuntime) {
 					feedback.setStatus("Copying runtime classes...");
 					addRuntimeClasses(result, mfm);
 				}
+			}
+			if (config.outputJar != null) {
 				
 				feedback.setStatus("Generating " + config.outputJar.getName());
-				mfm.writeJar(config.outputJar, true, getAdditionalFiles());
+				mfm.writeJar(config.outputJar, config.bundleSources, getAdditionalFiles());
 			}
-			feedback.setFinished(compiles ? config.outputJar.getParentFile() : config.outputDir);
+			feedback.setFinished(config.outputJar != null ? config.outputJar.getParentFile() : config.outputDir);
 		} catch (Throwable th) {
 			feedback.setFinished(th);
 		}
