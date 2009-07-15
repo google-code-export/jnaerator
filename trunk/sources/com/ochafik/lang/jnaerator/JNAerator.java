@@ -503,6 +503,9 @@ public class JNAerator {
 		
 		writeRuntimeClasses(jnaerator, result, mfm);
 		
+		File jarDir = outputJar.getParentFile();
+		if (!jarDir.isDirectory())
+			jarDir.mkdirs();
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
 	}
 	public static void writeRuntimeClasses(JNAerator jnaerator, Result result, MemoryFileManager mfm) throws IOException {
