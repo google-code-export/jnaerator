@@ -239,7 +239,7 @@ public class JNAerator {
 							if (v == null)
 								v = System.getenv(n);
 							if (v == null && n.equals("DIR"))
-								v = argsFile.getParentFile().getAbsolutePath();
+								v = argsFile.getAbsoluteFile().getParent();
 							return v;
 						}
 					}).split("\n"));
@@ -505,6 +505,7 @@ public class JNAerator {
 		File jarDir = outputJar.getParentFile();
 		if (!jarDir.isDirectory())
 			jarDir.mkdirs();
+		System.out.println("Generating " + outputJar);
 		mfm.writeJar(new FileOutputStream(outputJar), true, additionalFiles);
 	}
 	public static void writeRuntimeClasses(JNAerator jnaerator, Result result, MemoryFileManager mfm) throws IOException {
