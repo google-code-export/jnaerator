@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -37,7 +36,6 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
 import com.ochafik.io.IOUtils;
-import com.ochafik.util.listenable.Pair;
 
 
 public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {

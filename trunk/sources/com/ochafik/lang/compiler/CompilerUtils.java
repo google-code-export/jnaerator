@@ -130,6 +130,7 @@ public class CompilerUtils {
 			"-classpath", bootclasspath //"/Users/ochafik/Prog/Java/bin/jnaerator.jar"//
 				//"http://ochafik.free.fr/Java/jnaerator.jar"//bootclasspath
 		);  
+//		DebugUtils.println(fileManager.inputs.values());
 		compiler.getTask(null, fileManager, diagnostics, options, null, fileObjects).call();
 		
 		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
