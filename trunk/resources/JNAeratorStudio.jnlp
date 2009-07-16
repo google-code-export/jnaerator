@@ -9,9 +9,9 @@
   <homepage href="http://jnaerator.googlecode.com/" />
   <description>JNAerator : Java gets to love native libraries !</description>
   <description kind='tooltip'>JNAerator Studio : wrap C and Objective-C libraries in Java.</description>
-  <icon href="resources/appIcon128.png"/>
+  <icon href="resources/appIcon128.gif"/>
   
-  <association mime-type="application-x/jnaerator-config" extensions="jnaerator" icon="resources/fileIcon128.png"/>
+  <association mime-type="application-x/jnaerator-config" extensions="jnaerator" icon="resources/fileIcon128.gif"/>
   <offline-allowed/>
   <shortcut online="true">
 	  <desktop/>
