@@ -490,7 +490,7 @@ public class JNAerator {
 			}
 			
 			new JNAerator(config).jnaerate(feedback);
-			
+			feedback.setFinished(new File("."));
 		} catch (Exception e) {
 			if (feedback != null)
 				try {

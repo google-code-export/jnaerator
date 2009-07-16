@@ -1,9 +1,5 @@
-package com.sun.jna;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.ochafik.lang.jnaerator.runtime;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( {ElementType.FIELD} )

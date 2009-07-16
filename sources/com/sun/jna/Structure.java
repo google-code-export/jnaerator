@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import com.ochafik.lang.jnaerator.runtime.Bits;
+
 /**
  * Represents a native structure with a Java peer class.  When used as a
  * function parameter or return value, this class corresponds to
