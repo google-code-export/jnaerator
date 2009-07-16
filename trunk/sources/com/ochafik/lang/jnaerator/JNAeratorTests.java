@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import com.ochafik.lang.jnaerator.parser.ObjCppElementsTests;
 import com.ochafik.lang.jnaerator.parser.ObjCppParsingTests;
+import com.ochafik.lang.jnaerator.runtime.RuntimeTests;
 
 /*
 include com/ochafik/lang/jnaerator/tests/*.test
@@ -32,6 +33,7 @@ include com/ochafik/lang/jnaerator/tests/*.test
 	ObjCppElementsTests.class,
 	ObjCppElementsTests.TestSiblings.class, 
 	ObjCppParsingTests.class,
-	JNAerationTests.class
+	JNAerationTests.class,
+	RuntimeTests.class
 })
 public class JNAeratorTests {}
