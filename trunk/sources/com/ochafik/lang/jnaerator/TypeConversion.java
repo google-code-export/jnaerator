@@ -874,6 +874,15 @@ public class TypeConversion {
 					}
 					//else
 					//	return typeRef(((FunctionSignature)valueType).getFunction().getName());
+				} else if (target instanceof Pointer) {
+					Pointer pt = ((Pointer)target);
+					TypeRef ptarget = pt.getTarget();
+					if (ptarget instanceof SimpleTypeRef) {
+						SimpleTypeRef ptargett = (SimpleTypeRef) ptarget;
+						if (result.structsFullNames.contains(ptargett.getName())) {
+							return new ArrayRef(typeRef(ident(ptargett.getName(), "ByReference")));
+						}
+					}
 				}
 				if (name != null) {
 					/// Pointer to Objective-C class ?
