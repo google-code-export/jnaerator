@@ -1,0 +1,11 @@
+echo Copying sources
+FORCE=1 sh scripts/copyFromMainSources
+#if [[ $? != 0 ]] ; then exit ; fi
+
+sh scripts/compile
+#if [[ $? != 0 ]] ; then exit ; fi
+
+echo Testing
+java -jar bin/jnaerator.jar -test
+
+svn status

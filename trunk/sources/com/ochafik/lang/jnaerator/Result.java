@@ -18,7 +18,6 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +34,6 @@ import org.rococoa.cocoa.foundation.NSInvocation;
 import org.rococoa.cocoa.foundation.NSMethodSignature;
 import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
@@ -57,8 +53,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
-import com.ochafik.xml.XMLUtils;
-import com.ochafik.xml.XPathUtils;
 import com.sun.jna.Platform;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;

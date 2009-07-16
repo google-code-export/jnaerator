@@ -30,10 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaFileObject;
-
 import junit.framework.Assert;
 
 import org.anarres.cpp.LexerException;
@@ -44,14 +40,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
-import com.ochafik.lang.compiler.MemoryFileManager;
-import com.ochafik.lang.compiler.MemoryFileObject;
 import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.net.URLUtils;
 import com.ochafik.util.listenable.Filter;
 import com.ochafik.util.string.StringUtils;
-import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 @RunWith(ParameterizedWithDescription.class)
 public class JNAerationTests {
@@ -103,9 +96,6 @@ public class JNAerationTests {
 	
 	@Test
 	public void test() throws SyntaxException, IOException, LexerException, RecognitionException {
-		DiagnosticCollector<?>[] diagnostics = new DiagnosticCollector<?>[1];
-		MemoryFileManager[] mfm = new MemoryFileManager[1];
-		
 		JNAeratorConfig config = new JNAeratorConfig();
 		config.defaultLibrary = test.libraryName;
 		config.compile = true;
@@ -114,8 +104,6 @@ public class JNAerationTests {
 //		config.addFile(getFile(), "");
 		config.preprocessorConfig.includeStrings.add(test.cSource);
 		//config.
-		
-		final Exception[] ex = new Exception[1];
 		 
 		new JNAerator(config).jnaerate(new Feedback() {
 			

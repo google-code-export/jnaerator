@@ -14,4 +14,6 @@ fi
 	find com/sun -exec cp '/Users/ochafik/src/jna/jnalib/src/{}' '{}' ';' 2>&1 | grep -v "is a directory (not copied)" | grep -v "Permission denied" | grep -v "No such file or directory"
 	cd ..
 
+	cp ~/src/jna/jnalib/dist/jna.jar libraries
+
 svn status

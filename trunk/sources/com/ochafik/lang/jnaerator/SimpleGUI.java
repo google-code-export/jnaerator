@@ -65,7 +65,7 @@ public class SimpleGUI implements Feedback {
 			JOptionPane.showMessageDialog(frame, sp, ftitle, JOptionPane.INFORMATION_MESSAGE);
 		}}));
 		frame.getContentPane().add("Center", status = new JLabel("Initializing..."));
-		status.setMinimumSize(new Dimension(400, 0));
+		frame.setMinimumSize(new Dimension(400, 0));
 		frame.getContentPane().add("South", cancelButton = new JButton("Cancel"));
 		cancelButton.addActionListener(new ActionListener() {
 			
@@ -74,7 +74,13 @@ public class SimpleGUI implements Feedback {
 				if (finished) {
 					if (toOpenWhenFinished instanceof File) {
 						try {
-							SystemUtils.runSystemOpenFile((File)toOpenWhenFinished);
+							File f = (File)toOpenWhenFinished;
+							f = f.getAbsoluteFile();
+							if (f.isDirectory())
+								SystemUtils.runSystemOpenDirectory(f);
+							else
+								SystemUtils.runSystemOpenFileParent(f);
+							
 						} catch (NoSuchMethodException e1) {
 							e1.printStackTrace();
 						} catch (IOException e1) {
@@ -137,9 +143,13 @@ public class SimpleGUI implements Feedback {
 	public void setFinished(final File fileToOpen) {
 		toOpenWhenFinished = fileToOpen;
 		finished = true;
-		setStatus("JNAeration completed.");
+		setStatus("JNAeration completed (hit Escape to quit)");
 		SwingUtilities.invokeLater(new Runnable() { public void run() {
-			cancelButton.setText("Open '" + fileToOpen + "'");
+			String name = fileToOpen.getName();
+			cancelButton.setText(fileToOpen.isDirectory() ? 
+				"Open output directory" : 
+				"Show file '" + name + "'"
+			);
 			cancelButton.setToolTipText(fileToOpen.getAbsolutePath());
 		}});
 	}

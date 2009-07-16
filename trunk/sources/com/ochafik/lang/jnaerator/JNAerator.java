@@ -27,12 +27,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -83,8 +81,6 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
-
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 /*
 //include com/ochafik/lang/jnaerator/parser/*.mm
@@ -505,16 +501,11 @@ public class JNAerator {
 			}
 			
 			new JNAerator(config).jnaerate(feedback);
-			feedback.setFinished(new File("."));
+			if (!simpleGUI)
+				System.exit(0);
 		} catch (Exception e) {
-			if (feedback != null)
-				try {
-					feedback.setFinished(e);
-				} catch (Throwable e1) {
-					e1.printStackTrace();
-				}
-			else
-				e.printStackTrace();
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 	public PrintWriter getClassSourceWriter(ClassOutputter outputter, String className) throws IOException {
@@ -554,7 +545,8 @@ public class JNAerator {
 				classOutputter[0] = new ClassOutputter() {
 					@Override
 					public PrintWriter getClassSourceWriter(String className) throws FileNotFoundException {
-						MemoryJavaFile c = new MemoryJavaFile(className.replace('.', '/') + ".java", (String)null, JavaFileObject.Kind.SOURCE);
+						String path = "file:///" + className.replace('.', '/') + ".java";
+						MemoryJavaFile c = new MemoryJavaFile(path, (String)null, JavaFileObject.Kind.SOURCE);
 						mfm.inputs.put(c.getPath().toString(), c);
 						return new PrintWriter(c.openWriter());
 					}
@@ -616,7 +608,7 @@ public class JNAerator {
 				feedback.setStatus("Generating " + config.outputJar.getName());
 				mfm.writeJar(config.outputJar, config.bundleSources, getAdditionalFiles());
 			}
-			feedback.setFinished(config.outputJar != null ? config.outputJar.getParentFile() : config.outputDir);
+			feedback.setFinished(config.outputJar != null ? config.outputJar : config.outputDir);
 		} catch (Throwable th) {
 			feedback.setFinished(th);
 		}
@@ -682,8 +674,13 @@ public class JNAerator {
 			}
 			
 			URL url = classLoader.getResource(file);
-			if (url == null)
+			if (url == null) {
+				if (file.matches("com/sun/jna/[^/]+/(lib\\w+\\.(jnilib|so)|\\w+\\.dll)")) {
+					System.out.println("JNA library missing : " + file);
+					continue;
+				}
 				throw new FileNotFoundException(file);
+			}
 			
 			if (!mfm.outputs.containsKey(file)) {
 				mfm.outputs.put(file, new URLFileObject(url));
