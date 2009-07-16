@@ -469,8 +469,7 @@ public class JNAeratorStudio extends JPanel {
 					public void setStatus(final String string) {
 						SwingUtilities.invokeLater(new Runnable() { public void run() {
 							statusBar.setString(string);
-							statusBar.setValue(statusBar.getMinimum());
-							statusBar.setIndeterminate(false);
+							statusBar.setToolTipText(string);
 						}});
 					}
 					
@@ -492,6 +491,8 @@ public class JNAeratorStudio extends JPanel {
 						statusBar.setToolTipText("Click to examine the JNAeration error report");
 						lastJNAeratedArtifact = e;
 						setStatus("JNAeration failed : " + e.toString());
+						statusBar.setValue(statusBar.getMinimum());
+						statusBar.setIndeterminate(false);
 						error(null, null, e);
 					}
 					@Override
