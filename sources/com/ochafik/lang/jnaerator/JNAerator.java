@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -104,6 +105,8 @@ public class JNAerator {
 		void sourcesParsed(SourceFiles sourceFiles);
 		void wrappersGenerated(Result result);
 	}
+	private static Pattern argTokenPattern = Pattern.compile("(?m)\"[^\"]*\"|[^\\s]+");
+	private static Pattern argVariablePattern = Pattern.compile("\\$\\(([^)]+)\\)");
 	final JNAeratorConfig config;
 	
 	public JNAerator(JNAeratorConfig config) {
@@ -205,7 +208,7 @@ public class JNAerator {
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
 //						"-limitComments",
-//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
@@ -215,7 +218,7 @@ public class JNAerator {
 //						"-noRuntime",
 //						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
-						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
+//						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
 //						"-o", "/Users/ochafik/src/opencl",
@@ -258,7 +261,7 @@ public class JNAerator {
 					
 					final File argsFile = new File(includedArgsFile);
 					String argsFileContent = ReadText.readText(argsFile);
-					List<String> lines = Arrays.asList(RegexUtils.regexReplace(Pattern.compile("\\$\\(([^)]+)\\)"), argsFileContent, new Adapter<String[], String>() {
+					Adapter<String[], String> argVariableReplacer = new Adapter<String[], String>() {
 						@Override
 						public String adapt(String[] value) {
 							String n = value[1];
@@ -269,20 +272,32 @@ public class JNAerator {
 								v = argsFile.getAbsoluteFile().getParent();
 							return v;
 						}
-					}).split("\n"));
+					};
+					
+					// Strip comments out
+					argsFileContent = argsFileContent.replaceAll("(?m)//[^\n]*(\n|$)", "\n");
+					argsFileContent = argsFileContent.replaceAll("(?m)/\\*([^*]|\\*[^/])*\\*/", "");
+					
+					// Replace variables
+					argsFileContent = RegexUtils.regexReplace(argVariablePattern, argsFileContent, argVariableReplacer);
+					
 					int iAdd = i;
-					for (Iterator<String> it = lines.iterator(); it.hasNext();) {
-						String trl = it.next().trim();
-						if (trl.length() == 0 || trl.matches("^(//|#).*"))
+					List<String[]> tokens = RegexUtils.find(argsFileContent, argTokenPattern);
+					for (String[] tokenMatch : tokens) {
+						String token = tokenMatch[0];
+						token = token.trim();
+						if (token.startsWith("\"") && token.endsWith("\""))
+							token = token.substring(1, token.length() - 1);
+						
+						if (token.length() == 0 || token.matches("^(//|#).*"))
 							continue;
-						for (String s : trl.split("\\s+")) {
-							boolean allowMissing = s.endsWith("?");
-							if (s.contains("*"))
-								for (String r : FileListUtils.resolveShellLikeFileList(allowMissing ? s.substring(0, s.length() - 1) : s))
-									args.add(iAdd++, allowMissing ? r + "?" : r);
-							else
-								args.add(iAdd++, s);
-						}
+						
+						boolean allowMissing = token.endsWith("?");
+						if (token.contains("*"))
+							for (String r : FileListUtils.resolveShellLikeFileList(allowMissing ? token.substring(0, token.length() - 1) : token))
+								args.add(iAdd++, allowMissing ? r + "?" : r);
+						else
+							args.add(iAdd++, token);
 					}
 					
 				}

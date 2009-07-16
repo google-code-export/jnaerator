@@ -1,15 +1,6 @@
 LICENSE
 NOTICE
-com/ochafik/lang/jnaerator/runtime/JNAeratorRuntime.class
-com/ochafik/lang/jnaerator/runtime/LibraryExtractor.class
-com/ochafik/lang/jnaerator/runtime/MangledFunctionMapper.class
-com/ochafik/lang/jnaerator/runtime/Mangling.class
-com/ochafik/lang/jnaerator/runtime/Structure.class
-com/ochafik/lang/jnaerator/runtime/Union.class
-com/ochafik/net/URLUtils.class
-com/ochafik/util/listenable/Filter.class
 com/sun/jna/AltCallingConvention.class
-com/sun/jna/Bits.class
 com/sun/jna/Callback$UncaughtExceptionHandler.class
 com/sun/jna/Callback.class
 com/sun/jna/CallbackParameterContext.class
@@ -359,7 +350,6 @@ org/objectweb/asm/signature/SignatureReader.class
 org/objectweb/asm/signature/SignatureVisitor.class
 org/objectweb/asm/signature/SignatureWriter.class
 org/objectweb/asm/Type.class
-org/rococoa/AlreadyRetained.class
 org/rococoa/cocoa/foundation/FoundationLibrary.class
 org/rococoa/cocoa/foundation/NSClass$_class_.class
 org/rococoa/cocoa/foundation/NSClass.class
