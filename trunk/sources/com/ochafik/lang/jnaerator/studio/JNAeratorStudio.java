@@ -558,8 +558,14 @@ public class JNAeratorStudio extends JPanel {
 	public static void main(String[] args) {
 		if (args.length > 0)
 		{
-			if (args.length == 2 && args[0].equals("-open")) {
-				JNAerator.main(new String[] {"@", args[1], "-gui"});
+			String[] nargs = null;
+			if (args.length == 1) {
+				nargs = new String[] {"@", args[0], "-gui"};
+			} else if (args.length == 2 && args[0].equals("-open")) {
+				nargs = new String[] {"@", args[1], "-gui"};
+			}
+			if (nargs != null) {
+				JNAerator.main(nargs);
 				return;
 			}
 		}
