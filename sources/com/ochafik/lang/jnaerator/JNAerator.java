@@ -212,7 +212,7 @@ public class JNAerator {
 //						"-framework", "CoreGraphics",
 //						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 //						"-noRuntime",
-//						"-gui",
+						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
 //						"-library", "opencl",
@@ -655,16 +655,17 @@ public class JNAerator {
 		ClassLoader classLoader = JNAerator.class.getClassLoader();
 		String listingFile = "META-INF/jnaerator-runtime.jar.files";
 		List<String> files = ReadText.readLines(classLoader.getResourceAsStream(listingFile ));
-		try {
-			if (files == null)
-				files = ReadText.readLines("/Users/ochafik/Prog/Java/bin/jnaerator-runtime.jar.files");
-		} catch (Exception ex) {}
+		
+		if (files == null)
+			files = ReadText.readLines("/Users/ochafik/Prog/Java/bin/jnaerator-runtime.jar.files");
+//		if (files == null)
+//			throw new FileNotFoundException(listingFile);
 		
 		if (files == null) {
-			Exception ex = new FileNotFoundException("Warning: Could not find JNAerator listing file '" + listingFile + "' : JNAerated files will need JNAerator in the path to execute.");
-			ex.printStackTrace();
-			ex.printStackTrace(new PrintStream(new FileOutputStream(FileDescriptor.err)));
-			return;
+			throw new FileNotFoundException("Warning: Could not find JNAerator listing file '" + listingFile + "' : JNAerated files will need JNAerator in the path to execute.");
+//			ex.printStackTrace();
+//			ex.printStackTrace(new PrintStream(new FileOutputStream(FileDescriptor.err)));
+//			return;
 		}
 		
 		boolean needsObjCRuntime = result.hasObjectiveC();
@@ -684,6 +685,7 @@ public class JNAerator {
 				throw new FileNotFoundException(file);
 			}
 			
+			file = "file:///" + file;
 			if (!mfm.outputs.containsKey(file)) {
 				mfm.outputs.put(file, new URLFileObject(url));
 			}
