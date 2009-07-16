@@ -608,6 +608,8 @@ public class JNAerator {
 				feedback.setStatus("Generating " + config.outputJar.getName());
 				mfm.writeJar(config.outputJar, config.bundleSources, getAdditionalFiles());
 			}
+//			if (true)
+//				throw new RuntimeException("no luck !");
 			feedback.setFinished(config.outputJar != null ? config.outputJar : config.outputDir);
 		} catch (Throwable th) {
 			feedback.setFinished(th);
