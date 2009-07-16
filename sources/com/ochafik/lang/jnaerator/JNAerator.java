@@ -204,16 +204,18 @@ public class JNAerator {
 //						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
-						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+//						"-limitComments",
+//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
 //						"-framework", "CoreGraphics",
-						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
-						"-noRuntime",
-						"-gui",
-						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
+//						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
+//						"-noRuntime",
+//						"-gui",
+//						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
+						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
 //						"-o", "/Users/ochafik/src/opencl",
@@ -232,19 +234,28 @@ public class JNAerator {
 			List<String> args = new ArrayList<String>(Arrays.asList(argsArray));
 			for (int i = args.size(); i-- != 0;) {
 				String arg = args.get(i);
-				boolean startsAt = arg.startsWith("@"), hasExt = arg.toLowerCase().endsWith(".jnaerator"), isConfig = startsAt || hasExt; 
+				boolean startsAt = arg.startsWith("@"), 
+					hasExt = arg.toLowerCase().endsWith(".jnaerator"), 
+					afterAt = i > 0 && args.get(i - 1).equals("@"),
+					isConfig = startsAt || hasExt || afterAt; 
 				if (isConfig) {
 					String includedArgsFile;
-					if (!startsAt)
+					if (!startsAt) {
 						includedArgsFile = arg;
-					else {
+						args.remove(i);
+						if (afterAt) {
+							args.remove(i - 1);
+							i--;
+						}
+					} else {
 						includedArgsFile = arg.substring(1);
 						if (includedArgsFile.length() == 0) {
 							includedArgsFile = args.get(i + 1);
 							args.remove(i + 1);
 						}
+						args.remove(i);
 					}
-					args.remove(i);
+					
 					final File argsFile = new File(includedArgsFile);
 					String argsFileContent = ReadText.readText(argsFile);
 					List<String> lines = Arrays.asList(RegexUtils.regexReplace(Pattern.compile("\\$\\(([^)]+)\\)"), argsFileContent, new Adapter<String[], String>() {
