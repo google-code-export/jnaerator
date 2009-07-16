@@ -63,8 +63,12 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 		
 		if (additionalFiles != null)
 			for (Map.Entry<String, File> additionalFile : additionalFiles.entrySet()) {
+				String path = additionalFile.getKey();
+				if (path.startsWith("file:///"))
+					path = path.substring("file:///".length());
+
 				FileInputStream in = new FileInputStream(additionalFile.getValue());
-				JarEntry e = new JarEntry(additionalFile.getKey());
+				JarEntry e = new JarEntry(path);
 				jout.putNextEntry(e);
 				IOUtils.readWrite(in, jout);
 				in.close();
