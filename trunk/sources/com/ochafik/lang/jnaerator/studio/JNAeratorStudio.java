@@ -27,6 +27,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
@@ -52,6 +54,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -61,6 +64,8 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -76,6 +81,7 @@ import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.SourceFiles;
 import com.ochafik.lang.jnaerator.JNAerator.Feedback;
+import com.ochafik.swing.SimpleDocumentAdapter;
 import com.ochafik.swing.UndoRedoUtils;
 import com.ochafik.swing.syntaxcoloring.CCTokenMarker;
 import com.ochafik.swing.syntaxcoloring.JEditTextArea;
@@ -276,9 +282,11 @@ public class JNAeratorStudio extends JPanel {
 			}
 		}
 	;
-	JLabel statusLabel = new JLabel("");
+	Object lastJNAeratedArtifact;
+	//JLabel statusLabel = new JLabel("", JLabel.RIGHT);
 	JButton showJarButton;
 	JPanel errorsPane = new JPanel(new BorderLayout());
+	JProgressBar statusBar = new JProgressBar();
 	public JNAeratorStudio() {
 		super(new BorderLayout());
 		resultsListCombo.setModel(new ListenableComboModel<ResultContent>(results));
@@ -295,8 +303,18 @@ public class JNAeratorStudio extends JPanel {
 		//tb.setOrientation(JToolBar.VERTICAL);
 		add("North", tb);
 		
-		add("South", statusLabel);
-		statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+		sourceArea.getDocument().addDocumentListener(new SimpleDocumentAdapter() {
+
+			@Override
+			public void updated(DocumentEvent e) {
+				setReadyToJNAerate();
+			}
+			
+		});
+		
+		add("South", statusBar);
+		
+		//statusBar.setBorder(BorderFactory.createLoweredBevelBorder());
 		
 		JComponent sourcePane = new JPanel(new BorderLayout()), resultPane = new JPanel(new BorderLayout());
 		Box libBox = Box.createHorizontalBox();
@@ -305,11 +323,28 @@ public class JNAeratorStudio extends JPanel {
 		showJarButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (lastJNAeratedArtifact == null || !(lastJNAeratedArtifact instanceof File))
+					return;
+				
+				File file = (File)lastJNAeratedArtifact;
 				try {
-					SystemUtils.runSystemOpenFileParent(getOutputJarFile());
+					if (file.isDirectory())
+						SystemUtils.runSystemOpenDirectory(file);
+					else
+						SystemUtils.runSystemOpenFileParent(file);
 				} catch (Exception e1) {
 					showJarButton.setEnabled(false);
+					showJarButton.setToolTipText(e1.toString());
 				}
+			}
+		});
+		statusBar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (lastJNAeratedArtifact != null && lastJNAeratedArtifact instanceof Throwable)
+					error(null, null, (Throwable)lastJNAeratedArtifact);
+				else
+					generateAction.actionPerformed(null);
 			}
 		});
 		libBox.add(new JLabel("Library Name :", JLabel.RIGHT));
@@ -362,6 +397,15 @@ public class JNAeratorStudio extends JPanel {
 		
 		UndoRedoUtils.registerNewUndoManager(sourceArea, sourceArea.getDocument());
 	}
+	void setReadyToJNAerate() {
+		statusBar.setToolTipText("Click to JNAerate !");
+		statusBar.setMaximum(1);
+		statusBar.setMinimum(0);
+		statusBar.setValue(0);
+		statusBar.setStringPainted(true);
+		statusBar.setString("Ready to JNAerate");
+		statusBar.setIndeterminate(false);
+	}
 	
 	private void doShowExample(boolean generate) {
 
@@ -394,6 +438,10 @@ public class JNAeratorStudio extends JPanel {
 		resultArea.setText("");
 		generateAction.setEnabled(false);
 		showJarButton.setEnabled(false);
+		showJarButton.setToolTipText(null);
+		statusBar.setIndeterminate(true);
+		statusBar.setToolTipText("JNAerating...");
+		lastJNAeratedArtifact = null;
 		
 		new Thread() {
 			public void run() {
@@ -420,20 +468,29 @@ public class JNAeratorStudio extends JPanel {
 					@Override
 					public void setStatus(final String string) {
 						SwingUtilities.invokeLater(new Runnable() { public void run() {
-							statusLabel.setText(string);
+							statusBar.setString(string);
+							statusBar.setValue(statusBar.getMinimum());
+							statusBar.setIndeterminate(false);
 						}});
 					}
 					
 					@Override
-					public void setFinished(File toOpen) {
+					public void setFinished(final File toOpen) {
+						lastJNAeratedArtifact = toOpen;
 						SwingUtilities.invokeLater(new Runnable() { public void run() {
-							statusLabel.setText("JNAeration completed");
+							statusBar.setToolTipText("Click to re-JNAerate !");
+							statusBar.setString("JNAeration completed");
 							showJarButton.setEnabled(true);
+							showJarButton.setToolTipText(toOpen.getAbsolutePath());
+							statusBar.setValue(statusBar.getMaximum());
+							statusBar.setIndeterminate(false);
 						}});
 					}
 
 					@Override
 					public void setFinished(Throwable e) {
+						statusBar.setToolTipText("Click to examine the JNAeration error report");
+						lastJNAeratedArtifact = e;
 						setStatus("JNAeration failed : " + e.toString());
 						error(null, null, e);
 					}

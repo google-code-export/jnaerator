@@ -9,7 +9,7 @@ public class Structure extends com.sun.jna.Structure {
 		clone.read();
 		return clone;
 	}
-	@Override
+//	@Override
 	protected Integer getBitsAnnotation(Field field) {
 		Bits bits = field.getAnnotation(Bits.class);
 		return bits == null ? null : bits.value();
