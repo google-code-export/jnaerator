@@ -148,9 +148,9 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 //		System.out.println("getJavaFileForOutput(className = " + className + ", location = " + location + ", kind = " + kind + ")");
 		MemoryJavaFile jo = null;
 		if (kind == JavaFileObject.Kind.CLASS) {
-			outputs.put(getSimplePathForClass(className, "class"), jo = new MemoryJavaFile(getFullPathForClass(className, "class"), null, kind));
+			outputs.put(getFullPathForClass(className, "class"), jo = new MemoryJavaFile(getFullPathForClass(className, "class"), null, kind));
 		} else if (kind == JavaFileObject.Kind.SOURCE) {
-			inputs.put(getSimplePathForClass(className, "java"), jo = new MemoryJavaFile(getFullPathForClass(className, "java"), null, kind));
+			inputs.put(getFullPathForClass(className, "java"), jo = new MemoryJavaFile(getFullPathForClass(className, "java"), null, kind));
 		}
 
 		return jo == null ? super.getJavaFileForInput(location, className, kind) : jo;
