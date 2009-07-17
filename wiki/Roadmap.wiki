@@ -4,6 +4,9 @@
 
 = New features =
 
+  # Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
+  # Support URLs in arguments, with automatic local caching, support of wildcards (list files at arbitrary http URL), integration with preprocessor...
+  # More elaborate variable replacements in *.jnaerator files : default values (w/ or w/o prompt to user), implicit download, script expressions...)
   # *IN PROGRESS (-direct switch)* generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
 {{{
 public class MyLibrary {
@@ -47,7 +50,7 @@ public class MyLibrary {
  
 = Bugfixes = 
 
-  # finalize VisualStudio parsing (replace $() variables)
+  # *Mostly OK* finalize VisualStudio parsing (replace $() variables)
   # define -visibility switch to control choice of exported functions : __declspec(dllexport), not __attribute((visibility=hiddden)), always... + warnings when no symbol is exported : "are you sure you didn't miss a '-visibility all' switch ?"
   # *OK* fix the compiler's classpath in in JNAeratorStudio + Web Start
   # *OK* fix the line-numbering in comments
