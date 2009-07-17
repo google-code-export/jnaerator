@@ -4,6 +4,7 @@
 
 = New features =
 
+  # fix file association of *.jnaerator files on Mac OS X (register a listener to web start services so that the argument file is read... on Windows, it is passed with -open file as arguments, so it already works).
   # Make JNAerator even more customizable : factory methods for all the scanners and transformers, split process into more functions
   # Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
   # Support URLs in arguments, with automatic local caching, support of wildcards (list files at arbitrary http URL), integration with preprocessor...
