@@ -267,7 +267,8 @@ public class JNAeratorConfigUtils {
 		config.cPlusPlusManglers.add(new GCC4Mangler());
 		config.cPlusPlusManglers.add(new VC9Mangler());
 		
-		addCPlusPlus(config.preprocessorConfig);
+		if (!config.noCPlusPlus)
+			addCPlusPlus(config.preprocessorConfig);
 		
 		//prevent a jcpp bug to happen when expanding assert(...) :
 		config.preprocessorConfig.macros.put("NDEBUG", null);

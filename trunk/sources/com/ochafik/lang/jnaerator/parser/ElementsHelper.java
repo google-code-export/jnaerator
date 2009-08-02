@@ -36,11 +36,11 @@ public class ElementsHelper {
 		}
 		return new SimpleIdentifier(name).derive(Identifier.QualificationSeparator.Dot, others);
 	}
-	public static Identifier ident(Class<?> cl) {
+	public static Identifier ident(Class<?> cl, Expression... args) {
 		if (cl.getPackage() == null)
-			return ident(cl.getName());
+			return new SimpleIdentifier(cl.getName(), args);
 		else
-			return ident(ident(cl.getPackage().getName()), ident(cl.getSimpleName()));
+			return ident(ident(cl.getPackage().getName()), new SimpleIdentifier(cl.getSimpleName(), args));
 	}
 	public static Identifier ident(Identifier ident, String name) {
 		return ident(ident, ident(name));

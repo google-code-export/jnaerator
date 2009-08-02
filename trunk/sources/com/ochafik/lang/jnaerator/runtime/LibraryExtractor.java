@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,10 @@ public class LibraryExtractor {
 	public static String getLibraryPath(String libraryName, boolean extractAllLibraries, Class<?> cl) {
 		try {
 			//ClassLoader cl = LibraryExtractor.class.getClassLoader();
-			String prefix = (Platform.isWindows() || Platform.isWindowsCE() ? libraryName : "lib" + libraryName).toLowerCase() + ".";
+			String prefix = "(?i)" + (Platform.isWindows() || Platform.isWindowsCE() ? "" : "lib") + libraryName + "[^A-Za-z_].*";
+			String libsuffix = "(?i).*\\.(so|dll|dylib|jnilib)";
+			String othersuffix = "(?i).*\\.(pdb)";
+			
 			URL sourceURL = null;
 			List<URL> otherURLs = new ArrayList<URL>();
 			
@@ -76,12 +80,16 @@ public class LibraryExtractor {
 				}
 				
 			}
+			for (File f : new File(".").listFiles())
+				if (f.isFile())
+					list.add(f.toURI().toURL());
 			
 			for (URL url : list) {
 				String fileName = new File(url.toString()).getName();
-				if (fileName.toLowerCase().startsWith(prefix))
+				boolean pref = fileName.matches(prefix), suff = fileName.matches(libsuffix); 
+				if (pref && suff)
 					sourceURL = url;
-				else
+				else if (suff || fileName.matches(othersuffix))
 					otherURLs.add(url);
 			}
 			List<File> files = new ArrayList<File>();
@@ -100,16 +108,20 @@ public class LibraryExtractor {
 				do {
 					lastSize = files.size();
 					for (Iterator<File> it = files.iterator(); it.hasNext();) {
+						File f = it.next();
+						if (!f.getName().matches(libsuffix))
+							continue;
+						
 						try {
-							System.load(it.next().toString());
+							System.load(f.toString());
 							it.remove();
-						} catch (Exception ex) {
-							System.err.println(ex);
+						} catch (Throwable ex) {
+							System.err.println("Loading " + f.getName() + " failed (" + ex + ")");
 						}
 					}
 				} while (files.size() < lastSize);
 				
-				return file.getAbsolutePath();
+				return file.getCanonicalPath();
 	        }
 		} catch (Throwable ex) {
 			System.err.println("ERROR: Failed to extract library " + libraryName);
@@ -120,7 +132,7 @@ public class LibraryExtractor {
 	private static File extract(URL url) throws IOException {
 		File localFile;
 		if ("file".equals(url.getProtocol()))
-			localFile = new File(url.getFile());
+			localFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
 		else {
 			File f = new File(System.getProperty("user.home"));
 			f = new File(f, ".jnaerator");

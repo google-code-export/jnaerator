@@ -755,10 +755,14 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
+//		if (String.valueOf(valueType).contains("IplImage"))
+//			valueType = valueType;
+		
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType, libraryClassName, true);
 		
 		String valueTypeString = String.valueOf(valueType);
+		
 		if (valueTypeString.matches("void\\s*\\*") || valueTypeString.matches("const\\s*void\\s*\\*")) {
 			//valueType = (TypeRef)valueType;
 			if (original instanceof Pointer && result.config.features.contains(GenFeatures.TypedPointersForForwardDeclarations) && allowFakePointers) {
