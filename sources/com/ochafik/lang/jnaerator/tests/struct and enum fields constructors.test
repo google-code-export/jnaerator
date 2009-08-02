@@ -13,6 +13,10 @@ struct S {
 	double d;
 };
 
+struct S2 : S {
+	long long l;
+};
+
 --
 
 import test.*;
@@ -26,3 +30,5 @@ S sc 			  = new S(0, 0f, 0.0).clone();
 S.ByValue sbv 	  = new S(0, 0f, 0.0).byValue();
 S.ByReference sbr = new S(0, 0f, 0.0).byReference();
 
+S2 s2 = new S2();
+s2 = new S2(0, 0f, 0.0, (NativeLong)null);
