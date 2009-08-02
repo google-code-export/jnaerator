@@ -42,9 +42,12 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 import com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
+import com.ochafik.lang.jnaerator.parser.Identifier.QualificationSeparator;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.runtime.Bits;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
+import com.ochafik.lang.jnaerator.runtime.VirtualTablePointer;
+import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;
@@ -53,6 +56,7 @@ import com.sun.jna.Pointer;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class DeclarationsConverter {
 	private static final int MAX_FIELDS_FOR_VALUES_CONSTRUCTORS = 10;
+	private static final String DEFAULT_VPTR_NAME = "_vptr";
 
 	public DeclarationsConverter(Result result) {
 		this.result = result;
@@ -683,12 +687,29 @@ public class DeclarationsConverter {
 		if (!signatures.classSignatures.add(structName))
 			return;
 		
-		Identifier baseClass;
-		if (result.config.useJNAeratorUnionAndStructClasses)
-			baseClass = ident(struct.getType() == Struct.Type.CUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class);
-		else
-			baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
-		
+		boolean inheritsFromStruct = false;
+		Identifier baseClass = null;
+		if (!struct.getParents().isEmpty()) {
+			for (Identifier parentName : struct.getParents()) {
+				Struct parent = result.structsByName.get(parentName);
+				if (parent == null) {
+					// TODO report error
+					continue;
+				}
+				baseClass = result.getTaggedTypeIdentifierInJava(parent);
+				if (baseClass != null) {
+					inheritsFromStruct = true;
+					break; // TODO handle multiple and virtual inheritage
+				}
+			}
+		}
+		if (baseClass == null) {
+			if (result.config.useJNAeratorUnionAndStructClasses) {
+				Class<?> c = struct.getType() == Struct.Type.CUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class;
+				baseClass = ident(c, expr(typeRef(structName.clone())));
+			} else
+				baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
+		}
 		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
 		Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
 		Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByValue"));
@@ -697,6 +718,15 @@ public class DeclarationsConverter {
 		
 		//cl.addDeclaration(new EmptyDeclaration())
 		Signatures childSignatures = new Signatures();
+		
+		if (isVirtual(struct)) {
+			String vptrName = DEFAULT_VPTR_NAME;
+			VariablesDeclaration vptr = new VariablesDeclaration(typeRef(VirtualTablePointer.class), new Declarator.DirectDeclarator(vptrName));
+			vptr.addModifiers(Modifier.Public);
+			structJavaClass.addDeclaration(vptr);
+			childSignatures.variablesSignatures.add(vptrName);
+		}
+		
 		//List<Declaration> children = new ArrayList<Declaration>();
 		for (Declaration d : struct.getDeclarations()) {
 			if (d instanceof VariablesDeclaration) {
@@ -718,11 +748,14 @@ public class DeclarationsConverter {
 				}
 			}
 		}
+		
 		if (result.config.features.contains(GenFeatures.StructConstructors))
 			addStructConstructors(structName, structJavaClass/*, byRef, byVal*/, struct);
 		
-		structJavaClass.addDeclaration(createAsStructMethod("byReference", byRef));
-		structJavaClass.addDeclaration(createAsStructMethod("byValue", byVal));
+		if (!inheritsFromStruct) {
+			structJavaClass.addDeclaration(createAsStructMethod("byReference", byRef));
+			structJavaClass.addDeclaration(createAsStructMethod("byValue", byVal));
+		}
 		structJavaClass.addDeclaration(createAsStructMethod("clone", structJavaClass));
 		
 		structJavaClass.addDeclaration(decl(byRef));
@@ -743,6 +776,37 @@ public class DeclarationsConverter {
 			}
 		} else
 			out.addDeclaration(decl(structJavaClass));
+	}
+
+	Map<Identifier, Boolean> structsVirtuality = new HashMap<Identifier, Boolean>();
+	public boolean isVirtual(Struct struct) {
+		Identifier name = getActualTaggedTypeName(struct);
+		Boolean bVirtual = structsVirtuality.get(name);
+		if (bVirtual == null) {
+			boolean hasVirtualParent = false, hasVirtualMembers = false;
+			for (Identifier parentName : struct.getParents()) {
+				Struct parentStruct = result.structsByName.get(parentName);
+				if (parentStruct == null) {
+					if (result.config.verbose)
+						System.out.println("Failed to resolve parent '" + parentName + "' for struct '" + name + "'");
+					continue;
+				}
+				if (isVirtual(parentStruct)) {
+					hasVirtualParent = true;
+					break;
+				}
+			}
+
+			for (Declaration mb : struct.getDeclarations()) {
+				if (Modifier.Virtual.isContainedBy(mb.getModifiers())) {
+					hasVirtualMembers = true;
+					break;
+				}
+			}
+			bVirtual = hasVirtualMembers && !hasVirtualParent;
+			structsVirtuality.put(name, bVirtual);
+		}
+		return bVirtual;
 	}
 
 	private Function createAsStructMethod(String name, Struct byRef) {
@@ -894,7 +958,7 @@ public class DeclarationsConverter {
 			for (Identifier inter : interfaces)
 				cl.addParent(inter);
 		else
-		cl.setProtocols(Arrays.asList(interfaces));
+			cl.setProtocols(Arrays.asList(interfaces));
 		if (toCloneCommentsFrom != null ) {
 			cl.importDetails(toCloneCommentsFrom, false);
 			cl.moveAllCommentsBefore();
@@ -902,6 +966,39 @@ public class DeclarationsConverter {
 		}
 		cl.addModifiers(Modifier.Public, Modifier.Static);
 		return cl;
+	}
+	public Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> getParentAndOwnDeclarations(Struct struct) {
+		Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> ret = 
+			new Pair<List<VariablesDeclaration>, List<VariablesDeclaration>>(
+				new ArrayList<VariablesDeclaration>(), 
+				new ArrayList<VariablesDeclaration>()
+			)
+		;
+		if (!struct.getParents().isEmpty()) {
+			for (Identifier parentName : struct.getParents()) {
+				Struct parent = result.structsByName.get(parentName);
+				if (parent == null) {
+					// TODO report error
+					continue;
+				}
+				Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> parentDecls = getParentAndOwnDeclarations(parent);
+				ret.getFirst().addAll(parentDecls.getFirst());
+				ret.getFirst().addAll(parentDecls.getSecond());
+			}
+		}
+		for (Declaration d : struct.getDeclarations()) {
+			if (!(d instanceof VariablesDeclaration))
+				continue;
+			VariablesDeclaration vd = (VariablesDeclaration)d;
+			if (vd.getDeclarators().size() != 1)
+				continue; // should not happen !
+			if (!isField(vd))
+				continue;
+			
+			ret.getSecond().add(vd);
+		}
+				
+		return ret;
 	}
 	private void addStructConstructors(Identifier structName, Struct structJavaClass/*, Struct byRef,
 			Struct byVal*/, Struct nativeStruct) {
@@ -971,23 +1068,28 @@ public class DeclarationsConverter {
 		} else {
 			Function fieldsConstr = new Function(Function.Type.JavaMethod, structName.clone(), null);
 			fieldsConstr.setBody(new Block()).addModifiers(Modifier.Public);
-			fieldsConstr.getBody().addStatement(stat(methodCall("super")));
-			for (Declaration d : initialMembers) {
-				if (!(d instanceof VariablesDeclaration))
-					continue;
-					
-				VariablesDeclaration vd = (VariablesDeclaration)d;
-				if (vd.getDeclarators().size() != 1)
-					continue; // should not happen !
-
-				if (!isField(vd))
-					continue;
-				String name = vd.getDeclarators().get(0).resolveName();
-				
+			
+			Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> decls = getParentAndOwnDeclarations(nativeStruct);
+			Map<Integer, String> namesById = new TreeMap<Integer, String>();
+			Set<String> names = new HashSet<String>();
+			int iArg = 0;
+			for (VariablesDeclaration vd : new CompoundCollection<VariablesDeclaration>(decls.getFirst(), decls.getSecond())) {
+				String name = chooseJavaArgName(vd.getDeclarators().get(0).resolveName(), iArg, names);
+				namesById.put(vd.getId(), name);
 				if (vd.getCommentBefore() != null)
 					fieldsConstr.addToCommentBefore("@param " + name + " " + vd.getCommentBefore());
 				fieldsConstr.addArg(new Arg(name, vd.getValueType().clone()));
-
+				iArg++;
+			}
+			FunctionCall superCall = methodCall("super");
+			for (VariablesDeclaration vd : decls.getFirst()) {
+				String name = namesById.get(vd.getId());
+				superCall.addArgument(varRef(name));
+			}
+			fieldsConstr.getBody().addStatement(stat(superCall));
+			
+			for (VariablesDeclaration vd : decls.getSecond()) {
+				String name = namesById.get(vd.getId());
 				if (vd.getValueType() instanceof TypeRef.ArrayRef)
 					fieldsConstr.getBody().addStatement(throwIfArraySizeDifferent(name));
 				fieldsConstr.getBody().addStatement(stat(new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(name))));

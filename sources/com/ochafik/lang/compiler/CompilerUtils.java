@@ -83,13 +83,19 @@ public class CompilerUtils {
 		String remoteStr = remoteFile.toString();
 		File f = localURLCaches.get(remoteStr);
 		if (f == null) {
-			URLConnection con = remoteFile.openConnection();
 			String fileName = new File(remoteStr).getName();
+			URLConnection con = null;
+			try {
+				con = remoteFile.openConnection();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 			if (cacheDirectory != null) {
 				f = new File(cacheDirectory, fileName);
-				if (f.exists() && f.lastModified() > con.getLastModified()) {
+				if (f.exists() && (con == null || f.lastModified() > con.getLastModified())) {
 					System.out.println("Reusing cached file " + f);
-					con.getInputStream().close();
+					if (con != null)
+						con.getInputStream().close();
 					return f;
 				}
 			} else {

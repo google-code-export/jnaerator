@@ -182,6 +182,7 @@ public class JNAeratorConfig {
 	public boolean autoConf = true;
 	public boolean compile = false;
 	public boolean bundleSources = true;
+	public boolean noCPlusPlus;
 	
 	public String getLibrary(String elementFile) {
 		if (elementFile == null)

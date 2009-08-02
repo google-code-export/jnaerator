@@ -343,6 +343,8 @@ public class JNAerator {
 					config.verbose = true;
 				else if (arg.equals("-limitComments"))
 					config.limitComments = true;
+				else if (arg.equals("-nocpp"))
+					config.noCPlusPlus = true;
 				else if (arg.equals("-gui"))
 					simpleGUI = true;
 				else if (arg.equals("-noRuntime"))
@@ -779,7 +781,7 @@ public class JNAerator {
 			librariesHub = new Struct();
 			librariesHub.addToCommentBefore("JNA Wrappers instances");
 			librariesHub.setType(Type.JavaClass);
-			librariesHub.addModifiers(Modifier.Public);
+			librariesHub.addModifiers(Modifier.Public, Modifier.Abstract);
 			librariesHub.setTag(ident(result.config.entryName));
 			hubOut = result.classOutputter.getClassSourceWriter(result.config.entryName.toLowerCase() + "." + librariesHub.getTag().toString());
 			hubOut.println("package " + result.config.entryName.toLowerCase() + ";");
@@ -855,9 +857,10 @@ public class JNAerator {
 						)
 					)
 				)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
-				if (librariesHub != null)
+				if (librariesHub != null) {
 					librariesHub.addDeclaration(instanceDecl);
-				else
+					librariesHub.addProtocol(fullLibraryClassName.clone());
+				} else
 					interf.addDeclaration(instanceDecl);
 			}
 			
