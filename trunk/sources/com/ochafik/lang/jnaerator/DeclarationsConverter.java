@@ -1076,23 +1076,27 @@ public class DeclarationsConverter {
 			for (VariablesDeclaration vd : new CompoundCollection<VariablesDeclaration>(decls.getFirst(), decls.getSecond())) {
 				String name = chooseJavaArgName(vd.getDeclarators().get(0).resolveName(), iArg, names);
 				namesById.put(vd.getId(), name);
-				if (vd.getCommentBefore() != null)
-					fieldsConstr.addToCommentBefore("@param " + name + " " + vd.getCommentBefore());
 				fieldsConstr.addArg(new Arg(name, vd.getValueType().clone()));
 				iArg++;
 			}
 			FunctionCall superCall = methodCall("super");
 			for (VariablesDeclaration vd : decls.getFirst()) {
-				String name = namesById.get(vd.getId());
-				superCall.addArgument(varRef(name));
+				String name = vd.getDeclarators().get(0).resolveName(), uname = namesById.get(vd.getId());
+				Struct parent = (Struct)vd.getParentElement();
+				Identifier parentTgName = result.getTaggedTypeIdentifierInJava(parent);
+				fieldsConstr.addToCommentBefore("@param " + name + " @see " + parentTgName + "#" + vd.getDeclarators().get(0).resolveName());
+				superCall.addArgument(varRef(uname));
 			}
 			fieldsConstr.getBody().addStatement(stat(superCall));
 			
 			for (VariablesDeclaration vd : decls.getSecond()) {
-				String name = namesById.get(vd.getId());
+				String name = vd.getDeclarators().get(0).resolveName(), uname = namesById.get(vd.getId());
+				if (vd.getCommentBefore() != null)
+					fieldsConstr.addToCommentBefore("@param " + uname + " " + vd.getCommentBefore());
 				if (vd.getValueType() instanceof TypeRef.ArrayRef)
-					fieldsConstr.getBody().addStatement(throwIfArraySizeDifferent(name));
-				fieldsConstr.getBody().addStatement(stat(new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(name))));
+					fieldsConstr.getBody().addStatement(throwIfArraySizeDifferent(uname));
+				fieldsConstr.getBody().addStatement(stat(
+						new Expression.AssignmentOp(memberRef(varRef("this"), MemberRefStyle.Dot, ident(name)), AssignmentOperator.Equal, varRef(uname))));
 			}
 			int nArgs = fieldsConstr.getArgs().size();
 			if (nArgs == 0)
