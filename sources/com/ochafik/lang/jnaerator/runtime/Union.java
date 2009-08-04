@@ -18,8 +18,11 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
-public class Union<S extends Union<S>> extends com.sun.jna.Union {
-	protected <T extends Union<?>> T setupClone(T clone) {
+public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S> 
+	extends com.sun.jna.Union
+{
+//<S extends Union<S>> extends com.sun.jna.Union {
+	protected <T extends Union<?, ?, ?>> T setupClone(T clone) {
 		write();
 		clone.useMemory(getPointer());
 		clone.read();
@@ -33,6 +36,16 @@ public class Union<S extends Union<S>> extends com.sun.jna.Union {
 	public S[] toArray() {
 		return toArray(1);
 	}
+	
+	protected abstract S newInstance();
+	protected abstract V newByValue();
+	protected abstract R newByReference();
+	
+	public R byReference() { return setupClone(newByReference()); }
+	public V byValue() { return setupClone(newByValue()); }
+	public S clone() { return setupClone(newInstance()); }
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public S[] toArray(com.sun.jna.Structure[] array) {

@@ -675,90 +675,109 @@ public class DeclarationsConverter {
 			structName = tag;
 		return structName == null ? null : structName.clone();
 	}
-	void convertStruct(Struct struct, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryClass) throws IOException {
+	Struct convertStruct(Struct struct, Signatures signatures, Identifier callerLibraryClass, boolean onlyFields) throws IOException {
 		Identifier structName = getActualTaggedTypeName(struct);
 		if (structName == null)
-			return;
+			return null;
 		
 		if (struct.isForwardDeclaration())// && !result.structsByName.get(structName).isForwardDeclaration())
-			return;
+			return null;
 		
 		if (!signatures.classSignatures.add(structName))
-			return;
+			return null;
 		
 		boolean inheritsFromStruct = false;
 		Identifier baseClass = null;
-		if (!struct.getParents().isEmpty()) {
-			for (Identifier parentName : struct.getParents()) {
-				Struct parent = result.structsByName.get(parentName);
-				if (parent == null) {
-					// TODO report error
-					continue;
-				}
-				baseClass = result.getTaggedTypeIdentifierInJava(parent);
-				if (baseClass != null) {
-					inheritsFromStruct = true;
-					break; // TODO handle multiple and virtual inheritage
+		if (!onlyFields) {
+			if (!struct.getParents().isEmpty()) {
+				for (Identifier parentName : struct.getParents()) {
+					Struct parent = result.structsByName.get(parentName);
+					if (parent == null) {
+						// TODO report error
+						continue;
+					}
+					baseClass = result.getTaggedTypeIdentifierInJava(parent);
+					if (baseClass != null) {
+						inheritsFromStruct = true;
+						break; // TODO handle multiple and virtual inheritage
+					}
 				}
 			}
-		}
-		if (baseClass == null) {
-			if (result.config.useJNAeratorUnionAndStructClasses) {
-				Class<?> c = struct.getType() == Struct.Type.CUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class;
-				baseClass = ident(c, expr(typeRef(structName.clone())));
-			} else
-				baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
+			if (baseClass == null) {
+				if (result.config.useJNAeratorUnionAndStructClasses) {
+					Class<?> c = struct.getType() == Struct.Type.CUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class;
+					baseClass = ident(
+						c, 
+						expr(typeRef(structName.clone())), 
+						expr(typeRef(ident(structName.clone(), "ByValue"))), 
+						expr(typeRef(ident(structName.clone(), "ByReference")))
+					);
+				} else
+					baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
+			}
 		}
 		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
-		Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
-		Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByValue"));
 		
 		final int iChild[] = new int[] {0};
 		
 		//cl.addDeclaration(new EmptyDeclaration())
 		Signatures childSignatures = new Signatures();
 		
-		if (isVirtual(struct)) {
+		if (isVirtual(struct) && !onlyFields) {
 			String vptrName = DEFAULT_VPTR_NAME;
 			VariablesDeclaration vptr = new VariablesDeclaration(typeRef(VirtualTablePointer.class), new Declarator.DirectDeclarator(vptrName));
 			vptr.addModifiers(Modifier.Public);
 			structJavaClass.addDeclaration(vptr);
 			childSignatures.variablesSignatures.add(vptrName);
+			// TODO add vptr grabber to constructor !
 		}
 		
 		//List<Declaration> children = new ArrayList<Declaration>();
 		for (Declaration d : struct.getDeclarations()) {
 			if (d instanceof VariablesDeclaration) {
 				convertVariablesDeclaration((VariablesDeclaration)d, structJavaClass, iChild, callerLibraryClass);
-			} else if (d instanceof TaggedTypeRefDeclaration) {
-				TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
-				if (tr instanceof Struct) {
-					convertStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass);
-				} else if (tr instanceof Enum) {
-					convertEnum((Enum)tr, childSignatures, structJavaClass, callerLibraryClass);
-				}
-			} else if (d instanceof TypeDef) {
-				TypeDef td = (TypeDef)d;
-				TypeRef tr = td.getValueType();
-				if (tr instanceof Struct) {
-					convertStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass);
-				} else if (tr instanceof FunctionSignature) {
-					convertCallback((FunctionSignature)tr, childSignatures, structJavaClass, callerLibraryClass);
+			} else if (!onlyFields) {
+				if (d instanceof TaggedTypeRefDeclaration) {
+					TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
+					if (tr instanceof Struct) {
+						outputConvertedStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass, false);
+					} else if (tr instanceof Enum) {
+						convertEnum((Enum)tr, childSignatures, structJavaClass, callerLibraryClass);
+					}
+				} else if (d instanceof TypeDef) {
+					TypeDef td = (TypeDef)d;
+					TypeRef tr = td.getValueType();
+					if (tr instanceof Struct) {
+						outputConvertedStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass, false);
+					} else if (tr instanceof FunctionSignature) {
+						convertCallback((FunctionSignature)tr, childSignatures, structJavaClass, callerLibraryClass);
+					}
 				}
 			}
 		}
 		
-		if (result.config.features.contains(GenFeatures.StructConstructors))
-			addStructConstructors(structName, structJavaClass/*, byRef, byVal*/, struct);
-		
-		if (!inheritsFromStruct) {
-			structJavaClass.addDeclaration(createAsStructMethod("byReference", byRef));
-			structJavaClass.addDeclaration(createAsStructMethod("byValue", byVal));
+		if (!onlyFields) {
+			if (result.config.features.contains(GenFeatures.StructConstructors))
+				addStructConstructors(structName, structJavaClass/*, byRef, byVal*/, struct);
+			
+			Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
+			Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByValue"));
+			
+			if (!inheritsFromStruct) {
+				structJavaClass.addDeclaration(createNewStructMethod("newByReference", byRef));
+				structJavaClass.addDeclaration(createNewStructMethod("newByValue", byVal));
+			}
+			structJavaClass.addDeclaration(createNewStructMethod("newInstance", structJavaClass));
+			
+			structJavaClass.addDeclaration(decl(byRef));
+			structJavaClass.addDeclaration(decl(byVal));
 		}
-		structJavaClass.addDeclaration(createAsStructMethod("clone", structJavaClass));
-		
-		structJavaClass.addDeclaration(decl(byRef));
-		structJavaClass.addDeclaration(decl(byVal));
+		return structJavaClass;
+	}
+	void outputConvertedStruct(Struct struct, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryClass, boolean onlyFields) throws IOException {
+		Struct structJavaClass = convertStruct(struct, signatures, callerLibraryClass, onlyFields);
+		if (structJavaClass == null)
+			return;
 		
 		if (result.config.putTopStructsInSeparateFiles && struct.findParentOfType(Struct.class) == null) {
 			String library = result.getLibrary(struct);
@@ -808,15 +827,16 @@ public class DeclarationsConverter {
 		return bVirtual;
 	}
 
-	private Function createAsStructMethod(String name, Struct byRef) {
+	private Function createNewStructMethod(String name, Struct byRef) {
 		TypeRef tr = typeRef(byRef.getTag().clone());
 		Function f = new Function(Function.Type.JavaMethod, ident(name), tr);
 		String varName = "s";
 
-		f.addModifiers(Modifier.Public);
+		f.addModifiers(Modifier.Protected);
 		if (result.config.useJNAeratorUnionAndStructClasses) {
 			f.setBody(block(
-				new Statement.Return(methodCall("setupClone", new Expression.New(tr.clone(), methodCall(null))))
+				//new Statement.Return(methodCall("setupClone", new Expression.New(tr.clone(), methodCall(null))))
+					new Statement.Return(new Expression.New(tr.clone(), methodCall(null)))
 			).setCompact(true));
 		} else {
 			f.setBody(block(
@@ -836,7 +856,7 @@ public class DeclarationsConverter {
 				if (struct.findParentOfType(Struct.class) != null)
 					continue;
 					
-				convertStruct(struct, signatures, out, libraryClassName);
+				outputConvertedStruct(struct, signatures, out, libraryClassName, false);
 			}
 		}
 	}
@@ -966,7 +986,7 @@ public class DeclarationsConverter {
 		cl.addModifiers(Modifier.Public, Modifier.Static);
 		return cl;
 	}
-	public Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> getParentAndOwnDeclarations(Struct structJavaClass, Struct nativeStruct) {
+	public Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> getParentAndOwnDeclarations(Struct structJavaClass, Struct nativeStruct) throws IOException {
 		Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> ret = 
 			new Pair<List<VariablesDeclaration>, List<VariablesDeclaration>>(
 				new ArrayList<VariablesDeclaration>(), 
@@ -980,7 +1000,7 @@ public class DeclarationsConverter {
 					// TODO report error
 					continue;
 				}
-				Struct parentJavaClass = null; // TODO
+				Struct parentJavaClass = convertStruct(parent, new Signatures(), null, true);
 				Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> parentDecls = getParentAndOwnDeclarations(parentJavaClass, parent);
 				ret.getFirst().addAll(parentDecls.getFirst());
 				ret.getFirst().addAll(parentDecls.getSecond());
@@ -1002,7 +1022,7 @@ public class DeclarationsConverter {
 	}
 	@SuppressWarnings("unchecked")
 	private void addStructConstructors(Identifier structName, Struct structJavaClass/*, Struct byRef,
-			Struct byVal*/, Struct nativeStruct) {
+			Struct byVal*/, Struct nativeStruct) throws IOException {
 		
 		List<Declaration> initialMembers = new ArrayList<Declaration>(structJavaClass.getDeclarations());
 		Set<String> signatures = new TreeSet<String>();
@@ -1166,6 +1186,8 @@ public class DeclarationsConverter {
 	private boolean isField(VariablesDeclaration vd) {
 		List<Modifier> mods = vd.getModifiers();
 		if (Modifier.Final.isContainedBy(mods))
+			return false;
+		if (vd.getValueType() == null || vd.getValueType().toString().equals(VirtualTablePointer.class.getName()))
 			return false;
 		return true;
 	}
