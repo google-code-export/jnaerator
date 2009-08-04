@@ -19,11 +19,9 @@
 package com.ochafik.util.string;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class StringUtils {

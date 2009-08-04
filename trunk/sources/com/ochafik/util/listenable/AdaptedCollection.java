@@ -45,7 +45,6 @@ public class AdaptedCollection<U, V> extends AbstractCollection<V> implements Li
 		this(collection, forwardAdapter, null);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public AdaptedCollection(Collection<U> collection, Adapter<U, V> forwardAdapter, Adapter<V, U> backwardAdapter) {
 		super();
 		if (forwardAdapter == null)
@@ -202,7 +201,7 @@ public class AdaptedCollection<U, V> extends AbstractCollection<V> implements Li
 	public void addCollectionListener(CollectionListener<V> l) {
 		if (collectionSupport == null) {
 			collectionSupport = new ListenableSupport<V>();
-			if (collection instanceof ListenableCollection) {
+			if (collection instanceof ListenableCollection<?>) {
 				((ListenableCollection<U>)collection).addCollectionListener(new CollectionListener<U>() {
 					public void collectionChanged(CollectionEvent<U> e) {
 						// Do not propagate the event if we triggered it

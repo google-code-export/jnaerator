@@ -48,6 +48,7 @@ public class ListenableComboModel<T> extends ListenableListModel<T> implements C
 			selectedItem = null;
 		return selectedItem;
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setSelectedItem(Object anItem) {
 		if (getList().contains(anItem))

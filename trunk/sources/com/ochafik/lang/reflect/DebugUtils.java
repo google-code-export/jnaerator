@@ -30,7 +30,6 @@ import java.util.TreeSet;
 
 import com.ochafik.io.StringBufferOutputStream;
 import com.ochafik.lang.AssertUtils;
-import com.ochafik.lang.AssertUtils.Test;
 
 public class DebugUtils {
 
@@ -132,7 +131,7 @@ public class DebugUtils {
 			return;
 		} 
 		Class<?> type = o.getClass();
-		boolean isCollection = o instanceof Collection;
+		boolean isCollection = o instanceof Collection<?>;
 
 		if (o instanceof CharSequence) {
 			out.print('"');
@@ -190,7 +189,7 @@ public class DebugUtils {
 		
 	}
 	
-	public static boolean hasToStringMethod(Class c) {
+	public static boolean hasToStringMethod(Class<?> c) {
 		if (c == Object.class) return false;
 		for (Method m : c.getDeclaredMethods()) {
 			if (m.getName().equals("toString") && m.getParameterTypes().length == 0) {

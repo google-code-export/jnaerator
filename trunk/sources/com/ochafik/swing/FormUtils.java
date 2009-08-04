@@ -44,6 +44,7 @@ import com.ochafik.beans.BeansController;
 
 public class FormUtils {
 	
+	@SuppressWarnings("serial")
 	public static Action createUndoAction(final UndoManager undoManager, String name) {
 		return new AbstractAction(name) {
             public void actionPerformed(ActionEvent arg0) {
@@ -53,6 +54,7 @@ public class FormUtils {
             }
         };
 	}
+	@SuppressWarnings("serial")
 	public static Action createRedoAction(final UndoManager undoManager, String name) {
 		return new AbstractAction(name) {
             public void actionPerformed(ActionEvent arg0) {
@@ -77,7 +79,6 @@ public class FormUtils {
         actionMap.put("redo", redoAction);
 	}
 	
-    @SuppressWarnings("serial")
     public final static void addUndoRedoSupport(final JTextComponent jtc) {
     	jtc.addPropertyChangeListener("document", new PropertyChangeListener() {
     		public void propertyChange(PropertyChangeEvent evt) {
@@ -87,7 +88,7 @@ public class FormUtils {
     	});
     	UndoRedoUtils.registerNewUndoManager(jtc);
     }
-    public final static JPanel makeEntriesPanel(BeansController beansController,int widthMin,FormElement[] formElements)  {
+    public final static JPanel makeEntriesPanel(BeansController<?> beansController,int widthMin,FormElement[] formElements)  {
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weighty=1;

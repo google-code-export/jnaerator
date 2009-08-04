@@ -48,7 +48,6 @@ public class FileListUtils {
 		} else if (slen==0) {
 			return model.equals("") || model.equals("*");
 		} else {
-			boolean star=true;
 			char c=model.charAt(0);
 			if (c=='*') {
 				String smod=model.substring(1);

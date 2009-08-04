@@ -42,7 +42,6 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 import com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
-import com.ochafik.lang.jnaerator.parser.Identifier.QualificationSeparator;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.runtime.Bits;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
@@ -1000,6 +999,7 @@ public class DeclarationsConverter {
 				
 		return ret;
 	}
+	@SuppressWarnings("unchecked")
 	private void addStructConstructors(Identifier structName, Struct structJavaClass/*, Struct byRef,
 			Struct byVal*/, Struct nativeStruct) {
 		

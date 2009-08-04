@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ochafik.util.CollectionAdapter;
-import com.ochafik.util.DefaultAdapter;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Pair;
 
@@ -135,7 +133,6 @@ public class RegexUtils {
 		List<String[]> ret = new LinkedList<String[]>();
 		
 		Matcher matcher = pattern.matcher(string);
-		int nGroups = matcher.groupCount();
 		while (matcher.find())
 			ret.add(getGroups(matcher));
 		

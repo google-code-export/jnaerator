@@ -13,8 +13,6 @@ public class JTextAreaOutputStream extends OutputStream {
 			string=st;
 		}
 		String string;
-		public void start() {}
-		public void stop() {}
 		public void run() {
 			ta.append(string);
 		}		
