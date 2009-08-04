@@ -14,7 +14,8 @@ struct S {
 };
 
 struct S2 : S {
-	long long l;
+	long long ll;
+	long l;
 };
 
 --
@@ -31,4 +32,4 @@ S.ByValue sbv 	  = new S(0, 0f, 0.0).byValue();
 S.ByReference sbr = new S(0, 0f, 0.0).byReference();
 
 S2 s2 = new S2();
-s2 = new S2(0, 0f, 0.0, (NativeLong)null);
+s2 = new S2(0, 0f, 0.0, 0L, (NativeLong)null);
