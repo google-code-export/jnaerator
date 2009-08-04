@@ -19,14 +19,11 @@
 package com.ochafik.xml;
 import java.io.File;
 import java.io.StringWriter;
-import java.lang.ref.SoftReference;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,19 +32,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.ochafik.admin.visualstudio.VisualStudioSolutionAndProjectsParser;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 //import ochafik.babel.*;
@@ -162,7 +152,7 @@ public class XMLUtils  {
 	private static final MessageFormat spaceMessageFormat=new MessageFormat(" ");
 	
 	public static String stripTags(String xmlString) {
-		String strippedHtml = RegexUtils.regexReplace(xmlTagPattern, xmlString, (Adapter)null);
+		String strippedHtml = RegexUtils.regexReplace(xmlTagPattern, xmlString, (Adapter<String[], String>)null);
 		return RegexUtils.regexReplace(spacesPattern,strippedHtml,spaceMessageFormat).trim();
 	}
 	public static Document readXML(File file) throws Exception {

@@ -5,7 +5,7 @@ import org.junit.Test;
 
 
 public class RuntimeTests {
-	public static class TestStruct extends Structure {
+	public static class TestStruct extends Structure<TestStruct> {
 		@Bits(1) public int i0;
 		@Bits(1) public int i1;
 		public short s;

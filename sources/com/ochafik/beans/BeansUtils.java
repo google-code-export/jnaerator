@@ -23,12 +23,11 @@ import java.beans.Introspector;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.ochafik.util.string.StringUtils;
 public class BeansUtils {
-	public static final void markTransientProperty(String name,Class classe) throws IntrospectionException {	
+	public static final void markTransientProperty(String name,Class<?> classe) throws IntrospectionException {	
 		BeanInfo info = Introspector.getBeanInfo(classe);
 		PropertyDescriptor[] propertyDescriptors =
 					     info.getPropertyDescriptors();

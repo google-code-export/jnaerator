@@ -245,7 +245,7 @@ public class SystemUtils {
 		}});
 		miOpen.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent evt) {
 				try {
-					runSystemOpenURL(file.toURL());
+					runSystemOpenURL(file.toURI().toURL());
 				} catch (IOException ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);

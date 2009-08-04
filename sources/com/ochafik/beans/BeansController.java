@@ -207,7 +207,6 @@ public class BeansController<M> {
 	}
 	boolean updatingModel=false;
     public M getModel() { return model; }
-	@SuppressWarnings({"unchecked"})
 	public void setModel(M model) {
 		this.model=model;
 		if (model!=null) {

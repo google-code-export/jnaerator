@@ -49,7 +49,7 @@ public class ListenableCollections {
 	 * @return source if it is already a listenable list, otherwise a new listenable list that is two-ways bound to the source collection. 
 	 */
 	public static <T> ListenableList<T> asList(ListenableCollection<T> source) {
-		if (source instanceof ListenableList)
+		if (source instanceof ListenableList<?>)
 			return (ListenableList<T>)source;
 		
 		ListenableList<T> out = new DefaultListenableList<T>(new ArrayList<T>(source));
@@ -179,12 +179,12 @@ public class ListenableCollections {
 	 * @return listenable collection that uses the provided collection as storage
 	 */
 	public static final <T> ListenableCollection<T> listenableCollection(Collection<T> collectionToWrap) {
-		if (collectionToWrap instanceof ListenableCollection)
+		if (collectionToWrap instanceof ListenableCollection<?>)
 			return (ListenableCollection<T>)collectionToWrap;
 		
-		if (collectionToWrap instanceof Set) {
+		if (collectionToWrap instanceof Set<?>) {
 			return listenableSet((Set<T>)collectionToWrap);
-		} else if (collectionToWrap instanceof List) {
+		} else if (collectionToWrap instanceof List<?>) {
 			return listenableList((List<T>)collectionToWrap);
 		}
 		return new DefaultListenableCollection<T>(collectionToWrap);
@@ -198,7 +198,7 @@ public class ListenableCollections {
 	 * @return listenable list that uses the provided list as storage
 	 */
 	public static final <T> ListenableList<T> listenableList(List<T> listToWrap) {
-		if (listToWrap instanceof ListenableList)
+		if (listToWrap instanceof ListenableList<?>)
 			return (ListenableList<T>)listToWrap;
 		
 		if (listToWrap instanceof RandomAccess) {
@@ -220,10 +220,10 @@ public class ListenableCollections {
 	 * @return listenable set that uses the provided set as storage
 	 */
 	public static final <T> ListenableSet<T> listenableSet(Set<T> setToWrap) {
-		if (setToWrap instanceof ListenableSet)
+		if (setToWrap instanceof ListenableSet<?>)
 			return (ListenableSet<T>)setToWrap;
 		
-		if (setToWrap instanceof SortedSet) {
+		if (setToWrap instanceof SortedSet<?>) {
 			return new DefaultListenableSortedSet<T>((SortedSet<T>)setToWrap);
 		}
 		return new DefaultListenableSet<T>(setToWrap);

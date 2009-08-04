@@ -1,12 +1,5 @@
 package com.ochafik.lang;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -23,7 +16,7 @@ public class ClassUtils {
 			int i = urlFile.indexOf("!");
 			if (i > 0) {
 				try {
-					URL jarURL = new URL(URLDecoder.decode(urlFile.substring(0, i)));
+					URL jarURL = new URL(URLDecoder.decode(urlFile.substring(0, i), "UTF-8"));
 					return jarURL;
 				} catch (Exception ex) {
 					ex.printStackTrace();

@@ -193,6 +193,7 @@ public class SyntaxUtils {
 		});
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T> T convert(Object value, Class<T> c) {
 		if (value == null)
 			return null;
@@ -220,7 +221,6 @@ public class SyntaxUtils {
 			}
 		}
 		
-		String str = value.toString();
 		for (Method meth : c.getMethods()) {
 			String name = meth.getName();
 			if ((meth.getModifiers() & Modifier.STATIC) == 0)
@@ -242,6 +242,8 @@ public class SyntaxUtils {
 	}
 	
 	public static class EasyMap<K, V> extends LinkedHashMap<K, V> {
+		private static final long serialVersionUID = -3087972422440202407L;
+
 		public EasyMap<K, V> add(K key, V value) {
 			put(key, value);
 			return this;

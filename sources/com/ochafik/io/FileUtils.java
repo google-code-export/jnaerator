@@ -215,9 +215,9 @@ public class FileUtils {
 		}
 		return ret;
 	}
-	public static final long totalFilesLength(Collection v) throws IOException {
+	public static final long totalFilesLength(Collection<?> v) throws IOException {
 		long l=0;
-		for (Iterator it=v.iterator();it.hasNext();) //int i=v.size()-1;i!=-1;i--) 
+		for (Iterator<?> it=v.iterator();it.hasNext();) //int i=v.size()-1;i!=-1;i--) 
 			l+=((File)it.next()).length();
 		return l;
 	}
@@ -226,7 +226,7 @@ public class FileUtils {
 	Renvoie les associations 'fichier de départ'=>'fichier changé de hiérarchie'
 	*/
 	public static final HashMap<File,File> relativiseFileStringsThenMapFilesToNewFiles(
-			Collection sourceFileStrings,
+			Collection<?> sourceFileStrings,
 			File sourceBase,
 			File sourceDest) {
 		
@@ -236,7 +236,7 @@ public class FileUtils {
 		int asbl=absSrcBase.length();
 		if (absSrcBase.endsWith(".")) absSrcBase=absSrcBase.substring(0,--asbl);			
 
-		for (Iterator it=sourceFileStrings.iterator();it.hasNext();) {
+		for (Iterator<?> it=sourceFileStrings.iterator();it.hasNext();) {
 			String st=it.next().toString();
 			String absSrcFile=(new File(st)).getAbsolutePath();
 			if (absSrcFile.startsWith(absSrcBase)) {
@@ -251,7 +251,7 @@ public class FileUtils {
 	Renvoie les associations 'fichier de départ'=>'fichier relatif'
 	*/
 	public static final HashMap<File,String> mapFilesToRelativeFilePaths(
-			Collection sourceFiles,
+			Collection<?> sourceFiles,
 			File sourceBase) {
 		
 		HashMap<File,String> ret=new HashMap<File,String>();
@@ -264,7 +264,7 @@ public class FileUtils {
 			asbl++;
 		}
 		
-		for (Iterator it=sourceFiles.iterator();it.hasNext();) {
+		for (Iterator<?> it=sourceFiles.iterator();it.hasNext();) {
 			File stFile=(File)it.next();
 			String absSrcFile=(stFile).getAbsolutePath();
 			if (absSrcFile.startsWith(absSrcBase)) {
@@ -277,8 +277,8 @@ public class FileUtils {
 	/**
 	Renvoie les associations 'fichier relatif'=>'fichier de départ'
 	*/
-	public static final Map mapRelativeFilePathsToFiles(
-			Collection sourceFiles,
+	public static final Map<?, ?> mapRelativeFilePathsToFiles(
+			Collection<?> sourceFiles,
 			File sourceBase,
 			Map<String,File> ret) {
 			
@@ -292,7 +292,7 @@ public class FileUtils {
 			asbl++;
 		}
 		
-		for (Iterator it=sourceFiles.iterator();it.hasNext();) {
+		for (Iterator<?> it=sourceFiles.iterator();it.hasNext();) {
 			File stFile=(File)it.next();
 			String absSrcFile=(stFile).getAbsolutePath();
 			if (absSrcFile.startsWith(absSrcBase)) {
@@ -302,8 +302,8 @@ public class FileUtils {
 		}
 		return ret;
 	}
-	public static final Collection relativizeThenAnchor(
-			Collection sourceFiles,
+	public static final Collection<?> relativizeThenAnchor(
+			Collection<?> sourceFiles,
 			File sourceBase,
 			File destBase) {
 		
@@ -316,7 +316,7 @@ public class FileUtils {
 			absSrcBase+=File.separator;
 			asbl++;
 		}
-		for (Iterator it=sourceFiles.iterator();it.hasNext();) {
+		for (Iterator<?> it=sourceFiles.iterator();it.hasNext();) {
 			File stFile=(File)it.next();
 			//System.out.println(stFile);
 			String absSrcFile=(stFile).getAbsolutePath();
@@ -341,7 +341,7 @@ public class FileUtils {
 		
 		byte b[]=new byte[4096];
 		int l;
-		for (Iterator fit=filesV.iterator(),rit=relV.iterator();fit.hasNext();) {//int i=0;i<nfiles;i++) {
+		for (Iterator<?> fit=filesV.iterator(),rit=relV.iterator();fit.hasNext();) {//int i=0;i<nfiles;i++) {
 			File src=(File)fit.next();//filesV.elementAt(i);
 			File dest=new File(repDest,(String)rit.next());//(String)relV.elementAt(i));
 			//BufferedInputStream in=new BufferedInputStream(new ProgressModelInputStream(new FileInputStream(src),pv));
