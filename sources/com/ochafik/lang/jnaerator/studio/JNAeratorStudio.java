@@ -244,6 +244,7 @@ public class JNAeratorStudio extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				generate();
+				generateButton.requestFocus();
 			}
 		},
 		aboutJNAeratorAction = new AbstractAction("About JNAerator") {
@@ -287,6 +288,7 @@ public class JNAeratorStudio extends JPanel {
 	JButton showJarButton;
 	JPanel errorsPane = new JPanel(new BorderLayout());
 	JProgressBar statusBar = new JProgressBar();
+	private JButton generateButton;
 	public JNAeratorStudio() {
 		super(new BorderLayout());
 		resultsListCombo.setModel(new ListenableComboModel<ResultContent>(results));
@@ -295,7 +297,7 @@ public class JNAeratorStudio extends JPanel {
 		//animator.setDeceleration(.2f);
 		
 		JToolBar tb = new JToolBar();
-		tb.add(generateAction);
+		generateButton = tb.add(generateAction);
 		tb.add(showExampleAction);
 		tb.add(switchOrientationAction);
 		tb.add(aboutJNAeratorAction);
