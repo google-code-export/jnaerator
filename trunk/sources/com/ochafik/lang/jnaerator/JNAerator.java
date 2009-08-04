@@ -79,6 +79,7 @@ import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
@@ -588,7 +589,7 @@ public class JNAerator {
 					mfm.addSourceInput(cnAndSrc.getKey(), cnAndSrc.getValue());
 				}
 				feedback.setStatus("Compiling JNAerated files...");
-				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, Pointer.class, JNAerator.class, NSClass.class, Mangling.class);
+				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, NativeLibrary.class, JNAerator.class, NSClass.class, Mangling.class);
 				if (!diagnostics.getDiagnostics().isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
