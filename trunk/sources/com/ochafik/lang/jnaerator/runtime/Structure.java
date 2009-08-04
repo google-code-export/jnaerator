@@ -20,16 +20,25 @@ package com.ochafik.lang.jnaerator.runtime;
 
 import java.lang.reflect.Field;
 
-public class Structure<S extends Structure<S>> 
+public abstract class Structure<S extends Structure<S, V, R>, V extends S, R extends S> 
 	extends com.sun.jna.Structure
-	implements Comparable<Structure<S>> 
+	implements Comparable<Structure<S, V, R>> 
 {
-	protected <T extends Structure<?>> T setupClone(T clone) {
+	protected <T extends Structure<?, ?, ?>> T setupClone(T clone) {
 		write();
 		clone.useMemory(getPointer());
 		clone.read();
 		return clone;
 	}
+	
+	protected abstract S newInstance();
+	protected abstract V newByValue();
+	protected abstract R newByReference();
+	
+	public R byReference() { return setupClone(newByReference()); }
+	public V byValue() { return setupClone(newByValue()); }
+	public S clone() { return setupClone(newInstance()); }
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public S[] toArray(int size) {
@@ -51,18 +60,18 @@ public class Structure<S extends Structure<S>>
 	/** Simply does a memcmp between the two memory blocks of the two structures
      */
 	@Override
-	public int compareTo(Structure<S> o) {
+	public int compareTo(Structure<S, V, R> o) {
         if (o == this)
             return 0;
-        if (!(o instanceof Structure<?>))
+        if (!(o instanceof Structure<?, ?, ?>))
         	return 1;
         
         int size = size();
-        int d = size - ((Structure<?>)o).size();
+        int d = size - ((Structure<?, ?, ?>)o).size();
         if (d != 0)
         	return d;
         
-        Structure<?> s = (Structure<?>)o;
+        Structure<?, ?, ?> s = (Structure<?, ?, ?>)o;
         if (getPointer().equals(s.getPointer()))
         	return 0;
         
