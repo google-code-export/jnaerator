@@ -1,0 +1,11 @@
+-D_X86_
+-D_M_IX86
+-library kernel32
+	//WinBase.h
+	//WinNT.h
+	"c:\Program Files\Microsoft SDKs\Windows\v6.0A\Include\WinBase.h"
+	"c:\Program Files\Microsoft SDKs\Windows\v6.0A\Include\WinNT.h"
+-package com.ochafik.lang.jnaerator.native.dllexport
+
+-o $(DIR)/../../../../..
+

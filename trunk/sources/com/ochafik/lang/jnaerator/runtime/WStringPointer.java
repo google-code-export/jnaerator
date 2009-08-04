@@ -20,7 +20,7 @@ package com.ochafik.lang.jnaerator.runtime;
 
 import com.sun.jna.WString;
 
-public class WStringPointer extends Structure<WStringPointer> {
+public class WStringPointer extends Structure<WStringPointer, WStringPointer.ByValue, WStringPointer.ByReference> {
 	public WString value;
 	public String toString() {
 		return value.toString();
@@ -35,6 +35,18 @@ public class WStringPointer extends Structure<WStringPointer> {
 		super();
 		this.value = new WString(value);
 	}
-	public static class ByValue extends StringPointer implements com.sun.jna.Structure.ByValue {}
-	public static class ByReference extends StringPointer implements com.sun.jna.Structure.ByReference {} 
+	public static class ByValue extends WStringPointer implements com.sun.jna.Structure.ByValue {}
+	public static class ByReference extends WStringPointer implements com.sun.jna.Structure.ByReference {}
+	@Override
+	protected ByReference newByReference() {
+		return new ByReference();
+	}
+	@Override
+	protected ByValue newByValue() {
+		return new ByValue();
+	}
+	@Override
+	protected WStringPointer newInstance() {
+		return new WStringPointer();
+	}
 }

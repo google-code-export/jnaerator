@@ -18,7 +18,7 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
-public class StringPointer extends Structure<StringPointer> {
+public class StringPointer extends Structure<StringPointer, StringPointer.ByValue, StringPointer.ByReference> {
 	public String value;
 	public String toString() {
 		return value;
@@ -29,5 +29,17 @@ public class StringPointer extends Structure<StringPointer> {
 		this.value = value;
 	}
 	public static class ByValue extends StringPointer implements com.sun.jna.Structure.ByValue {}
-	public static class ByReference extends StringPointer implements com.sun.jna.Structure.ByReference {} 
+	public static class ByReference extends StringPointer implements com.sun.jna.Structure.ByReference {}
+	@Override
+	protected ByReference newByReference() {
+		return new ByReference();
+	}
+	@Override
+	protected ByValue newByValue() {
+		return new ByValue();
+	}
+	@Override
+	protected StringPointer newInstance() {
+		return new StringPointer();
+	} 
 }
