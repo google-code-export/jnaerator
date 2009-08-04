@@ -20,6 +20,7 @@ package com.ochafik.lang.jnaerator;
 
 import com.ochafik.lang.jnaerator.parser.Arg;
 import static com.ochafik.lang.jnaerator.parser.Identifier.*;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -76,17 +77,35 @@ public class CToJavaPreScanner extends Scanner {
 		
 		Element toAddAfter = v;
 		
+		TypeRef valueType = v.getValueType();
+		String bestName = null, origName = null;
+		TaggedTypeRef ttr = null;
+		if (valueType instanceof TaggedTypeRef) {
+			ttr = (TaggedTypeRef) valueType;
+			bestName = JNAeratorUtils.findBestPlainStorageName(v);
+			if (bestName != null)
+				origName = ttr.getTag().toString();
+		}
+		
 		/// Explode comma-separated variables declarations
 		for (Declarator vs : v.getDeclarators()) {
-			if (vs == null || vs instanceof DirectDeclarator)
+			if (vs == null)// || vs instanceof DirectDeclarator && v.getDeclarators().size() == 1)
 				continue;
 			
+			String name = vs.resolveName();
+			if (vs instanceof DirectDeclarator && name.equals(bestName) && ttr != null) {
+				DirectDeclarator rep = new DirectDeclarator(origName);
+				vs.replaceBy(rep);
+				ttr.setTag(ident(bestName));
+				vs = rep;
+				name = origName;
+			}
 			Declaration decl = null;
 		
 			Declarator.MutableByDeclarator type = vs.mutateType(v.getValueType());
 			if (type instanceof TypeRef) {
 				TypeRef tr = (TypeRef)type;
-				decl = new StoredDeclarations.TypeDef(tr, new DirectDeclarator(vs.resolveName(), vs.getBits()));
+				decl = new StoredDeclarations.TypeDef(tr, new DirectDeclarator(name, vs.getBits()));
 				decl.importDetails(v, false);
 				decl.importDetails(vs, false);
 				decl.importDetails(tr, true);
@@ -97,7 +116,7 @@ public class CToJavaPreScanner extends Scanner {
 			toAddAfter.insertSibling(decl, false);
 			toAddAfter = decl;
 
-			decl.accept(this);//super.visitVariablesDeclaration(decl);
+			//decl.accept(this);//super.visitVariablesDeclaration(decl);
 		}
 		if (toAddAfter != v)
 			v.replaceBy(null);
