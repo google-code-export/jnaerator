@@ -84,7 +84,7 @@ public class CToJavaPreScanner extends Scanner {
 			ttr = (TaggedTypeRef) valueType;
 			bestName = JNAeratorUtils.findBestPlainStorageName(v);
 			if (bestName != null)
-				origName = ttr.getTag().toString();
+				origName = ttr.getTag() != null ? ttr.getTag().toString() : null;
 		}
 		
 		/// Explode comma-separated variables declarations
@@ -93,7 +93,7 @@ public class CToJavaPreScanner extends Scanner {
 				continue;
 			
 			String name = vs.resolveName();
-			if (vs instanceof DirectDeclarator && name.equals(bestName) && ttr != null) {
+			if (vs instanceof DirectDeclarator && name.equals(bestName) && ttr != null && origName != null) {
 				DirectDeclarator rep = new DirectDeclarator(origName);
 				vs.replaceBy(rep);
 				ttr.setTag(ident(bestName));
