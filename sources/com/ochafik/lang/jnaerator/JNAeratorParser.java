@@ -216,8 +216,9 @@ public class JNAeratorParser {
 			pout.flush();
 			System.setOut(originalOut);
 			System.setErr(originalErr);
-			String errs = new String(bout.toByteArray());
-			WriteText.writeText(errs, new File("out.errors.txt"));
+			String errs = new String(bout.toByteArray()).trim();
+			if (errs.length() > 0 && config.verbose)
+				WriteText.writeText(errs, new File("out.errors.txt"));
 		}
 		return sourceFiles;
 	}

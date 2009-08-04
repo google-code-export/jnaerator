@@ -3,14 +3,27 @@ package com.ochafik.lang.jnaerator.runtime;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 public class RuntimeTests {
-	public static class TestStruct extends Structure<TestStruct> {
+	public static class TestStruct extends Structure<TestStruct, TestStruct.ByValue, TestStruct.ByReference> {
 		@Bits(1) public int i0;
 		@Bits(1) public int i1;
 		public short s;
 		@Bits(3) public int i2;
 		@Bits(1) public int i3;
+		public static class ByValue extends TestStruct implements com.sun.jna.Structure.ByValue {}
+		public static class ByReference extends TestStruct implements com.sun.jna.Structure.ByReference {}
+		@Override
+		protected ByReference newByReference() {
+			return new ByReference();
+		}
+		@Override
+		protected ByValue newByValue() {
+			return new ByValue();
+		}
+		@Override
+		protected TestStruct newInstance() {
+			return new TestStruct();
+		}
 	}
 	@Test
 	public void bitFieldRead() {
