@@ -966,26 +966,27 @@ public class DeclarationsConverter {
 		cl.addModifiers(Modifier.Public, Modifier.Static);
 		return cl;
 	}
-	public Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> getParentAndOwnDeclarations(Struct struct) {
+	public Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> getParentAndOwnDeclarations(Struct structJavaClass, Struct nativeStruct) {
 		Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> ret = 
 			new Pair<List<VariablesDeclaration>, List<VariablesDeclaration>>(
 				new ArrayList<VariablesDeclaration>(), 
 				new ArrayList<VariablesDeclaration>()
 			)
 		;
-		if (!struct.getParents().isEmpty()) {
-			for (Identifier parentName : struct.getParents()) {
+		if (!nativeStruct.getParents().isEmpty()) {
+			for (Identifier parentName : nativeStruct.getParents()) {
 				Struct parent = result.structsByName.get(parentName);
 				if (parent == null) {
 					// TODO report error
 					continue;
 				}
-				Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> parentDecls = getParentAndOwnDeclarations(parent);
+				Struct parentJavaClass = null; // TODO
+				Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> parentDecls = getParentAndOwnDeclarations(parentJavaClass, parent);
 				ret.getFirst().addAll(parentDecls.getFirst());
 				ret.getFirst().addAll(parentDecls.getSecond());
 			}
 		}
-		for (Declaration d : struct.getDeclarations()) {
+		for (Declaration d : structJavaClass.getDeclarations()) {
 			if (!(d instanceof VariablesDeclaration))
 				continue;
 			VariablesDeclaration vd = (VariablesDeclaration)d;
@@ -1069,7 +1070,7 @@ public class DeclarationsConverter {
 			Function fieldsConstr = new Function(Function.Type.JavaMethod, structName.clone(), null);
 			fieldsConstr.setBody(new Block()).addModifiers(Modifier.Public);
 			
-			Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> decls = getParentAndOwnDeclarations(nativeStruct);
+			Pair<List<VariablesDeclaration>, List<VariablesDeclaration>> decls = getParentAndOwnDeclarations(structJavaClass, nativeStruct);
 			Map<Integer, String> namesById = new TreeMap<Integer, String>();
 			Set<String> names = new HashSet<String>();
 			int iArg = 0;
