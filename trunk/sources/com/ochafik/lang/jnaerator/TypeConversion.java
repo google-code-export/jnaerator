@@ -266,6 +266,7 @@ public class TypeConversion {
 	static {
 		
 		manualTypeDefs.put("DWORD_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
+		manualTypeDefs.put("PDWORD", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
 		manualTypeDefs.put("intptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
 		manualTypeDefs.put("uintptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
 		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
@@ -274,22 +275,26 @@ public class TypeConversion {
 		manualTypeDefs.put("INT_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
 		manualTypeDefs.put("UINT_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
 		manualTypeDefs.put("PVOID", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
-		
-		prim("LONG_PTR", JavaPrim.NativeLong);
-//		prim("ULONG_PTR", JavaPrim.NativeLong);
 //		
-		manualTypeDefs.put("SIZE", new TypeRef.Primitive("size_t"));
-		manualTypeDefs.put("CHAR", new TypeRef.Primitive("char"));
-		manualTypeDefs.put("BOOL", new TypeRef.Primitive("bool"));
-		manualTypeDefs.put("WCHAR", new TypeRef.Primitive("wchar_t"));
-		manualTypeDefs.put("HRESULT", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
+//		prim("LONG_PTR", JavaPrim.NativeLong);
+//		prim("ULONG_PTR", JavaPrim.NativeLong);
 		
-		
+//		manualTypeDefs.put("SIZE", new TypeRef.Primitive("size_t"));
+//		manualTypeDefs.put("CHAR", new TypeRef.Primitive("char"));
+//		manualTypeDefs.put("BOOL", new TypeRef.Primitive("bool"));
+//		manualTypeDefs.put("WCHAR", new TypeRef.Primitive("wchar_t"));
+//		manualTypeDefs.put("HRESULT", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
+//		
+//		
 		
 		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifiers(Modifier.Const), PointerStyle.Pointer));
 		manualTypeDefs.put("LPCWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t").addModifiers(Modifier.Const), PointerStyle.Pointer));
 		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
 		manualTypeDefs.put("LPWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t"), PointerStyle.Pointer));
+		manualTypeDefs.put("PCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifiers(Modifier.Const), PointerStyle.Pointer));
+		manualTypeDefs.put("PCWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t").addModifiers(Modifier.Const), PointerStyle.Pointer));
+		manualTypeDefs.put("PSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
+		manualTypeDefs.put("PWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t"), PointerStyle.Pointer));
 		
 //		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
 		manualTypeDefs.put("PBYTE", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
