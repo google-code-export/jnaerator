@@ -758,8 +758,8 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
-		if (String.valueOf(valueType).contains("PDWORD"))
-			valueType = valueType;
+//		if (String.valueOf(valueType).contains("PDWORD"))
+//			valueType = valueType;
 		
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType, libraryClassName, true);
