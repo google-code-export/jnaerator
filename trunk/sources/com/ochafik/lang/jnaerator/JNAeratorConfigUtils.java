@@ -108,6 +108,7 @@ public class JNAeratorConfigUtils {
 			 */
 			File cppi = new File("/usr/include/c++");
 			TreeSet<String> versions = new TreeSet<String>();
+			if (cppi.isDirectory())
 			for (File f : cppi.listFiles()) {
 				if (!f.isDirectory())
 					continue;
