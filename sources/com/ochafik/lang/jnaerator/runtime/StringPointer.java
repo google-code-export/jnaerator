@@ -18,12 +18,25 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.PointerType;
+
 public class StringPointer extends Structure<StringPointer, StringPointer.ByValue, StringPointer.ByReference> {
 	public String value;
 	public String toString() {
 		return value;
 	}
 	public StringPointer() {}
+	public StringPointer(PointerType p) {
+		this(p.getPointer(), 0);
+	}
+	public StringPointer(Pointer p) {
+		this(p, 0);
+	}
+	public StringPointer(Pointer p, int offset) {
+		useMemory(p, offset);
+		read();
+	}
 	public StringPointer(String value) {
 		super();
 		this.value = value;
