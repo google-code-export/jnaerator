@@ -20,6 +20,8 @@ package com.ochafik.lang.jnaerator.runtime;
 
 import java.lang.reflect.Field;
 
+import com.sun.jna.Pointer;
+
 public abstract class Structure<S extends Structure<S, V, R>, V extends S, R extends S> 
 	extends com.sun.jna.Structure
 	implements Comparable<Structure<S, V, R>> 
@@ -30,6 +32,14 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 		clone.read();
 		return clone;
 	}
+	
+	@Override
+	public void useMemory(Pointer m) {
+		// TODO Auto-generated method stub
+		super.useMemory(m);
+		read();
+	}
+	//getFieldOffset(String fieldName);
 	
 	protected abstract S newInstance();
 	protected abstract V newByValue();

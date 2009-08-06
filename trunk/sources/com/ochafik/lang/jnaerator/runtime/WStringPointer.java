@@ -18,6 +18,8 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.PointerType;
 import com.sun.jna.WString;
 
 public class WStringPointer extends Structure<WStringPointer, WStringPointer.ByValue, WStringPointer.ByReference> {
@@ -27,6 +29,16 @@ public class WStringPointer extends Structure<WStringPointer, WStringPointer.ByV
 	}
 
 	public WStringPointer() {}
+	public WStringPointer(PointerType p) {
+		this(p.getPointer(), 0);
+	}
+	public WStringPointer(Pointer p) {
+		this(p, 0);
+	}
+	public WStringPointer(Pointer p, int offset) {
+		useMemory(p, offset);
+		read();
+	}
 	public WStringPointer(WString value) {
 		super();
 		this.value = value;
