@@ -45,4 +45,18 @@ public interface DllExportLibrary extends com.sun.jna.Library {
 	public static final int IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
 	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>
 	public static final int IMAGE_DOS_SIGNATURE = 23117;
+	/**
+	 * Original signature : <code>UnDecorateSymbolNameW(PCWSTR, PWSTR, DWORD, DWORD)</code><br>
+	 * <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h:3</i><br>
+	 * @deprecated use the safer method {@link #UnDecorateSymbolNameW(com.sun.jna.WString, java.nio.ShortBuffer, int, int)} instead
+	 */
+	@com.ochafik.lang.jnaerator.runtime.Mangling({"_Z21UnDecorateSymbolNameW6PCWSTR5PWSTR5DWORD5DWORD", "?UnDecorateSymbolNameW@@YGX6PCWSTR5PWSTR5DWORD5DWORD@Z"})
+	@java.lang.Deprecated
+	int UnDecorateSymbolNameW(com.sun.jna.ptr.ShortByReference name, com.sun.jna.ptr.ShortByReference outputString, int maxStringLength, int flags);
+	/**
+	 * Original signature : <code>UnDecorateSymbolNameW(PCWSTR, PWSTR, DWORD, DWORD)</code><br>
+	 * <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h:3</i>
+	 */
+	@com.ochafik.lang.jnaerator.runtime.Mangling({"_Z21UnDecorateSymbolNameW6PCWSTR5PWSTR5DWORD5DWORD", "?UnDecorateSymbolNameW@@YGX6PCWSTR5PWSTR5DWORD5DWORD@Z"})
+	int UnDecorateSymbolNameW(com.sun.jna.WString name, java.nio.ShortBuffer outputString, int maxStringLength, int flags);
 }
