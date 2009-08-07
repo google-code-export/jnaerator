@@ -933,10 +933,13 @@ templateArgDecl
 	
 functionSignatureSuffix returns [FunctionSignature signature]
 	:	tk='(' m1=modifiers '*' m2=modifiers IDENTIFIER? ')' { 
-			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, new SimpleIdentifier($IDENTIFIER.text), null)), getLine($tk));
+			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, $IDENTIFIER.text == null ? null : new SimpleIdentifier($IDENTIFIER.text), null)), getLine($tk));
 			$signature.getFunction().setType(Function.Type.CFunction);
 			$signature.getFunction().addModifiers($m1.modifiers);
 			$signature.getFunction().addModifiers($m2.modifiers);
+			if ($IDENTIFIER.text != null && isTypeDef()) {
+				$Symbols::typeIdentifiers.add($IDENTIFIER.text);
+			}
 		}
 		'(' (
 			a1=argDef { 
