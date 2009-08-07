@@ -81,6 +81,8 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.lang.jnaerator.runtime.StringPointer;
+import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.NativeLong;
@@ -795,6 +797,12 @@ public class TypeConversion {
 					return arrayRef(typeRef(String.class));
 				else if (valueTypeString.matches("(__)?const wchar_t\\*\\*"))
 					return arrayRef(typeRef(WString.class));
+				else if (conversionMode == TypeConversionMode.PrimitiveParameter) {
+					if (valueTypeString.matches("char\\*"))
+						return arrayRef(typeRef(StringPointer.ByValue.class));
+					else if (valueTypeString.matches("wchar_t\\*"))
+						return arrayRef(typeRef(WStringPointer.ByValue.class));
+				}
 			}
 		}
 		

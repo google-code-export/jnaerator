@@ -86,7 +86,7 @@ public class ElementsHelper {
 	public static TypeRef typeRef(Class<?> cl) {
 		if (cl.isArray())
 			return new TypeRef.ArrayRef(typeRef(cl.getComponentType()));
-		return new SimpleTypeRef(cl.getName());
+		return new SimpleTypeRef(cl.getName().replace('$', '.'));
 	}
 
 	public static TypeRef typeRef(String name) {
