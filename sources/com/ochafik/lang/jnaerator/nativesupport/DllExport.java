@@ -13,12 +13,16 @@ import com.ochafik.lang.jnaerator.nativesupport.dllexport.IMAGE_DOS_HEADER;
 import com.ochafik.lang.jnaerator.nativesupport.dllexport.IMAGE_EXPORT_DIRECTORY;
 import com.ochafik.lang.jnaerator.nativesupport.dllexport.IMAGE_NT_HEADERS;
 import com.ochafik.lang.jnaerator.nativesupport.dllexport.IMAGE_SECTION_HEADER;
+import com.ochafik.lang.jnaerator.runtime.StringPointer;
+import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.util.string.StringUtils;
+import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerUtils;
 import com.sun.jna.Structure;
+import com.sun.jna.WString;
 
-import static com.ochafik.lang.jnaerator.nativesupport.dllexport.DllExportLibrary.*;
+import static com.ochafik.lang.jnaerator.nativesupport.dllexport.DbgHelpLibrary.*;
 public class DllExport {
 	public static byte[] GetFileBytes(RandomAccessFile raf, long offset, int size) throws IOException {
 	   raf.seek(offset);
@@ -43,7 +47,22 @@ public class DllExport {
 		try {
 			File f = new File("C:\\Prog\\C++\\DllExportTest\\Release\\DllTest.dll");
 			List<String> list = OutputDLLFunctions(f);
-			if (list != null)
+			if (list != null) {
+				int outSize = 8196;
+				byte[] bytes = new byte[outSize];
+				Memory m = new Memory(outSize);
+				StringBuilder b = new StringBuilder();
+				for (String symbol : list) {
+					
+					INSTANCE.UnDecorateSymbolName(symbol, m.getByteBuffer(0, outSize), outSize, UNDNAME_COMPLETE);
+					m.read(0, bytes, 0, outSize);	
+					int len = 0;
+					while (len < outSize && bytes[len] != 0)
+						len++;
+					String undec = new String(bytes, 0, len);
+					System.out.println(undec);
+				}
+			}
 				System.out.println(StringUtils.implode(list, "\n"));
 		} catch (IOException ex) {
 			ex.printStackTrace();

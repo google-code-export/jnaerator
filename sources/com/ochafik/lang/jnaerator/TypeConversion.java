@@ -799,9 +799,9 @@ public class TypeConversion {
 					return arrayRef(typeRef(WString.class));
 				else if (conversionMode == TypeConversionMode.PrimitiveParameter) {
 					if (valueTypeString.matches("char\\*"))
-						return arrayRef(typeRef(StringPointer.ByValue.class));
+						return typeRef(StringPointer.ByValue.class);
 					else if (valueTypeString.matches("wchar_t\\*"))
-						return arrayRef(typeRef(WStringPointer.ByValue.class));
+						return typeRef(WStringPointer.ByValue.class);
 				}
 			}
 		}
