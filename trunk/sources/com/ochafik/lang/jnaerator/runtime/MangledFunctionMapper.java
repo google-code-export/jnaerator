@@ -51,7 +51,7 @@ public class MangledFunctionMapper implements FunctionMapper {
 						if (library.getGlobalVariableAddress(n) != null)
 							return n;
 					}
-				} catch (Exception ex) {
+				} catch (Throwable ex) {
 					ex = null;
 				}
 			}

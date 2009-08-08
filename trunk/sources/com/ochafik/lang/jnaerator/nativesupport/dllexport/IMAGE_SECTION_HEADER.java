@@ -16,7 +16,7 @@ public class IMAGE_SECTION_HEADER extends com.ochafik.lang.jnaerator.runtime.Str
 	public short NumberOfRelocations;
 	public short NumberOfLinenumbers;
 	public int Characteristics;
-	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h:106</i>
+	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h:94</i>
 	public static class Misc_union extends com.ochafik.lang.jnaerator.runtime.Union<Misc_union, Misc_union.ByValue, Misc_union.ByReference> {
 		public int PhysicalAddress;
 		public int VirtualSize;

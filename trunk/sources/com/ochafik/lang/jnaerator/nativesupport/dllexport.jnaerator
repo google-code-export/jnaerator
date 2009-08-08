@@ -8,9 +8,12 @@
 //-DHANDLE=void*
 //-DSIZE_T=size_t
 //"-DWINAPI=__declspec(dllexport)"
-//-DVOID=void
 
--library DllExport
+//-DVOID=void
+//-DPDWORD=int*
+//-DPWORD=short*
+-DPWSTR=wchar_t*
+-library DbgHelp
 	//WinBase.h
 	//WinNT.h
 	//"-Ic:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
