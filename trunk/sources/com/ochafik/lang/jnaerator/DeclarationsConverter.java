@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.rococoa.AlreadyRetained;
 import org.rococoa.cocoa.foundation.NSObject;
@@ -56,6 +57,7 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class DeclarationsConverter {
 	private static final int MAX_FIELDS_FOR_VALUES_CONSTRUCTORS = 10;
 	private static final String DEFAULT_VPTR_NAME = "_vptr";
+	private static final Pattern manglingCommentPattern = Pattern.compile("@mangling (.*)$", Pattern.MULTILINE);
 
 	public DeclarationsConverter(Result result) {
 		this.result = result;
@@ -627,6 +629,14 @@ public class DeclarationsConverter {
 		if (!isCPlusPlusFileName(Element.getFileOfAscendency(function)))
 			return;
 		
+		try {
+			List<String[]> mats = com.ochafik.util.string.RegexUtils.find(function.getCommentBefore(), manglingCommentPattern);
+			for (String[] mat : mats) {
+				names.add(mat[1]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		for (CPlusPlusMangler mangler : result.config.cPlusPlusManglers) {
 			try {
 				names.add(mangler.mangle(function, result));

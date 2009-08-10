@@ -81,6 +81,7 @@ public class JNAeratorConfig {
 	public boolean limitComments = false;
 	public boolean putTopStructsInSeparateFiles = true;
 	public boolean bundleRuntime = true;
+	public boolean extractLibSymbols = true;
 	public String entryName;
 	
 	public Map<String, String> extraJavaSourceFilesContents = new HashMap<String, String>();
@@ -88,6 +89,7 @@ public class JNAeratorConfig {
 	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
 	
 	public Map<String, List<File>> libraryFilesByArch = new HashMap<String, List<File>>();
+	public List<File> libraryFiles = new ArrayList<File>();
 	
 	public Map<File, String> libraryByFile = new HashMap<File, String>();
 	public void addLibraryFile(File file, String arch) {
@@ -97,6 +99,7 @@ public class JNAeratorConfig {
 			libraryFilesByArch.put(arch, others = new ArrayList<File>());
 		
 		others.add(file);
+		libraryFiles.add(file);
 	}
 	public void addFile(File file, String library) throws IOException {
 		if (file.isFile()) {

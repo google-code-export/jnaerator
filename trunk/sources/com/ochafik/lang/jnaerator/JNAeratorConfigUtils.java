@@ -38,6 +38,7 @@ import com.ochafik.admin.visualstudio.Solution;
 import com.ochafik.admin.visualstudio.VisualStudioUtils;
 import com.ochafik.lang.jnaerator.cplusplus.GCC4Mangler;
 import com.ochafik.lang.jnaerator.cplusplus.VC9Mangler;
+import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.util.SystemUtils;
@@ -281,7 +282,13 @@ public class JNAeratorConfigUtils {
 			
 			//http://support.microsoft.com/kb/65472
 			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);
+			
+			// http://msdn.microsoft.com/en-us/library/dh8che7s(VS.80).aspx
+			config.preprocessorConfig.macros.put("_WCHAR_T_DEFINED", null);
+			config.preprocessorConfig.macros.put("_NATIVE_WCHAR_T_DEFINED", null);
+			
 			config.preprocessorConfig.macros.put("_MSC_VER", "800");
+			
 			config.functionsAccepter = new Adapter<Function, Boolean>() {
 	
 				public Boolean adapt(Function value) {
