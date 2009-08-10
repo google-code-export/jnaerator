@@ -51,6 +51,7 @@ import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.compiler.URLFileObject;
+import com.ochafik.lang.jnaerator.nativesupport.DllExport;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -71,6 +72,8 @@ import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
+import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
+import com.ochafik.lang.jnaerator.nativesupport.dllexport.*;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
@@ -328,6 +331,8 @@ public class JNAerator {
 					//JNAeratorConfigUtils.autoConfigure(config);
 				} else if (arg.equals("-root"))
 					config.rootPackageName = args.get(++iArg);
+				else if (arg.equals("-noLibExtract"))
+					config.extractLibSymbols = false;
 				else if (arg.equals("-entry"))
 					config.entryName = args.get(++iArg);
 				else if (arg.equals("-macrosOut"))
@@ -409,6 +414,7 @@ public class JNAerator {
 					if (config.verbose)
 						System.out.println("Adding file '" + file + "' for arch '" + arch +"'.");
 					config.addLibraryFile(file, arch);
+					
 				} else {
 					String lib = currentLibrary;
 					File f = new File(arg);
@@ -434,6 +440,13 @@ public class JNAerator {
 				}
 			}
 			
+			if (config.extractLibSymbols) {
+				for (File libFile : config.libraryFiles) {
+					if (libFile.getName().toLowerCase().endsWith(".dll")) {
+						//List<ParsedExport> dllExports = DllExport.parseDllExports(libFile);
+					}
+				}
+			}
 			for (String framework : frameworks)
 				JNAeratorConfigUtils.addFramework(config, framework);
 			
