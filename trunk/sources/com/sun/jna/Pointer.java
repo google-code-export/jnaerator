@@ -17,7 +17,9 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An abstraction for a native pointer data type.  A Pointer instance 
@@ -383,11 +385,10 @@ public class Pointer {
 	
     Object getValue(long offset, int bitOffset, int bits, Class type, Object currentValue) {
 
-        Object result = null;
-        if (Structure.class.isAssignableFrom(type)) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
-            Structure s = (Structure)currentValue;
+        Object result = BitFields.getPrimitiveValue(this, offset, bitOffset, bits, type);
+    	if (result != BitFields.UNHANDLED_TYPE) {} 
+    	else if (Structure.class.isAssignableFrom(type)) {
+			Structure s = (Structure)currentValue;
             if (Structure.ByReference.class.isAssignableFrom(type)) {
                 s = Structure.updateStructureByReference(type, s, getPointer(offset));
             }
@@ -397,61 +398,7 @@ public class Pointer {
             }
             result = s;
         }
-        else if (type == boolean.class || type == Boolean.class) {
-			byte v = getByte(offset);
-			v >>= bitOffset;
-			if (bits != 0)
-				v &= (1 << bits) - 1;
-			result = Boolean.valueOf(v != 0);//Function.valueOf(getInt(offset) != 0);
-        }
-        else if (type == byte.class || type == Byte.class) {
-			byte v = getByte(offset);
-			v >>= bitOffset;
-			if (bits != 0)
-				v &= (1 << bits) - 1;
-			result = new Byte(v);
-        }
-        else if (type == short.class || type == Short.class) {
-            short v = getShort(offset);
-			v >>= bitOffset;
-			if (bits != 0)
-				v &= (1 << bits) - 1;
-			result = new Short(v);
-        }
-        else if (type == char.class || type == Character.class) {
-			char v = getChar(offset);
-			v >>= bitOffset;
-			if (bits != 0)
-				v &= (1 << bits) - 1;
-			result = new Character(v);
-        }
-        else if (type == int.class || type == Integer.class) {
-            int v = getInt(offset);
-			v >>= bitOffset;
-			if (bits != 0)
-				v &= (1 << bits) - 1;
-			result = new Integer(v);
-        }
-        else if (type == long.class || type == Long.class) {
-            long v = getLong(offset);
-			v >>= bitOffset;
-			if (bits != 0)
-				v &= (1L << bits) - 1;
-			result = new Long(v);
-        }
-        else if (type == float.class || type == Float.class) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
-            result = new Float(getFloat(offset));
-        }
-        else if (type == double.class || type == Double.class) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
-            result = new Double(getDouble(offset));
-        }
         else if (Pointer.class.isAssignableFrom(type)) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
             Pointer p = getPointer(offset);
             if (p != null) {
                 Pointer oldp = currentValue instanceof Pointer
@@ -462,21 +409,7 @@ public class Pointer {
                     result = oldp;
             }
         }
-        else if (type == String.class) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
-            Pointer p = getPointer(offset);
-            result = p != null ? p.getString(0) : null;
-        }
-        else if (type == WString.class) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
-            Pointer p = getPointer(offset);
-            result = p != null ? new WString(p.getString(0, true)) : null;
-        }
         else if (Callback.class.isAssignableFrom(type)) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
             // Overwrite the Java memory if the native pointer is a different
             // function pointer.
             Pointer fp = getPointer(offset);
@@ -493,8 +426,6 @@ public class Pointer {
             }
         }
         else if (Buffer.class.isAssignableFrom(type)) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
             Pointer bp = getPointer(offset);
             if (bp == null) {
                 result = null;
@@ -508,8 +439,6 @@ public class Pointer {
             }
         }
         else if (NativeMapped.class.isAssignableFrom(type)) {
-            if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
             NativeMapped nm = (NativeMapped)currentValue;
             if (nm != null) {
                 Object value = getValue(offset, nm.nativeType(), null);
@@ -522,9 +451,7 @@ public class Pointer {
             }
         }
         else if (type.isArray()) {
-			if (bitOffset != 0 || bits != 0)
-				throw new UnsupportedOperationException("Bit fields before non integer fields !!!");
-            result = currentValue;
+			result = currentValue;
             if (result == null) {
                 throw new IllegalStateException("Need an initialized array");
             }
@@ -886,79 +813,13 @@ v     * @param wide whether to convert from a wide or standard C string
 	void setValue(long offset, Object value, Class type) {
 		setValue(offset, 0, 0, value, type);
 	}
+
 	void setValue(long offset, int bitOffset, int bits, Object value, Class type) {
 
-        // Set the value at the offset according to its type
-        if (type == boolean.class || type == Boolean.class) {
-			byte v = (byte)(Boolean.TRUE.equals(value) ? -1 : 0);
-			v <<= bitOffset;
-			if (bits != 0) {
-				int mask = ((1 << bits) - 1) << bitOffset;
-				v = (byte)((getInt(offset) & ~mask) | v & mask);
-			}
-			setByte(offset, v);
-        }
-        else if (type == byte.class || type == Byte.class) {
-            byte v = value == null ? 0 : ((Byte)value).byteValue();
-			v <<= bitOffset;
-			if (bits != 0) {
-				int mask = ((1 << bits) - 1) << bitOffset;
-				v = (byte)((getInt(offset) & ~mask) | v & mask);
-			}
-			setByte(offset, v);
-        }
-        else if (type == short.class || type == Short.class) {
-			short v = value == null ? 0 : ((Short)value).shortValue();
-			v <<= bitOffset;
-			if (bits != 0) {
-				int mask = ((1 << bits) - 1) << bitOffset;
-				v = (short)((getInt(offset) & ~mask) | v & mask);
-			}
-			setShort(offset, v);
-        }
-        else if (type == char.class || type == Character.class) {
-            char v = value == null ? 0 : ((Character)value).charValue();
-			v <<= bitOffset;
-			if (bits != 0) {
-				int mask = ((1 << bits) - 1) << bitOffset;
-				v = (char)((getInt(offset) & ~mask) | v & mask);
-			}
-			setChar(offset, v);
-        }
-        else if (type == int.class || type == Integer.class) {
-            int v = value == null ? 0 : ((Integer)value).intValue();
-			v <<= bitOffset;
-			if (bits != 0) {
-				int mask = ((1 << bits) - 1) << bitOffset;
-				v = (getInt(offset) & ~mask) | v & mask;
-			}
-			setInt(offset, v);
-        }
-        else if (type == long.class || type == Long.class) {
-            long v = value == null ? 0 : ((Long)value).longValue();
-			v <<= bitOffset;
-			if (bits != 0) {
-				long mask = (1 << bits) - 1;
-				v = (getInt(offset) & ~mask) | v & mask;
-			}
-			setLong(offset, v);
-        }
-        else if (type == float.class || type == Float.class) {
-            setFloat(offset, value == null ? 0f : ((Float)value).floatValue());
-        }
-        else if (type == double.class || type == Double.class) {
-            setDouble(offset, value == null ? 0.0 : ((Double)value).doubleValue());
-        }
-        else if (type == Pointer.class) {
-            setPointer(offset, (Pointer)value);
-        }
-        else if (type == String.class) {
-            setPointer(offset, (Pointer)value);
-        }
-        else if (type == WString.class) {
-            setPointer(offset, (Pointer)value);
-        }
-        else if (Structure.class.isAssignableFrom(type)) {
+		if (BitFields.setPrimitiveValue(this, offset, bitOffset, bits, value, type))
+			return;
+		
+		if (Structure.class.isAssignableFrom(type)) {
             Structure s = (Structure)value;
             if (Structure.ByReference.class.isAssignableFrom(type)) {
                 setPointer(offset, s == null ? null : s.getPointer());
@@ -970,6 +831,9 @@ v     * @param wide whether to convert from a wide or standard C string
                 s.useMemory(this, (int)offset);
                 s.write();
             }
+        }
+		else if (type == Pointer.class) {
+            setPointer(offset, (Pointer)value);
         }
         else if (Callback.class.isAssignableFrom(type)) {
             setPointer(offset, CallbackReference.getFunctionPointer((Callback)value));
