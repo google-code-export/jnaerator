@@ -89,7 +89,7 @@ public class ElementsHelper {
 		return new SimpleTypeRef(cl.getName().replace('$', '.'));
 	}
 
-	public static TypeRef typeRef(String name) {
+	public static SimpleTypeRef typeRef(String name) {
 		return new SimpleTypeRef(name);
 	}
 	public static TypeRef typeRef(Identifier name) {

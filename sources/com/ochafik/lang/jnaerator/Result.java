@@ -60,12 +60,13 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class Result extends Scanner {
 
 	public final JNAeratorConfig config;
-	public final ClassOutputter classOutputter;
-	public final TypeConversion typeConverter = new TypeConversion(this);
-	public final DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
-	public final GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
-	public final ObjectiveCGenerator objectiveCGenerator = new ObjectiveCGenerator(this);
-	
+	public ClassOutputter classOutputter;
+	public TypeConversion typeConverter = new TypeConversion(this);
+	public DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
+	public GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
+	public ObjectiveCGenerator objectiveCGenerator = new ObjectiveCGenerator(this);
+	public UniversalReconciliator universalReconciliator = new UniversalReconciliator();
+		
 	public final Set<Identifier> 
 		structsFullNames = new HashSet<Identifier>(),
 		callbacksFullNames = new HashSet<Identifier>();

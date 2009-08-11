@@ -32,12 +32,10 @@ public interface DeclarationsHolder {
 
 		List<Declaration> list;
 
-		@Override
 		public void addDeclaration(Declaration d) {
 			list.add(d);
 		}
 
-		@Override
 		public List<Declaration> getDeclarations() {
 			return Collections.unmodifiableList(list);
 		}

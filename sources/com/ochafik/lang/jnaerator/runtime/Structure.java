@@ -26,6 +26,40 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	extends com.sun.jna.Structure
 	implements Comparable<Structure<S, V, R>> 
 {
+//	protected void jnaRead() {
+//		super.read();
+//	}
+//	
+//	protected void jnaWrite() {
+//		super.write();
+//	}
+//	
+//	protected abstract StructIO getStructIO();
+//	
+//	public void read() {
+//		getStructIO().read(this);
+//	}
+//	public void write() {
+//		getStructIO().write(this);
+//	}
+//	
+//	/// Class responsible for the read/write operations of a struct.
+//	public interface StructIO  {
+//		void read(Structure<?, ?, ?> s);
+//		void write(Structure<?, ?, ?> s);
+//	}
+//	public static StructIO getStructIO(Class<? extends Structure<?, ?, ?>> structClass) {
+//		// TODO generate bytecode with specialized read/write methods for the class
+//		return new StructIO() {
+//			public void read(Structure<?, ?, ?> s) {
+//				s.jnaRead();
+//			}
+//			public void write(Structure<?, ?, ?> s) {
+//				s.jnaWrite();
+//			}
+//		};
+//	}
+	
 	protected <T extends Structure<?, ?, ?>> T setupClone(T clone) {
 		write();
 		clone.useMemory(getPointer());
