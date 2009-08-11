@@ -53,6 +53,7 @@ import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.compiler.URLFileObject;
 import com.ochafik.lang.jnaerator.nativesupport.DllExport;
 import com.ochafik.lang.jnaerator.parser.Arg;
+import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
@@ -61,7 +62,9 @@ import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.ModifiableElement;
 import com.ochafik.lang.jnaerator.parser.Modifier;
+import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import com.ochafik.lang.jnaerator.parser.Scanner;
+import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
@@ -205,7 +208,7 @@ public class JNAerator {
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
 //						"-limitComments",
-						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
@@ -213,7 +216,9 @@ public class JNAerator {
 //						"-framework", "CoreGraphics",
 //						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 //						"-noRuntime",
-						"-gui",
+						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
+						"-o", "/Users/ochafik/Prog/Java/test/bridgesupport",
+//						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
 //						"-library", "opencl",
@@ -331,8 +336,8 @@ public class JNAerator {
 					//JNAeratorConfigUtils.autoConfigure(config);
 				} else if (arg.equals("-root"))
 					config.rootPackageName = args.get(++iArg);
-				else if (arg.equals("-noLibExtract"))
-					config.extractLibSymbols = false;
+				else if (arg.equals("-scanLibraries"))
+					config.extractLibSymbols = true;
 				else if (arg.equals("-entry"))
 					config.entryName = args.get(++iArg);
 				else if (arg.equals("-macrosOut"))
@@ -440,13 +445,6 @@ public class JNAerator {
 				}
 			}
 			
-			if (config.extractLibSymbols) {
-				for (File libFile : config.libraryFiles) {
-					if (libFile.getName().toLowerCase().endsWith(".dll")) {
-						//List<ParsedExport> dllExports = DllExport.parseDllExports(libFile);
-					}
-				}
-			}
 			for (String framework : frameworks)
 				JNAeratorConfigUtils.addFramework(config, framework);
 			
@@ -547,6 +545,40 @@ public class JNAerator {
 			
 			feedback.setStatus("Parsing native headers...");
 			SourceFiles sourceFiles = parse();
+			
+
+			if (config.extractLibSymbols) {
+				for (File libFile : config.libraryFiles) {
+					if (libFile.getName().toLowerCase().endsWith(".dll")) {
+						try {
+							feedback.setStatus("Extracting symbols from " + libFile.getName() + "...");
+							
+							SourceFile sf = new SourceFile();
+							sf.setElementFile(libFile.toString());
+							List<ParsedExport> dllExports = DllExport.parseDllExports(libFile);
+							for (ParsedExport dllExport : dllExports) {
+								//dllExport.mangling
+								String text = "// @mangling" + dllExport.mangling + "\n" + 
+									dllExport.demangled + ";";
+								ObjCppParser parser = JNAeratorParser.newObjCppParser(text, config.verbose);
+								parser.setupSymbolsStack();
+								List<Declaration> decls = parser.declarationEOF();
+								if (decls == null)
+									continue;
+								
+								for (Declaration decl : decls) {
+									sf.addDeclaration(decl);
+								}
+							}
+							if (!sf.getDeclarations().isEmpty())
+								sourceFiles.add(sf);
+							
+						} catch (Throwable ex) {
+							ex.printStackTrace();
+						}
+					}
+				}
+			}
 			feedback.sourcesParsed(sourceFiles);
 			
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();

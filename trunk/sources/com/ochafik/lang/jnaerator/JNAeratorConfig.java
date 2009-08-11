@@ -81,7 +81,7 @@ public class JNAeratorConfig {
 	public boolean limitComments = false;
 	public boolean putTopStructsInSeparateFiles = true;
 	public boolean bundleRuntime = true;
-	public boolean extractLibSymbols = true;
+	public boolean extractLibSymbols = false;
 	public String entryName;
 	
 	public Map<String, String> extraJavaSourceFilesContents = new HashMap<String, String>();
