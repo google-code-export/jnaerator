@@ -97,24 +97,42 @@ public class BridgeSupportParser {
 
 	private void parseClasses(String framework, Node signatures, String sourceFilePath) throws XPathExpressionException {
 		for (Node classe : XMLUtils.getChildrenByName(signatures, "class")) {
-			Struct cs = new Struct();
-			cs.setType(com.ochafik.lang.jnaerator.parser.Struct.Type.ObjCClass);
-			String name = XMLUtils.getAttribute(classe, "name");
-			if (result.config.verbose)
-				System.out.println("Parsing class " + name);
-			cs.setTag(ident(name));
-			
-			for (Node method : XPathUtils.findNodesIterableByXPath("method", classe)) {
-				
-				try {
-					cs.addDeclaration(parseFunction(Type.ObjCMethod, method));
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
+			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sourceFilePath);
+			if (cs == null)
+				continue;
+			cs.accept(result);
+		}
+		for (Node classe : XMLUtils.getChildrenByName(signatures, "informal_protocol")) {
+			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sourceFilePath);
+			if (cs == null)
+				continue;
+			cs.setCategoryName(cs.getTag() == null ? null : cs.getTag().toString());
+			cs.setTag(ident("NSObject"));
 			cs.accept(result);
 		}
 	}
+	private Struct parseClasse(Node classe,
+			com.ochafik.lang.jnaerator.parser.Struct.Type type,
+			String sourceFilePath) throws XPathExpressionException {
+		
+		Struct cs = new Struct();
+		cs.setType(type);
+		String name = XMLUtils.getAttribute(classe, "name");
+		if (result.config.verbose)
+			System.out.println("Parsing class " + name);
+		cs.setTag(ident(name));
+		
+		for (Node method : XPathUtils.findNodesIterableByXPath("method", classe)) {
+			
+			try {
+				cs.addDeclaration(parseFunction(Type.ObjCMethod, method, sourceFilePath));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return cs;
+	}
+
 	private void parseFunctions(String framework, Node signatures, String sourceFilePath) throws XPathExpressionException {
 		for (Node function : XMLUtils.getChildrenByName(signatures, "function")) {
 			String name = XMLUtils.getAttribute(function, "name");
@@ -129,7 +147,7 @@ public class BridgeSupportParser {
 				continue; // TODO handle inline functions : link to BridgeSupport auxiliary library
 			
 			try {
-				Function f = parseFunction(Type.CFunction, function);
+				Function f = parseFunction(Type.CFunction, function, sourceFilePath);
 				if (f == null)
 					continue;
 				f.accept(result);
@@ -144,17 +162,19 @@ public class BridgeSupportParser {
 			return null;
 		try {
 			String dt = XMLUtils.getAttribute(node, "declared_type");
-			ObjCppParser parser = JNAeratorParser.newObjCppParser(dt, false);
-			parser.setupSymbolsStack();
-			TypeRef tr = parser.mutableTypeRef();
-			if (tr != null)
-				return tr;
+			if (dt != null) {
+				ObjCppParser parser = JNAeratorParser.newObjCppParser(dt, false);
+				parser.setupSymbolsStack();
+				TypeRef tr = parser.mutableTypeRef();
+				if (tr != null)
+					return tr;
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return parseAndReconciliateType(XMLUtils.getAttribute(node, "type"), XMLUtils.getAttribute(node, "type64"));
 	}
-	private Function parseFunction(Type cfunction, Node function) throws XPathExpressionException, RecognitionException, IOException {
+	private Function parseFunction(Type cfunction, Node function, String sourceFilePath) throws XPathExpressionException, RecognitionException, IOException {
 		TypeRef tr = parseType(XMLUtils.getFirstNamedNode(function, "retval"));
 //		if (tr == null)
 //			tr = typeRef("id");
@@ -165,6 +185,7 @@ public class BridgeSupportParser {
 		if (name == null && splitSelector != null && splitSelector.length > 0)
 			name = splitSelector[0];
 		Function f = new Function(Type.CFunction, ident(name), tr);
+		f.setElementFile(sourceFilePath);
 		int iArg = 0;
 		for (Node arg : XMLUtils.getChildrenByName(function, "arg")) {//XPathUtils.findNodesIterableByXPath("arg", function)) {
 			TypeRef at = parseType(arg);
@@ -184,10 +205,13 @@ public class BridgeSupportParser {
 		return newObjCDemangler(mangled, true).mangledTypeEOF();
 	}
 	TypeRef parseAndReconciliateType(String mangled32, String mangled64) throws RecognitionException, IOException {
-		System.out.println("Parsing \"" + mangled32 + "\":");
+//		System.out.println("Parsing \"" + mangled32 + "\":");
+		if (mangled32 == null)
+			return null;
+		
 		TypeRef tr32 = parseType(mangled32);
 		if (mangled64 != null  && mangled64.trim().length() > 0 && !mangled32.equals(mangled64)) {
-			System.out.println("Parsing \"" + mangled64 + "\":");
+//			System.out.println("Parsing \"" + mangled64 + "\":");
 			TypeRef tr64 = parseType(mangled64);
 		
 			try {
@@ -211,8 +235,8 @@ public class BridgeSupportParser {
 					//td.addToCommentBefore("Original signature : " + type32);
 					td.setElementFile(sourceFilePath);
 					
-					System.out.println(td);
-					System.out.println();
+//					System.out.println(td);
+//					System.out.println();
 					
 					td.accept(result);
 				} catch (Exception ex) {

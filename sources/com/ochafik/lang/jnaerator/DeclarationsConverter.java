@@ -620,7 +620,9 @@ public class DeclarationsConverter {
 			return;
 		
 		String elementFile = function.getElementFile();
-		if (elementFile != null && elementFile.contains(".framework/"))
+		if (elementFile != null && (
+				elementFile.contains(".framework/") ||
+				elementFile.endsWith(".bridgesupport")))
 			return;
 		
 		ExternDeclarations externDeclarations = function.findParentOfType(ExternDeclarations.class);
@@ -630,12 +632,13 @@ public class DeclarationsConverter {
 		if (!isCPlusPlusFileName(Element.getFileOfAscendency(function)))
 			return;
 		
+		if (function.getCommentBefore() != null)
 		try {
 			List<String[]> mats = com.ochafik.util.string.RegexUtils.find(function.getCommentBefore(), manglingCommentPattern);
 			for (String[] mat : mats) {
 				names.add(mat[1]);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		for (CPlusPlusMangler mangler : result.config.cPlusPlusManglers) {
