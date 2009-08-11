@@ -6,13 +6,13 @@
 
   # see what there is to do w/ Maven
   # create a JNAerator Ant task
-  # when the headers are not available, reverse engineer the functions signatures from the list of exported mangled symbols found in the dll (a-la-Dependency Walker, w/ [http://msdn.microsoft.com/en-us/library/ms681400(VS.85).aspx UnDecorateSymbolName]).
+  # *OK (Windows 32 only : -scanLibraries switch)* when the headers are not available, reverse engineer the functions signatures from the list of exported mangled symbols found in the dll (a-la-Dependency Walker, w/ [http://msdn.microsoft.com/en-us/library/ms681400(VS.85).aspx UnDecorateSymbolName]).
   # fix file association of .jnaerator files on Mac OS X (register a listener to web start services so that the argument file is read... on Windows, it is passed with -open file as arguments, so it already works).
   # Make JNAerator even more customizable : factory methods for all the scanners and transformers, split process into more functions
-  # Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
+  # *IN PROGRESS (fields = ok) Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
   # Support URLs in arguments, with automatic local caching, support of wildcards (list files at arbitrary http URL), integration with preprocessor...
   # More elaborate variable replacements in .jnaerator files : default values (w/ or w/o prompt to user), implicit download, script expressions...)
-  # *IN PROGRESS (-direct switch)* generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
+  # *OK (-direct switch)* generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
 {{{
 public class MyLibrary {
 	public static class MyStruct extends Structure {
@@ -35,7 +35,7 @@ public class MyLibrary {
   # *OK* include jna.jar & rococoa.jar in generated JARs (optional, otherwise link to them in classpath)
   # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
   # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
-  # define source annotations in c comments to alter jmaerator behaviour
+  # *IN PROGRESS (@mangling comment annotation supported...)* define source annotations in c comments to alter jmaerator behaviour
   # *OK* include libraries in generated JARs, w/ auto extract
   # *OK* create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
   # *OK* text / xml format for jnaerator config (w/ variables, so that users might contribute configs for well-known libraries)
