@@ -38,6 +38,10 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 	public boolean isMarkedAsResolved() {
 		return markedAsResolved;
 	}
+	@Override
+	public TypeRef addModifiers(Modifier... mds) {
+		return (TypeRef) super.addModifiers(mds);
+	}
 	public static abstract class TaggedTypeRef extends TypeRef {
 		Identifier tag, originalTag;
 		public Identifier getTag() {

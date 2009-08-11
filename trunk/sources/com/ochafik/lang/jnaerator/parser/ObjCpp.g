@@ -89,6 +89,11 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	boolean isPrimitiveType(String identifier) {
 		return com.ochafik.lang.jnaerator.TypeConversion.isObjCppPrimitive(identifier);
 	}
+	public void setupSymbolsStack() {
+    		Symbols_scope ss = new Symbols_scope();
+    		ss.typeIdentifiers = new HashSet();
+    		Symbols_stack.push(ss);
+	}
 	boolean isTypeDef() {
 		if (IsTypeDef_stack.isEmpty())
 			return false;

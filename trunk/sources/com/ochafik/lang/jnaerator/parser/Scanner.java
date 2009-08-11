@@ -276,7 +276,6 @@ public class Scanner implements Visitor {
 		visitExpression(assignment.getTarget());
 		visitExpression(assignment.getValue());
 	}*/
-	@Override
 	public void visitMemberRef(MemberRef memberRef) {
 		visitExpression(memberRef);
 
@@ -329,19 +328,16 @@ public class Scanner implements Visitor {
 		visit(new1.getConstruction());
 	}
 
-	@Override
 	public void visitAnnotation(Annotation annotation) {
 		visitElement(annotation);
 		for (Expression x : annotation.getArguments())
 			visit(x);
 	}
 
-	@Override
 	public void visitEmptyDeclaration(EmptyDeclaration emptyDeclaration) {
 		visitDeclaration(emptyDeclaration);
 	}
 
-	@Override
 	public void visitNewArray(NewArray newArray) {
 		visitExpression(newArray);
 		visit(newArray.getType());
@@ -349,26 +345,22 @@ public class Scanner implements Visitor {
 			visit(x);
 	}
 
-	@Override
 	public void visitArrayDeclarator(ArrayDeclarator arrayDeclarator) {
 		visitTargettedDeclarator(arrayDeclarator);
 		for (Expression x : arrayDeclarator.getDimensions())
 			visit(x);
 	}
 
-	@Override
 	public void visitDirectDeclarator(DirectDeclarator directDeclarator) {
 		visitDeclarator(directDeclarator);
 	}
 
-	@Override
 	public void visitFunctionDeclarator(FunctionDeclarator functionDeclarator) {
 		visitTargettedDeclarator(functionDeclarator);
 		for (Arg arg : functionDeclarator.getArgs())
 			visit(arg);
 	}
 
-	@Override
 	public void visitPointerDeclarator(PointerDeclarator pointerDeclarator) {
 		visitTargettedDeclarator(pointerDeclarator);
 	}
@@ -378,14 +370,12 @@ public class Scanner implements Visitor {
 		visit(targettedDeclarator.getTarget());
 	}
 
-	@Override
 	public void visitModifiableElement(ModifiableElement modifiableElement) {
 		visitElement(modifiableElement);
 		for (Annotation a : modifiableElement.getAnnotations())
 			visit(a);
 	}
 
-	@Override
 	public void visitTaggedTypeRef(TaggedTypeRef taggedTypeRef) {
 		visitTypeRef(taggedTypeRef);
 		visit(taggedTypeRef.getTag());
@@ -393,14 +383,12 @@ public class Scanner implements Visitor {
 		
 	}
 
-	@Override
 	public void visitBlock(Block block) {
 		visitStatement(block);
 		for (Statement x : copy(block.getStatements()))
 			visit(x);
 	}
 
-	@Override
 	public void visitExpressionStatement(ExpressionStatement expressionStatement) {
 		visitStatement(expressionStatement);
 		visit(expressionStatement.getExpression());
@@ -410,7 +398,6 @@ public class Scanner implements Visitor {
 		visitElement(statement);
 	}
 
-	@Override
 	public void visitIf(If if1) {
 		visitStatement(if1);
 		visit(if1.getCondition());
@@ -418,37 +405,31 @@ public class Scanner implements Visitor {
 		visit(if1.getElseBranch());
 	}
 
-	@Override
 	public void visitNullExpression(NullExpression nullExpression) {
 		visitExpression(nullExpression);
 	}
 
-	@Override
 	public void visitReturn(Return return1) {
 		visitStatement(return1);
 		visit(return1.getValue());
 	}
 
-	@Override
 	public void visitExternDeclarations(ExternDeclarations externDeclarations) {
 		visitDeclaration(externDeclarations);
 		for (Declaration d : new ArrayList<Declaration>(externDeclarations.getDeclarations()))
 			visit(d);
 	}
 
-	@Override
 	public void visitOpaqueExpression(OpaqueExpression opaqueExpression) {
 		visitExpression(opaqueExpression);
 	}
 
-	@Override
 	public void visitArrayAccess(ArrayAccess arrayAccess) {
 		visitExpression(arrayAccess);
 		visit(arrayAccess.getTarget());
 		visit(arrayAccess.getIndex());
 	}
 
-	@Override
 	public void visitAssignmentOp(AssignmentOp assignment) {
 		visitExpression(assignment);
 		visit(assignment.getTarget());
@@ -456,7 +437,7 @@ public class Scanner implements Visitor {
 		visit(assignment.getValue());
 	}
 
-	@Override
+	
 	public void visitConditionalExpression(
 			ConditionalExpression conditionalExpression) {
 		visitExpression(conditionalExpression);
@@ -466,32 +447,30 @@ public class Scanner implements Visitor {
 		
 	}
 
-	@Override
+	
 	public void visitExpressionSequence(ExpressionSequence expressionSequence) {
 		visitExpression(expressionSequence);
 		for (Expression x : expressionSequence.getSequence())
 			visit(x);
 	}
 
-	@Override
+	
 	public void visitSimpleIdentifier(SimpleIdentifier simpleIdentifier) {
 		visitIdentifier(simpleIdentifier);
 		for (Expression x : simpleIdentifier.getTemplateArguments())
 			visit(x);
 	}
 
-	private void visitIdentifier(Identifier identifier) {
+	public void visitIdentifier(Identifier identifier) {
 		visitElement(identifier);
 	}
 
-	@Override
 	public void visitQualifiedIdentifier(QualifiedIdentifier qualifiedIdentifier) {
 		visitIdentifier(qualifiedIdentifier);
 		for (SimpleIdentifier i : qualifiedIdentifier.getIdentifiers())
 			visit(i);
 	}
 
-	@Override
 	public void visitDeclarationStatement(
 			DeclarationStatement declarationStatement) {
 		visitStatement(declarationStatement);
@@ -504,13 +483,11 @@ public class Scanner implements Visitor {
 		return this;
 	}
 
-	@Override
 	public void visitThrow(Throw t) {
 		visitStatement(t);
 		visit(t.getExpression());
 	}
 
-	@Override
 	public void visitProperty(Property property) {
 		visitDeclaration(property);
 		visit(property.getDeclaration());
