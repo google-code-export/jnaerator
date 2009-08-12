@@ -7,43 +7,70 @@
 
 = Options =
 
- * *@argumentsFile*
-   Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content.
- * *-entry EntryClassName*
-   Generates a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.
- * *-project solutionFile "Config|Platform"*
-   Parse all the headers of a Visual Studio Express C++ 2008 solution. "Config|Platform" is typically "Release|Win32".
- * *-Ipath*
-   Add include path. See JNAERATOR_INCLUDE_PATH below
- * *-Fpath*
-   Add framework lookup path. See JNAERATOR_FRAMEWORKS_PATH below
- * *-Dsymbol*
-   Define preprocessor symbol
- * *-Dsymbol=value*
-   Define preprocessor symbol to a value
+ * *@(.+)? <outFile: ExistingFile>*
+  Jar file where all generated sources and the compiled classes go
+ * *-o <outDir: OutputDir>*
+  Output directory for all artifacts
+ * *-scanSymbols*
+  Extract, unmangle and parse the symbols all listed shared libraries
+ * *-I(.+)? <dir: File>*
+  Add a directory to the include path
+ * *-F(.+)? <dir: File>*
+  Add a directory to the frameworks path
+ * *-frameworksPath <path: String>*
+  By default: [/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks, /System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks, /System/Library/Frameworks, /Library/Frameworks, /Local/Library/Frameworks/, /Users/ochafik/Library/Frameworks]
+ * *-framework <frameworkName: String>*
+  JNAerate a framework using its headers and its *.bridgesupport files if available
+ * *-limitComments*
+  Avoid useless comments (source file + line, skipped items...)
+ * *-nocpp*
+  Do not define the __cplusplus symbol
+ * *-gui*
+  Show minimalist progression GUI
+ * *-noRuntime*
+  Don't copy runtime classes to JAR output
+ * *-jar <outFile: OutputFile>*
+  Jar file where all generated sources and the compiled classes go
+ * *-test*
+  Launch JNAerator's unit tests (DEBUG option)
  * *-studio*
-   Launch JNAeratorStudio
- * *-help*
-   Show help on usage
- * *-library name*
-   Define the name of the output library. This is a state parameter, it will affect all files listed after it, until another -library switch is provided. It does not affect sources included from a project file (Visual Studio...). 
-   C functions exported in library "test" will end up in class "TestLibrary", for instance. 
-   The name of the library is the one fed to JNA to find the shared library, so library "test" must be in "test.dll" on Windows, "libtest.dylib" on Mac OS X and  "libtest.so" on other Unices.
-   Note that a special hack is done for library "c" on Windows systems : the output name is set to "msvcrt" instead of "c".
- * *-package outputPackageName*
-   Set the Java package in which all the output will reside (by default, set to the library name).
- * *-jar outputJar*
-   Jar file where all generated sources and the compiled classes go.
- * *-direct* 
-   Experimental JNA direct call support : creates classes with native methods instead of interfaces
+  Launch JNAeratorStudio
+ * *-project <solutionFile: ExistingFile> <configString: String>*
+  Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. "Release|Win32").
+ * *-noAuto*
+  No auto-configuration of preprocessor symbols and paths
+ * *-direct*
+  JNAerate libraries that use JNA's faster direct call convention
+ * *-preferJavac*
+  Use Sun's Javac compiler instead of Eclipse's ecj, if possible
  * *-structsInLibrary*
-   Forces structures as inner classes of their library (otherwise, each top-level structure is defined as a top-level class in its library's package)
- * *-framework FrameworkName*
-   Parse all the headers defined in a framework.
- * *-frameworksPath path1:path2...*
-   Set the frameworks path. See JNAERATOR_FRAMEWORKS_PATH below. Overrides all previous -F switches.
- * *-o dir*
-   Set output directory. Current directory by default.
+  Force structs to be JNAerated as inner classes of their declaring libraries
+ * *-package <forcedPackageName: String>*
+  Define the package for the current library (state variable)
+ * *-D([^=]*)(?:=(.*))? <name: String> <value: String>*
+  Define a macro symbol
+ * *-root(?:Package)? <package: String>*
+  Define the root package for all output classes
+ * *-library <libName: String>*
+  Gives name of the library in which definitions will end up. "c" library will be generated as CLibrary class (state variable)
+ * *-defaultLibrary <libName: String>*
+  Name of output library for elements declared in files not covered by a ${CurrentLibrary} switch
+ * *-h(?:elp)?*
+  Show command line arguments help
+ * *-entry <entryName: String>*
+  Define the name of the libraries entry point (class that contains all the libraries instances)
+ * *-v(?:erbose)?*
+  Verbose output (both console and files)
+ * *-preprocessingOut <outFile: OutputFile>*
+  Write the preprocessor output in a file (automatically set when ${Verbose} is used).
+ * *-wikiHelp*
+  Output a wiki-friendly help
+ * *-arch <archName: String>*
+  Define the current architecture for libraries (state variable)
+ * *-macrosOut <outFile: OutputFile>*
+  Write the preprocessor macros in a file (automatically set when ${Verbose} is used).
+ * * <file: OptionalFile>*
+  Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file
 
 = Environment Variables =
 
