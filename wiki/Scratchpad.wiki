@@ -1,6 +1,6 @@
-#summary One-sentence summary of this page.
+<wiki:gadget url="http://jnaerator.googlecode.com/svn/wiki/adsense468x60.xml" border="0" width="468" height="60" />
 
-= Introduction =
+= JNAerator : bring native libs to Java =
 
 *JNAerator* (pronounce _‘generator’_) builds *bridges between native libraries and Java*, leveraging [http://jna.dev.java.net/ JNA] and [https://rococoa.dev.java.net/ Rococoa].
 
