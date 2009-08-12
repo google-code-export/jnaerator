@@ -4,7 +4,7 @@
 
 *JNAerator* builds *bridges between native libraries and Java*.
 
-It parses *C*, *C++* and *ObjectiveC* headers, *BridgeSupport* files, *Visual Studio* solutions and can even extract and *reverse-engineer DLL exported symbols*.
+It parses *C*, *C++* and *ObjectiveC* headers, [http://bridgesupport.macosforge.org/trac/ BridgeSupport]* files, *Visual Studio* solutions and can even extract and *reverse-engineer DLL exported symbols*.
 
 JNAerator *creates self-contained JARs* with compiled Java proxy definitions and needed runtime + auto-extractible binaries, *ready to use* for Java development.
 
