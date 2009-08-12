@@ -2,7 +2,7 @@
 
 = Introduction =
 
-*JNAerator* builds *bridges between native libraries and Java*.
+*JNAerator* (pronounce _‘generator’_) builds *bridges between native libraries and Java*, leveraging [http://jna.dev.java.net/ JNA] and [https://rococoa.dev.java.net/ Rococoa].
 
 It parses *C*, *C++* and *ObjectiveC* headers, [http://bridgesupport.macosforge.org/trac/ BridgeSupport]* files, *Visual Studio* solutions and can even extract and *reverse-engineer DLL exported symbols*.
 
