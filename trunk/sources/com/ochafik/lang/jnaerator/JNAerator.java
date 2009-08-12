@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +52,7 @@ import com.ochafik.lang.compiler.CompilerUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.compiler.URLFileObject;
+import com.ochafik.lang.jnaerator.JNAeratorCommandLineArgs.OptionDef;
 import com.ochafik.lang.jnaerator.nativesupport.DllExport;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
@@ -76,7 +78,6 @@ import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
-import com.ochafik.lang.jnaerator.nativesupport.dllexport.*;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
@@ -118,96 +119,60 @@ public class JNAerator {
 	
 	private static final String DEFAULT_CONFIG_FILE = "config.jnaerator";
 
-	private static void displayHelp() {
-		System.out.println("Credits:   JNAerator is Copyright (c) 2008-2009 Olivier Chafik");
-		System.out.println("           Includes Anarres JCPP (Apache 2.0 license), Copyright (c) 2007-2008, Shevek");
-		System.out.println("           Includes Java Native Access (JNA) (LGPL license), Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others");
-		//System.out.println("           Includes the library GNU Trove (LGPL 2.1 license)");
-		System.out.println("           Includes ANTLR's runtime (BSD license), Copyright (c) 2003-2008, Terence Parr");
-		System.out.println("           Licensing & Copyright details : http://code.google.com/p/jnaerator/wiki/CreditsAndLicense");
-		System.out.println("   Syntax: " + JNAerator.class.getSimpleName() + " options (-framework framework)* files-or-directories*");
-		System.out.println("  Options:");
-		System.out.println("\t-Iinclude-path");
-		System.out.println("\t\tAdd include path.");
-		System.out.println("\t-v");
-		System.out.println("\t\tVerbose mode.");
-		System.out.println("\t-limitComments");
-		System.out.println("\t\tAvoid useless comments (source file + line, skipped items...)");
-		System.out.println("\t-macrosOut outFile");
-		System.out.println("\t\tDebug option that writes the preprocessor macros in a file (automatically set when -v is used).");
-		System.out.println("\t-preprocessingOut");
-		System.out.println("\t\tDebug option that writes the preprocessor output in a file (automatically set when -v is used).");
-		System.out.println("\t-Dsymbol[=value]");
-		System.out.println("\t\tDefine a preprocessor symbol.");
-		System.out.println("\t-library name");
-		System.out.println("\t\tGives name of the library in which definitions will end up. \"c\" library will be generated as CLibrary class.");
-		System.out.println("\t-defaultLibrary name");
-		System.out.println("\t-out outputDir");
-		System.out.println("\t\tRoot directory where all generated sources go");
-		System.out.println("\t-jar outputJar");
-		System.out.println("\t\tJar file where all generated sources and the compiled classes go");
-		System.out.println("\t-project SolutionFile configString");
-		System.out.println("\t\tRead Visual Studio 2008 project or solution file and use the configuration specified (e.g. \"Release|Win32\").");
-		System.out.println("\t-package forcedPackageName");
-		System.out.println("\t\tPackage name that is to be used for all generated classes.");
-		System.out.println("\t\tIt is better to choose a root package name and let the program infer intermediate names (it will add the framework name, if recognized)");
-		System.out.println("\t-root rootPackageName");
-		System.out.println("\t\tPackage name to be prepended package names for any generated classes");
-		System.out.println("\t-frameworksPath");
-		System.out.println("\t\tBy default: " + JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
-	}
 	public static void main(String[] argsArray) {
 		if (argsArray.length == 0) {
 			if (new File("/Users/ochafik").exists()) {
 				argsArray = new String[] {
+						"-wikiHelp",
 						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSURL.h",
 						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers",
-						
-	//					"-library", "gc", "/Users/ochafik/src/gc6.8/include/",
-//						"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/event.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/machine/types.h",
-	//					"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
+						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+						"-library", "gc", 
+//						"/Users/ochafik/src/gc6.8/include/",
+						"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/event.h",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/machine/types.h",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
 						
 //						"-autoConf",
 						//"-library", "c",
 //						"-root", "org.rococoa",
 						
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/types.h", 
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/architecture/i386/math.h",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h",
-	//					"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGBase.h",
-	//					"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGShading.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/types.h", 
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/architecture/i386/math.h",
+						"/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h",
+						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGBase.h",
+						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGShading.h",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
 //						"/Users/ochafik/Prog/Java/testxp/test.h",
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
-//						"-library", "objc",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-//						"-framework", "Foundation",
-//						"-framework", "AppKit",
-//						"-framework", "CoreFoundation",
-//						"-framework", "IOKit",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
+						"-library", "objc",
+						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
+						"-framework", "Foundation",
+						"-framework", "AppKit",
+						"-framework", "CoreFoundation",
+						"-framework", "IOKit",
+						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
+						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
 //						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
-//						"-o", "/Users/ochafik/Prog/Java/test/objc",
-//						"-o", "/Users/ochafik/Prog/Java/testxp",
+						"-o", "/Users/ochafik/Prog/Java/test/objc",
+						"-o", "/Users/ochafik/Prog/Java/testxp",
 //						"/Users/ochafik/Prog/Java/test/Test.h",
 //						"/Users/ochafik/Prog/Java/test/JNATest.h",
 						//"-o", "/Users/ochafik/Prog/Java",
-						//"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator"
-//						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
+						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
 //						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
-//						"-limitComments",
+						"-limitComments",
 //						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
@@ -215,7 +180,7 @@ public class JNAerator {
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
 //						"-framework", "CoreGraphics",
 //						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
-//						"-noRuntime",
+						"-noRuntime",
 						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
 						"-o", "/Users/ochafik/Prog/Java/test/bridgesupport",
 //						"-gui",
@@ -224,19 +189,301 @@ public class JNAerator {
 //						"-library", "opencl",
 //						"/Users/ochafik/src/opencl/cl.h",
 //						"-o", "/Users/ochafik/src/opencl",
-						//"-v"
+						"-v"
 				};
 			} else if (new File(DEFAULT_CONFIG_FILE).exists()){
 				argsArray = new String[] { "@", DEFAULT_CONFIG_FILE };
 			} else {
-				displayHelp();
+				JNAeratorCommandLineArgs.displayHelp(false);
 				return;
 			}
 		}
-		Feedback feedback = null;
 		
 		try {
 			List<String> args = new ArrayList<String>(Arrays.asList(argsArray));
+			
+			final JNAeratorConfig config = new JNAeratorConfig();
+			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
+			new JNAeratorCommandLineArgs.ArgsParser() {
+
+				Feedback feedback = null;
+				
+				List<String> frameworks = new ArrayList<String>();
+				boolean simpleGUI = false;
+				String arch = LibraryExtractor.getCurrentOSAndArchString();
+				String currentLibrary = null;
+				
+				@Override
+				List<String> parsed(ParsedArg a) throws Exception {
+					switch (a.def) {					
+					
+					case AddFrameworksPath:
+						config.preprocessorConfig.includes.add(a.getFileParam(0).toString());
+						break;
+					case AddIncludePath:
+						config.preprocessorConfig.frameworksPath.add(a.getFileParam(0).toString());
+						break;
+					case CurrentLibrary:
+						currentLibrary = a.getStringParam(0);
+						break;
+					case CurrentPackage:
+						config.packageName = a.getStringParam(0);
+						break;
+					case DefaultLibrary:
+						config.defaultLibrary = a.getStringParam(0);
+						break;
+					case DefineMacro:
+						config.preprocessorConfig.macros.put(a.getStringParam(0), a.getStringParam(1));
+						break;
+					case Direct:
+						config.useJNADirectCalls = true;
+						break;
+					case EntryName:
+						config.entryName = a.getStringParam(0);
+						break;
+					case ExtractSymbols:
+						config.extractLibSymbols = true;
+						break;
+					case File:
+						return parsedFile(a);
+					case FrameworksPath:
+						config.preprocessorConfig.frameworksPath.clear();
+						config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(a.getStringParam(0).split(":")));
+						break;
+					case GUI:
+						simpleGUI = true;
+						break;
+					case Help:
+					case WikiDoc:
+						JNAeratorCommandLineArgs.displayHelp(a.def == OptionDef.WikiDoc);
+						System.exit(0);
+						break;
+					case JarOut:
+						config.outputJar = a.getFileParam(0);
+						break;
+					case LimitComments:
+						config.limitComments = true;
+						break;
+					case MacrosOut:
+						config.macrosOutFile = a.getFileParam(0);
+						break;
+					case NoAuto:
+						config.autoConf = false;
+						break;
+					case NoCPP:
+						config.noCPlusPlus = true;
+						break;
+					case NoRuntime:
+						config.bundleRuntime = false;
+						break;
+					case OutputDir:
+						config.outputDir = a.getFileParam(0);
+						break;
+					case PreferJavac:
+						config.preferJavac = true;
+						break;
+					case PreprocessingOut:
+						config.preprocessingOutFile = a.getFileParam(0);
+						break;
+					case Project:
+						JNAeratorConfigUtils.readProjectConfig(a.getFileParam(0), a.getStringParam(1), config);
+						break;
+					case RootPackage:
+						config.rootPackageName = a.getStringParam(0);
+						break;
+					case StructsInLibrary:
+						config.putTopStructsInSeparateFiles = false;
+						break;
+					case Studio:
+						try {
+							JNAeratorStudio.main(new String[0]);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+							System.exit(1);
+						}
+						break;
+					case Test:
+						try {
+							JUnitCore.main(JNAeratorTests.class.getName());
+							System.exit(0);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+							System.exit(1);
+						}
+						break;
+					case Verbose:
+						config.verbose = true;
+						break;
+					case Framework:
+						frameworks.add(a.getStringParam(0));
+						break;
+					case IncludeArgs:
+						return parsedArgsInclude(a);
+					case Arch:
+						arch = a.getStringParam(0);
+						break;
+					
+					}
+					return Collections.emptyList();
+				}
+
+				private List<String> parsedFile(ParsedArg a) throws Exception {
+					File file = a.getFileParam(0);
+					if (file != null) {
+						String fn = file.getName();
+						if (file.isDirectory() && fn.matches(".*\\.framework"))
+							frameworks.add(file.toString());
+						else if (file.isFile() && fn.matches(".*\\.jnaerator"))
+							return parsedArgsInclude(a);
+						else if (fn.matches(".*\\.bridgesupport"))
+							config.bridgeSupportFiles.add(file);
+						else if (file.isFile() && isLibraryFile(file)) {
+							if (config.verbose)
+								System.out.println("Adding file '" + file + "' for arch '" + arch +"'.");
+							config.addLibraryFile(file, arch);
+						} else {
+							String lib = currentLibrary;
+							if (file.isDirectory() && fn.endsWith(".xcode") ||
+								file.isFile() && fn.toLowerCase().endsWith(".sln")) 
+							{
+								JNAeratorConfigUtils.readProjectConfig(file, null, config);
+							} else {
+								if (lib == null) {
+									String name = fn;
+									int i = name.indexOf('.');
+									if (i >= 0)
+										name = name.substring(0, i).trim();
+									if (name.length() > 0)
+										lib = name;
+									System.out.println("Warning: no -library option for file '" + fn + "', using \"" + lib + "\".");
+								}
+								config.addFile(file, lib);//config.defaultLibrary);
+							}
+						}
+					}
+					return Collections.emptyList();
+				}
+
+				private List<String> parsedArgsInclude(ParsedArg a) throws IOException {
+					final File argsFile = a.getFileParam(0);
+					
+					String argsFileContent = ReadText.readText(argsFile);
+					Adapter<String[], String> argVariableReplacer = new Adapter<String[], String>() {
+						@Override
+						public String adapt(String[] value) {
+							String n = value[1];
+							String v = System.getProperty(n);
+							if (v == null)
+								v = System.getenv(n);
+							if (v == null && n.equals("DIR"))
+								v = argsFile.getAbsoluteFile().getParent();
+							return v;
+						}
+					};
+					
+					// Strip comments out
+					argsFileContent = argsFileContent.replaceAll("(?m)//[^\n]*(\n|$)", "\n");
+					argsFileContent = argsFileContent.replaceAll("(?m)/\\*([^*]|\\*[^/])*\\*/", "");
+					
+					// Replace variables
+					argsFileContent = RegexUtils.regexReplace(argVariablePattern, argsFileContent, argVariableReplacer);
+					
+					List<String> ret = new ArrayList<String>();
+					List<String[]> tokens = RegexUtils.find(argsFileContent, argTokenPattern);
+					for (String[] tokenMatch : tokens) {
+						String token = tokenMatch[0];
+						token = token.trim();
+						if (token.startsWith("\"") && token.endsWith("\""))
+							token = token.substring(1, token.length() - 1);
+						
+						if (token.length() == 0 || token.matches("^(//|#).*"))
+							continue;
+						
+						boolean allowMissing = token.endsWith("?");
+						if (token.contains("*"))
+							for (String r : FileListUtils.resolveShellLikeFileList(allowMissing ? token.substring(0, token.length() - 1) : token))
+								ret.add(allowMissing ? r + "?" : r);
+						else
+							ret.add(token);
+					}
+					return ret;
+				}
+
+				@Override
+				void finished() throws IOException {
+					for (String framework : frameworks)
+						JNAeratorConfigUtils.addFramework(config, framework);
+					
+					config.addRootDir(new File("."));
+					for (String i : config.preprocessorConfig.includes) {
+						try {
+							config.addRootDir(new File(i));
+						} catch (Exception ex) {}
+					}
+					
+					if (config.outputJar != null)
+						config.compile = true;
+					
+					if (config.outputDir == null) 
+						config.outputDir = new File(".");
+					
+					if (config.verbose) {
+						if (config.macrosOutFile == null)
+							config.macrosOutFile = new File("_jnaerator_debug.macros.cpp");
+						if (config.preprocessingOutFile == null)
+							config.preprocessingOutFile = new File("_jnaerator_debug.preprocessed.c");
+					}
+					
+					config.cacheDir = getDir("cache");
+					
+					if (simpleGUI) {
+						SimpleGUI gui = new SimpleGUI(config);
+						feedback = gui;
+						gui.show();
+					} else {
+						feedback = new Feedback() {
+							
+							@Override
+							public void setStatus(String string) {
+								if (config.verbose)
+									System.out.println(string);
+							}
+							
+							@Override
+							public void setFinished(Throwable e) {
+								System.out.println("JNAeration failed !");
+								e.printStackTrace();
+								System.exit(1);
+							}
+							
+							@Override
+							public void setFinished(File toOpen) {
+								System.out.println("JNAeration completed !");
+								System.out.println(toOpen.getAbsolutePath());
+								System.exit(0);
+							}
+
+							@Override
+							public void sourcesParsed(SourceFiles sourceFiles) {
+								
+							}
+
+							@Override
+							public void wrappersGenerated(
+									com.ochafik.lang.jnaerator.Result result) {
+								// TODO Auto-generated method stub
+								
+							}
+						}; 
+					}
+					
+					new JNAerator(config).jnaerate(feedback);
+					if (!simpleGUI)
+						System.exit(0);
+				}
+				
+			}.parse(args);
+			
 			for (int i = args.size(); i-- != 0;) {
 				String arg = args.get(i);
 				boolean startsAt = arg.startsWith("@"), 
@@ -304,216 +551,7 @@ public class JNAerator {
 					
 				}
 			}
-//			System.out.println(StringUtils.implode(args));
 			
-			final JNAeratorConfig config = new JNAeratorConfig();
-			//config.logMacros = config.logPreProcessedSources = false;
-			
-			List<String> frameworks = new ArrayList<String>();
-			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
-			boolean simpleGUI = false;
-			String arch = LibraryExtractor.getCurrentOSAndArchString();
-			String currentLibrary = null;
-			for (int iArg = 0, len = args.size(); iArg < len; iArg++) {
-				String arg = args.get(iArg);
-				if (arg.startsWith("-I")) {
-					String path = arg.substring("-I".length());
-					if (path.length() == 0)
-						path = args.get(++iArg);
-					config.preprocessorConfig.includes.add(path);
-				} else if (arg.startsWith("-F")) {
-					String path = arg.substring("-F".length());
-					if (path.length() == 0)
-						path = args.get(++iArg);
-					config.preprocessorConfig.frameworksPath.add(path);
-				} else if (arg.startsWith("-D")) {
-					int k = arg.indexOf('=');
-					String key = arg.substring("-D".length(), k > 0 ? k : arg.length()),
-						value = k > 0 ? arg.substring(k + 1) : "";
-					config.preprocessorConfig.macros.put(key, value);
-//				} else if (arg.equals("-auto")) {
-//					auto = true;
-					//JNAeratorConfigUtils.autoConfigure(config);
-				} else if (arg.equals("-root"))
-					config.rootPackageName = args.get(++iArg);
-				else if (arg.equals("-scanLibraries"))
-					config.extractLibSymbols = true;
-				else if (arg.equals("-entry"))
-					config.entryName = args.get(++iArg);
-				else if (arg.equals("-macrosOut"))
-					config.macrosOutFile = new File(args.get(++iArg));
-				else if (arg.equals("-preprocessingOut"))
-					config.preprocessingOutFile = new File(args.get(++iArg));
-				else if (arg.equals("-frameworksPath")) {
-					config.preprocessorConfig.frameworksPath.clear();
-					config.preprocessorConfig.frameworksPath.addAll(Arrays.asList(args.get(++iArg).split(":")));
-				} else if (arg.equals("-v"))
-					config.verbose = true;
-				else if (arg.equals("-limitComments"))
-					config.limitComments = true;
-				else if (arg.equals("-nocpp"))
-					config.noCPlusPlus = true;
-				else if (arg.equals("-gui"))
-					simpleGUI = true;
-				else if (arg.equals("-noRuntime"))
-					config.bundleRuntime = false;
-				else if (arg.equals("-noauto"))
-					config.autoConf = false;
-				else if (arg.equals("-direct"))
-					config.useJNADirectCalls = true;
-				else if (arg.matches(".*\\.bridgesupport"))
-					config.bridgeSupportFiles.add(new File(arg));
-				else if (arg.equals("-structsInLibrary"))
-					config.putTopStructsInSeparateFiles = false;
-				else if (arg.equals("-package"))
-					config.packageName = args.get(++iArg);
-				else if (arg.equals("-jar")) {
-					String j = args.get(++iArg);
-					config.outputJar = j.length() > 0 ? new File(j) : null;
-				} else if (arg.equals("-test")) {
-					try {
-						JUnitCore.main(JNAeratorTests.class.getName());
-						System.exit(0);
-					} catch (Exception ex) {
-						ex.printStackTrace();
-						System.exit(1);
-					}
-				}
-				else if (arg.equals("-studio")) {
-					try {
-						JNAeratorStudio.main(new String[0]);
-						return;
-					} catch (Exception ex) {
-						ex.printStackTrace();
-						System.exit(1);
-					}
-				}
-				else if (arg.equals("-project")) {
-					File projectFile = new File(args.get(++iArg));
-					String configName = null;
-					if (iArg < len)
-						configName = args.get(++iArg);
-					
-					JNAeratorConfigUtils.readProjectConfig(projectFile, configName, config);
-				}
-				else if (arg.equals("-library"))
-					currentLibrary = args.get(++iArg);
-				else if (arg.equals("-preferJavac"))
-					config.preferJavac = true;
-				else if (arg.equals("-defaultLibrary"))
-					config.defaultLibrary = args.get(++iArg);
-				else if (arg.equals("-framework"))
-					frameworks.add(args.get(++iArg));
-				else if (arg.equals("-o"))
-					config.outputDir = new File(args.get(++iArg));
-				else if (arg.equals("-h") || arg.equals("-help") || arg.equals("--h")) {
-					displayHelp();
-					System.exit(0);
-				} else if (arg.endsWith(".framework"))
-					frameworks.add(arg);
-				else if (arg.equals("-arch"))
-					arch = args.get(++iArg);
-				else if (isLibraryFile(arg)) {
-					boolean allowMissing = arg.endsWith("?");
-					File file = new File(allowMissing ? arg.substring(0, arg.length() - 1) : arg);
-					if (config.verbose)
-						System.out.println("Adding file '" + file + "' for arch '" + arch +"'.");
-					config.addLibraryFile(file, arch);
-					
-				} else {
-					String lib = currentLibrary;
-					File f = new File(arg);
-					if (f.isDirectory() && f.getName().endsWith(".framework")) {
-						JNAeratorConfigUtils.addFramework(config, arg);
-					} else if (
-						f.isDirectory() && f.getName().endsWith(".xcode") ||
-						f.isFile() && f.getName().toLowerCase().endsWith(".sln")
-					) {
-						JNAeratorConfigUtils.readProjectConfig(f, null, config);
-					} else {
-						if (lib == null) {
-							String name = f.getName();
-							int i = name.indexOf('.');
-							if (i >= 0)
-								name = name.substring(0, i).trim();
-							if (name.length() > 0)
-								lib = name;
-							System.out.println("Warning: no -library option for file '" + f.getName() + "', using \"" + lib + "\".");
-						}
-						config.addFile(f, lib);//config.defaultLibrary);
-					}
-				}
-			}
-			
-			for (String framework : frameworks)
-				JNAeratorConfigUtils.addFramework(config, framework);
-			
-			config.addRootDir(new File("."));
-			for (String i : config.preprocessorConfig.includes) {
-				try {
-					config.addRootDir(new File(i));
-				} catch (Exception ex) {}
-			}
-			
-			if (config.outputJar != null)
-				config.compile = true;
-			
-			if (config.outputDir == null) 
-				config.outputDir = new File(".");
-			
-			if (config.verbose) {
-				if (config.macrosOutFile == null)
-					config.macrosOutFile = new File("_jnaerator_debug.macros.cpp");
-				if (config.preprocessingOutFile == null)
-					config.preprocessingOutFile = new File("_jnaerator_debug.preprocessed.c");
-			}
-			
-			config.cacheDir = getDir("cache");
-			
-			if (simpleGUI) {
-				SimpleGUI gui = new SimpleGUI(config);
-				feedback = gui;
-				gui.show();
-			} else {
-				feedback = new Feedback() {
-					
-					@Override
-					public void setStatus(String string) {
-						if (config.verbose)
-							System.out.println(string);
-					}
-					
-					@Override
-					public void setFinished(Throwable e) {
-						System.out.println("JNAeration failed !");
-						e.printStackTrace();
-						System.exit(1);
-					}
-					
-					@Override
-					public void setFinished(File toOpen) {
-						System.out.println("JNAeration completed !");
-						System.out.println(toOpen.getAbsolutePath());
-						System.exit(0);
-					}
-
-					@Override
-					public void sourcesParsed(SourceFiles sourceFiles) {
-						
-					}
-
-					@Override
-					public void wrappersGenerated(
-							com.ochafik.lang.jnaerator.Result result) {
-						// TODO Auto-generated method stub
-						
-					}
-				}; 
-			}
-			
-			new JNAerator(config).jnaerate(feedback);
-			if (!simpleGUI)
-				System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -522,13 +560,8 @@ public class JNAerator {
 	public PrintWriter getClassSourceWriter(ClassOutputter outputter, String className) throws IOException {
 		return outputter.getClassSourceWriter(className);
 	}
-	private static boolean isLibraryFile(String arg) {
-		arg = arg.toLowerCase();
-		boolean allowMissing = arg.endsWith("?");
-		if (allowMissing)
-			arg = arg.substring(0, arg.length() - 1);
-		if (!new File(arg).exists())
-			return false;
+	private static boolean isLibraryFile(File file) {
+		String arg = file.getName().toLowerCase();
 		return 
 			arg.endsWith(".dll") || 
 			arg.endsWith(".pdb") || 
