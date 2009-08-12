@@ -6,7 +6,6 @@
 {{{ java -jar jnaerator.jar options headerFiles dynamicLibrariesFiles }}}
 
 = Options =
-
  * *@(.+)?* <argumentsFile.jnaerator: ExistingFile>
   Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content, as well as variables substitutions : $(someEnvOrJavaVarName), with $(DIR) being the parent directory of the current arguments file.
  * *-o* <outDir: OutputDir>
@@ -20,7 +19,7 @@
  * *-frameworksPath* <path1:path2...: String>
   See doc of JNAERATOR_FRAMEWORKS_PATH
  * *-framework* <frameworkName: String>
-  JNAerate a framework using its headers and its *.bridgesupport files if available
+  JNAerate a framework using its headers and its `*`.bridgesupport files if available
  * *-limitComments*
   Avoid useless comments (source file + line, skipped items...)
  * *-nocpp*
@@ -74,8 +73,7 @@ Note that a special hack is done for library "c" on Windows systems : the output
  * *-macrosOut* <outFile: OutputFile>
   Write the preprocessor macros in a file (automatically set when ${Verbose} is used).
  * ** <file: OptionalFile>
-  Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file
-
+  Any header (or directory containing headers at any level of hierarchy), shared library, `*`.bridgesupport file or `*`.jnaerator file
 
 = Environment Variables =
 
