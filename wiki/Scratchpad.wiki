@@ -6,9 +6,9 @@
 
 It parses *C*, *C++* and *ObjectiveC* headers, *BridgeSupport* files, *Visual Studio* solutions and can even extract and *reverse-engineer DLL exported symbols*.
 
-JNAerator creates self-contained JARs with compiled Java proxy definitions and needed runtime + auto-extractible binaries, ready to use for Java development.
+JNAerator *creates self-contained JARs* with compiled Java proxy definitions and needed runtime + auto-extractible binaries, *ready to use* for Java development.
 
-Everything is highly automated : typically you'll just need to pick some headers / DLLs / solutions, but you can also configure many aspects of the process.
+Everything is *highly automated* : typically you'll just need to pick some headers / DLLs / solutions, but you can also configure many aspects of the process.
 
 = Limitations =
 
