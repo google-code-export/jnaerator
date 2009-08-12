@@ -38,7 +38,6 @@ import com.ochafik.admin.visualstudio.Solution;
 import com.ochafik.admin.visualstudio.VisualStudioUtils;
 import com.ochafik.lang.jnaerator.cplusplus.GCC4Mangler;
 import com.ochafik.lang.jnaerator.cplusplus.VC9Mangler;
-import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.util.SystemUtils;
