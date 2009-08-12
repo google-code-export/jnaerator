@@ -8,7 +8,27 @@ It parses *C*, *C++* and *ObjectiveC* headers, [http://bridgesupport.macosforge.
 
 JNAerator *creates self-contained JARs* with compiled Java proxy definitions and needed runtime + auto-extractible binaries, *ready to use* for Java development.
 
+
 Everything is *highly automated* : typically you'll just need to pick some headers / DLLs / solutions, but you can also configure many aspects of the process.
+
+*Users who are looking for ready-to-use libraries* should check the [http://nativelibs4java.googlecode.com/ NativeLibs4Java] project.
+
+= Use JNAerator = 
+
+Though JNAerator can be used [CommandLineOptionsAndEnvironmentVariables in command line], you might prefer its handy but limited GUI for a first contact :
+<table border="0">
+<tr valign="top"><td>[http://ochafik.free.fr/Java/JNAeratorStudio.jnlp http://jnaerator.googlecode.com/svn/wiki/screenshots/JNAeratorStudio.png]</td>
+<td>[http://ochafik.free.fr/Java/JNAeratorStudio.jnlp JNAeratorStudio (direct Web Start Link)]
+
+[http://ochafik.free.fr/Java/JNAeratorStudio.jnlp http://jnaerator.googlecode.com/svn/wiki/launch.jpg]
+
+<a href="http://sourceforge.net/donate/index.php?group_id=266856"><img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" /> </a>
+</td>
+</tr></table>
+
+= Features = 
+
+TODO
 
 = Limitations =
 
