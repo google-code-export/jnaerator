@@ -4,14 +4,16 @@
 
 JNAerator builds bridges between native libraries and Java.
 
-JNAerator can parse C, C++ and ObjectiveC headers, BridgeSupport files, Visual Studio solutions and can even reverse-engineer headers out of a DLL.
+It parses *C, C++ and ObjectiveC* headers, *BridgeSupport* files, *Visual Studio* solutions and can even extract and *reverse-engineer DLL exported symbols*.
 
-It JNAerates self-contained JARs with compiled Java proxy definitions and needed runtime + auto-extractible binaries, ready to use for Java development.
+JNAerator creates self-contained JARs with compiled Java proxy definitions and needed runtime + auto-extractible binaries, ready to use for Java development.
 
-The JNAeration process is highly automated : choose your headers / your DLL / your solution, run JNAerator and boom : you're done.
+Everything is highly automated : choose your headers / your DLL / your solution, run JNAerator and boom : you're done.
 
 = Limitations =
 
 C++ runtime support is limited to functions, static methods and globals (no instance methods nor object creation possible yet).
+
+Symbols extraction from shared libraries is limited to Windows DLLs for now, and is only available when run from Windows.
 
 Also, JNAerator's parser may not parse well everything you may want to throw at it. Please file bug reports in the Issues section if you manage to isolate parsing bugs.
