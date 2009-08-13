@@ -119,7 +119,7 @@ public class MissingNamesChooser extends Scanner {
 	}
 	
 	static boolean isNull(Identifier i) {
-		return i == null ||  i.resolveLastSimpleIdentifier().getName() == null;
+		return i == null ||  i.resolveLastSimpleIdentifier() == null || i.resolveLastSimpleIdentifier().getName() == null;
 	}
 	
 	@Override

@@ -46,7 +46,10 @@ import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.runtime.Bits;
+import com.ochafik.lang.jnaerator.runtime.FastCall;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
+import com.ochafik.lang.jnaerator.runtime.This;
+import com.ochafik.lang.jnaerator.runtime.ThisCall;
 import com.ochafik.lang.jnaerator.runtime.VirtualTablePointer;
 import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Pair;
@@ -256,7 +259,7 @@ public class DeclarationsConverter {
 				outputLib.addDeclaration(f.getFirst().clone());
 	}
 	
-	EmptyDeclaration skipDeclaration(Element e, String... preMessages) {
+	public EmptyDeclaration skipDeclaration(Element e, String... preMessages) {
 		if (result.config.limitComments)
 			return null;
 		
@@ -526,6 +529,19 @@ public class DeclarationsConverter {
 			if (!isCallback && !names.isEmpty())
 				natFunc.addAnnotation(new Annotation(Mangling.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
 
+			boolean needsThis = false;
+			if (Modifier.__fastcall.isContainedBy(function.getModifiers())) {
+				natFunc.addAnnotation(new Annotation(FastCall.class));
+				needsThis = true;
+			}
+			if (Modifier.__thiscall.isContainedBy(function.getModifiers())) {
+				natFunc.addAnnotation(new Annotation(ThisCall.class));
+				needsThis = true;
+			}
+			if (needsThis) {
+				natFunc.addArg((Arg)new Arg("__this__", typeRef(((Struct)function.getParentElement()).getTag().clone())).addAnnotation(new Annotation(This.class)));
+			}
+				
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
 			
@@ -632,23 +648,22 @@ public class DeclarationsConverter {
 		if (!isCPlusPlusFileName(Element.getFileOfAscendency(function)))
 			return;
 		
-		if (function.getCommentBefore() != null)
-		try {
-			List<String[]> mats = com.ochafik.util.string.RegexUtils.find(function.getCommentBefore(), manglingCommentPattern);
-			for (String[] mat : mats) {
+		/// Parse or infer name manglings
+		List<String[]> mats = function.getCommentBefore() == null ? null : com.ochafik.util.string.RegexUtils.find(function.getCommentBefore(), manglingCommentPattern);
+		if (mats != null && !mats.isEmpty()) {
+			for (String[] mat : mats)
 				names.add(mat[1]);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		for (CPlusPlusMangler mangler : result.config.cPlusPlusManglers) {
-			try {
-				names.add(mangler.mangle(function, result));
-			} catch (Exception ex) {
-				System.err.println("Error in mangling of '" + function.computeSignature(true) + "' : " + ex);
-				ex.printStackTrace();
+		} else {
+			for (CPlusPlusMangler mangler : result.config.cPlusPlusManglers) {
+				try {
+					names.add(mangler.mangle(function, result));
+				} catch (Exception ex) {
+					System.err.println("Error in mangling of '" + function.computeSignature(true) + "' : " + ex);
+					ex.printStackTrace();
+				}
 			}
 		}
+		
 	}
 
 	private void collectParamComments(Function f) {

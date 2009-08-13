@@ -125,11 +125,11 @@ public class RegexUtils {
 		
 		return null;
 	}
-	public static List<String[]> find(String string, String pattern) throws IOException {
+	public static List<String[]> find(String string, String pattern) {
 		return find(string, Pattern.compile(pattern));
 	}
 	
-	public static List<String[]> find(String string, Pattern pattern) throws IOException {
+	public static List<String[]> find(String string, Pattern pattern)  {
 		List<String[]> ret = new LinkedList<String[]>();
 		
 		Matcher matcher = pattern.matcher(string);
@@ -138,10 +138,10 @@ public class RegexUtils {
 		
 		return ret;
 	}
-	public static Collection<String> find(String string, String pattern, final int iGroup) throws IOException {
+	public static Collection<String> find(String string, String pattern, final int iGroup) {
 		return find(string, Pattern.compile(pattern), iGroup);
 	}
-	public static Collection<String> find(String string, Pattern pattern, final int iGroup) throws IOException {
+	public static Collection<String> find(String string, Pattern pattern, final int iGroup) {
 		List<String> ret=  new ArrayList<String>();
 		Matcher matcher = pattern.matcher(string);
 		while (matcher.find()) {

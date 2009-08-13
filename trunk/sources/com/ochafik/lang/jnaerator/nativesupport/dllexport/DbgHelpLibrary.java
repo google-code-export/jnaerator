@@ -36,9 +36,9 @@ public interface DbgHelpLibrary extends com.sun.jna.Library {
 	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>
 	public static final int UNDNAME_NO_THROW_SIGNATURES = (256);
 	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>
-	public static final int IMAGE_DIRECTORY_ENTRY_TLS = 9;
-	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>
 	public static final int UNDNAME_NO_ARGUMENTS = (8192);
+	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>
+	public static final int IMAGE_DIRECTORY_ENTRY_TLS = 9;
 	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>
 	public static final int IMAGE_DIRECTORY_ENTRY_EXCEPTION = 3;
 	/// <i>native declaration : C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.h</i>

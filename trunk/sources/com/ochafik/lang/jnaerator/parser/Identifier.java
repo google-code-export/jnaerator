@@ -128,6 +128,10 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		public QualifiedIdentifier(QualificationSeparator separator) {
 			setSeparator(separator);
 		}
+		public QualifiedIdentifier(QualificationSeparator separator, List<SimpleIdentifier> identifiers) {
+			setSeparator(separator);
+			setIdentifiers(identifiers);
+		}
 		public void setSeparator(QualificationSeparator separator) {
 			this.separator = separator;
 		}

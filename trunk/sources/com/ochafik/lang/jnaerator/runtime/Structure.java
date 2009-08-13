@@ -96,7 +96,7 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	public S[] toArray(com.sun.jna.Structure[] array) {
 		return (S[])super.toArray(array);
 	}
-//	@Override
+	@Override
 	protected Integer getBitsAnnotation(Field field) {
 		Bits bits = field.getAnnotation(Bits.class);
 		return bits == null ? null : bits.value();
