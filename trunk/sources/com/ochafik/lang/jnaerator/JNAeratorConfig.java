@@ -98,19 +98,27 @@ public class JNAeratorConfig {
 		if (others == null)
 			libraryFilesByArch.put(arch, others = new ArrayList<File>());
 		
+		String fn = file.getName();
+		int i = fn.lastIndexOf('.');
+		if (i > 0)
+			fn = fn.substring(0, i);
+		
 		others.add(file);
+		libraryByFile.put(file, fn);
 		libraryFiles.add(file);
 	}
-	public void addFile(File file, String library) throws IOException {
+	public void addSourceFile(File file, String library) throws IOException {
 		if (file.isFile()) {
 			if (fileFilter == null || fileFilter.accept(file)) {
-				libraryByFile.put(file.getCanonicalFile(), library);
+				file = file.getCanonicalFile();
+				libraryByFile.put(file, library);
+				sourceFiles.add(file);
 			}
 		} else {
 			File[] fs = file.listFiles();
 			if (fs != null) {
 				for (File f : fs) {
-					addFile(f, library);
+					addSourceFile(f, library);
 				}
 			}
 		}
@@ -196,6 +204,7 @@ public class JNAeratorConfig {
 				fileToLibrary.adapt(new File(elementFile));
 	}
 
+	Set<File> sourceFiles = new HashSet<File>();
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override
@@ -203,7 +212,7 @@ public class JNAeratorConfig {
 				return new File(value);
 			}
 		});*/
-		return libraryByFile.keySet();
+		return sourceFiles;//libraryByFile.keySet();
 	}
 
 	public String relativizeFileForSourceComments(String path) {

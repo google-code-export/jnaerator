@@ -82,6 +82,7 @@ import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
+import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
@@ -363,7 +364,7 @@ public class JNAerator {
 										lib = name;
 									System.out.println("Warning: no -library option for file '" + fn + "', using \"" + lib + "\".");
 								}
-								config.addFile(file, lib);//config.defaultLibrary);
+								config.addSourceFile(file, lib);//config.defaultLibrary);
 							}
 						}
 					}
@@ -430,8 +431,16 @@ public class JNAerator {
 					if (config.outputJar != null)
 						config.compile = true;
 					
-					if (config.outputDir == null) 
-						config.outputDir = new File(".");
+					if (config.sourceFiles.isEmpty() && config.bridgeSupportFiles.isEmpty() && !config.libraryFiles.isEmpty())
+						config.extractLibSymbols = true;
+					
+					if (config.outputDir == null) {
+						CompoundCollection<File> cc = new CompoundCollection<File>(config.sourceFiles, config.bridgeSupportFiles, config.libraryFiles);
+						if (cc.size() == 1)
+							config.outputDir = cc.iterator().next().getAbsoluteFile().getParentFile();
+						else
+							config.outputDir = new File(".");
+					}
 					
 					if (config.verbose) {
 						if (config.macrosOutFile == null)
