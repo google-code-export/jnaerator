@@ -27,6 +27,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class ObjCDemanglingLexer extends Lexer {
     public static final int T__12=12;
     public static final int T__23=23;

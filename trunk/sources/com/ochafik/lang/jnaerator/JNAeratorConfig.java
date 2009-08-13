@@ -33,6 +33,7 @@ import java.util.Set;
 import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
 
@@ -72,6 +73,8 @@ public class JNAeratorConfig {
 		public final List<String> frameworksPath = new ArrayList<String>();
 
 		public List<String> includeStrings = new ArrayList<String>();
+
+		public boolean preprocess = true;
 	}
 	
 	public final JNAeratorConfig.PreprocessorConfig preprocessorConfig = new JNAeratorConfig.PreprocessorConfig();
@@ -191,7 +194,7 @@ public class JNAeratorConfig {
 	public File outputJar;
 	public File cacheDir;
 	public boolean autoConf = true;
-	public boolean compile = false;
+	public boolean compile = true;
 	public boolean bundleSources = true;
 	public boolean noCPlusPlus;
 	
@@ -205,6 +208,7 @@ public class JNAeratorConfig {
 	}
 
 	Set<File> sourceFiles = new HashSet<File>();
+	public boolean bundleLibraries = true;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override
@@ -226,5 +230,9 @@ public class JNAeratorConfig {
 			}
 		}
 		return path;
+	}
+	@SuppressWarnings("unchecked")
+	public Collection<File> getInputFiles() {
+		return new CompoundCollection<File>(sourceFiles, bridgeSupportFiles, libraryFiles);
 	}
 }

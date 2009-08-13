@@ -48,7 +48,6 @@ import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.runtime.Bits;
 import com.ochafik.lang.jnaerator.runtime.FastCall;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
-import com.ochafik.lang.jnaerator.runtime.This;
 import com.ochafik.lang.jnaerator.runtime.ThisCall;
 import com.ochafik.lang.jnaerator.runtime.VirtualTablePointer;
 import com.ochafik.util.CompoundCollection;
@@ -539,7 +538,7 @@ public class DeclarationsConverter {
 				needsThis = true;
 			}
 			if (needsThis) {
-				natFunc.addArg((Arg)new Arg("__this__", typeRef(((Struct)function.getParentElement()).getTag().clone())).addAnnotation(new Annotation(This.class)));
+				natFunc.addArg((Arg)new Arg("__this__", typeRef(((Struct)function.getParentElement()).getTag().clone())));
 			}
 				
 			//if (isCallback || !modifiedMethodName.equals(functionName))

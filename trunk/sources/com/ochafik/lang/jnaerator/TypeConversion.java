@@ -83,6 +83,14 @@ import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
+import com.ochafik.lang.jnaerator.runtime.globals.Global;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalByte;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalDouble;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalFloat;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalLong;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeLong;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalShort;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.NativeLong;
@@ -122,6 +130,7 @@ public class TypeConversion {
 		PrimitiveReturnType, PointedValue
 	}
 	static Map<JavaPrim, Class<? extends ByReference>> primToByReference = new HashMap<JavaPrim, Class<? extends ByReference>>();
+	static Map<JavaPrim, Class<? extends Global>> primToGlobal = new HashMap<JavaPrim, Class<? extends Global>>();
 	static Map<JavaPrim, Class<? extends Buffer>> primToBuffer = new HashMap<JavaPrim, Class<? extends Buffer>>();
 	static final Set<String> byReferenceClassesNames = new HashSet<String>();
 	
@@ -253,6 +262,14 @@ public class TypeConversion {
 		for (Class<?> c : primToByReference.values())
 			byReferenceClassesNames.add(c.getName());
 //		byReferenceClassesNames.add(PointerByReference.class.getName());
+		
+		primToGlobal.put(JavaPrim.Int, GlobalInt.class);
+		primToGlobal.put(JavaPrim.Short, GlobalShort.class);
+		primToGlobal.put(JavaPrim.Byte, GlobalByte.class);
+		primToGlobal.put(JavaPrim.Long, GlobalLong.class);
+		primToGlobal.put(JavaPrim.Float, GlobalFloat.class);
+		primToGlobal.put(JavaPrim.Double, GlobalDouble.class);
+		primToGlobal.put(JavaPrim.NativeLong, GlobalNativeLong.class);
 		
 		primToBuffer.put(JavaPrim.Int, IntBuffer.class);
 		primToBuffer.put(JavaPrim.Short, ShortBuffer.class);

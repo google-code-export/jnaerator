@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,7 +83,6 @@ import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
-import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
@@ -123,6 +123,7 @@ public class JNAerator {
 	static final boolean fullFilePathInComments = true;
 	
 	private static final String DEFAULT_CONFIG_FILE = "config.jnaerator";
+	protected static final Pattern fileRadixPattern = Pattern.compile("(?:[/\\\\]|^)(.*?)\\.[^.]+$");
 
 	//"@C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.jnaerator"
 	//"C:\Prog\CPP\CppLibTest\jnaerator\CppLibTest.jnaerator"
@@ -230,11 +231,20 @@ public class JNAerator {
 					case AddIncludePath:
 						config.preprocessorConfig.frameworksPath.add(a.getFileParam(0).toString());
 						break;
+					case NoPreprocessing:
+						config.preprocessorConfig.preprocess = false;
+						break;
+					case NoCompile:
+						config.compile = false;
+						break;
 					case CurrentLibrary:
 						currentLibrary = a.getStringParam(0);
 						break;
 					case CurrentPackage:
 						config.packageName = a.getStringParam(0);
+						break;
+					case NoLibBundle:
+						config.bundleLibraries = false;
 						break;
 					case DefaultLibrary:
 						config.defaultLibrary = a.getStringParam(0);
@@ -429,19 +439,21 @@ public class JNAerator {
 						} catch (Exception ex) {}
 					}
 					
-					if (config.outputJar != null)
-						config.compile = true;
+						
 					
 					if (config.sourceFiles.isEmpty() && config.bridgeSupportFiles.isEmpty() && !config.libraryFiles.isEmpty())
 						config.extractLibSymbols = true;
 					
-					if (config.outputDir == null) {
-						CompoundCollection<File> cc = new CompoundCollection<File>(config.sourceFiles, config.bridgeSupportFiles, config.libraryFiles);
-						if (cc.size() == 1)
-							config.outputDir = cc.iterator().next().getAbsoluteFile().getParentFile();
-						else
-							config.outputDir = new File(".");
-					}
+					Collection<File> inputFiles = config.getInputFiles();
+					File firstFile = inputFiles.isEmpty() ? null : inputFiles.iterator().next().getAbsoluteFile();
+					String firstFileName = firstFile == null ? null : firstFile.getName();
+					String entry = config.entryName == null ? RegexUtils.findFirst(firstFileName, fileRadixPattern, 1) : config.entryName; 
+						
+					if (config.outputDir == null)
+						config.outputDir = firstFile == null ? new File(".") : firstFile.getAbsoluteFile().getParentFile();
+					
+					if (config.outputJar == null && config.compile)
+						config.outputJar = new File(config.outputDir, (entry == null ? "out" : entry) + ".jar");
 					
 					if (config.verbose) {
 						if (config.macrosOutFile == null)
@@ -571,7 +583,7 @@ public class JNAerator {
 											
 											if (dem.contains("__thiscall"))
 												f.addModifiers(Modifier.__thiscall);
-											if (dem.matches("__fastcall"))
+											if (dem.contains("__fastcall"))
 												f.addModifiers(Modifier.__fastcall);
 											
 											Struct s = cppClasses.get(ci.toString());
@@ -686,34 +698,33 @@ public class JNAerator {
 	private Map<String, File> getAdditionalFiles() {
 
 		Map<String, File> additionalFiles = new HashMap<String,File>();
-		
-		for (Map.Entry<String, List<File>> e : config.libraryFilesByArch.entrySet()) {
-			String arch = e.getKey();
-			for (File libraryFile : e.getValue())
-				additionalFiles.put(
-					"libraries/" + (arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
-					libraryFile
-				);
-		}
-		
 
-		for (String library : new HashSet<String>(config.libraryByFile.values())) {
-			String libraryFileName = System.mapLibraryName(library);
-			File libraryFile = new File(libraryFileName); 
-			//TODO lookup in library path
-			if (!libraryFile.exists() && libraryFileName.endsWith(".jnilib"))
-				libraryFile = new File(libraryFileName = libraryFileName.substring(0, libraryFileName.length() - ".jnilib".length()) + ".dylib");
+		if (config.bundleLibraries) {
+			for (Map.Entry<String, List<File>> e : config.libraryFilesByArch.entrySet()) {
+				String arch = e.getKey();
+				for (File libraryFile : e.getValue())
+					additionalFiles.put(
+						"libraries/" + (arch == null || arch.length() == 0 ? "" : arch + "/") + libraryFile.getName(), 
+						libraryFile
+					);
+			}
+			for (String library : new HashSet<String>(config.libraryByFile.values())) {
+				String libraryFileName = System.mapLibraryName(library);
+				File libraryFile = new File(libraryFileName); 
+				//TODO lookup in library path
+				if (!libraryFile.exists() && libraryFileName.endsWith(".jnilib"))
+					libraryFile = new File(libraryFileName = libraryFileName.substring(0, libraryFileName.length() - ".jnilib".length()) + ".dylib");
+					
+				String key = "libraries/" + LibraryExtractor.getCurrentOSAndArchString() + "/" + libraryFile.getName();
+				if (additionalFiles.containsKey(key))
+					continue;
 				
-			String key = "libraries/" + LibraryExtractor.getCurrentOSAndArchString() + "/" + libraryFile.getName();
-			if (additionalFiles.containsKey(key))
-				continue;
-			
-			if (libraryFile.exists()) {
-				System.out.println("Bundling " + libraryFile);
-				additionalFiles.put(key, libraryFile);
-			} else {
-				System.out.println("File " + libraryFileName + " not found");
-				
+				if (libraryFile.exists()) {
+					System.out.println("Bundling " + libraryFile);
+					additionalFiles.put(key, libraryFile);
+				} else {
+					System.out.println("File " + libraryFileName + " not found");
+				}
 			}
 		}
 		return additionalFiles;

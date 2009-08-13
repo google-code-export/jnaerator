@@ -28,6 +28,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class ObjCppLexer extends Lexer {
     public static final int T__42=42;
     public static final int IntegerConstantSuffix=18;

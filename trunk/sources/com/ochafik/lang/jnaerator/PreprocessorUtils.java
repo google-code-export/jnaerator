@@ -101,17 +101,21 @@ public class PreprocessorUtils {
 		};
 		preprocessor.setProperStringTokensInLinePragmas(true);
 		//preprocessor.addFeatures(EnumSet.allOf(Feature.class));
-		preprocessor.addFeature(Feature.KEEPCOMMENTS);
-		preprocessor.addFeature(Feature.DIGRAPHS);
-		preprocessor.addFeature(Feature.INCLUDENEXT);
-		preprocessor.addFeature(Feature.OBJCSYNTAX);
-		preprocessor.addFeature(Feature.TRIGRAPHS);
-		//preprocessor.addFeature(Feature.CSYNTAX);
-		preprocessor.addFeature(Feature.LINEMARKERS);
-		//preprocessor.addFeature(Feature.DEBUG);
-		
-
-		preprocessor.addWarning(Warning.IMPORT);
+		if (config.preprocess) {
+			preprocessor.addFeature(Feature.KEEPCOMMENTS);
+			preprocessor.addFeature(Feature.DIGRAPHS);
+			preprocessor.addFeature(Feature.INCLUDENEXT);
+			preprocessor.addFeature(Feature.OBJCSYNTAX);
+			preprocessor.addFeature(Feature.TRIGRAPHS);
+			//preprocessor.addFeature(Feature.CSYNTAX);
+			preprocessor.addFeature(Feature.LINEMARKERS);
+			//preprocessor.addFeature(Feature.DEBUG);
+			
+	
+			preprocessor.addWarning(Warning.IMPORT);
+		} else {
+			preprocessor.getFeatures().clear();
+		}
 		
 		preprocessor.setListener(new PreprocessorListener() {
 			@Override
