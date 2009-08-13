@@ -18,6 +18,8 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import com.sun.jna.Pointer;
+
 public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S> 
 	extends com.sun.jna.Union
 {
@@ -50,5 +52,11 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 	@Override
 	public S[] toArray(com.sun.jna.Structure[] array) {
 		return (S[])super.toArray(array);
+	}
+
+	@Override
+	public void useMemory(Pointer m) {
+		super.useMemory(m);
+		read();
 	}
 }

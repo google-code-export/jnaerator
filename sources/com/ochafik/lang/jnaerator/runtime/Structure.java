@@ -69,7 +69,6 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	
 	@Override
 	public void useMemory(Pointer m) {
-		// TODO Auto-generated method stub
 		super.useMemory(m);
 		read();
 	}
