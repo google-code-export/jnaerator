@@ -416,6 +416,7 @@ public class JNAerator {
 					return ret;
 				}
 
+				@SuppressWarnings("unchecked")
 				@Override
 				void finished() throws IOException {
 					for (String framework : frameworks)
