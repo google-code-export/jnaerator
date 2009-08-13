@@ -15,7 +15,7 @@ java -jar jnaerator.jar MyLib.dll MyLibHeader.h
 }}}
 will produce {{{ MyLib.jar }}}
 
-= How to JNAerate a Visual Studio solution 'MySolution.sln' =
+= How to JNAerate a Visual Studio solution 'MySolution.sln' ? =
 
 First make sure you compiled your solution in Release for both Win32 and Win64 targets, if needed.
 {{{
@@ -23,11 +23,11 @@ java -jar jnaerator.jar MyLibHeader.sln
 }}}
 will produce {{{ MySolution.jar }}}
 
-= How to include self-extracting libraries binaries in JAR outputs = 
+= How to include self-extracting libraries binaries in JAR outputs ? = 
 
 This is already done by default.
 
-= How to use MacOS X frameworks from Java = 
+= How to use MacOS X frameworks from Java ? = 
 
 For most commonly used public frameworks, you should simply download Rococoa and use it alone.
 
