@@ -1,0 +1,28 @@
+#summary JNAerator's Frequently Asked Questions
+
+= How to JNAerate the library 'MyLib.dll' which main header is 'MyLibHeader.h' ? =
+
+{{{
+java -jar jnaerator.jar MyLib.dll MyLibHeader.h
+}}}
+will produce {{{ MyLib.jar }}}
+
+= How to JNAerate the library 'MyLib.dll' without headers ? =
+
+This is experimental and has big limitations, but simple cases should work :
+{{{
+java -jar jnaerator.jar MyLib.dll MyLibHeader.h
+}}}
+will produce {{{ MyLib.jar }}}
+
+= How to JNAerate a Visual Studio solution 'MySolution.sln' =
+
+First make sure you compiled your solution in Release for both Win32 and Win64 targets, if needed.
+{{{
+java -jar jnaerator.jar MyLibHeader.sln
+}}}
+will produce {{{ MySolution.jar }}}
+
+= How to include self-extracting libraries binaries in JAR outputs = 
+
+This is already done by default.
