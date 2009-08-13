@@ -26,3 +26,13 @@ will produce {{{ MySolution.jar }}}
 = How to include self-extracting libraries binaries in JAR outputs = 
 
 This is already done by default.
+
+= How to use MacOS X frameworks from Java = 
+
+For most commonly used public frameworks, you should simply download Rococoa and use it alone.
+
+If you need frameworks not covered by Rococoa, wish to use private headers and / or frameworks or ObjectiveC libraries for which no headers are available, then you should use JNAerator :
+
+{{{
+java -jar jnaerator.jar -framework Framework1 -framework Framework2 lib1.dylib lib2.dylib...
+}}}
