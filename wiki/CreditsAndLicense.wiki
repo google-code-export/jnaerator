@@ -4,7 +4,7 @@
 
 = Overview =
 
-JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2009 (everything that lies in the [http://code.google.com/p/jnaerator/source/browse/trunk#trunk/sources/com/ochafik com.ochafik.`*` packages]).
+JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2009 (everything that lies in the [http://code.google.com/p/jnaerator/source/browse/trunk#trunk/sources/com/ochafik com.ochafik.* packages]).
 
 JNAerator ships with the following libraries :
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : [http://code.google.com/p/jnaerator/source/browse/trunk/#trunk/libraries/anarres patched with a few fixes and enhancements (all contributed back)]
