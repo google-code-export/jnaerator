@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.tools.Diagnostic;
@@ -71,6 +72,9 @@ import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
+import com.ochafik.lang.jnaerator.parser.Identifier.QualificationSeparator;
+import com.ochafik.lang.jnaerator.parser.Identifier.QualifiedIdentifier;
+import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
@@ -119,6 +123,8 @@ public class JNAerator {
 	
 	private static final String DEFAULT_CONFIG_FILE = "config.jnaerator";
 
+	//"@C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.jnaerator"
+	//"C:\Prog\CPP\CppLibTest\jnaerator\CppLibTest.jnaerator"
 	public static void main(String[] argsArray) {
 		if (argsArray.length == 0) {
 			if (new File("/Users/ochafik").exists()) {
@@ -589,10 +595,19 @@ public class JNAerator {
 							SourceFile sf = new SourceFile();
 							sf.setElementFile(libFile.toString());
 							List<ParsedExport> dllExports = DllExport.parseDllExports(libFile);
+							Map<String, Struct> cppClasses = new HashMap<String, Struct>();
+							Pattern pubPat = Pattern.compile("(public|private|protected):(.*)");
 							for (ParsedExport dllExport : dllExports) {
 								//dllExport.mangling
-								String text = "// @mangling" + dllExport.mangling + "\n" + 
-									dllExport.demangled + ";";
+								String dem = dllExport.demangled;
+								Matcher m = pubPat.matcher(dem);
+								String pub = null;
+								if (m.matches()) {
+									dem = m.group(2);
+									pub = m.group(1);
+								}
+								String text = "// @mangling " + dllExport.mangling + "\n" + 
+									dem + ";";
 								ObjCppParser parser = JNAeratorParser.newObjCppParser(text, config.verbose);
 								parser.setupSymbolsStack();
 								List<Declaration> decls = parser.declarationEOF();
@@ -600,7 +615,40 @@ public class JNAerator {
 									continue;
 								
 								for (Declaration decl : decls) {
-									sf.addDeclaration(decl);
+									if (decl instanceof VariablesDeclaration && decl.getValueType() != null)
+										decl.getValueType().addModifiers(Modifier.Extern);
+									decl.addModifiers(Modifier.parseModifier(pub));
+									if (decl instanceof Function) {
+										Function f = (Function)decl;
+										List<SimpleIdentifier> si = new ArrayList<SimpleIdentifier>(f.getName().resolveSimpleIdentifiers());
+										if (si.size() == 1) {
+											sf.addDeclaration(decl);
+										} else {
+											si.remove(si.size() - 1);
+											QualifiedIdentifier ci = new QualifiedIdentifier(QualificationSeparator.Colons, si);
+											
+											if (dem.contains("__thiscall"))
+												f.addModifiers(Modifier.__thiscall);
+											if (dem.matches("__fastcall"))
+												f.addModifiers(Modifier.__fastcall);
+											
+											Struct s = cppClasses.get(ci.toString());
+											if (s == null) {
+												s = new Struct();
+												cppClasses.put(ci.toString(), s);
+												s.setType(Struct.Type.CPPClass);
+												s.setTag(ci.clone());
+												sf.addDeclaration(decl(s));
+											}
+											Identifier n = f.getName().resolveLastSimpleIdentifier();
+	//										String ns = n.toString();
+	//										if (ns.startsWith("_"))
+	//											n = ident(ns.substring(1));
+											f.setName(n);
+											s.addDeclaration(f);
+										}
+									} else
+										sf.addDeclaration(decl);
 								}
 							}
 							if (!sf.getDeclarations().isEmpty())
@@ -958,6 +1006,8 @@ public class JNAerator {
 			if (fakePointers != null)
 			for (String fakePointerName : fakePointers) {
 				Identifier fakePointer = ident(fakePointerName);
+				if (!fakePointer.isPlain() || fakePointer.toString().contains("::"))
+					continue;
 				if (!signatures.classSignatures.add(fakePointer))
 					continue;
 					

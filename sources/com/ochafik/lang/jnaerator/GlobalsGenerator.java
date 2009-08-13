@@ -63,118 +63,122 @@ public class GlobalsGenerator {
 	
 	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName, String callerLibrary) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
-			Identifier name = result.typeConverter.getValidJavaArgumentName(ident(d.resolveName()));
-			TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
-			if (type == null)
-				continue;
-			
-			List<Modifier> modifiers = type.getModifiers();
-			if (	type == null || 
-					!(Modifier.Extern.isContainedBy(modifiers) || Modifier.Dllexport.isContainedBy(modifiers) || Modifier.Dllimport.isContainedBy(modifiers))
-					//|| Modifier.Const.isContainedBy(modifiers) && d.getDefaultValue() != null
-					) {
-				//result.declarationsConverter.convertCon
-				continue;
-			}
-			
-			
-			if (!signatures.classSignatures.add(name))
-				continue;
-			
-			Struct struct = result.declarationsConverter.publicStaticClass(name, null, Struct.Type.JavaClass, null);
-			struct.addModifiers(Modifier.Final);
-			struct.importDetails(globals, false);
-			struct.moveAllCommentsBefore();
-			
-			/// We get a pointer to the global, not the global itself
-			TypeRef pointerType = new TypeRef.Pointer(type, PointerStyle.Pointer);
-			
-			TypeRef convPointerType = result.typeConverter.convertTypeToJNA(pointerType, TypeConversionMode.FieldType, callerLibraryName);
-			TypeRef instType;
-			boolean hasOffset, isPtr = false, isByRef = false;
-			String convPointerTypeStr = convPointerType.toString();
-			if (convPointerTypeStr.equals(Pointer.class.getName())) {
-				isPtr = true;
-				instType = convPointerType;
-				hasOffset = false;
-			} else if (TypeConversion.byReferenceClassesNames.contains(convPointerTypeStr)) {
-				isByRef = true;
-				instType = convPointerType;
-				hasOffset = false;
-			} else if (convPointerTypeStr.endsWith(".ByReference") && result.structsByName.get(convPointerTypeStr.substring(0, convPointerTypeStr.length() - ".ByReference".length())) != null) {
-				instType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.PointedValue, callerLibraryName);//convPointerType;
-				hasOffset = true;
-			} else {
-				Identifier instTypeName = ident(name + "_holder");
-				Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, ident(Structure.class), Struct.Type.JavaClass, null);
-				holderStruct.addModifiers(Modifier.Final);
-				VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclaration("value", type, new int[1], callerLibraryName);
-				if (vd.getValueType().toString().equals(Pointer.class.getName())) {
+			try {
+				Identifier name = result.typeConverter.getValidJavaArgumentName(ident(d.resolveName()));
+ 				TypeRef type = (TypeRef)d.mutateType(globals.getValueType());
+				if (type == null)
+					continue;
+				
+				List<Modifier> modifiers = type.getModifiers();
+				if (	type == null || 
+						!(Modifier.Extern.isContainedBy(modifiers) || Modifier.Dllexport.isContainedBy(modifiers) || Modifier.Dllimport.isContainedBy(modifiers))
+						//|| Modifier.Const.isContainedBy(modifiers) && d.getDefaultValue() != null
+						) {
+					//result.declarationsConverter.convertCon
+					continue;
+				}
+				
+				
+				if (!signatures.classSignatures.add(name))
+					continue;
+				
+				Struct struct = result.declarationsConverter.publicStaticClass(name, null, Struct.Type.JavaClass, null);
+				struct.addModifiers(Modifier.Final);
+				struct.importDetails(globals, false);
+				struct.moveAllCommentsBefore();
+				
+				/// We get a pointer to the global, not the global itself
+				TypeRef pointerType = new TypeRef.Pointer(type, PointerStyle.Pointer);
+				
+				TypeRef convPointerType = result.typeConverter.convertTypeToJNA(pointerType, TypeConversionMode.FieldType, callerLibraryName);
+				TypeRef instType;
+				boolean hasOffset, isPtr = false, isByRef = false;
+				String convPointerTypeStr = convPointerType.toString();
+				if (convPointerTypeStr.equals(Pointer.class.getName())) {
+					isPtr = true;
+					instType = convPointerType;
+					hasOffset = false;
+				} else if (TypeConversion.byReferenceClassesNames.contains(convPointerTypeStr)) {
 					isByRef = true;
 					instType = convPointerType;
-					hasOffset = false;	
-				} else {
-					holderStruct.addDeclaration(vd);
-					Function pointerConstructor = new Function(Function.Type.JavaMethod, instTypeName, null, 
-						new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
-					);
 					hasOffset = false;
-					pointerConstructor.setBody(new Statement.Block(
-							new Statement.ExpressionStatement(methodCall("super")),
-							new Statement.ExpressionStatement(methodCall("useMemory", varRef("pointer"), expr(Expression.Constant.Type.Int, 0))),
-							new Statement.ExpressionStatement(methodCall("read"))
-					));
-					holderStruct.addDeclaration(pointerConstructor);
-					
-					//holderStruct.addDeclaration(new VariablesDeclaration(convType, new Declarator.DirectDeclarator("value")).addModifiers(Modifier.Public));
-					instType = new TypeRef.SimpleTypeRef(instTypeName);
-					struct.addDeclaration(decl(holderStruct));
+				} else if (convPointerTypeStr.endsWith(".ByReference") && result.structsByName.get(convPointerTypeStr.substring(0, convPointerTypeStr.length() - ".ByReference".length())) != null) {
+					instType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.PointedValue, callerLibraryName);//convPointerType;
+					hasOffset = true;
+				} else {
+					Identifier instTypeName = ident(name + "_holder");
+					Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, ident(Structure.class), Struct.Type.JavaClass, null);
+					holderStruct.addModifiers(Modifier.Final);
+					VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclaration("value", type, new int[1], callerLibraryName);
+					if (vd.getValueType().toString().equals(Pointer.class.getName())) {
+						isByRef = true;
+						instType = convPointerType;
+						hasOffset = false;	
+					} else {
+						holderStruct.addDeclaration(vd);
+						Function pointerConstructor = new Function(Function.Type.JavaMethod, instTypeName, null, 
+							new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
+						);
+						hasOffset = false;
+						pointerConstructor.setBody(new Statement.Block(
+								new Statement.ExpressionStatement(methodCall("super")),
+								new Statement.ExpressionStatement(methodCall("useMemory", varRef("pointer"), expr(Expression.Constant.Type.Int, 0))),
+								new Statement.ExpressionStatement(methodCall("read"))
+						));
+						holderStruct.addDeclaration(pointerConstructor);
+						
+						//holderStruct.addDeclaration(new VariablesDeclaration(convType, new Declarator.DirectDeclarator("value")).addModifiers(Modifier.Public));
+						instType = new TypeRef.SimpleTypeRef(instTypeName);
+						struct.addDeclaration(decl(holderStruct));
+					}
 				}
+				Identifier instName = name;//"_";
+				struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName.toString())).addModifiers(Modifier.Private, Modifier.Static));
+				VariableRef instRef = new VariableRef(instName);
+				Expression ptrExpr = methodCall(
+					cast(
+						typeRef(NativeLibrary.class),
+						result.config.entryName == null ?
+							memberRef(
+								expr(typeRef(callerLibraryName)), 
+								MemberRefStyle.Dot, 
+								"INSTANCE"
+							) :
+							memberRef(
+								expr(typeRef(result.config.entryName.toLowerCase() + "." + result.config.entryName)), 
+								MemberRefStyle.Dot, 
+								callerLibrary
+							)	
+					).setParenthesis(true),
+					MemberRefStyle.Dot,
+					"getGlobalVariableAddress",
+					expr(Expression.Constant.Type.String, name.toString())
+				);
+				List<Statement> initStats = new ArrayList<Statement>();
+				initStats.add(new Statement.ExpressionStatement(
+					expr(
+						instRef.clone(),
+						Expression.AssignmentOperator.Equal,
+						isPtr ? ptrExpr :
+						isByRef ? new Expression.New(instType) :
+						new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? expr(Expression.Constant.Type.Int, 0) : null))
+					)
+				));
+				if (isByRef)
+					initStats.add(new Statement.ExpressionStatement(methodCall(instRef, MemberRefStyle.Dot, "setPointer", ptrExpr)));
+	
+				struct.addDeclaration(new Function(Function.Type.JavaMethod, ident("get"), instType).setBody(new Statement.Block(
+					new Statement.If(
+						expr(instRef, Expression.BinaryOperator.IsEqual, nullExpr()),
+						initStats.size() == 1 ? initStats.get(0) : new Statement.Block(initStats),
+						null
+					),
+					new Statement.Return(instRef.clone())
+				)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Synchronized));
+				out.addDeclaration(decl(struct));
+			} catch (Throwable t) {
+				out.addDeclaration(result.declarationsConverter.skipDeclaration(d, t.toString()));
 			}
-			Identifier instName = name;//"_";
-			struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName.toString())).addModifiers(Modifier.Private, Modifier.Static));
-			VariableRef instRef = new VariableRef(instName);
-			Expression ptrExpr = methodCall(
-				cast(
-					typeRef(NativeLibrary.class),
-					result.config.entryName == null ?
-						memberRef(
-							expr(typeRef(callerLibraryName)), 
-							MemberRefStyle.Dot, 
-							"INSTANCE"
-						) :
-						memberRef(
-							expr(typeRef(result.config.entryName.toLowerCase() + "." + result.config.entryName)), 
-							MemberRefStyle.Dot, 
-							callerLibrary
-						)	
-				).setParenthesis(true),
-				MemberRefStyle.Dot,
-				"getGlobalVariableAddress",
-				expr(Expression.Constant.Type.String, name.toString())
-			);
-			List<Statement> initStats = new ArrayList<Statement>();
-			initStats.add(new Statement.ExpressionStatement(
-				expr(
-					instRef.clone(),
-					Expression.AssignmentOperator.Equal,
-					isPtr ? ptrExpr :
-					isByRef ? new Expression.New(instType) :
-					new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? expr(Expression.Constant.Type.Int, 0) : null))
-				)
-			));
-			if (isByRef)
-				initStats.add(new Statement.ExpressionStatement(methodCall(instRef, MemberRefStyle.Dot, "setPointer", ptrExpr)));
-
-			struct.addDeclaration(new Function(Function.Type.JavaMethod, ident("get"), instType).setBody(new Statement.Block(
-				new Statement.If(
-					expr(instRef, Expression.BinaryOperator.IsEqual, nullExpr()),
-					initStats.size() == 1 ? initStats.get(0) : new Statement.Block(initStats),
-					null
-				),
-				new Statement.Return(instRef.clone())
-			)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Synchronized));
-			out.addDeclaration(decl(struct));
 		}
 	}
 

@@ -36,11 +36,12 @@ public abstract class ModifiableElement extends Element {
 		for (Annotation a : as)
 			addAnnotation(a);
 	}
-	public void addAnnotation(Annotation a) {
+	public ModifiableElement addAnnotation(Annotation a) {
 		if (a != null) {
 			annotations.add(a);
 			a.setParentElement(this);
 		}
+		return this;
 	}
 
 	public List<Annotation> getAnnotations() {
