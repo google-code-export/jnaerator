@@ -16,7 +16,7 @@ java -jar jnaerator.jar MyLib.dll MyLibHeader.h
 }}}
 will produce {{{ MyLib.jar }}}
 
-= How to use output of solution `MySolution.sln` from Java ? =
+= How to use output of `MySolution.sln` from Java ? =
 
 First make sure you compiled your solution in Release for both Win32 and Win64 targets, if needed.
 {{{
