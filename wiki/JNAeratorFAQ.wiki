@@ -1,6 +1,7 @@
 #summary JNAerator's Frequently Asked Questions
+<wiki:toc max_depth="1" />
 
-= How to use 'MyLib.dll' with 'MyLibHeader.h' header from Java ? =
+= How to use 'MyLib.dll' with MyLibHeader.h header from Java ? =
 
 {{{
 java -jar jnaerator.jar MyLib.dll MyLibHeader.h
