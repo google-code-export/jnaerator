@@ -161,13 +161,17 @@ public class JNAeratorCommandLineArgs {
 		DefaultLibrary(		"-defaultLibrary", 		"Name of output library for elements declared in files not covered by a ${CurrentLibrary} switch", new ArgDef(Type.String, "libName")),
 		Help(				"-h(?:elp)?", 			"Show command line arguments help"),
 		EntryName(			"-entryClass",			"Generate a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.", new ArgDef(Type.String, "entryClassName")),
+//		Undefine(			"-U(.*)?",				"Undefine a preprocessor symbol before ", new ArgDef(Type.String, "entryClassName")),
 		Verbose(			"-v(?:erbose)?",		"Verbose output (both console and files)"),
 		PreprocessingOut(	"-preprocessingOut", 	"Write the preprocessor output in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
 		WikiDoc(			"-wikiHelp",		 	"Output a wiki-friendly help"),
 		Arch(				"-arch",		 		"Define the current architecture for libraries (state variable)", new ArgDef(Type.String, "archName")),
 		MacrosOut(			"-macrosOut", 			"Write the preprocessor macros in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
 		
-		File(				null,		 			"Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file", new ArgDef(Type.OptionalFile, "file"));
+		File(				null,		 			"Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file", new ArgDef(Type.OptionalFile, "file")), 
+		NoCompile(			"-noComp",				"Do not compile JNAerated headers"),
+		NoLibBundle(		"-noLibBundle",			"Do not bundle libraries in output JAR"),
+		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)");
 		
 		OptionDef(String clSwitch, String description, ArgDef... args) {
 			this.clSwitch = clSwitch;

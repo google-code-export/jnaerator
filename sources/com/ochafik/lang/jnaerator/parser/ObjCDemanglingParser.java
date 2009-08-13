@@ -49,6 +49,7 @@ import java.util.ArrayList;
 	It lacks serious expression support, which is being worked on.
 	Complex variable declarations may not be supported, such as complex signatures of functions that return function pointers...
 */
+@SuppressWarnings("unused")
 public class ObjCDemanglingParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "IDENTIFIER", "DECIMAL_NUMBER", "STRING", "Letter", "OCTAL_NUMBER", "OctalEscape", "CharEscape", "'^'", "'*'", "'@'", "'#'", "':'", "'?'", "'{'", "'='", "'}'", "'['", "']'", "'('", "')'", "'b'"

@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -186,7 +187,11 @@ public class JNAeratorConfigUtils {
 		config.macros.put("__FINITE_MATH_ONLY__", "0");
 		config.macros.put("__SHRT_MAX__", "32767");
 		config.macros.put("__LDBL_MAX__", "1.18973149535723176502e+4932L");
-		config.macros.put("__APPLE_CC__", "5484");
+		if (com.sun.jna.Platform.isMac()) {
+			config.macros.put("__APPLE_CC__", "5484");
+			config.macros.put("__MACH__", "1");
+			config.macros.put("__APPLE__", "1");
+		}
 		config.macros.put("__UINTMAX_TYPE__", "long long unsigned int");
 		config.macros.put("__SCHAR_MAX__", "127");
 		config.macros.put("__USER_LABEL_PREFIX__", "_");
@@ -195,18 +200,17 @@ public class JNAeratorConfigUtils {
 		config.macros.put("__FLT_EPSILON__", "1.19209290e-7F");
 		config.macros.put("__LDBL_MIN__", "3.36210314311209350626e-4932L");
 		config.macros.put("__strong", "");
-		config.macros.put("__APPLE__", "1");
 		config.macros.put("__DECIMAL_DIG__", "21");
 		config.macros.put("__LDBL_HAS_QUIET_NAN__", "1");
 		config.macros.put("__DYNAMIC__", "1");
-		config.macros.put("__GNUC__", "4");
-		config.macros.put("__MMX__", "1");
+//		config.macros.put("__GNUC__", "4");
+//		config.macros.put("__MMX__", "1");
 		config.macros.put("__DBL_MAX__", "1.7976931348623157e+308");
 		config.macros.put("__DBL_HAS_INFINITY__", "1");
 		config.macros.put("OBJC_NEW_PROPERTIES", "1");
 		config.macros.put("__weak", "");
 		config.macros.put("__DBL_MAX_EXP__", "1024");
-		config.macros.put("__SSE2_MATH__", "1");
+//		config.macros.put("__SSE2_MATH__", "1");
 		config.macros.put("__LONG_LONG_MAX__", "9223372036854775807LL");
 		config.macros.put("__GXX_ABI_VERSION", "1002");
 		config.macros.put("__FLT_MIN_EXP__", "(-125)");
@@ -214,21 +218,21 @@ public class JNAeratorConfigUtils {
 		config.macros.put("__DBL_HAS_QUIET_NAN__", "1");
 		config.macros.put("__REGISTER_PREFIX__", "");
 		config.macros.put("__NO_INLINE__", "1");
-		config.macros.put("__i386", "1");
+//		config.macros.put("__i386", "1");
 		config.macros.put("__FLT_MANT_DIG__", "24");
 		config.macros.put("__VERSION__", "\"4.0.1 (Apple Inc. build 5484)\"");
-		config.macros.put("i386", "1");
-		config.macros.put("__i386__", "1");
+//		config.macros.put("i386", "1");
+//		config.macros.put("__i386__", "1");
 		config.macros.put("__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__", "1055");
 		config.macros.put("__SIZE_TYPE__", "long unsigned int");
 		config.macros.put("__FLT_RADIX__", "2");
 		config.macros.put("__LDBL_EPSILON__", "1.08420217248550443401e-19L");
-		config.macros.put("__SSE_MATH__", "1");
+//		config.macros.put("__SSE_MATH__", "1");
 		config.macros.put("__FLT_HAS_QUIET_NAN__", "1");
 		config.macros.put("__FLT_MAX_10_EXP__", "38");
 		config.macros.put("__LONG_MAX__", "2147483647L");
 		config.macros.put("__FLT_HAS_INFINITY__", "1");
-		config.macros.put("__LITTLE_ENDIAN__", "1");
+		
 		config.macros.put("__LDBL_MANT_DIG__", "64");
 		config.macros.put("__CONSTANT_CFSTRINGS__", "1");
 		config.macros.put("__WCHAR_TYPE__", "int");
@@ -237,28 +241,26 @@ public class JNAeratorConfigUtils {
 		config.macros.put("__FLT_MAX_EXP__", "128");
 		config.macros.put("__DBL_MANT_DIG__", "53");
 		config.macros.put("__WINT_TYPE__", "int");
-		config.macros.put("__SSE__", "1");
+//		config.macros.put("__SSE__", "1");
 		config.macros.put("__LDBL_MIN_EXP__", "(-16381)");
-		config.macros.put("__MACH__", "1");
 		config.macros.put("__LDBL_MAX_EXP__", "16384");
 		config.macros.put("__LDBL_MAX_10_EXP__", "4932");
 		config.macros.put("__DBL_EPSILON__", "2.2204460492503131e-16");
-		config.macros.put("__GNUC_PATCHLEVEL__", "1");
 		config.macros.put("__LDBL_HAS_INFINITY__", "1");
 		config.macros.put("__INTMAX_MAX__", "9223372036854775807LL");
 		config.macros.put("__FLT_DENORM_MIN__", "1.40129846e-45F");
 		config.macros.put("__PIC__", "1");
 		config.macros.put("__FLT_MAX__", "3.40282347e+38F");
-		config.macros.put("__SSE2__", "1");
+//		config.macros.put("__SSE2__", "1");
 		config.macros.put("__FLT_MIN_10_EXP__", "(-37)");
 		config.macros.put("__INTMAX_TYPE__", "long long int");
 		config.macros.put("__GNUC_MINOR__", "0");
 		config.macros.put("__DBL_MAX_10_EXP__", "308");
 		config.macros.put("__LDBL_DENORM_MIN__", "3.64519953188247460253e-4951L");
-		config.macros.put("__PTRDIFF_TYPE__", "int");
+//		config.macros.put("__PTRDIFF_TYPE__", "int");
 		config.macros.put("__LDBL_MIN_10_EXP__", "(-4931)");
 		config.macros.put("__LDBL_DIG__", "18");
-		config.macros.put("__GNUC_GNU_INLINE__", "1");
+//		config.macros.put("__GNUC_GNU_INLINE__", "1");
 	}
 
 	/**
@@ -281,6 +283,8 @@ public class JNAeratorConfigUtils {
 			
 			//http://support.microsoft.com/kb/65472
 			config.preprocessorConfig.macros.put("_CHAR_UNSIGNED", null);
+			
+			config.preprocessorConfig.macros.put("WIN32_LEAN_AND_MEAN", null);
 			
 			// http://msdn.microsoft.com/en-us/library/dh8che7s(VS.80).aspx
 			config.preprocessorConfig.macros.put("_WCHAR_T_DEFINED", null);
@@ -386,6 +390,12 @@ public class JNAeratorConfigUtils {
 			config.preprocessorConfig.macros.put("__PPC_64__", null);
 //			config.preprocessorConfig.macros.put("__powerpc64__", null);
 			config.preprocessorConfig.macros.put("__BIG_ENDIAN__", null);
+		} else {
+			if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN)
+				config.preprocessorConfig.macros.put("__LITTLE_ENDIAN__", "1");
+			else
+				config.preprocessorConfig.macros.put("__BIG_ENDIAN__", "1");
+			
 		}
 		
 	}
