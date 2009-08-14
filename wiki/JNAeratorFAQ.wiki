@@ -38,3 +38,7 @@ If you need frameworks not covered by Rococoa, wish to use private headers and /
 {{{
 java -jar jnaerator.jar -framework Framework1 -framework Framework2 lib1.dylib lib2.dylib...
 }}}
+
+= What command-line options are available ? = 
+
+There are quite a few of them : [CommandLineOptionsAndEnvironmentVariables]
