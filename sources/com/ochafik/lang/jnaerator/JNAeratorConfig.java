@@ -210,7 +210,6 @@ public class JNAeratorConfig {
 
 	Set<File> sourceFiles = new HashSet<File>();
 	public boolean bundleLibraries = true;
-	protected boolean createJar = true;
 	public boolean wcharAsShort = false;
 	public boolean genCPlusPlus = false;
 	public File extractedSymbolsOut;
