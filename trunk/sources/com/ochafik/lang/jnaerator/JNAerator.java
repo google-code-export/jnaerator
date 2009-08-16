@@ -82,7 +82,6 @@ import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
-import com.ochafik.lang.jnaerator.nativesupport.DllExport.ParsedExport;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
@@ -92,6 +91,7 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
+import static com.ochafik.lang.jnaerator.nativesupport.NativeExportUtils.*;
 /*
 //include com/ochafik/lang/jnaerator/parser/*.mm
 //include com/ochafik/lang/jnaerator/parser/ObjCpp.g
@@ -234,6 +234,9 @@ public class JNAerator {
 						break;
 					case NoPreprocessing:
 						config.preprocessorConfig.preprocess = false;
+						break;
+					case NoJAR:
+						config.createJar = false;
 						break;
 					case MaxConstructedFields:
 						config.maxConstructedFields = a.getIntParam(0);
@@ -450,9 +453,7 @@ public class JNAerator {
 						try {
 							config.addRootDir(new File(i));
 						} catch (Exception ex) {}
-					}
-					
-						
+					}	
 					
 					if (config.sourceFiles.isEmpty() && config.bridgeSupportFiles.isEmpty() && !config.libraryFiles.isEmpty())
 						config.extractLibSymbols = true;

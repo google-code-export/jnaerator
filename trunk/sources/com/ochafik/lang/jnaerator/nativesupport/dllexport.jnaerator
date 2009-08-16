@@ -13,6 +13,7 @@
 //-DPDWORD=int*
 //-DPWORD=short*
 -DPWSTR=wchar_t*
+-noComp
 -library DbgHelp
 	//WinBase.h
 	//WinNT.h
