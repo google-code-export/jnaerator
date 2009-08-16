@@ -76,6 +76,7 @@ import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.compiler.MemoryFileManager;
 import com.ochafik.lang.jnaerator.ClassOutputter;
 import com.ochafik.lang.jnaerator.JNAerator;
+import com.ochafik.lang.jnaerator.JNAeratorCommandLineArgs;
 import com.ochafik.lang.jnaerator.JNAeratorConfig;
 import com.ochafik.lang.jnaerator.Result;
 import com.ochafik.lang.jnaerator.SourceFiles;
@@ -455,6 +456,7 @@ public class JNAeratorStudio extends JPanel {
 				config.libraryForElementsInNullFile = libraryName.getText();
 //				config.addFile(getFile(), "");
 				config.preprocessorConfig.includeStrings.add(sourceArea.getText());
+				config.genCPlusPlus = config.genCPlusPlus || sourceArea.getText().contains("//@" + JNAeratorCommandLineArgs.OptionDef.CPlusPlusGen.clSwitch);
 				config.cacheDir = getDir("cache");
 				
 				final PrintStream out = System.out;

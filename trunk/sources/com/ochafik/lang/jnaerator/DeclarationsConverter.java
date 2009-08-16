@@ -44,10 +44,12 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 import com.ochafik.lang.jnaerator.parser.TypeRef.*;
 import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
+import com.ochafik.lang.jnaerator.parser.DeclarationsHolder.ListWrapper;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.runtime.Bits;
 import com.ochafik.lang.jnaerator.runtime.FastCall;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
+import com.ochafik.lang.jnaerator.runtime.This;
 import com.ochafik.lang.jnaerator.runtime.ThisCall;
 import com.ochafik.lang.jnaerator.runtime.VirtualTablePointer;
 import com.ochafik.util.CompoundCollection;
@@ -58,7 +60,6 @@ import com.sun.jna.Pointer;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class DeclarationsConverter {
-	private static final int MAX_FIELDS_FOR_VALUES_CONSTRUCTORS = 10;
 	private static final String DEFAULT_VPTR_NAME = "_vptr";
 	private static final Pattern manglingCommentPattern = Pattern.compile("@mangling (.*)$", Pattern.MULTILINE);
 
@@ -451,6 +452,8 @@ public class DeclarationsConverter {
 			else
 				return;
 		}
+		if (function.getParentElement() instanceof FriendDeclaration)
+			return;
 		
 		if (functionName.toString().contains("<")) {
 			return;
@@ -472,6 +475,8 @@ public class DeclarationsConverter {
 			case ObjCProtocol:
 				break;
 			case CPPClass:
+				if (!result.config.genCPlusPlus)
+					return;
 				ns.add(((Struct)parent).getTag().toString());
 				break;
 			}
@@ -514,9 +519,6 @@ public class DeclarationsConverter {
 			Set<String> names = new LinkedHashSet<String>();
 			//if (ns.isEmpty())
 			
-			if (function.getType() == Type.CppMethod && !function.getModifiers().contains(Modifier.Static))
-				return;
-			
 			if (!isCallback && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
 				addCPlusPlusMangledNames(function, names);
 			
@@ -528,7 +530,7 @@ public class DeclarationsConverter {
 			if (!isCallback && !names.isEmpty())
 				natFunc.addAnnotation(new Annotation(Mangling.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
 
-			boolean needsThis = false;
+			boolean needsThis = false, needsThisAnnotation = false;
 			if (Modifier.__fastcall.isContainedBy(function.getModifiers())) {
 				natFunc.addAnnotation(new Annotation(FastCall.class));
 				needsThis = true;
@@ -537,8 +539,27 @@ public class DeclarationsConverter {
 				natFunc.addAnnotation(new Annotation(ThisCall.class));
 				needsThis = true;
 			}
+			if (function.getType() == Type.CppMethod && !function.getModifiers().contains(Modifier.Static)) {
+				needsThisAnnotation = true;
+				needsThis = true;
+			}
+			
+			
+			if (needsThis && !result.config.genCPlusPlus)
+				return;
+			
 			if (needsThis) {
-				natFunc.addArg((Arg)new Arg("__this__", typeRef(((Struct)function.getParentElement()).getTag().clone())));
+				natFunc.addAnnotation(new Annotation(Deprecated.class));
+				
+				TypeRef classRef;
+				if (parent instanceof Struct) {
+					classRef = typeRef(((Struct)function.getParentElement()).getTag().clone());
+				} else {
+					classRef = null;
+				}
+				if (classRef != null) {
+					natFunc.addArg((Arg)new Arg("__this__", classRef)).addAnnotation(needsThisAnnotation ? new Annotation(This.class) : null);
+				}
 			}
 				
 			//if (isCallback || !modifiedMethodName.equals(functionName))
@@ -779,6 +800,40 @@ public class DeclarationsConverter {
 						outputConvertedStruct((Struct)tr, childSignatures, structJavaClass, callerLibraryClass, false);
 					} else if (tr instanceof FunctionSignature) {
 						convertCallback((FunctionSignature)tr, childSignatures, structJavaClass, callerLibraryClass);
+					}
+				} else if (d instanceof Function) {
+					Function f = (Function) d;
+					String library = result.getLibrary(struct);
+					if (library == null)
+						continue;
+					List<Declaration> decls = new ArrayList<Declaration>();
+					convertFunction(f, childSignatures, false, new ListWrapper(decls), callerLibraryClass);
+					for (Declaration md : decls) {
+						if (!(md instanceof Function))
+							continue;
+						Function method = (Function) md;
+						Identifier methodImplName = method.getName().clone();
+						method.setName(f.getName());
+						List<Expression> args = new ArrayList<Expression>();
+						
+						boolean isStatic = Modifier.Static.isContainedBy(method.getModifiers());
+						int iArg = 0;
+						for (Arg arg : new ArrayList<Arg>(method.getArgs())) {
+							if (iArg == 0 && !isStatic) {
+								arg.replaceBy(null);
+								args.add(varRef("this"));
+							} else
+								args.add(varRef(arg.getName()));
+							iArg++;
+						}
+						Expression implCall = methodCall(result.getLibraryInstanceReferenceExpression(library), MemberRefStyle.Dot, methodImplName.toString(), args.toArray(new Expression[args.size()]));
+						method.setBody(block(
+							"void".equals(String.valueOf(method.getValueType())) ?
+								stat(implCall) : 
+								new Statement.Return(implCall)
+						));
+						method.addModifiers(Modifier.Public, isStatic ? Modifier.Static : null);
+						structJavaClass.addDeclaration(method);
 					}
 				}
 			}
@@ -1151,7 +1206,7 @@ public class DeclarationsConverter {
 			if (nArgs == 0)
 				System.err.println("Struct with no field : " + structName);
 			
-			if (nArgs > 0 && nArgs < MAX_FIELDS_FOR_VALUES_CONSTRUCTORS) {
+			if (nArgs > 0 && nArgs < result.config.maxConstructedFields) {
 				if (signatures.add(fieldsConstr.computeSignature(false))) {
 					structJavaClass.addDeclaration(fieldsConstr);
 				}

@@ -86,8 +86,9 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	//String pack;
 	
 	public Set<String> topLevelTypeIdentifiers;// = new HashSet<String>();//java.util.Arrays.asList("CHAR"));
+	public com.ochafik.lang.jnaerator.TypeConversion typeConverter;
 	boolean isPrimitiveType(String identifier) {
-		return com.ochafik.lang.jnaerator.TypeConversion.isObjCppPrimitive(identifier);
+		return typeConverter.isObjCppPrimitive(identifier);
 	}
 	public void setupSymbolsStack() {
     		Symbols_scope ss = new Symbols_scope();
@@ -674,8 +675,12 @@ structBody returns [Struct struct]
 					'private' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Private); } | 
 					'protected' { $struct.setNextMemberVisibility(Struct.MemberVisibility.Protected); } 
 				) ':' |
-				declaration {
-					$struct.addDeclarations($declaration.declarations);
+				{ next("friend") }? IDENTIFIER friend=declaration ';' {
+					for (Declaration d : $friend.declarations)
+						$struct.addDeclaration(new FriendDeclaration(d));
+				} |
+				decl=declaration {
+					$struct.addDeclarations($decl.declarations);
 				} |
 				fv=varDecl ';' {
 					$struct.addDeclaration($fv.decl);

@@ -86,6 +86,7 @@ public class JNAeratorConfig {
 	public boolean bundleRuntime = true;
 	public boolean extractLibSymbols = false;
 	public String entryName;
+	public int maxConstructedFields = 10;
 	
 	public Map<String, String> extraJavaSourceFilesContents = new HashMap<String, String>();
 	
@@ -209,6 +210,9 @@ public class JNAeratorConfig {
 
 	Set<File> sourceFiles = new HashSet<File>();
 	public boolean bundleLibraries = true;
+	public boolean wcharAsShort = false;
+	public boolean genCPlusPlus = false;
+	public File extractedSymbolsOut;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override

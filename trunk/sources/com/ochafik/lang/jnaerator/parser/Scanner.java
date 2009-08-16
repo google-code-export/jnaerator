@@ -106,16 +106,7 @@ public class Scanner implements Visitor {
 	protected void visitDeclaration(Declaration d) {
 		visitModifiableElement(d);
 		
-		visit(d.getValueType());
-		
-		/*visitModifiers(d.getModifiers(), d);
-		
-		visitNameSpace(d.getNameSpace(), d);
-		
-		visitPostComment(d.getPostComment(), d);
-		visitPreComment(d.getPreComment(), d);
-		visitDeclarationVisibility(d.getVisibility(), d);*/
-		
+		visit(d.getValueType());		
 	}
 
 	protected void visitElement(Element d) {
@@ -491,6 +482,11 @@ public class Scanner implements Visitor {
 	public void visitProperty(Property property) {
 		visitDeclaration(property);
 		visit(property.getDeclaration());
+	}
+
+	@Override
+	public void visitFriendDeclaration(FriendDeclaration friendDeclaration) {
+		visitDeclaration(friendDeclaration);
 	}
 
 }

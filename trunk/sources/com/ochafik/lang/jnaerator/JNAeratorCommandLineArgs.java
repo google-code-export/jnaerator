@@ -143,6 +143,7 @@ public class JNAeratorCommandLineArgs {
 		GUI(				"-gui",		 			"Show minimalist progression GUI"),
 		NoRuntime(			"-noRuntime",		 	"Don't copy runtime classes to JAR output"),
 		JarOut(				"-jar",					"Jar file where all generated sources and the compiled classes go", new ArgDef(Type.OutputFile, "outFile")),
+		WCharAsShort(		"-wcharAsShort",		"Force treatment of wchar_t as short (char by default)"),
 		Test(				"-test",				"Launch JNAerator's unit tests (DEBUG option)"),
 		Studio(				"-studio",				"Launch JNAeratorStudio"),
 		Project(			"-project",				"Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. \"Release|Win32\").", new ArgDef(Type.ExistingFile, "solutionFile"), new ArgDef(Type.String, "\"Config|Platform\"")),
@@ -164,6 +165,7 @@ public class JNAeratorCommandLineArgs {
 //		Undefine(			"-U(.*)?",				"Undefine a preprocessor symbol before ", new ArgDef(Type.String, "entryClassName")),
 		Verbose(			"-v(?:erbose)?",		"Verbose output (both console and files)"),
 		PreprocessingOut(	"-preprocessingOut", 	"Write the preprocessor output in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
+		ExtractionOut(		"-extractionOut", 		"Write the symbols extracted from libraries in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
 		WikiDoc(			"-wikiHelp",		 	"Output a wiki-friendly help"),
 		Arch(				"-arch",		 		"Define the current architecture for libraries (state variable)", new ArgDef(Type.String, "archName")),
 		MacrosOut(			"-macrosOut", 			"Write the preprocessor macros in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
@@ -171,7 +173,10 @@ public class JNAeratorCommandLineArgs {
 		File(				null,		 			"Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file", new ArgDef(Type.OptionalFile, "file")), 
 		NoCompile(			"-noComp",				"Do not compile JNAerated headers"),
 		NoLibBundle(		"-noLibBundle",			"Do not bundle libraries in output JAR"),
-		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)");
+		MaxConstructedFields(		
+							"-maxConstrFields",		"Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.", new ArgDef(Type.Int, "fieldCount")),
+		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)"), 
+		CPlusPlusGen(		"-genCPlusPlus",		"[Experimental, Not working at all] Generate C++ classes.");
 		
 		OptionDef(String clSwitch, String description, ArgDef... args) {
 			this.clSwitch = clSwitch;

@@ -45,7 +45,7 @@ import com.ochafik.util.string.StringUtils;
 
 public class PreprocessorUtils {
 	
-	public static String preprocessSources(JNAeratorConfig config, List<Define> defines, boolean verbose) throws IOException, LexerException {
+	public static String preprocessSources(JNAeratorConfig config, List<Define> defines, boolean verbose, TypeConversion typeConverter) throws IOException, LexerException {
 
 		Preprocessor preProcessor = PreprocessorUtils.createPreProcessor(config.preprocessorConfig);
 		for (File file : config.getFiles())
@@ -74,7 +74,7 @@ public class PreprocessorUtils {
 		for (String k : config.preprocessorConfig.macros.keySet())
 			macros.remove(k);
 		
-		PreprocessorUtils.addDefines(macros, defines, verbose);
+		PreprocessorUtils.addDefines(macros, defines, verbose, typeConverter);
 		
 		return sourceContent;
 	}
@@ -171,7 +171,7 @@ public class PreprocessorUtils {
 
 	//static void addDefines(Preprocessor preProcessor, List<Define> defines) {
 	//	for (Map.Entry<String, Macro> e : preProcessor.getMacros().entrySet()) {
-	static void addDefines(Map<String, Macro> macros, List<Define> defines, boolean verbose) {
+	static void addDefines(Map<String, Macro> macros, List<Define> defines, boolean verbose, TypeConversion typeConverter) {
 		for (Map.Entry<String, Macro> e : macros.entrySet()) {
 			Macro macro = e.getValue();
 			if (macro.getText() == null)
@@ -184,7 +184,7 @@ public class PreprocessorUtils {
 			//	continue;
 			
 			try {
-				Expression expression = JNAeratorParser.newObjCppParser(macro.getText(), verbose).expression().expr;
+				Expression expression = JNAeratorParser.newObjCppParser(typeConverter, macro.getText(), verbose).expression().expr;
 				if (expression == null)
 					continue;
 			

@@ -160,5 +160,7 @@ public interface Visitor {
 	void visitThrow(Throw t);
 
 	void visitProperty(Property property);
+
+	void visitFriendDeclaration(FriendDeclaration friendDeclaration);
 	
 }

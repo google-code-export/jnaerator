@@ -118,7 +118,7 @@ public class JNAeratorParser {
 		return slices;
 	}
 
-	private static void parseSlices(final JNAeratorConfig config, SourceFiles sourceFilesOut, List<Slice> slices, PrintStream originalOut, PrintStream originalErr, boolean multithreaded) throws InterruptedException {
+	private static void parseSlices(final JNAeratorConfig config, final TypeConversion typeConverter, SourceFiles sourceFilesOut, List<Slice> slices, PrintStream originalOut, PrintStream originalErr, boolean multithreaded) throws InterruptedException {
 	
 			class ResultCountHolder {
 				volatile int nSlicesParsed = 0;
@@ -135,7 +135,7 @@ public class JNAeratorParser {
 	
 					public SourceFile call() throws Exception {
 						try {
-							ObjCppParser parser = newObjCppParser(slice.text, config.verbose);
+							ObjCppParser parser = newObjCppParser(typeConverter, slice.text, config.verbose);
 							parser.topLevelTypeIdentifiers = topLevelTypeDefs;
 							SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 							//sourceFile.setElementFile(slice.file);
@@ -184,9 +184,9 @@ public class JNAeratorParser {
 			}
 		}
 
-	public static SourceFiles parse(JNAeratorConfig config) throws IOException, LexerException {
+	public static SourceFiles parse(JNAeratorConfig config, TypeConversion typeConverter) throws IOException, LexerException {
 		SourceFiles sourceFiles = new SourceFiles();
-		String sourceContent = PreprocessorUtils.preprocessSources(config, sourceFiles.defines, config.verbose);
+		String sourceContent = PreprocessorUtils.preprocessSources(config, sourceFiles.defines, config.verbose, typeConverter);
 		
 		PrintStream originalOut = System.out, originalErr = System.err;
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -197,7 +197,7 @@ public class JNAeratorParser {
 			if (EASILY_DEBUGGABLE_BUT_FRAGILE_PARSING_MODE) {
 				// easier to debug but any error might ruin all the rest of the parsing
 				try {
-					ObjCppParser parser = newObjCppParser(sourceContent, config.verbose);
+					ObjCppParser parser = newObjCppParser(typeConverter, sourceContent, config.verbose);
 					SourceFile sourceFile = parser.sourceFile();//.sourceFile;
 					sourceFiles.add(sourceFile);
 				} catch (Exception ex) {
@@ -208,7 +208,7 @@ public class JNAeratorParser {
 				List<Slice> slices = cutSourceContentInSlices(sourceContent, originalOut);
 				if (config.verbose)
 					originalOut.println("Now parsing " + slices.size() + " text blocks");
-				parseSlices(config, sourceFiles, slices, originalOut, originalErr, false);
+				parseSlices(config, typeConverter, sourceFiles, slices, originalOut, originalErr, false);
 			} 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -222,8 +222,8 @@ public class JNAeratorParser {
 		}
 		return sourceFiles;
 	}
-	static ObjCppParser newObjCppParser(String s, final boolean verbose) throws IOException {
-		return new ObjCppParser(
+	static ObjCppParser newObjCppParser(TypeConversion typeConverter, String s, final boolean verbose) throws IOException {
+		ObjCppParser parser = new ObjCppParser(
 				new CommonTokenStream(
 						new ObjCppLexer(
 								new ANTLRReaderStream(new StringReader(s))
@@ -237,5 +237,8 @@ public class JNAeratorParser {
 					super.reportError(arg0);
 			}
 		};
+		parser.typeConverter = typeConverter;
+		
+		return parser;
 	}
 }
