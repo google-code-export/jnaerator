@@ -7,6 +7,8 @@
 Below on this page you'll find isolated examples of what JNAerator produces for different kinds of isolated input.
 If you wish to see a more complete example, please visit [SimpleMeaningfulExample].
 
+You may also want to have a look at the various [CommandLineOptionsAndEnvironmentVariables  command line options and environment variables] supported by JNAerator.
+
 = Functions = 
 
 There may be more than one way to translate some arguments.
