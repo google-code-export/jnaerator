@@ -9,6 +9,12 @@
 
  * ** <file: OptionalFile>
   Any header (or directory containing headers at any level of hierarchy), shared library, `*`.bridgesupport file or `*`.jnaerator file
+ * *(?i)-noComp*
+  Do not compile JNAerated headers
+ * *(?i)-noJar*
+  Do not create an output JAR
+ * *(?i)-noLibBundle*
+  Do not bundle libraries in output JAR
  * *-D([^=]*)(?:=(.*))?* <name: String> <value: String>
   Define a macro symbol
  * *-F(.+)?* <dir: File>
@@ -23,10 +29,16 @@
   JNAerate libraries that use JNA's faster direct call convention
  * *-entryClass* <entryClassName: String>
   Generate a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.
+ * *-extractionOut* <outFile: OutputFile>
+  Write the symbols extracted from libraries in a file (automatically set when ${Verbose} is used).
+ * *-fpreprocessed*
+  Consider source files as being already preprocessed (preprocessor won't be run)
  * *-framework* <frameworkName: String>
   JNAerate a framework using its headers and its `*`.bridgesupport files if available
  * *-frameworksPath* <path1:path2...: String>
   See doc of JNAERATOR_FRAMEWORKS_PATH
+ * *-genCPlusPlus*
+  [Experimental, Not working at all] Generate C++ classes.
  * *-gui*
   Show minimalist progression GUI
  * *-h(?:elp)?*
@@ -43,6 +55,8 @@
   Avoid useless comments (source file + line, skipped items...)
  * *-macrosOut* <outFile: OutputFile>
   Write the preprocessor macros in a file (automatically set when ${Verbose} is used).
+ * *-maxConstrFields* <fieldCount: Int>
+  Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.
  * *-noAuto*
   No auto-configuration of preprocessor symbols and paths
  * *-noRuntime*
@@ -71,10 +85,13 @@
   Launch JNAerator's unit tests (DEBUG option)
  * *-v(?:erbose)?*
   Verbose output (both console and files)
+ * *-wcharAsShort*
+  Force treatment of wchar_t as short (char by default)
  * *-wikiHelp*
   Output a wiki-friendly help
  * *@(.+)?* <argumentsFile.jnaerator: ExistingFile>
   Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content, as well as variables substitutions : $(someEnvOrJavaVarName), with $(DIR) being the parent directory of the current arguments file.
+
 
 = Environment Variables =
 
