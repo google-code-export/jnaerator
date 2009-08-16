@@ -106,6 +106,10 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		public List<SimpleIdentifier> resolveSimpleIdentifiers() {
 			return Arrays.asList(this);
 		}
+		@Override
+		public Identifier resolveAllButLastIdentifier() {
+			return null;
+		}
 	}
 	public static class QualifiedIdentifier extends Identifier {
 		private List<SimpleIdentifier> identifiers = new ArrayList<SimpleIdentifier>();
@@ -184,6 +188,14 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 		public List<SimpleIdentifier> resolveSimpleIdentifiers() {
 			return getIdentifiers();
 		}
+		@Override
+		public Identifier resolveAllButLastIdentifier() {
+			List<SimpleIdentifier> si = new ArrayList<SimpleIdentifier>(identifiers);
+			if (!si.isEmpty()) {
+				si.remove(si.size() - 1);
+			}
+			return new QualifiedIdentifier(getSeparator(), si);
+		}
 	}
 
 	public final int compareTo(Object o) {
@@ -202,4 +214,5 @@ public abstract class Identifier extends Element implements Comparable<Object> {
 	public final int hashCode() {
 		return toString().hashCode();
 	}
+	public abstract Identifier resolveAllButLastIdentifier();
 }

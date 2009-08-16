@@ -37,6 +37,7 @@ import org.rococoa.cocoa.foundation.NSString;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
+import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
@@ -47,6 +48,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Enum.EnumItem;
+import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
@@ -61,11 +63,11 @@ public class Result extends Scanner {
 
 	public final JNAeratorConfig config;
 	public ClassOutputter classOutputter;
-	public TypeConversion typeConverter = new TypeConversion(this);
-	public DeclarationsConverter declarationsConverter = new DeclarationsConverter(this);
-	public GlobalsGenerator globalsGenerator = new GlobalsGenerator(this);
-	public ObjectiveCGenerator objectiveCGenerator = new ObjectiveCGenerator(this);
-	public UniversalReconciliator universalReconciliator = new UniversalReconciliator();
+	public final TypeConversion typeConverter;
+	public final DeclarationsConverter declarationsConverter;
+	public final GlobalsGenerator globalsGenerator;
+	public final ObjectiveCGenerator objectiveCGenerator;
+	public final UniversalReconciliator universalReconciliator;
 		
 	public final Set<Identifier> 
 		structsFullNames = new HashSet<Identifier>(),
@@ -75,8 +77,18 @@ public class Result extends Scanner {
 	 * @param aerator
 	 */
 	public Result(JNAeratorConfig config, ClassOutputter classOutputter) {
+		if (config == null)
+			throw new IllegalArgumentException("No config in result !");
 		this.config = config;
 		this.classOutputter = classOutputter;
+		
+		typeConverter = new TypeConversion(this);
+		declarationsConverter = new DeclarationsConverter(this);
+		globalsGenerator = new GlobalsGenerator(this);
+		objectiveCGenerator = new ObjectiveCGenerator(this);
+		universalReconciliator = new UniversalReconciliator();
+			
+		
 	}
 
 	Set<Identifier> javaPackages = new TreeSet<Identifier>();
@@ -279,7 +291,9 @@ public class Result extends Scanner {
 			if (parent instanceof Struct) {
 				Struct parentStruct = (Struct)parent;
 				switch (parentStruct.getType()) {
-					//case CPPClass:
+					case CPPClass:
+						if (config.genCPlusPlus)
+							break;
 					case JavaClass:
 					case JavaInterface:
 					case ObjCClass:
@@ -291,6 +305,22 @@ public class Result extends Scanner {
 		}
 		
 		getList(functionsByLibrary, getLibrary(function)).add(function);
+	}
+	public Expression getLibraryInstanceReferenceExpression(String libraryName) {
+		Identifier hub = getHubFullClassName();
+		Identifier classIdent;
+		String fieldName;
+		if (hub != null) {
+			classIdent = hub;
+			fieldName = libraryName;
+		} else {
+			classIdent = getLibraryClassFullName(libraryName);
+			fieldName = "INSTANCE";
+		}
+		return memberRef(expr(typeRef(classIdent)), MemberRefStyle.Dot, fieldName);
+	}
+	public Identifier getHubFullClassName() {
+		return config.entryName == null ? null : ident(config.entryName.toLowerCase(), config.entryName);
 	}
 	
 	public Identifier getTaggedTypeIdentifierInJava(TaggedTypeRef s) {
@@ -320,6 +350,9 @@ public class Result extends Scanner {
 		Identifier name = struct.getTag();
 		if (name != null) {
 			switch (struct.getType()) {
+			case CPPClass:
+				if (!config.genCPlusPlus)
+					break;
 			case CStruct:
 			case CUnion:
 				if (struct.isForwardDeclaration())

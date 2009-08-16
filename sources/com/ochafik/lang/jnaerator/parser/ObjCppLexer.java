@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g 2009-08-11 02:06:24
+// $ANTLR 3.1.2 C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g 2009-08-14 20:51:47
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -28,108 +28,107 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
-@SuppressWarnings("unused")
 public class ObjCppLexer extends Lexer {
-    public static final int T__42=42;
-    public static final int IntegerConstantSuffix=18;
-    public static final int HexDigit=16;
-    public static final int T__47=47;
-    public static final int T__73=73;
-    public static final int OCTAL_NUMBER=8;
-    public static final int FLOAT_NUMBER=10;
-    public static final int T__72=72;
-    public static final int T__70=70;
-    public static final int T__39=39;
-    public static final int Letter=11;
-    public static final int T__30=30;
-    public static final int FloatingPointConstantSuffix=13;
-    public static final int T__46=46;
-    public static final int T__96=96;
-    public static final int T__49=49;
-    public static final int CharEscape=15;
-    public static final int T__48=48;
-    public static final int T__54=54;
-    public static final int HEXADECIMAL_NUMBER=7;
-    public static final int T__89=89;
-    public static final int WS=19;
-    public static final int STRING=5;
-    public static final int T__79=79;
-    public static final int T__64=64;
-    public static final int T__44=44;
-    public static final int T__66=66;
-    public static final int T__92=92;
-    public static final int T__88=88;
-    public static final int T__22=22;
-    public static final int LINE_COMMENT=21;
-    public static final int T__90=90;
-    public static final int UnicodeEscape=17;
-    public static final int T__63=63;
-    public static final int T__91=91;
-    public static final int T__43=43;
-    public static final int T__40=40;
-    public static final int T__85=85;
+    public static final int T__29=29;
+    public static final int T__28=28;
+    public static final int T__27=27;
     public static final int T__26=26;
     public static final int T__25=25;
-    public static final int FloatingPointExponentSuffix=12;
-    public static final int IDENTIFIER=6;
-    public static final int T__60=60;
-    public static final int T__41=41;
-    public static final int T__93=93;
-    public static final int T__86=86;
-    public static final int T__28=28;
-    public static final int T__57=57;
-    public static final int T__23=23;
-    public static final int T__94=94;
-    public static final int T__51=51;
-    public static final int T__80=80;
-    public static final int T__100=100;
-    public static final int T__69=69;
-    public static final int T__95=95;
-    public static final int T__50=50;
-    public static final int T__65=65;
-    public static final int T__101=101;
-    public static final int DECIMAL_NUMBER=4;
-    public static final int T__67=67;
-    public static final int T__87=87;
-    public static final int T__74=74;
-    public static final int T__52=52;
-    public static final int T__68=68;
-    public static final int T__62=62;
-    public static final int T__27=27;
     public static final int T__24=24;
-    public static final int T__61=61;
-    public static final int T__59=59;
+    public static final int T__23=23;
+    public static final int T__22=22;
+    public static final int EOF=-1;
     public static final int CHARACTER=9;
-    public static final int T__34=34;
-    public static final int T__98=98;
-    public static final int T__56=56;
-    public static final int T__35=35;
-    public static final int T__78=78;
-    public static final int T__36=36;
-    public static final int T__58=58;
+    public static final int T__93=93;
+    public static final int T__94=94;
+    public static final int T__91=91;
+    public static final int T__92=92;
+    public static final int T__90=90;
     public static final int COMMENT=20;
     public static final int T__99=99;
-    public static final int T__33=33;
-    public static final int T__77=77;
-    public static final int T__55=55;
-    public static final int T__45=45;
-    public static final int T__29=29;
-    public static final int T__84=84;
+    public static final int OCTAL_NUMBER=8;
+    public static final int T__98=98;
     public static final int T__97=97;
-    public static final int T__75=75;
-    public static final int T__31=31;
-    public static final int EOF=-1;
-    public static final int T__53=53;
-    public static final int T__32=32;
-    public static final int T__38=38;
-    public static final int T__76=76;
-    public static final int T__37=37;
-    public static final int T__82=82;
-    public static final int OctalEscape=14;
+    public static final int T__96=96;
+    public static final int DECIMAL_NUMBER=4;
+    public static final int T__95=95;
+    public static final int T__80=80;
     public static final int T__81=81;
+    public static final int T__82=82;
     public static final int T__83=83;
+    public static final int LINE_COMMENT=21;
+    public static final int T__85=85;
+    public static final int T__84=84;
+    public static final int T__87=87;
+    public static final int T__86=86;
+    public static final int T__89=89;
+    public static final int T__88=88;
     public static final int T__71=71;
+    public static final int WS=19;
+    public static final int T__72=72;
+    public static final int T__70=70;
+    public static final int FloatingPointConstantSuffix=13;
+    public static final int IntegerConstantSuffix=18;
+    public static final int T__76=76;
+    public static final int T__75=75;
+    public static final int T__74=74;
+    public static final int Letter=11;
+    public static final int T__73=73;
+    public static final int T__79=79;
+    public static final int T__78=78;
+    public static final int T__77=77;
+    public static final int T__68=68;
+    public static final int T__69=69;
+    public static final int T__66=66;
+    public static final int T__67=67;
+    public static final int T__64=64;
+    public static final int T__65=65;
+    public static final int T__62=62;
+    public static final int T__63=63;
+    public static final int HEXADECIMAL_NUMBER=7;
+    public static final int T__61=61;
+    public static final int T__60=60;
+    public static final int HexDigit=16;
+    public static final int T__55=55;
+    public static final int T__56=56;
+    public static final int T__57=57;
+    public static final int T__58=58;
+    public static final int T__51=51;
+    public static final int T__52=52;
+    public static final int T__53=53;
+    public static final int T__54=54;
+    public static final int IDENTIFIER=6;
+    public static final int CharEscape=15;
+    public static final int T__59=59;
+    public static final int T__50=50;
+    public static final int T__42=42;
+    public static final int T__43=43;
+    public static final int T__40=40;
+    public static final int T__41=41;
+    public static final int FloatingPointExponentSuffix=12;
+    public static final int T__46=46;
+    public static final int FLOAT_NUMBER=10;
+    public static final int T__47=47;
+    public static final int T__44=44;
+    public static final int T__45=45;
+    public static final int T__48=48;
+    public static final int T__49=49;
     public static final int T__102=102;
+    public static final int T__101=101;
+    public static final int T__100=100;
+    public static final int T__30=30;
+    public static final int T__31=31;
+    public static final int T__32=32;
+    public static final int T__33=33;
+    public static final int T__34=34;
+    public static final int T__35=35;
+    public static final int T__36=36;
+    public static final int T__37=37;
+    public static final int T__38=38;
+    public static final int T__39=39;
+    public static final int UnicodeEscape=17;
+    public static final int OctalEscape=14;
+    public static final int STRING=5;
 
     // delegates
     // delegators
@@ -142,15 +141,15 @@ public class ObjCppLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g"; }
+    public String getGrammarFileName() { return "C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g"; }
 
     // $ANTLR start "T__22"
     public final void mT__22() throws RecognitionException {
         try {
             int _type = T__22;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:27:7: ( '#line' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:27:9: '#line'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:27:7: ( '#line' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:27:9: '#line'
             {
             match("#line"); 
 
@@ -170,8 +169,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__23;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:28:7: ( '{' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:28:9: '{'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:28:7: ( '{' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:28:9: '{'
             {
             match('{'); 
 
@@ -190,8 +189,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__24;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:29:7: ( '}' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:29:9: '}'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:29:7: ( '}' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:29:9: '}'
             {
             match('}'); 
 
@@ -210,8 +209,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__25;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:30:7: ( ';' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:30:9: ';'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:30:7: ( ';' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:30:9: ';'
             {
             match(';'); 
 
@@ -230,8 +229,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__26;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:31:7: ( 'namespace' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:31:9: 'namespace'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:31:7: ( 'namespace' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:31:9: 'namespace'
             {
             match("namespace"); 
 
@@ -251,8 +250,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__27;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:32:7: ( '@class' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:32:9: '@class'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:32:7: ( '@class' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:32:9: '@class'
             {
             match("@class"); 
 
@@ -272,8 +271,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__28;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:33:7: ( ',' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:33:9: ','
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:33:7: ( ',' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:33:9: ','
             {
             match(','); 
 
@@ -292,8 +291,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__29;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:34:7: ( '=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:34:9: '='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:34:7: ( '=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:34:9: '='
             {
             match('='); 
 
@@ -312,8 +311,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__30;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:35:7: ( 'enum' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:35:9: 'enum'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:35:7: ( 'enum' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:35:9: 'enum'
             {
             match("enum"); 
 
@@ -333,8 +332,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__31;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:36:7: ( '@protocol' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:36:9: '@protocol'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:36:7: ( '@protocol' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:36:9: '@protocol'
             {
             match("@protocol"); 
 
@@ -354,8 +353,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:37:7: ( '@interface' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:37:9: '@interface'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:37:7: ( '@interface' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:37:9: '@interface'
             {
             match("@interface"); 
 
@@ -375,8 +374,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__33;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:38:7: ( ':' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:38:9: ':'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:38:7: ( ':' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:38:9: ':'
             {
             match(':'); 
 
@@ -395,8 +394,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__34;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:39:7: ( '(' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:39:9: '('
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:39:7: ( '(' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:39:9: '('
             {
             match('('); 
 
@@ -415,8 +414,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__35;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:40:7: ( ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:40:9: ')'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:40:7: ( ')' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:40:9: ')'
             {
             match(')'); 
 
@@ -435,8 +434,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__36;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:41:7: ( '<' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:41:9: '<'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:41:7: ( '<' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:41:9: '<'
             {
             match('<'); 
 
@@ -455,8 +454,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__37;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:42:7: ( '>' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:42:9: '>'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:42:7: ( '>' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:42:9: '>'
             {
             match('>'); 
 
@@ -475,8 +474,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:43:7: ( '@public' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:43:9: '@public'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:43:7: ( '@public' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:43:9: '@public'
             {
             match("@public"); 
 
@@ -496,8 +495,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:44:7: ( '@private' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:44:9: '@private'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:44:7: ( '@private' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:44:9: '@private'
             {
             match("@private"); 
 
@@ -517,8 +516,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:45:7: ( '@protected' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:45:9: '@protected'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:45:7: ( '@protected' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:45:9: '@protected'
             {
             match("@protected"); 
 
@@ -538,8 +537,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:46:7: ( '@end' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:46:9: '@end'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:46:7: ( '@end' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:46:9: '@end'
             {
             match("@end"); 
 
@@ -559,8 +558,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:47:7: ( '@property' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:47:9: '@property'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:47:7: ( '@property' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:47:9: '@property'
             {
             match("@property"); 
 
@@ -580,8 +579,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:48:7: ( '+' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:48:9: '+'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:48:7: ( '+' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:48:9: '+'
             {
             match('+'); 
 
@@ -600,8 +599,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:49:7: ( '-' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:49:9: '-'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:49:7: ( '-' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:49:9: '-'
             {
             match('-'); 
 
@@ -620,8 +619,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:50:7: ( 'class' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:50:9: 'class'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:50:7: ( 'class' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:50:9: 'class'
             {
             match("class"); 
 
@@ -641,8 +640,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:51:7: ( '...' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:51:9: '...'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:51:7: ( '...' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:51:9: '...'
             {
             match("..."); 
 
@@ -662,8 +661,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:52:7: ( 'public' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:52:9: 'public'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:52:7: ( 'public' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:52:9: 'public'
             {
             match("public"); 
 
@@ -683,8 +682,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:53:7: ( 'private' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:53:9: 'private'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:53:7: ( 'private' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:53:9: 'private'
             {
             match("private"); 
 
@@ -704,8 +703,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:54:7: ( 'protected' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:54:9: 'protected'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:54:7: ( 'protected' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:54:9: 'protected'
             {
             match("protected"); 
 
@@ -725,8 +724,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:55:7: ( 'struct' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:55:9: 'struct'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:55:7: ( 'struct' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:55:9: 'struct'
             {
             match("struct"); 
 
@@ -746,8 +745,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:56:7: ( 'union' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:56:9: 'union'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:56:7: ( 'union' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:56:9: 'union'
             {
             match("union"); 
 
@@ -767,8 +766,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:57:7: ( 'return' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:57:9: 'return'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:57:7: ( 'return' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:57:9: 'return'
             {
             match("return"); 
 
@@ -788,8 +787,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:58:7: ( '*' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:58:9: '*'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:58:7: ( '*' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:58:9: '*'
             {
             match('*'); 
 
@@ -808,8 +807,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:59:7: ( '&' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:59:9: '&'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:59:7: ( '&' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:59:9: '&'
             {
             match('&'); 
 
@@ -828,8 +827,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:60:7: ( '[' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:60:9: '['
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:60:7: ( '[' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:60:9: '['
             {
             match('['); 
 
@@ -848,8 +847,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:61:7: ( ']' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:61:9: ']'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:61:7: ( ']' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:61:9: ']'
             {
             match(']'); 
 
@@ -868,8 +867,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:62:7: ( 'template' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:62:9: 'template'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:62:7: ( 'template' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:62:9: 'template'
             {
             match("template"); 
 
@@ -889,8 +888,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:63:7: ( '^' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:63:9: '^'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:63:7: ( '^' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:63:9: '^'
             {
             match('^'); 
 
@@ -909,8 +908,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:64:7: ( 'typedef' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:64:9: 'typedef'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:64:7: ( 'typedef' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:64:9: 'typedef'
             {
             match("typedef"); 
 
@@ -930,8 +929,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:65:7: ( 'typename' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:65:9: 'typename'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:65:7: ( 'typename' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:65:9: 'typename'
             {
             match("typename"); 
 
@@ -951,8 +950,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:66:7: ( '/' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:66:9: '/'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:66:7: ( '/' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:66:9: '/'
             {
             match('/'); 
 
@@ -971,8 +970,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:67:7: ( '%' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:67:9: '%'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:67:7: ( '%' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:67:9: '%'
             {
             match('%'); 
 
@@ -991,8 +990,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:68:7: ( '<<' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:68:9: '<<'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:68:7: ( '<<' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:68:9: '<<'
             {
             match("<<"); 
 
@@ -1012,8 +1011,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:69:7: ( '>>>' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:69:9: '>>>'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:69:7: ( '>>>' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:69:9: '>>>'
             {
             match(">>>"); 
 
@@ -1033,8 +1032,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:70:7: ( '>>' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:70:9: '>>'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:70:7: ( '>>' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:70:9: '>>'
             {
             match(">>"); 
 
@@ -1054,8 +1053,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:71:7: ( '||' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:71:9: '||'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:71:7: ( '||' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:71:9: '||'
             {
             match("||"); 
 
@@ -1075,8 +1074,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:72:7: ( '|' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:72:9: '|'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:72:7: ( '|' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:72:9: '|'
             {
             match('|'); 
 
@@ -1095,8 +1094,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:73:7: ( '&&' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:73:9: '&&'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:73:7: ( '&&' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:73:9: '&&'
             {
             match("&&"); 
 
@@ -1116,8 +1115,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__69;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:74:7: ( '<=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:74:9: '<='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:74:7: ( '<=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:74:9: '<='
             {
             match("<="); 
 
@@ -1137,8 +1136,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__70;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:75:7: ( '>=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:75:9: '>='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:75:7: ( '>=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:75:9: '>='
             {
             match(">="); 
 
@@ -1158,8 +1157,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__71;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:76:7: ( '==' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:76:9: '=='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:76:7: ( '==' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:76:9: '=='
             {
             match("=="); 
 
@@ -1179,8 +1178,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__72;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:77:7: ( '!=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:77:9: '!='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:77:7: ( '!=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:77:9: '!='
             {
             match("!="); 
 
@@ -1200,8 +1199,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__73;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:78:7: ( '::' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:78:9: '::'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:78:7: ( '::' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:78:9: '::'
             {
             match("::"); 
 
@@ -1221,8 +1220,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__74;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:79:7: ( '~' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:79:9: '~'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:79:7: ( '~' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:79:9: '~'
             {
             match('~'); 
 
@@ -1241,8 +1240,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__75;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:80:7: ( '@selector' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:80:9: '@selector'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:80:7: ( '@selector' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:80:9: '@selector'
             {
             match("@selector"); 
 
@@ -1262,8 +1261,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__76;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:81:7: ( '@encode' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:81:9: '@encode'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:81:7: ( '@encode' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:81:9: '@encode'
             {
             match("@encode"); 
 
@@ -1283,8 +1282,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__77;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:82:7: ( '*=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:82:9: '*='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:82:7: ( '*=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:82:9: '*='
             {
             match("*="); 
 
@@ -1304,8 +1303,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__78;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:83:7: ( '/=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:83:9: '/='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:83:7: ( '/=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:83:9: '/='
             {
             match("/="); 
 
@@ -1325,8 +1324,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__79;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:84:7: ( '%=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:84:9: '%='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:84:7: ( '%=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:84:9: '%='
             {
             match("%="); 
 
@@ -1346,8 +1345,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__80;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:85:7: ( '+=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:85:9: '+='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:85:7: ( '+=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:85:9: '+='
             {
             match("+="); 
 
@@ -1367,8 +1366,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__81;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:86:7: ( '-=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:86:9: '-='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:86:7: ( '-=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:86:9: '-='
             {
             match("-="); 
 
@@ -1388,8 +1387,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__82;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:87:7: ( '<<=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:87:9: '<<='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:87:7: ( '<<=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:87:9: '<<='
             {
             match("<<="); 
 
@@ -1409,8 +1408,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__83;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:88:7: ( '>>=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:88:9: '>>='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:88:7: ( '>>=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:88:9: '>>='
             {
             match(">>="); 
 
@@ -1430,8 +1429,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__84;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:89:7: ( '&=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:89:9: '&='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:89:7: ( '&=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:89:9: '&='
             {
             match("&="); 
 
@@ -1451,8 +1450,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__85;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:90:7: ( '^=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:90:9: '^='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:90:7: ( '^=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:90:9: '^='
             {
             match("^="); 
 
@@ -1472,8 +1471,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__86;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:91:7: ( '|=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:91:9: '|='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:91:7: ( '|=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:91:9: '|='
             {
             match("|="); 
 
@@ -1493,8 +1492,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__87;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:92:7: ( '~=' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:92:9: '~='
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:92:7: ( '~=' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:92:9: '~='
             {
             match("~="); 
 
@@ -1514,8 +1513,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__88;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:93:7: ( '?' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:93:9: '?'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:93:7: ( '?' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:93:9: '?'
             {
             match('?'); 
 
@@ -1534,8 +1533,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__89;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:94:7: ( 'sizeof' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:94:9: 'sizeof'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:94:7: ( 'sizeof' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:94:9: 'sizeof'
             {
             match("sizeof"); 
 
@@ -1555,8 +1554,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__90;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:95:7: ( '++' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:95:9: '++'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:95:7: ( '++' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:95:9: '++'
             {
             match("++"); 
 
@@ -1576,8 +1575,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__91;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:96:7: ( '--' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:96:9: '--'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:96:7: ( '--' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:96:9: '--'
             {
             match("--"); 
 
@@ -1597,8 +1596,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__92;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:97:7: ( '!' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:97:9: '!'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:97:7: ( '!' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:97:9: '!'
             {
             match('!'); 
 
@@ -1617,8 +1616,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__93;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:98:7: ( '.' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:98:9: '.'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:98:7: ( '.' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:98:9: '.'
             {
             match('.'); 
 
@@ -1637,8 +1636,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__94;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:99:7: ( '->' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:99:9: '->'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:99:7: ( '->' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:99:9: '->'
             {
             match("->"); 
 
@@ -1658,8 +1657,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__95;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:100:7: ( 'break' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:100:9: 'break'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:100:7: ( 'break' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:100:9: 'break'
             {
             match("break"); 
 
@@ -1679,8 +1678,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__96;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:101:7: ( 'if' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:101:9: 'if'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:101:7: ( 'if' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:101:9: 'if'
             {
             match("if"); 
 
@@ -1700,8 +1699,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__97;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:102:7: ( 'else' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:102:9: 'else'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:102:7: ( 'else' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:102:9: 'else'
             {
             match("else"); 
 
@@ -1721,8 +1720,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__98;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:103:7: ( 'while' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:103:9: 'while'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:103:7: ( 'while' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:103:9: 'while'
             {
             match("while"); 
 
@@ -1742,8 +1741,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__99;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:104:7: ( 'do' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:104:9: 'do'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:104:7: ( 'do' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:104:9: 'do'
             {
             match("do"); 
 
@@ -1763,8 +1762,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__100;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:105:8: ( 'for' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:105:10: 'for'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:105:8: ( 'for' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:105:10: 'for'
             {
             match("for"); 
 
@@ -1784,8 +1783,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__101;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:106:8: ( 'switch' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:106:10: 'switch'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:106:8: ( 'switch' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:106:10: 'switch'
             {
             match("switch"); 
 
@@ -1805,8 +1804,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = T__102;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:107:8: ( 'case' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:107:10: 'case'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:107:8: ( 'case' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:107:10: 'case'
             {
             match("case"); 
 
@@ -1824,8 +1823,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "Letter"
     public final void mLetter() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1575:2: ( '$' | '_' | 'A' .. 'Z' | 'a' .. 'z' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1580:2: ( '$' | '_' | 'A' .. 'Z' | 'a' .. 'z' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -1850,21 +1849,21 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1582:2: ( ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1583:3: ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1587:2: ( ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1588:3: ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) )
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1583:3: ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1588:3: ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) )
             int alt23=2;
             alt23 = dfa23.predict(input);
             switch (alt23) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1584:4: ( Letter ( Letter | '0' .. '9' )* )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1589:4: ( Letter ( Letter | '0' .. '9' )* )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1584:4: ( Letter ( Letter | '0' .. '9' )* )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1585:5: Letter ( Letter | '0' .. '9' )*
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1589:4: ( Letter ( Letter | '0' .. '9' )* )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1590:5: Letter ( Letter | '0' .. '9' )*
                     {
                     mLetter(); 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1586:5: ( Letter | '0' .. '9' )*
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1591:5: ( Letter | '0' .. '9' )*
                     loop1:
                     do {
                         int alt1=2;
@@ -1877,7 +1876,7 @@ public class ObjCppLexer extends Lexer {
 
                         switch (alt1) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
+                    	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:
                     	    {
                     	    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                     	        input.consume();
@@ -1904,14 +1903,14 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1591:4: ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1596:4: ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1591:4: ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1592:5: 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1596:4: ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1597:5: 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? )
                     {
                     match("operator"); 
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1593:5: ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1598:5: ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? )
                     int alt22=13;
                     switch ( input.LA(1) ) {
                     case '+':
@@ -1988,10 +1987,10 @@ public class ObjCppLexer extends Lexer {
 
                     switch (alt22) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1594:6: '+' ( '+' )? ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1599:6: '+' ( '+' )? ( '=' )?
                             {
                             match('+'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1594:10: ( '+' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1599:10: ( '+' )?
                             int alt2=2;
                             int LA2_0 = input.LA(1);
 
@@ -2000,7 +1999,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt2) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1594:10: '+'
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1599:10: '+'
                                     {
                                     match('+'); 
 
@@ -2009,7 +2008,7 @@ public class ObjCppLexer extends Lexer {
 
                             }
 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1594:15: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1599:15: ( '=' )?
                             int alt3=2;
                             int LA3_0 = input.LA(1);
 
@@ -2018,7 +2017,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt3) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1594:15: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1599:15: '='
                                     {
                                     match('='); 
 
@@ -2031,10 +2030,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 2 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1595:6: '-' ( '-' )? ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1600:6: '-' ( '-' )? ( '=' )?
                             {
                             match('-'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1595:10: ( '-' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1600:10: ( '-' )?
                             int alt4=2;
                             int LA4_0 = input.LA(1);
 
@@ -2043,7 +2042,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt4) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1595:10: '-'
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1600:10: '-'
                                     {
                                     match('-'); 
 
@@ -2052,7 +2051,7 @@ public class ObjCppLexer extends Lexer {
 
                             }
 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1595:15: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1600:15: ( '=' )?
                             int alt5=2;
                             int LA5_0 = input.LA(1);
 
@@ -2061,7 +2060,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt5) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1595:15: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1600:15: '='
                                     {
                                     match('='); 
 
@@ -2074,10 +2073,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 3 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1596:6: '*' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1601:6: '*' ( '=' )?
                             {
                             match('*'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1596:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1601:10: ( '=' )?
                             int alt6=2;
                             int LA6_0 = input.LA(1);
 
@@ -2086,7 +2085,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt6) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1596:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1601:10: '='
                                     {
                                     match('='); 
 
@@ -2099,10 +2098,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 4 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1597:6: '/' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1602:6: '/' ( '=' )?
                             {
                             match('/'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1597:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1602:10: ( '=' )?
                             int alt7=2;
                             int LA7_0 = input.LA(1);
 
@@ -2111,7 +2110,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt7) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1597:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1602:10: '='
                                     {
                                     match('='); 
 
@@ -2124,10 +2123,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 5 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1598:6: '%' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1603:6: '%' ( '=' )?
                             {
                             match('%'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1598:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1603:10: ( '=' )?
                             int alt8=2;
                             int LA8_0 = input.LA(1);
 
@@ -2136,7 +2135,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt8) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1598:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1603:10: '='
                                     {
                                     match('='); 
 
@@ -2149,10 +2148,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 6 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1599:6: '<' ( '<' )? ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1604:6: '<' ( '<' )? ( '=' )?
                             {
                             match('<'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1599:10: ( '<' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1604:10: ( '<' )?
                             int alt9=2;
                             int LA9_0 = input.LA(1);
 
@@ -2161,7 +2160,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt9) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1599:10: '<'
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1604:10: '<'
                                     {
                                     match('<'); 
 
@@ -2170,7 +2169,7 @@ public class ObjCppLexer extends Lexer {
 
                             }
 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1599:15: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1604:15: ( '=' )?
                             int alt10=2;
                             int LA10_0 = input.LA(1);
 
@@ -2179,7 +2178,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt10) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1599:15: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1604:15: '='
                                     {
                                     match('='); 
 
@@ -2192,10 +2191,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 7 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:6: '>' ( '>' ( '>' )? )? ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:6: '>' ( '>' ( '>' )? )? ( '=' )?
                             {
                             match('>'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:10: ( '>' ( '>' )? )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:10: ( '>' ( '>' )? )?
                             int alt12=2;
                             int LA12_0 = input.LA(1);
 
@@ -2204,10 +2203,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt12) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:11: '>' ( '>' )?
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:11: '>' ( '>' )?
                                     {
                                     match('>'); 
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:15: ( '>' )?
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:15: ( '>' )?
                                     int alt11=2;
                                     int LA11_0 = input.LA(1);
 
@@ -2216,7 +2215,7 @@ public class ObjCppLexer extends Lexer {
                                     }
                                     switch (alt11) {
                                         case 1 :
-                                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:15: '>'
+                                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:15: '>'
                                             {
                                             match('>'); 
 
@@ -2231,7 +2230,7 @@ public class ObjCppLexer extends Lexer {
 
                             }
 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:22: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:22: ( '=' )?
                             int alt13=2;
                             int LA13_0 = input.LA(1);
 
@@ -2240,7 +2239,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt13) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1600:22: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1605:22: '='
                                     {
                                     match('='); 
 
@@ -2253,10 +2252,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 8 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1601:6: '^' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1606:6: '^' ( '=' )?
                             {
                             match('^'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1601:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1606:10: ( '=' )?
                             int alt14=2;
                             int LA14_0 = input.LA(1);
 
@@ -2265,7 +2264,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt14) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1601:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1606:10: '='
                                     {
                                     match('='); 
 
@@ -2278,10 +2277,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 9 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1602:6: '|' ( '|' )? ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1607:6: '|' ( '|' )? ( '=' )?
                             {
                             match('|'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1602:10: ( '|' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1607:10: ( '|' )?
                             int alt15=2;
                             int LA15_0 = input.LA(1);
 
@@ -2290,7 +2289,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt15) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1602:10: '|'
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1607:10: '|'
                                     {
                                     match('|'); 
 
@@ -2299,7 +2298,7 @@ public class ObjCppLexer extends Lexer {
 
                             }
 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1602:15: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1607:15: ( '=' )?
                             int alt16=2;
                             int LA16_0 = input.LA(1);
 
@@ -2308,7 +2307,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt16) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1602:15: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1607:15: '='
                                     {
                                     match('='); 
 
@@ -2321,10 +2320,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 10 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1603:6: '&' ( '&' )? ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1608:6: '&' ( '&' )? ( '=' )?
                             {
                             match('&'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1603:10: ( '&' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1608:10: ( '&' )?
                             int alt17=2;
                             int LA17_0 = input.LA(1);
 
@@ -2333,7 +2332,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt17) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1603:10: '&'
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1608:10: '&'
                                     {
                                     match('&'); 
 
@@ -2342,7 +2341,7 @@ public class ObjCppLexer extends Lexer {
 
                             }
 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1603:15: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1608:15: ( '=' )?
                             int alt18=2;
                             int LA18_0 = input.LA(1);
 
@@ -2351,7 +2350,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt18) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1603:15: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1608:15: '='
                                     {
                                     match('='); 
 
@@ -2364,10 +2363,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 11 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1604:6: '=' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1609:6: '=' ( '=' )?
                             {
                             match('='); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1604:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1609:10: ( '=' )?
                             int alt19=2;
                             int LA19_0 = input.LA(1);
 
@@ -2376,7 +2375,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt19) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1604:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1609:10: '='
                                     {
                                     match('='); 
 
@@ -2389,10 +2388,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 12 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1605:6: '!' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1610:6: '!' ( '=' )?
                             {
                             match('!'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1605:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1610:10: ( '=' )?
                             int alt20=2;
                             int LA20_0 = input.LA(1);
 
@@ -2401,7 +2400,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt20) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1605:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1610:10: '='
                                     {
                                     match('='); 
 
@@ -2414,10 +2413,10 @@ public class ObjCppLexer extends Lexer {
                             }
                             break;
                         case 13 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1606:6: '~' ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1611:6: '~' ( '=' )?
                             {
                             match('~'); 
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1606:10: ( '=' )?
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1611:10: ( '=' )?
                             int alt21=2;
                             int LA21_0 = input.LA(1);
 
@@ -2426,7 +2425,7 @@ public class ObjCppLexer extends Lexer {
                             }
                             switch (alt21) {
                                 case 1 :
-                                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1606:10: '='
+                                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1611:10: '='
                                     {
                                     match('='); 
 
@@ -2464,8 +2463,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "FloatingPointExponentSuffix"
     public final void mFloatingPointExponentSuffix() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1614:2: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1614:4: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1619:2: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1619:4: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -2476,7 +2475,7 @@ public class ObjCppLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1615:3: ( '+' | '-' )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1620:3: ( '+' | '-' )?
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -2485,7 +2484,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt24) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2502,7 +2501,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1616:3: ( '0' .. '9' )+
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1621:3: ( '0' .. '9' )+
             int cnt25=0;
             loop25:
             do {
@@ -2516,7 +2515,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt25) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1616:4: '0' .. '9'
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1621:4: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -2544,8 +2543,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "FloatingPointConstantSuffix"
     public final void mFloatingPointConstantSuffix() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1621:2: ( 'f' | 'F' | 'd' | 'D' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1626:2: ( 'f' | 'F' | 'd' | 'D' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
                 input.consume();
@@ -2568,7 +2567,7 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "CharEscape"
     public final void mCharEscape() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1629:2: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | OctalEscape )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1634:2: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | OctalEscape )
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -2596,7 +2595,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt26) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1629:4: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1634:4: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -2612,7 +2611,7 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1640:3: OctalEscape
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1645:3: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -2629,11 +2628,11 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1645:2: ( '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1645:4: '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1650:2: ( '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1650:4: '\\\\' ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             {
             match('\\'); 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1645:9: ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1650:9: ( ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             int alt27=3;
             int LA27_0 = input.LA(1);
 
@@ -2669,24 +2668,24 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt27) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:4: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:4: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:4: ( '0' .. '3' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:5: '0' .. '3'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:4: ( '0' .. '3' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:5: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:15: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:16: '0' .. '7'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:15: ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:16: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:26: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1646:27: '0' .. '7'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:26: ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1651:27: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2696,17 +2695,17 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1647:4: ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1652:4: ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1647:4: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1647:5: '0' .. '7'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1652:4: ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1652:5: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1647:15: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1647:16: '0' .. '7'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1652:15: ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1652:16: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2716,10 +2715,10 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1648:4: ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1653:4: ( '0' .. '7' )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1648:4: ( '0' .. '7' )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1648:5: '0' .. '7'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1653:4: ( '0' .. '7' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1653:5: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2743,8 +2742,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1654:2: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1654:4: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1659:2: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1659:4: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -2766,11 +2765,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = CHARACTER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1661:2: ( '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\'' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1661:4: '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\''
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1666:2: ( '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\'' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1666:4: '\\'' ( CharEscape | ~ ( '\\\\' | '\\'' ) )+ '\\''
             {
             match('\''); 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1662:3: ( CharEscape | ~ ( '\\\\' | '\\'' ) )+
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1667:3: ( CharEscape | ~ ( '\\\\' | '\\'' ) )+
             int cnt28=0;
             loop28:
             do {
@@ -2787,14 +2786,14 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1663:4: CharEscape
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1668:4: CharEscape
             	    {
             	    mCharEscape(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1664:4: ~ ( '\\\\' | '\\'' )
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1669:4: ~ ( '\\\\' | '\\'' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2835,11 +2834,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1673:2: ( '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1673:4: '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1678:2: ( '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1678:4: '\"' ( CharEscape | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1674:3: ( CharEscape | ~ ( '\\\\' | '\"' ) )*
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1679:3: ( CharEscape | ~ ( '\\\\' | '\"' ) )*
             loop29:
             do {
                 int alt29=3;
@@ -2855,14 +2854,14 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt29) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1675:4: CharEscape
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1680:4: CharEscape
             	    {
             	    mCharEscape(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1676:4: ~ ( '\\\\' | '\"' )
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1681:4: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2897,8 +2896,8 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1687:2: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1692:2: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -2921,7 +2920,7 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR start "IntegerConstantSuffix"
     public final void mIntegerConstantSuffix() throws RecognitionException {
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1694:2: ( ( 'u' | 'U' ) | ( ( 'l' | 'L' ) ( 'l' | 'L' )? ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1699:2: ( ( 'u' | 'U' ) | ( ( 'l' | 'L' ) ( 'l' | 'L' )? ) )
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -2939,7 +2938,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt31) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1694:4: ( 'u' | 'U' )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1699:4: ( 'u' | 'U' )
                     {
                     if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
                         input.consume();
@@ -2954,10 +2953,10 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1695:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1700:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1695:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1696:4: ( 'l' | 'L' ) ( 'l' | 'L' )?
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1700:3: ( ( 'l' | 'L' ) ( 'l' | 'L' )? )
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1701:4: ( 'l' | 'L' ) ( 'l' | 'L' )?
                     {
                     if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                         input.consume();
@@ -2968,7 +2967,7 @@ public class ObjCppLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1697:4: ( 'l' | 'L' )?
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1702:4: ( 'l' | 'L' )?
                     int alt30=2;
                     int LA30_0 = input.LA(1);
 
@@ -2977,7 +2976,7 @@ public class ObjCppLexer extends Lexer {
                     }
                     switch (alt30) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:
                             {
                             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                                 input.consume();
@@ -3013,8 +3012,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = HEXADECIMAL_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1702:2: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1702:4: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1707:2: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )? )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1707:4: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerConstantSuffix )?
             {
             match('0'); 
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -3026,7 +3025,7 @@ public class ObjCppLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1703:3: ( HexDigit )+
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1708:3: ( HexDigit )+
             int cnt32=0;
             loop32:
             do {
@@ -3040,7 +3039,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt32) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1703:3: HexDigit
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1708:3: HexDigit
             	    {
             	    mHexDigit(); 
 
@@ -3056,7 +3055,7 @@ public class ObjCppLexer extends Lexer {
                 cnt32++;
             } while (true);
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1704:3: ( IntegerConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1709:3: ( IntegerConstantSuffix )?
             int alt33=2;
             int LA33_0 = input.LA(1);
 
@@ -3065,7 +3064,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt33) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1704:3: IntegerConstantSuffix
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1709:3: IntegerConstantSuffix
                     {
                     mIntegerConstantSuffix(); 
 
@@ -3090,10 +3089,10 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = DECIMAL_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1708:2: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1709:3: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1713:2: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )? )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1714:3: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerConstantSuffix )?
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1709:3: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1714:3: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -3111,17 +3110,17 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt35) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1709:4: '0'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1714:4: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1709:10: '1' .. '9' ( '0' .. '9' )*
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1714:10: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1709:19: ( '0' .. '9' )*
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1714:19: ( '0' .. '9' )*
                     loop34:
                     do {
                         int alt34=2;
@@ -3134,7 +3133,7 @@ public class ObjCppLexer extends Lexer {
 
                         switch (alt34) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1709:19: '0' .. '9'
+                    	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1714:19: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -3152,7 +3151,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1710:3: ( IntegerConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1715:3: ( IntegerConstantSuffix )?
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -3161,7 +3160,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt36) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1710:3: IntegerConstantSuffix
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1715:3: IntegerConstantSuffix
                     {
                     mIntegerConstantSuffix(); 
 
@@ -3186,11 +3185,11 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = OCTAL_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1714:2: ( '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1714:5: '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1719:2: ( '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )? )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1719:5: '0' ( '0' .. '7' )+ ( IntegerConstantSuffix )?
             {
             match('0'); 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1715:3: ( '0' .. '7' )+
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1720:3: ( '0' .. '7' )+
             int cnt37=0;
             loop37:
             do {
@@ -3204,7 +3203,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt37) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1715:4: '0' .. '7'
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1720:4: '0' .. '7'
             	    {
             	    matchRange('0','7'); 
 
@@ -3220,7 +3219,7 @@ public class ObjCppLexer extends Lexer {
                 cnt37++;
             } while (true);
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1716:3: ( IntegerConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1721:3: ( IntegerConstantSuffix )?
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -3229,7 +3228,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt38) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1716:3: IntegerConstantSuffix
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1721:3: IntegerConstantSuffix
                     {
                     mIntegerConstantSuffix(); 
 
@@ -3254,10 +3253,10 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = FLOAT_NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1720:2: ( ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )? )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1721:3: ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1725:2: ( ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )? )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1726:3: ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? ( FloatingPointExponentSuffix )? ( FloatingPointConstantSuffix )?
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1721:3: ( '0' .. '9' )+
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1726:3: ( '0' .. '9' )+
             int cnt39=0;
             loop39:
             do {
@@ -3271,7 +3270,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt39) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1721:4: '0' .. '9'
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1726:4: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -3287,7 +3286,7 @@ public class ObjCppLexer extends Lexer {
                 cnt39++;
             } while (true);
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1722:3: ( '.' ( '0' .. '9' )* )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1727:3: ( '.' ( '0' .. '9' )* )?
             int alt41=2;
             int LA41_0 = input.LA(1);
 
@@ -3296,10 +3295,10 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt41) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1723:4: '.' ( '0' .. '9' )*
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1728:4: '.' ( '0' .. '9' )*
                     {
                     match('.'); 
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1724:4: ( '0' .. '9' )*
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1729:4: ( '0' .. '9' )*
                     loop40:
                     do {
                         int alt40=2;
@@ -3312,7 +3311,7 @@ public class ObjCppLexer extends Lexer {
 
                         switch (alt40) {
                     	case 1 :
-                    	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1724:5: '0' .. '9'
+                    	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1729:5: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -3330,7 +3329,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1726:3: ( FloatingPointExponentSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1731:3: ( FloatingPointExponentSuffix )?
             int alt42=2;
             int LA42_0 = input.LA(1);
 
@@ -3339,7 +3338,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt42) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1726:3: FloatingPointExponentSuffix
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1731:3: FloatingPointExponentSuffix
                     {
                     mFloatingPointExponentSuffix(); 
 
@@ -3348,7 +3347,7 @@ public class ObjCppLexer extends Lexer {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1727:3: ( FloatingPointConstantSuffix )?
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1732:3: ( FloatingPointConstantSuffix )?
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -3357,7 +3356,7 @@ public class ObjCppLexer extends Lexer {
             }
             switch (alt43) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1727:3: FloatingPointConstantSuffix
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1732:3: FloatingPointConstantSuffix
                     {
                     mFloatingPointConstantSuffix(); 
 
@@ -3382,8 +3381,8 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1731:2: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1731:4: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1736:2: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1736:4: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3413,15 +3412,15 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1743:2: ( ( '/*' ( options {greedy=false; } : . )* '*/' ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1743:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1748:2: ( ( '/*' ( options {greedy=false; } : . )* '*/' ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1748:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1743:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1744:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1748:4: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1749:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1745:4: ( options {greedy=false; } : . )*
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1750:4: ( options {greedy=false; } : . )*
             loop44:
             do {
                 int alt44=2;
@@ -3446,7 +3445,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt44) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1745:32: .
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1750:32: .
             	    {
             	    matchAny(); 
 
@@ -3482,15 +3481,15 @@ public class ObjCppLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1753:2: ( ( '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?) ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1753:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1758:2: ( ( '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?) ) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1758:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?) )
             {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1753:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1754:4: '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?)
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1758:4: ( '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?) )
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1759:4: '//' (~ ( '\\n' | '\\r' ) )* ( ( '\\r' )? '\\n' | {...}?)
             {
             match("//"); 
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1755:4: (~ ( '\\n' | '\\r' ) )*
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1760:4: (~ ( '\\n' | '\\r' ) )*
             loop45:
             do {
                 int alt45=2;
@@ -3503,7 +3502,7 @@ public class ObjCppLexer extends Lexer {
 
                 switch (alt45) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1755:4: ~ ( '\\n' | '\\r' )
+            	    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1760:4: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -3523,7 +3522,7 @@ public class ObjCppLexer extends Lexer {
                 }
             } while (true);
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1756:4: ( ( '\\r' )? '\\n' | {...}?)
+            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1761:4: ( ( '\\r' )? '\\n' | {...}?)
             int alt47=2;
             int LA47_0 = input.LA(1);
 
@@ -3534,9 +3533,9 @@ public class ObjCppLexer extends Lexer {
                 alt47=2;}
             switch (alt47) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1756:5: ( '\\r' )? '\\n'
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1761:5: ( '\\r' )? '\\n'
                     {
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1756:5: ( '\\r' )?
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1761:5: ( '\\r' )?
                     int alt46=2;
                     int LA46_0 = input.LA(1);
 
@@ -3545,7 +3544,7 @@ public class ObjCppLexer extends Lexer {
                     }
                     switch (alt46) {
                         case 1 :
-                            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1756:5: '\\r'
+                            // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1761:5: '\\r'
                             {
                             match('\r'); 
 
@@ -3559,7 +3558,7 @@ public class ObjCppLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1756:18: {...}?
+                    // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1761:18: {...}?
                     {
                     if ( !(( input.LT(1) == EOF )) ) {
                         throw new FailedPredicateException(input, "LINE_COMMENT", " input.LT(1) == EOF ");
@@ -3588,642 +3587,642 @@ public class ObjCppLexer extends Lexer {
     // $ANTLR end "LINE_COMMENT"
 
     public void mTokens() throws RecognitionException {
-        // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:8: ( T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | IDENTIFIER | CHARACTER | STRING | HEXADECIMAL_NUMBER | DECIMAL_NUMBER | OCTAL_NUMBER | FLOAT_NUMBER | WS | COMMENT | LINE_COMMENT )
+        // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:8: ( T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | IDENTIFIER | CHARACTER | STRING | HEXADECIMAL_NUMBER | DECIMAL_NUMBER | OCTAL_NUMBER | FLOAT_NUMBER | WS | COMMENT | LINE_COMMENT )
         int alt48=91;
         alt48 = dfa48.predict(input);
         switch (alt48) {
             case 1 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:10: T__22
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:10: T__22
                 {
                 mT__22(); 
 
                 }
                 break;
             case 2 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:16: T__23
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:16: T__23
                 {
                 mT__23(); 
 
                 }
                 break;
             case 3 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:22: T__24
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:22: T__24
                 {
                 mT__24(); 
 
                 }
                 break;
             case 4 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:28: T__25
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:28: T__25
                 {
                 mT__25(); 
 
                 }
                 break;
             case 5 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:34: T__26
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:34: T__26
                 {
                 mT__26(); 
 
                 }
                 break;
             case 6 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:40: T__27
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:40: T__27
                 {
                 mT__27(); 
 
                 }
                 break;
             case 7 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:46: T__28
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:46: T__28
                 {
                 mT__28(); 
 
                 }
                 break;
             case 8 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:52: T__29
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:52: T__29
                 {
                 mT__29(); 
 
                 }
                 break;
             case 9 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:58: T__30
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:58: T__30
                 {
                 mT__30(); 
 
                 }
                 break;
             case 10 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:64: T__31
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:64: T__31
                 {
                 mT__31(); 
 
                 }
                 break;
             case 11 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:70: T__32
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:70: T__32
                 {
                 mT__32(); 
 
                 }
                 break;
             case 12 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:76: T__33
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:76: T__33
                 {
                 mT__33(); 
 
                 }
                 break;
             case 13 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:82: T__34
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:82: T__34
                 {
                 mT__34(); 
 
                 }
                 break;
             case 14 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:88: T__35
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:88: T__35
                 {
                 mT__35(); 
 
                 }
                 break;
             case 15 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:94: T__36
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:94: T__36
                 {
                 mT__36(); 
 
                 }
                 break;
             case 16 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:100: T__37
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:100: T__37
                 {
                 mT__37(); 
 
                 }
                 break;
             case 17 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:106: T__38
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:106: T__38
                 {
                 mT__38(); 
 
                 }
                 break;
             case 18 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:112: T__39
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:112: T__39
                 {
                 mT__39(); 
 
                 }
                 break;
             case 19 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:118: T__40
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:118: T__40
                 {
                 mT__40(); 
 
                 }
                 break;
             case 20 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:124: T__41
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:124: T__41
                 {
                 mT__41(); 
 
                 }
                 break;
             case 21 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:130: T__42
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:130: T__42
                 {
                 mT__42(); 
 
                 }
                 break;
             case 22 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:136: T__43
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:136: T__43
                 {
                 mT__43(); 
 
                 }
                 break;
             case 23 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:142: T__44
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:142: T__44
                 {
                 mT__44(); 
 
                 }
                 break;
             case 24 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:148: T__45
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:148: T__45
                 {
                 mT__45(); 
 
                 }
                 break;
             case 25 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:154: T__46
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:154: T__46
                 {
                 mT__46(); 
 
                 }
                 break;
             case 26 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:160: T__47
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:160: T__47
                 {
                 mT__47(); 
 
                 }
                 break;
             case 27 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:166: T__48
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:166: T__48
                 {
                 mT__48(); 
 
                 }
                 break;
             case 28 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:172: T__49
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:172: T__49
                 {
                 mT__49(); 
 
                 }
                 break;
             case 29 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:178: T__50
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:178: T__50
                 {
                 mT__50(); 
 
                 }
                 break;
             case 30 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:184: T__51
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:184: T__51
                 {
                 mT__51(); 
 
                 }
                 break;
             case 31 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:190: T__52
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:190: T__52
                 {
                 mT__52(); 
 
                 }
                 break;
             case 32 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:196: T__53
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:196: T__53
                 {
                 mT__53(); 
 
                 }
                 break;
             case 33 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:202: T__54
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:202: T__54
                 {
                 mT__54(); 
 
                 }
                 break;
             case 34 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:208: T__55
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:208: T__55
                 {
                 mT__55(); 
 
                 }
                 break;
             case 35 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:214: T__56
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:214: T__56
                 {
                 mT__56(); 
 
                 }
                 break;
             case 36 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:220: T__57
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:220: T__57
                 {
                 mT__57(); 
 
                 }
                 break;
             case 37 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:226: T__58
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:226: T__58
                 {
                 mT__58(); 
 
                 }
                 break;
             case 38 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:232: T__59
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:232: T__59
                 {
                 mT__59(); 
 
                 }
                 break;
             case 39 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:238: T__60
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:238: T__60
                 {
                 mT__60(); 
 
                 }
                 break;
             case 40 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:244: T__61
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:244: T__61
                 {
                 mT__61(); 
 
                 }
                 break;
             case 41 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:250: T__62
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:250: T__62
                 {
                 mT__62(); 
 
                 }
                 break;
             case 42 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:256: T__63
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:256: T__63
                 {
                 mT__63(); 
 
                 }
                 break;
             case 43 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:262: T__64
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:262: T__64
                 {
                 mT__64(); 
 
                 }
                 break;
             case 44 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:268: T__65
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:268: T__65
                 {
                 mT__65(); 
 
                 }
                 break;
             case 45 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:274: T__66
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:274: T__66
                 {
                 mT__66(); 
 
                 }
                 break;
             case 46 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:280: T__67
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:280: T__67
                 {
                 mT__67(); 
 
                 }
                 break;
             case 47 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:286: T__68
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:286: T__68
                 {
                 mT__68(); 
 
                 }
                 break;
             case 48 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:292: T__69
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:292: T__69
                 {
                 mT__69(); 
 
                 }
                 break;
             case 49 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:298: T__70
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:298: T__70
                 {
                 mT__70(); 
 
                 }
                 break;
             case 50 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:304: T__71
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:304: T__71
                 {
                 mT__71(); 
 
                 }
                 break;
             case 51 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:310: T__72
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:310: T__72
                 {
                 mT__72(); 
 
                 }
                 break;
             case 52 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:316: T__73
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:316: T__73
                 {
                 mT__73(); 
 
                 }
                 break;
             case 53 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:322: T__74
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:322: T__74
                 {
                 mT__74(); 
 
                 }
                 break;
             case 54 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:328: T__75
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:328: T__75
                 {
                 mT__75(); 
 
                 }
                 break;
             case 55 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:334: T__76
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:334: T__76
                 {
                 mT__76(); 
 
                 }
                 break;
             case 56 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:340: T__77
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:340: T__77
                 {
                 mT__77(); 
 
                 }
                 break;
             case 57 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:346: T__78
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:346: T__78
                 {
                 mT__78(); 
 
                 }
                 break;
             case 58 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:352: T__79
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:352: T__79
                 {
                 mT__79(); 
 
                 }
                 break;
             case 59 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:358: T__80
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:358: T__80
                 {
                 mT__80(); 
 
                 }
                 break;
             case 60 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:364: T__81
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:364: T__81
                 {
                 mT__81(); 
 
                 }
                 break;
             case 61 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:370: T__82
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:370: T__82
                 {
                 mT__82(); 
 
                 }
                 break;
             case 62 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:376: T__83
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:376: T__83
                 {
                 mT__83(); 
 
                 }
                 break;
             case 63 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:382: T__84
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:382: T__84
                 {
                 mT__84(); 
 
                 }
                 break;
             case 64 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:388: T__85
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:388: T__85
                 {
                 mT__85(); 
 
                 }
                 break;
             case 65 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:394: T__86
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:394: T__86
                 {
                 mT__86(); 
 
                 }
                 break;
             case 66 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:400: T__87
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:400: T__87
                 {
                 mT__87(); 
 
                 }
                 break;
             case 67 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:406: T__88
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:406: T__88
                 {
                 mT__88(); 
 
                 }
                 break;
             case 68 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:412: T__89
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:412: T__89
                 {
                 mT__89(); 
 
                 }
                 break;
             case 69 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:418: T__90
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:418: T__90
                 {
                 mT__90(); 
 
                 }
                 break;
             case 70 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:424: T__91
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:424: T__91
                 {
                 mT__91(); 
 
                 }
                 break;
             case 71 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:430: T__92
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:430: T__92
                 {
                 mT__92(); 
 
                 }
                 break;
             case 72 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:436: T__93
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:436: T__93
                 {
                 mT__93(); 
 
                 }
                 break;
             case 73 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:442: T__94
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:442: T__94
                 {
                 mT__94(); 
 
                 }
                 break;
             case 74 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:448: T__95
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:448: T__95
                 {
                 mT__95(); 
 
                 }
                 break;
             case 75 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:454: T__96
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:454: T__96
                 {
                 mT__96(); 
 
                 }
                 break;
             case 76 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:460: T__97
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:460: T__97
                 {
                 mT__97(); 
 
                 }
                 break;
             case 77 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:466: T__98
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:466: T__98
                 {
                 mT__98(); 
 
                 }
                 break;
             case 78 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:472: T__99
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:472: T__99
                 {
                 mT__99(); 
 
                 }
                 break;
             case 79 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:478: T__100
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:478: T__100
                 {
                 mT__100(); 
 
                 }
                 break;
             case 80 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:485: T__101
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:485: T__101
                 {
                 mT__101(); 
 
                 }
                 break;
             case 81 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:492: T__102
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:492: T__102
                 {
                 mT__102(); 
 
                 }
                 break;
             case 82 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:499: IDENTIFIER
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:499: IDENTIFIER
                 {
                 mIDENTIFIER(); 
 
                 }
                 break;
             case 83 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:510: CHARACTER
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:510: CHARACTER
                 {
                 mCHARACTER(); 
 
                 }
                 break;
             case 84 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:520: STRING
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:520: STRING
                 {
                 mSTRING(); 
 
                 }
                 break;
             case 85 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:527: HEXADECIMAL_NUMBER
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:527: HEXADECIMAL_NUMBER
                 {
                 mHEXADECIMAL_NUMBER(); 
 
                 }
                 break;
             case 86 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:546: DECIMAL_NUMBER
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:546: DECIMAL_NUMBER
                 {
                 mDECIMAL_NUMBER(); 
 
                 }
                 break;
             case 87 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:561: OCTAL_NUMBER
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:561: OCTAL_NUMBER
                 {
                 mOCTAL_NUMBER(); 
 
                 }
                 break;
             case 88 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:574: FLOAT_NUMBER
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:574: FLOAT_NUMBER
                 {
                 mFLOAT_NUMBER(); 
 
                 }
                 break;
             case 89 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:587: WS
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:587: WS
                 {
                 mWS(); 
 
                 }
                 break;
             case 90 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:590: COMMENT
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:590: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
             case 91 :
-                // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCpp.g:1:598: LINE_COMMENT
+                // C:\\Prog\\jnaerator\\sources\\com\\ochafik\\lang\\jnaerator\\parser\\ObjCpp.g:1:598: LINE_COMMENT
                 {
                 mLINE_COMMENT(); 
 
@@ -4242,10 +4241,11 @@ public class ObjCppLexer extends Lexer {
     static final String DFA23_eofS =
         "\13\uffff";
     static final String DFA23_minS =
-        "\1\44\1\160\1\uffff\1\145\1\162\1\141\1\164\1\157\1\162\1\41\1\uffff";
-    static final String DFA23_maxS =
-        "\1\172\1\160\1\uffff\1\145\1\162\1\141\1\164\1\157\1\162\1\176\1"+
+        "\1\44\1\160\1\uffff\1\145\1\162\1\141\1\164\1\157\1\162\1\41\1"+
         "\uffff";
+    static final String DFA23_maxS =
+        "\1\172\1\160\1\uffff\1\145\1\162\1\141\1\164\1\157\1\162\1\176"+
+        "\1\uffff";
     static final String DFA23_acceptS =
         "\2\uffff\1\1\7\uffff\1\2";
     static final String DFA23_specialS =
@@ -4260,8 +4260,8 @@ public class ObjCppLexer extends Lexer {
             "\1\7",
             "\1\10",
             "\1\11",
-            "\1\12\3\uffff\2\12\3\uffff\2\12\1\uffff\1\12\1\uffff\1\12\14"+
-            "\uffff\3\12\37\uffff\1\12\35\uffff\1\12\1\uffff\1\12",
+            "\1\12\3\uffff\2\12\3\uffff\2\12\1\uffff\1\12\1\uffff\1\12"+
+            "\14\uffff\3\12\37\uffff\1\12\35\uffff\1\12\1\uffff\1\12",
             ""
     };
 
@@ -4295,14 +4295,14 @@ public class ObjCppLexer extends Lexer {
             this.transition = DFA23_transition;
         }
         public String getDescription() {
-            return "1583:3: ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) )";
+            return "1588:3: ( ( Letter ( Letter | '0' .. '9' )* ) | ( 'operator' ( '+' ( '+' )? ( '=' )? | '-' ( '-' )? ( '=' )? | '*' ( '=' )? | '/' ( '=' )? | '%' ( '=' )? | '<' ( '<' )? ( '=' )? | '>' ( '>' ( '>' )? )? ( '=' )? | '^' ( '=' )? | '|' ( '|' )? ( '=' )? | '&' ( '&' )? ( '=' )? | '=' ( '=' )? | '!' ( '=' )? | '~' ( '=' )? ) ) )";
         }
     }
     static final String DFA48_eotS =
-        "\5\uffff\1\50\2\uffff\1\65\1\50\1\71\2\uffff\1\74\1\77\1\102\1\106"+
-        "\1\50\1\112\4\50\1\123\1\126\2\uffff\1\50\1\132\1\136\1\140\1\143"+
-        "\1\145\1\147\1\uffff\5\50\3\uffff\2\157\1\uffff\1\50\7\uffff\2\50"+
-        "\2\uffff\1\171\2\uffff\1\174\11\uffff\2\50\2\uffff\7\50\5\uffff"+
+        "\5\uffff\1\50\2\uffff\1\65\1\50\1\71\2\uffff\1\74\1\77\1\102\1"+
+        "\106\1\50\1\112\4\50\1\123\1\126\2\uffff\1\50\1\132\1\136\1\140"+
+        "\1\143\1\145\1\147\1\uffff\5\50\3\uffff\2\157\1\uffff\1\50\7\uffff"+
+        "\2\50\2\uffff\1\171\2\uffff\1\174\11\uffff\2\50\2\uffff\7\50\5\uffff"+
         "\2\50\17\uffff\1\50\1\u008a\1\50\1\u008c\1\50\3\uffff\1\u008e\1"+
         "\157\1\50\3\uffff\2\50\5\uffff\15\50\1\uffff\1\50\1\uffff\1\u00a4"+
         "\1\uffff\1\50\4\uffff\1\u00a8\1\u00a9\1\50\1\u00ab\14\50\1\uffff"+
@@ -4313,8 +4313,8 @@ public class ObjCppLexer extends Lexer {
     static final String DFA48_eofS =
         "\u00e1\uffff";
     static final String DFA48_minS =
-        "\1\11\4\uffff\1\141\1\143\1\uffff\1\75\1\154\1\72\2\uffff\1\74\1"+
-        "\75\1\53\1\55\1\141\1\56\1\162\1\151\1\156\1\145\1\75\1\46\2\uffff"+
+        "\1\11\4\uffff\1\141\1\143\1\uffff\1\75\1\154\1\72\2\uffff\1\74"+
+        "\1\75\1\53\1\55\1\141\1\56\1\162\1\151\1\156\1\145\1\75\1\46\2\uffff"+
         "\1\145\1\75\1\52\4\75\1\uffff\1\162\1\146\1\150\2\157\3\uffff\2"+
         "\56\1\uffff\1\155\1\uffff\1\162\1\uffff\1\156\3\uffff\1\165\1\163"+
         "\2\uffff\1\75\2\uffff\1\75\11\uffff\1\141\1\163\2\uffff\1\142\1"+
@@ -4361,11 +4361,11 @@ public class ObjCppLexer extends Lexer {
     static final String DFA48_specialS =
         "\u00e1\uffff}>";
     static final String[] DFA48_transitionS = {
-            "\2\55\1\uffff\2\55\22\uffff\1\55\1\40\1\52\1\1\1\50\1\36\1\30"+
-            "\1\51\1\13\1\14\1\27\1\17\1\7\1\20\1\22\1\35\1\53\11\54\1\12"+
-            "\1\4\1\15\1\10\1\16\1\42\1\6\32\50\1\31\1\uffff\1\32\1\34\1"+
-            "\50\1\uffff\1\50\1\43\1\21\1\46\1\11\1\47\2\50\1\44\4\50\1\5"+
-            "\1\50\1\23\1\50\1\26\1\24\1\33\1\25\1\50\1\45\3\50\1\2\1\37"+
+            "\2\55\1\uffff\2\55\22\uffff\1\55\1\40\1\52\1\1\1\50\1\36\1"+
+            "\30\1\51\1\13\1\14\1\27\1\17\1\7\1\20\1\22\1\35\1\53\11\54\1"+
+            "\12\1\4\1\15\1\10\1\16\1\42\1\6\32\50\1\31\1\uffff\1\32\1\34"+
+            "\1\50\1\uffff\1\50\1\43\1\21\1\46\1\11\1\47\2\50\1\44\4\50\1"+
+            "\5\1\50\1\23\1\50\1\26\1\24\1\33\1\25\1\50\1\45\3\50\1\2\1\37"+
             "\1\3\1\41",
             "",
             "",
@@ -4409,8 +4409,8 @@ public class ObjCppLexer extends Lexer {
             "",
             "",
             "",
-            "\1\156\1\uffff\10\160\2\156\12\uffff\3\156\21\uffff\1\155\13"+
-            "\uffff\3\156\21\uffff\1\155",
+            "\1\156\1\uffff\10\160\2\156\12\uffff\3\156\21\uffff\1\155"+
+            "\13\uffff\3\156\21\uffff\1\155",
             "\1\156\1\uffff\12\161\12\uffff\3\156\35\uffff\3\156",
             "",
             "\1\162",

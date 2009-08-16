@@ -124,6 +124,7 @@ public class JNAerator {
 	
 	private static final String DEFAULT_CONFIG_FILE = "config.jnaerator";
 	protected static final Pattern fileRadixPattern = Pattern.compile("(?:[/\\\\]|^)(.*?)\\.[^.]+$");
+	private static final Pattern classAndMethodNamePattern = Pattern.compile("(.+?)::([^:]+)");
 
 	//"@C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.jnaerator"
 	//"C:\Prog\CPP\CppLibTest\jnaerator\CppLibTest.jnaerator"
@@ -234,8 +235,14 @@ public class JNAerator {
 					case NoPreprocessing:
 						config.preprocessorConfig.preprocess = false;
 						break;
+					case MaxConstructedFields:
+						config.maxConstructedFields = a.getIntParam(0);
+						break;
 					case NoCompile:
 						config.compile = false;
+						break;
+					case CPlusPlusGen:
+						config.genCPlusPlus = true;
 						break;
 					case CurrentLibrary:
 						currentLibrary = a.getStringParam(0);
@@ -275,6 +282,9 @@ public class JNAerator {
 						JNAeratorCommandLineArgs.displayHelp(a.def == OptionDef.WikiDoc);
 						System.exit(0);
 						break;
+					case WCharAsShort:
+						config.wcharAsShort = true;
+						break;
 					case JarOut:
 						config.outputJar = a.getFileParam(0);
 						break;
@@ -302,6 +312,10 @@ public class JNAerator {
 					case PreprocessingOut:
 						config.preprocessingOutFile = a.getFileParam(0);
 						break;
+					case ExtractionOut:
+						config.extractedSymbolsOut = a.getFileParam(0);
+						break;
+						
 					case Project:
 						JNAeratorConfigUtils.readProjectConfig(a.getFileParam(0), a.getStringParam(1), config);
 						break;
@@ -426,7 +440,6 @@ public class JNAerator {
 					return ret;
 				}
 
-				@SuppressWarnings("unchecked")
 				@Override
 				void finished() throws IOException {
 					for (String framework : frameworks)
@@ -457,9 +470,11 @@ public class JNAerator {
 					
 					if (config.verbose) {
 						if (config.macrosOutFile == null)
-							config.macrosOutFile = new File("_jnaerator_debug.macros.cpp");
+							config.macrosOutFile = new File("_jnaerator.macros.cpp");
 						if (config.preprocessingOutFile == null)
-							config.preprocessingOutFile = new File("_jnaerator_debug.preprocessed.c");
+							config.preprocessingOutFile = new File("_jnaerator.preprocessed.c");
+						if (config.extractedSymbolsOut == null)
+							config.extractedSymbolsOut = new File("_jnaerator.extractedSymbols.h");
 					}
 					
 					config.cacheDir = getDir("cache");
@@ -536,86 +551,6 @@ public class JNAerator {
 				JNAeratorConfigUtils.autoConfigure(config);
 			}
 			
-			feedback.setStatus("Parsing native headers...");
-			SourceFiles sourceFiles = parse();
-			
-
-			if (config.extractLibSymbols) {
-				for (File libFile : config.libraryFiles) {
-					if (libFile.getName().toLowerCase().endsWith(".dll")) {
-						try {
-							feedback.setStatus("Extracting symbols from " + libFile.getName() + "...");
-							
-							SourceFile sf = new SourceFile();
-							sf.setElementFile(libFile.toString());
-							List<ParsedExport> dllExports = DllExport.parseDllExports(libFile);
-							Map<String, Struct> cppClasses = new HashMap<String, Struct>();
-							Pattern pubPat = Pattern.compile("(public|private|protected):(.*)");
-							for (ParsedExport dllExport : dllExports) {
-								//dllExport.mangling
-								String dem = dllExport.demangled;
-								Matcher m = pubPat.matcher(dem);
-								String pub = null;
-								if (m.matches()) {
-									dem = m.group(2);
-									pub = m.group(1);
-								}
-								String text = "// @mangling " + dllExport.mangling + "\n" + 
-									dem + ";";
-								ObjCppParser parser = JNAeratorParser.newObjCppParser(text, config.verbose);
-								parser.setupSymbolsStack();
-								List<Declaration> decls = parser.declarationEOF();
-								if (decls == null)
-									continue;
-								
-								for (Declaration decl : decls) {
-									if (decl instanceof VariablesDeclaration && decl.getValueType() != null)
-										decl.getValueType().addModifiers(Modifier.Extern);
-									decl.addModifiers(Modifier.parseModifier(pub));
-									if (decl instanceof Function) {
-										Function f = (Function)decl;
-										List<SimpleIdentifier> si = new ArrayList<SimpleIdentifier>(f.getName().resolveSimpleIdentifiers());
-										if (si.size() == 1) {
-											sf.addDeclaration(decl);
-										} else {
-											si.remove(si.size() - 1);
-											QualifiedIdentifier ci = new QualifiedIdentifier(QualificationSeparator.Colons, si);
-											
-											if (dem.contains("__thiscall"))
-												f.addModifiers(Modifier.__thiscall);
-											if (dem.contains("__fastcall"))
-												f.addModifiers(Modifier.__fastcall);
-											
-											Struct s = cppClasses.get(ci.toString());
-											if (s == null) {
-												s = new Struct();
-												cppClasses.put(ci.toString(), s);
-												s.setType(Struct.Type.CPPClass);
-												s.setTag(ci.clone());
-												sf.addDeclaration(decl(s));
-											}
-											Identifier n = f.getName().resolveLastSimpleIdentifier();
-	//										String ns = n.toString();
-	//										if (ns.startsWith("_"))
-	//											n = ident(ns.substring(1));
-											f.setName(n);
-											s.addDeclaration(f);
-										}
-									} else
-										sf.addDeclaration(decl);
-								}
-							}
-							if (!sf.getDeclarations().isEmpty())
-								sourceFiles.add(sf);
-							
-						} catch (Throwable ex) {
-							ex.printStackTrace();
-						}
-					}
-				}
-			}
-			feedback.sourcesParsed(sourceFiles);
-			
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 			JavaCompiler c = CompilerUtils.getJavaCompiler(config.preferJavac);
 			final MemoryFileManager mfm = new MemoryFileManager(c.getStandardFileManager(diagnostics, null, null));
@@ -651,14 +586,21 @@ public class JNAerator {
 				};
 			}
 			
-			
-			Result result = jnaerationCore(sourceFiles, new ClassOutputter() {
+			Result result = createResult(new ClassOutputter() {
 				
 				@Override
 				public PrintWriter getClassSourceWriter(String className) throws IOException {
 					return JNAerator.this.getClassSourceWriter(classOutputter[0], className);
 				}
-			}, feedback);
+			});
+			
+			SourceFiles sourceFiles = parseSources(feedback, result.typeConverter);
+			if (config.extractLibSymbols)
+				parseLibSymbols(sourceFiles, feedback, result);
+			
+			feedback.sourcesParsed(sourceFiles);
+			
+			jnaerationCore(sourceFiles, result, feedback);
 			feedback.wrappersGenerated(result);
 			
 			if (config.compile) {
@@ -694,6 +636,99 @@ public class JNAerator {
 		} catch (Throwable th) {
 			feedback.setFinished(th);
 		}
+	}
+	public void parseLibSymbols(SourceFiles sourceFiles, Feedback feedback, Result result) throws FileNotFoundException {
+		PrintWriter fileOut = null;
+		if (config.extractedSymbolsOut != null) {
+			if (config.verbose)
+				System.out.println("Writing symbols extracted from libraries to '" + config.extractedSymbolsOut + "'");
+			fileOut = new PrintWriter(config.extractedSymbolsOut);
+		}
+		
+		for (File libFile : config.libraryFiles) {
+			if (libFile.getName().toLowerCase().endsWith(".dll")) {
+				try {
+					feedback.setStatus("Extracting symbols from " + libFile.getName() + "...");
+					
+					SourceFile sf = new SourceFile();
+					sf.setElementFile(libFile.toString());
+					List<ParsedExport> dllExports = DllExport.parseDllExports(libFile);
+					Map<String, Struct> cppClasses = new HashMap<String, Struct>();
+					Pattern pubPat = Pattern.compile("(public|private|protected):(.*)");
+					for (ParsedExport dllExport : dllExports) {
+						//dllExport.mangling
+						String dem = dllExport.demangled;
+						Matcher m = pubPat.matcher(dem);
+						String pub = null;
+						if (m.matches()) {
+							dem = m.group(2);
+							pub = m.group(1);
+						}
+						String text = "// @mangling " + dllExport.mangling + "\n" + 
+							dem + ";";
+						ObjCppParser parser = JNAeratorParser.newObjCppParser(result.typeConverter, text, config.verbose);
+						parser.setupSymbolsStack();
+						List<Declaration> decls = parser.declarationEOF();
+						if (decls == null)
+							continue;
+						
+						for (Declaration decl : decls) {
+							if (decl instanceof VariablesDeclaration && decl.getValueType() != null)
+								decl.getValueType().addModifiers(Modifier.Extern);
+							decl.addModifiers(Modifier.parseModifier(pub));
+							if (decl instanceof Function) {
+								Function f = (Function)decl;
+								List<SimpleIdentifier> si = new ArrayList<SimpleIdentifier>(f.getName().resolveSimpleIdentifiers());
+								Identifier ci;
+								if (si.size() == 1) {
+									String name = si.get(0) == null ? null : si.get(0).toString();
+									String[] cm = name == null ? null : RegexUtils.match(name, classAndMethodNamePattern);
+									if (cm == null) {
+										sf.addDeclaration(decl);
+										continue;
+									}
+									ci = ident(cm[0]);
+									f.setName(ident(cm[1]));
+								} else {
+									si.remove(si.size() - 1);
+									ci = new QualifiedIdentifier(QualificationSeparator.Colons, si);
+								}
+								if (dem.contains("__thiscall"))
+									f.addModifiers(Modifier.__thiscall);
+								if (dem.contains("__fastcall"))
+									f.addModifiers(Modifier.__fastcall);
+								
+								Struct s = cppClasses.get(ci.toString());
+								if (s == null) {
+									s = new Struct();
+									cppClasses.put(ci.toString(), s);
+									s.setType(Struct.Type.CPPClass);
+									s.setTag(ci.clone());
+									sf.addDeclaration(decl(s));
+								}
+								Identifier n = f.getName().resolveLastSimpleIdentifier();
+//										String ns = n.toString();
+//										if (ns.startsWith("_"))
+//											n = ident(ns.substring(1));
+								f.setName(n);
+								s.addDeclaration(f);
+							} else
+								sf.addDeclaration(decl);
+						}
+					}
+					if (!sf.getDeclarations().isEmpty()) {
+						sourceFiles.add(sf);
+						if (fileOut != null)
+							fileOut.println(sf);
+					}
+					
+				} catch (Throwable ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		if (fileOut != null)
+			fileOut.close();
 	}
 	private Map<String, File> getAdditionalFiles() {
 
@@ -834,8 +869,9 @@ public class JNAerator {
 		}
 	}
 			
-	public SourceFiles parse() throws IOException, LexerException {
-		return JNAeratorParser.parse(config);
+	public SourceFiles parseSources(Feedback feedback, TypeConversion typeConverter) throws IOException, LexerException {
+		feedback.setStatus("Parsing native headers...");
+		return JNAeratorParser.parse(config, typeConverter);
 	}
 	public void addFile(File file, List<File> out) throws IOException {
 		if (file.isFile()) {
@@ -859,9 +895,10 @@ public class JNAerator {
 			librariesHub.addToCommentBefore("JNA Wrappers instances");
 			librariesHub.setType(Type.JavaClass);
 			librariesHub.addModifiers(Modifier.Public, Modifier.Abstract);
-			librariesHub.setTag(ident(result.config.entryName));
-			hubOut = result.classOutputter.getClassSourceWriter(result.config.entryName.toLowerCase() + "." + librariesHub.getTag().toString());
-			hubOut.println("package " + result.config.entryName.toLowerCase() + ";");
+			Identifier hubName = result.getHubFullClassName();
+			librariesHub.setTag(hubName.resolveLastSimpleIdentifier());
+			hubOut = result.classOutputter.getClassSourceWriter(hubName.toString());
+			hubOut.println("package " + hubName.resolveAllButLastIdentifier() + ";");
 			for (Identifier pn : result.javaPackages)
 				if (!pn.equals(""))
 					hubOut.println("import " + pn + ".*;");
@@ -950,7 +987,7 @@ public class JNAerator {
 			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-
+			
 			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, fullLibraryClassName, library);
 			
 			result.typeConverter.allowFakePointers = false;
@@ -995,18 +1032,12 @@ public class JNAerator {
 		}
 	}
 	/// To be overridden
-	public Result createResult(ClassOutputter outputter) {
-		return new Result(config, outputter);
-	}
-	
-	public Result jnaerationCore(SourceFiles sourceFiles, final ClassOutputter _outputter, Feedback feedback) throws IOException, LexerException, RecognitionException {
-		
-		/// Ensure all outputs are unicode-escaped.
-		ClassOutputter outputter = new ClassOutputter() {
+	public Result createResult(final ClassOutputter outputter) {
+		return new Result(config, new ClassOutputter() {
 			@Override
 			public PrintWriter getClassSourceWriter(String className)
 					throws IOException {
-				PrintWriter w = _outputter.getClassSourceWriter(className);
+				PrintWriter w = outputter.getClassSourceWriter(className);
 				return new PrintWriter(w) {
 					StringBuilder bout = new StringBuilder();
 					@Override
@@ -1016,9 +1047,10 @@ public class JNAerator {
 					}
 				};
 			}
-		};
-		Result result = createResult(outputter);
+		});
+	}
 		
+	public void jnaerationCore(SourceFiles sourceFiles, Result result, Feedback feedback) throws IOException, LexerException, RecognitionException {
 		feedback.setStatus("Normalizing parsed code...");
 		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
@@ -1120,8 +1152,7 @@ public class JNAerator {
 		//if (config.verbose)
 		for (String unknownType : result.typeConverter.unknownTypes) 
 			System.out.println("Unknown Type: " + unknownType);
-			
-		return result;
+		
 	}
 	private boolean checkNoCycles(SourceFiles sourceFiles) {
 		final HashSet<Integer> ids = new HashSet<Integer>(new Arg().getId());

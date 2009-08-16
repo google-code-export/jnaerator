@@ -115,6 +115,7 @@ public class TypeConversion {
 	public TypeConversion(Result result) {
 		super();
 		this.result = result;
+		initTypes();
 	}
 	
 	//public Set<Identifier> fakePointersSink;
@@ -134,12 +135,12 @@ public class TypeConversion {
 	static Map<JavaPrim, Class<? extends Buffer>> primToBuffer = new HashMap<JavaPrim, Class<? extends Buffer>>();
 	static final Set<String> byReferenceClassesNames = new HashSet<String>();
 	
-	static Map<String, JavaPrim> javaPrims = new TreeMap<String, JavaPrim>();
-	static void prim(String from, JavaPrim to) {
+	Map<String, JavaPrim> javaPrims = new TreeMap<String, JavaPrim>();
+	void prim(String from, JavaPrim to) {
 		javaPrims.put(from, to);
 	}
 	
-	public static boolean isObjCppPrimitive(String s) {
+	public boolean isObjCppPrimitive(String s) {
 		return javaPrims.containsKey(s);
 	}
 	enum JavaPrim {
@@ -154,7 +155,8 @@ public class TypeConversion {
 		Double, 
 		NativeLong;
 	}
-	static {
+	public void initTypes() {
+		
 		prim("void", JavaPrim.Void);
 		
 		prim("UTF32Char", JavaPrim.Char);
@@ -212,7 +214,7 @@ public class TypeConversion {
 		prim("UInt16", JavaPrim.Short);
 		prim("short", JavaPrim.Short);
 		prim("WCHAR", JavaPrim.Short);
-		prim("wchar_t", JavaPrim.Short);
+		prim("wchar_t", result.config.wcharAsShort ? JavaPrim.Short : JavaPrim.Char);
 		
 		prim("WORD", JavaPrim.Short);
 		prim("__int16", JavaPrim.Short);
@@ -281,44 +283,7 @@ public class TypeConversion {
 		
 	}
 	
-	static Map<String, TypeRef> manualTypeDefs = new HashMap<String, TypeRef>();
-	static {
-		
-		manualTypeDefs.put("DWORD_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
-		manualTypeDefs.put("PDWORD", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
-		manualTypeDefs.put("PWORD", new TypeRef.Pointer(new TypeRef.Primitive("short"), PointerStyle.Pointer));
-		manualTypeDefs.put("intptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
-		manualTypeDefs.put("uintptr_t", new TypeRef.Pointer(new TypeRef.Primitive("int").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
-		manualTypeDefs.put("ptr_t", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
-		manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));
-		manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
-		manualTypeDefs.put("INT_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int"), PointerStyle.Pointer));
-		manualTypeDefs.put("UINT_PTR", new TypeRef.Pointer(new TypeRef.Primitive("int").addModifiers(Modifier.Unsigned), PointerStyle.Pointer));
-		manualTypeDefs.put("PVOID", new TypeRef.Pointer(new TypeRef.Primitive("void"), PointerStyle.Pointer));
-
-		prim("LONG_PTR", JavaPrim.NativeLong);
-		prim("ULONG_PTR", JavaPrim.NativeLong);
-		
-		manualTypeDefs.put("SIZE", new TypeRef.Primitive("size_t"));
-		manualTypeDefs.put("CHAR", new TypeRef.Primitive("char"));
-		manualTypeDefs.put("BOOL", new TypeRef.Primitive("bool"));
-		manualTypeDefs.put("WCHAR", new TypeRef.Primitive("wchar_t"));
-		manualTypeDefs.put("HRESULT", new TypeRef.Pointer(new TypeRef.Primitive("long"), PointerStyle.Pointer));		
-		manualTypeDefs.put("LPCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifiers(Modifier.Const), PointerStyle.Pointer));
-		manualTypeDefs.put("LPCWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t").addModifiers(Modifier.Const), PointerStyle.Pointer));
-		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
-		manualTypeDefs.put("LPWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t"), PointerStyle.Pointer));
-		manualTypeDefs.put("PCSTR", new TypeRef.Pointer(new TypeRef.Primitive("char").addModifiers(Modifier.Const), PointerStyle.Pointer));
-		manualTypeDefs.put("PCWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t").addModifiers(Modifier.Const), PointerStyle.Pointer));
-		manualTypeDefs.put("PSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
-		manualTypeDefs.put("PWSTR", new TypeRef.Pointer(new TypeRef.Primitive("wchar_t"), PointerStyle.Pointer));
-		
-//		manualTypeDefs.put("LPSTR", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
-		manualTypeDefs.put("PBYTE", new TypeRef.Pointer(new TypeRef.Primitive("char"), PointerStyle.Pointer));
-		//manualTypeDefs.put("LONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long"), StorageModifier.Pointer));
-		//manualTypeDefs.put("ULONG_PTR", new TypeRef.Pointer(new TypeRef.Primitive("long", "long", "unsigned"), StorageModifier.Pointer));
-		
-	}
+	Map<String, TypeRef> manualTypeDefs = new HashMap<String, TypeRef>();
 	
 	public Pair<TypeDef,Declarator> getTypeDef(Identifier name) {
 		if (name == null)
@@ -469,7 +434,7 @@ public class TypeConversion {
 		return tr;// == null ? null : tr.clone();
 	}
 	
-	public static boolean resolvesToPrimitive(String name) {
+	public boolean resolvesToPrimitive(String name) {
 		return javaPrims.containsKey(name);
 	}
 //	TypeRef getPrimitiveRef(TypeRef valueType, String callerLibraryClass) {
