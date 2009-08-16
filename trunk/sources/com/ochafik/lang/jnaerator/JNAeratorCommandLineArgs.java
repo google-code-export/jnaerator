@@ -171,6 +171,7 @@ public class JNAeratorCommandLineArgs {
 		MacrosOut(			"-macrosOut", 			"Write the preprocessor macros in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
 		
 		File(				null,		 			"Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file", new ArgDef(Type.OptionalFile, "file")), 
+		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)");
 		NoCompile(			"(?i)-noComp",				"Do not compile JNAerated headers"),
 		NoJAR(				"(?i)-noJar",			"Do not create an output JAR"),
 //		EnableCPlusPlus(	"-cppInstanceMethods",	"Enable experimental C++ instance methods wrapping"),
