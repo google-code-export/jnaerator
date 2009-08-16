@@ -171,14 +171,13 @@ public class JNAeratorCommandLineArgs {
 		MacrosOut(			"-macrosOut", 			"Write the preprocessor macros in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
 		
 		File(				null,		 			"Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file", new ArgDef(Type.OptionalFile, "file")), 
-		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)");
+		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)"),
 		NoCompile(			"(?i)-noComp",				"Do not compile JNAerated headers"),
 		NoJAR(				"(?i)-noJar",			"Do not create an output JAR"),
 //		EnableCPlusPlus(	"-cppInstanceMethods",	"Enable experimental C++ instance methods wrapping"),
 		NoLibBundle(		"(?i)-noLibBundle",		"Do not bundle libraries in output JAR"),
 		MaxConstructedFields(		
 							"-maxConstrFields",		"Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.", new ArgDef(Type.Int, "fieldCount")),
-		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)"), 
 		CPlusPlusGen(		"-genCPlusPlus",		"[Experimental, Not working at all] Generate C++ classes.");
 		
 		OptionDef(String clSwitch, String description, ArgDef... args) {

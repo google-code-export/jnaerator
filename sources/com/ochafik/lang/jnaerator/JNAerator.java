@@ -235,12 +235,6 @@ public class JNAerator {
 					case NoPreprocessing:
 						config.preprocessorConfig.preprocess = false;
 						break;
-					case NoJAR:
-						config.createJar = false;
-						break;
-					case NoJAR:
-						config.createJar = false;
-						break;
 					case MaxConstructedFields:
 						config.maxConstructedFields = a.getIntParam(0);
 						break;
