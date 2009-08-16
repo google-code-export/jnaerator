@@ -326,8 +326,8 @@ class BitFields {
 	
 	private static PrimHandler getPrimHandler(Class type, int bitOffset, int bits) {
 		PrimHandler handler = (PrimHandler)primHandlers.get(type);
-		if (handler == null && Pointer.class.isAssignableFrom(type))
-			handler = (PrimHandler)primHandlers.get(Pointer.class);
+//		if (handler == null && Pointer.class.isAssignableFrom(type))
+//			handler = (PrimHandler)primHandlers.get(Pointer.class);
 		if (handler == null && (bitOffset | bits) != 0 || 
 			handler != null && (
 				!handler.supportsBitOffset() && (bitOffset != 0) ||
