@@ -310,6 +310,8 @@ public class BridgeSupportParser {
 	private void parseStructs(Node signatures, SourceFile sf) throws XPathExpressionException {
 		for (Node function : XMLUtils.getChildrenByName(signatures, "struct")) {//PathUtils.findNodesIterableByXPath("signatures/struct", xml)) {
 			String name = XMLUtils.getAttribute(function, "name");
+//			if (name.equals("NSFastEnumerationState"))
+//				name.toString();
 			String type32 = XMLUtils.getAttribute(function, "type"), type64 = XMLUtils.getAttribute(function, "type64");
 			try {
 				try {
