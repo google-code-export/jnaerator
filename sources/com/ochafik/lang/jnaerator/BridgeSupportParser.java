@@ -112,10 +112,10 @@ public class BridgeSupportParser {
 		SourceFile sf = new SourceFile();
 		sf.setElementFile(sourceFilePath);
 
-		parseClasses(framework, signatures, sf);
 		parseStructs(signatures, sf);
 		parseEnums(signatures, sf);
 		parseConstants(signatures, sf);
+		parseClasses(framework, signatures, sf);
 		parseStringConstants(framework, signatures, sf);
 		parseFunctions(framework, signatures, sf);
 		
@@ -165,12 +165,17 @@ public class BridgeSupportParser {
 			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sf);
 			if (cs == null)
 				continue;
+			
+			if (!"NSObject".equals(String.valueOf(cs.getTag().toString())))
+				cs.setParents(ident("NSObject"));
+			
 			cs.accept(result);
 		}
 		for (Node classe : XMLUtils.getChildrenByName(signatures, "informal_protocol")) {
 			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sf);
 			if (cs == null)
 				continue;
+			
 			cs.setCategoryName(cs.getTag() == null ? null : cs.getTag().toString());
 			cs.setTag(ident("NSObject"));
 			cs.accept(result);
@@ -323,6 +328,8 @@ public class BridgeSupportParser {
 //					System.out.println(td);
 //					System.out.println();
 					
+//					if (name.equals("NSRange") || name.equals("NSSize"))
+//						name.toString();
 					td.accept(result);
 				} catch (Exception ex) {
 					ex.printStackTrace();

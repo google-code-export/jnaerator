@@ -360,7 +360,7 @@ public class Result extends Scanner {
 				
 				Struct oldStruct = structsByName.get(name);
 				
-				if (oldStruct == null || oldStruct.isForwardDeclaration())
+				if (oldStruct == null || oldStruct.isForwardDeclaration() || (!(oldStruct.getParentElement() instanceof TypeDef) && struct.getParentElement() instanceof TypeDef))
 					structsByName.put(name, struct);
 				
 				getList(structsByLibrary, getLibrary(struct)).add(struct);

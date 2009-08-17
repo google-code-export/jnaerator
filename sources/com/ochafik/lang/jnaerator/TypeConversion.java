@@ -337,6 +337,16 @@ public class TypeConversion {
 //		if (valueType.toString().equals("CGFunctionEvaluateCallback"))
 //			valueType = valueType;
 		
+		if (valueType instanceof TaggedTypeRef & convertToJavaRef) {
+			TaggedTypeRef ttr = (TaggedTypeRef) valueType;
+			if (ttr.getTag() != null) {
+				
+				TypeRef ref = ttr instanceof Struct ? typeRef(findStructRef(ttr.getTag(), libraryClassName)) :
+					ttr instanceof Enum ? findEnum(ttr.getTag(), libraryClassName) : null;
+				if (ref == null)
+					return ref;
+			}
+		}
 		final TypeRef valueTypeCl = valueType.clone();
 		Arg holder = new Arg();
 		holder.setValueType(valueTypeCl);
@@ -767,8 +777,8 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
-//		if (String.valueOf(valueType).contains("PDWORD"))
-//			valueType = valueType;
+//		if (String.valueOf(valueType).contains("_NSRange"))
+//			valueType.toString();
 		
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType, libraryClassName, true);
