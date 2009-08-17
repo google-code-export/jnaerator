@@ -1555,7 +1555,7 @@ public class TypeConversion {
 				return null;
 			}
 		}
-		return memberRef(expr(tr.clone()), MemberRefStyle.Dot, ident("class"));
+		return classLiteral(tr.clone());
 	}
 
 

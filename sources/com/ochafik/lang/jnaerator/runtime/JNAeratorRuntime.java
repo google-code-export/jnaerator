@@ -9,7 +9,7 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalLong;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeLong;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalShort;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalStruct;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalUnion;
@@ -32,7 +32,7 @@ public class JNAeratorRuntime {
 		GlobalUnion.class,
 		GlobalNativeLong.class,
 		GlobalPointer.class,
-		GlobalPointerType.class,
+		GlobalPrimitive.class,
 		Bits.class,
 		ThisCall.class,
 		FastCall.class,

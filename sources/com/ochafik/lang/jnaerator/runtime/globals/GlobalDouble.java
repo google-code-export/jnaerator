@@ -3,8 +3,8 @@ package com.ochafik.lang.jnaerator.runtime.globals;
 import com.sun.jna.Library;
 import com.sun.jna.ptr.DoubleByReference;
 
-public class GlobalDouble extends GlobalPointerType<DoubleByReference> {
-	public GlobalDouble(Library library, String[] symbols) {
+public class GlobalDouble extends GlobalPrimitive<DoubleByReference> {
+	public GlobalDouble(Library library, String... symbols) {
 		super(library, DoubleByReference.class, symbols);
 	}
 	public double get() {

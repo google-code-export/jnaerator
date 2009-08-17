@@ -934,7 +934,7 @@ public class JNAerator {
 			
 			Expression libNameExpr = opaqueExpr(result.getLibraryFileExpression(library));
 			TypeRef libTypeRef = typeRef(fullLibraryClassName);
-			Expression libClassLiteral = memberRef(expr(libTypeRef), MemberRefStyle.Dot, "class");
+			Expression libClassLiteral = classLiteral(libTypeRef);
 			
 			Expression libraryPathGetterExpr = methodCall(
 				expr(typeRef(LibraryExtractor.class)),

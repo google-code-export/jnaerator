@@ -1,5 +1,9 @@
 package com.ochafik.lang.jnaerator.parser;
 
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.expr;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.ident;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.memberRef;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.typeRef;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
 
 import java.util.Arrays;
@@ -13,6 +17,12 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 public class ElementsHelper {
 	public static Expression memberRef(Expression x, MemberRefStyle style, String name) {
 		return new Expression.MemberRef(x, style, new SimpleIdentifier(name));
+	}
+	public static Expression classLiteral(Class<?> c) {
+		return memberRef(expr(typeRef(ident(c))), MemberRefStyle.Dot, "class");
+	}
+	public static Expression classLiteral(TypeRef c) {
+		return memberRef(expr(c), MemberRefStyle.Dot, "class");
 	}
 	public static Expression memberRef(Expression x, MemberRefStyle style, Identifier name) {
 		return new Expression.MemberRef(x, style, name);

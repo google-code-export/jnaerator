@@ -816,7 +816,7 @@ public class DeclarationsConverter {
 						method.setName(f.getName());
 						List<Expression> args = new ArrayList<Expression>();
 						
-						boolean isStatic = Modifier.Static.isContainedBy(method.getModifiers());
+						boolean isStatic = Modifier.Static.isContainedBy(f.getModifiers());
 						int iArg = 0;
 						for (Arg arg : new ArrayList<Arg>(method.getArgs())) {
 							if (iArg == 0 && !isStatic) {

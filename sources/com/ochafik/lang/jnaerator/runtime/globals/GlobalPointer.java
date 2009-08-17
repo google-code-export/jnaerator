@@ -4,7 +4,7 @@ import com.sun.jna.Library;
 import com.sun.jna.Pointer;
 
 public class GlobalPointer extends Global {
-	public GlobalPointer(Library library, String[] symbols) {
+	public GlobalPointer(Library library, String... symbols) {
 		super(library, symbols);
 	}
 	Pointer value;
