@@ -20,6 +20,8 @@ package com.ochafik.lang.jnaerator;
 import java.util.ArrayList;
 
 import java.util.List;
+
+import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
 import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder;
@@ -33,11 +35,17 @@ import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.ochafik.lang.jnaerator.runtime.globals.Global;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.ptr.ByReference;
+
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class GlobalsGenerator {
 	public GlobalsGenerator(Result result) {
@@ -82,12 +90,56 @@ public class GlobalsGenerator {
 				if (!signatures.classSignatures.add(name))
 					continue;
 				
+				boolean isPointer = type instanceof com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
+				JavaPrim prim = result.typeConverter.getPrimitive(isPointer ? ((com.ochafik.lang.jnaerator.parser.TypeRef.Pointer)type).getTarget() : type, callerLibraryName);
+				if (prim != null) {
+					TypeRef globalType = null;
+					Expression extraArg = null;
+					//Class<? extends Global> optionA;
+					if (isPointer) {
+						Class<? extends ByReference> brt = TypeConversion.primToByReference.get(prim);
+						if (brt != null) {
+							globalType = typeRef(ident(GlobalPointerType.class, expr(typeRef(ident(brt)))));
+							extraArg = classLiteral(brt);
+						}
+					} else {
+						Class<?> globalClass = TypeConversion.primToGlobal.get(prim);
+						if (globalClass != null)
+							globalType = typeRef(globalClass);
+					}
+					if (globalType != null) {
+						List<Expression> constructorArgs = new ArrayList<Expression>();
+						constructorArgs.add(result.getLibraryInstanceReferenceExpression(callerLibrary));
+						if (extraArg != null) {
+							constructorArgs.add(extraArg);
+						}
+						constructorArgs.add(expr(Constant.Type.String, name.toString()));
+						VariablesDeclaration vd = new VariablesDeclaration(
+								globalType, 
+							new Declarator.DirectDeclarator(
+								name.toString(), 
+								new Expression.New(
+									globalType.clone(),
+									constructorArgs.toArray(new Expression[constructorArgs.size()])
+								)
+							)
+						);
+
+						vd.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
+						vd.importDetails(globals, false);
+						vd.moveAllCommentsBefore();
+						
+						out.addDeclaration(vd);
+						continue;
+					}
+				}
+				
+				/// We get a pointer to the global, not the global itself
 				Struct struct = result.declarationsConverter.publicStaticClass(name, null, Struct.Type.JavaClass, null);
 				struct.addModifiers(Modifier.Final);
 				struct.importDetails(globals, false);
 				struct.moveAllCommentsBefore();
 				
-				/// We get a pointer to the global, not the global itself
 				TypeRef pointerType = new TypeRef.Pointer(type, PointerStyle.Pointer);
 				
 				TypeRef convPointerType = result.typeConverter.convertTypeToJNA(pointerType, TypeConversionMode.FieldType, callerLibraryName);

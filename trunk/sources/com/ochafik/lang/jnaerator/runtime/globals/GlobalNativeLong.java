@@ -4,8 +4,8 @@ import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 
-public class GlobalNativeLong extends GlobalPointerType<NativeLongByReference> {
-	public GlobalNativeLong(Library library, String[] symbols) {
+public class GlobalNativeLong extends GlobalPrimitive<NativeLongByReference> {
+	public GlobalNativeLong(Library library, String... symbols) {
 		super(library, NativeLongByReference.class, symbols);
 	}
 	public NativeLong get() {
