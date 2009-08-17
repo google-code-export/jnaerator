@@ -90,47 +90,49 @@ public class GlobalsGenerator {
 				if (!signatures.classSignatures.add(name))
 					continue;
 				
-				boolean isPointer = type instanceof com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
-				JavaPrim prim = result.typeConverter.getPrimitive(isPointer ? ((com.ochafik.lang.jnaerator.parser.TypeRef.Pointer)type).getTarget() : type, callerLibraryName);
-				if (prim != null) {
-					TypeRef globalType = null;
-					Expression extraArg = null;
-					//Class<? extends Global> optionA;
-					if (isPointer) {
-						Class<? extends ByReference> brt = TypeConversion.primToByReference.get(prim);
-						if (brt != null) {
-							globalType = typeRef(ident(GlobalPointerType.class, expr(typeRef(ident(brt)))));
-							extraArg = classLiteral(brt);
+				if (!result.config.useJNADirectCalls) {
+					boolean isPointer = type instanceof com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
+					JavaPrim prim = result.typeConverter.getPrimitive(isPointer ? ((com.ochafik.lang.jnaerator.parser.TypeRef.Pointer)type).getTarget() : type, callerLibraryName);
+					if (prim != null) {
+						TypeRef globalType = null;
+						Expression extraArg = null;
+						//Class<? extends Global> optionA;
+						if (isPointer) {
+							Class<? extends ByReference> brt = TypeConversion.primToByReference.get(prim);
+							if (brt != null) {
+								globalType = typeRef(ident(GlobalPointerType.class, expr(typeRef(ident(brt)))));
+								extraArg = classLiteral(brt);
+							}
+						} else {
+							Class<?> globalClass = TypeConversion.primToGlobal.get(prim);
+							if (globalClass != null)
+								globalType = typeRef(globalClass);
 						}
-					} else {
-						Class<?> globalClass = TypeConversion.primToGlobal.get(prim);
-						if (globalClass != null)
-							globalType = typeRef(globalClass);
-					}
-					if (globalType != null) {
-						List<Expression> constructorArgs = new ArrayList<Expression>();
-						constructorArgs.add(result.getLibraryInstanceReferenceExpression(callerLibrary));
-						if (extraArg != null) {
-							constructorArgs.add(extraArg);
-						}
-						constructorArgs.add(expr(Constant.Type.String, name.toString()));
-						VariablesDeclaration vd = new VariablesDeclaration(
-								globalType, 
-							new Declarator.DirectDeclarator(
-								name.toString(), 
-								new Expression.New(
-									globalType.clone(),
-									constructorArgs.toArray(new Expression[constructorArgs.size()])
+						if (globalType != null) {
+							List<Expression> constructorArgs = new ArrayList<Expression>();
+							constructorArgs.add(result.getLibraryInstanceReferenceExpression(callerLibrary));
+							if (extraArg != null) {
+								constructorArgs.add(extraArg);
+							}
+							constructorArgs.add(expr(Constant.Type.String, name.toString()));
+							VariablesDeclaration vd = new VariablesDeclaration(
+									globalType, 
+								new Declarator.DirectDeclarator(
+									name.toString(), 
+									new Expression.New(
+										globalType.clone(),
+										constructorArgs.toArray(new Expression[constructorArgs.size()])
+									)
 								)
-							)
-						);
-
-						vd.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
-						vd.importDetails(globals, false);
-						vd.moveAllCommentsBefore();
-						
-						out.addDeclaration(vd);
-						continue;
+							);
+	
+							vd.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
+							vd.importDetails(globals, false);
+							vd.moveAllCommentsBefore();
+							
+							out.addDeclaration(vd);
+							continue;
+						}
 					}
 				}
 				
