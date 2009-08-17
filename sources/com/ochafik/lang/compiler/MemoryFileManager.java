@@ -45,7 +45,7 @@ public class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager
 
 	public void writeJar(File outputJar, boolean outputSources, Map<String, File> additionalFiles) throws IOException {
 
-		File jarDir = outputJar.getParentFile();
+		File jarDir = outputJar.getAbsoluteFile().getParentFile();
 		if (!jarDir.isDirectory())
 			jarDir.mkdirs();
 		writeJar(new FileOutputStream(outputJar), outputSources, additionalFiles);
