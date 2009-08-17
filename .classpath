@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="libraries/trove.jar"/>
 	<classpathentry kind="lib" path="libraries/anarres/build/tar/lib/anarres-cpp.jar"/>
 	<classpathentry kind="lib" path="libraries/anarres/build/tar/lib/gnu.getopt.jar"/>
-	<classpathentry kind="lib" path="C:/Prog/jnaerator/libraries/jna.jar"/>
+	<classpathentry kind="lib" path="C:/Prog/jnaerator/trunk/libraries/jna.jar"/>
 	<classpathentry kind="output" path="output"/>
 </classpath>

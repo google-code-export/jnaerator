@@ -213,6 +213,7 @@ public class JNAeratorConfig {
 	public boolean wcharAsShort = false;
 	public boolean genCPlusPlus = false;
 	public File extractedSymbolsOut;
+	public boolean stringifyConstCStringReturnValues = true;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override
