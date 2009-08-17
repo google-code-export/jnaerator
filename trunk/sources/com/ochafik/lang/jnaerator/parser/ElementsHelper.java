@@ -39,7 +39,7 @@ public class ElementsHelper {
 		return null;
 	}
 	public static Identifier ident(String name, String... others) {
-		if (name == null) {
+		if (name == null || name.trim().length() == 0) {
 			if (others.length > 0)
 				return ident(others[0], Arrays.copyOfRange(others, 1, others.length));
 			return null;

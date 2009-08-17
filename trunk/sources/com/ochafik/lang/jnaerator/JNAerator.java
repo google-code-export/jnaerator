@@ -132,56 +132,56 @@ public class JNAerator {
 		if (argsArray.length == 0) {
 			if (new File("/Users/ochafik").exists()) {
 				argsArray = new String[] {
-						"-wikiHelp",
+//						"-wikiHelp",
 						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSURL.h",
 						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers",
-						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
-						"-library", "gc", 
+//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+//						"-library", "gc", 
 //						"/Users/ochafik/src/gc6.8/include/",
-						"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/event.h",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/machine/types.h",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
+//						"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/event.h",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/machine/types.h",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
 						
 //						"-autoConf",
 						//"-library", "c",
 //						"-root", "org.rococoa",
 						
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/types.h", 
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/architecture/i386/math.h",
-						"/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h",
-						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGBase.h",
-						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGShading.h",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/types.h", 
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/architecture/i386/math.h",
+//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h",
+//						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGBase.h",
+//						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGShading.h",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
 //						"/Users/ochafik/Prog/Java/testxp/test.h",
 //						"/Users/ochafik/Prog/Java/test/Test2.h",
-						"-library", "objc",
-						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-						"-framework", "Foundation",
-						"-framework", "AppKit",
-						"-framework", "CoreFoundation",
-						"-framework", "IOKit",
-						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
-						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
+//						"-library", "objc",
+//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
+//						"-framework", "Foundation",
+//						"-framework", "AppKit",
+//						"-framework", "CoreFoundation",
+//						"-framework", "IOKit",
+//						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
+//						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
 //						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
 //						"-framework", "CoreGraphics", 
 //						"-framework", "CarbonCore", 
 						//"-f", "QTKit", 
-						"-o", "/Users/ochafik/Prog/Java/test/objc",
-						"-o", "/Users/ochafik/Prog/Java/testxp",
+//						"-o", "/Users/ochafik/Prog/Java/test/objc",
+//						"-o", "/Users/ochafik/Prog/Java/testxp",
 //						"/Users/ochafik/Prog/Java/test/Test.h",
 //						"/Users/ochafik/Prog/Java/test/JNATest.h",
 						//"-o", "/Users/ochafik/Prog/Java",
-						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
-						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
+//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+//						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
 //						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
-						"-limitComments",
+//						"-limitComments",
 //						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
 //						"-o", "/Users/ochafik/src/opencv-1.1.0",
 //						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
@@ -189,9 +189,11 @@ public class JNAerator {
 //						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
 //						"-framework", "CoreGraphics",
 //						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
-						"-noRuntime",
+//						"-noRuntime",
+						"-root", "org.rococoa.cocoa",
 						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
 						"-o", "/Users/ochafik/Prog/Java/test/bridgesupport",
+//						"-noComp",
 //						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
@@ -312,6 +314,10 @@ public class JNAerator {
 					case PreferJavac:
 						config.preferJavac = true;
 						break;
+					case BridgeSupportOutFile:
+						config.bridgesupportOutFile = a.getFileParam(0);
+						break;
+						
 					case PreprocessingOut:
 						config.preprocessingOutFile = a.getFileParam(0);
 						break;
@@ -476,6 +482,8 @@ public class JNAerator {
 							config.preprocessingOutFile = new File("_jnaerator.preprocessed.c");
 						if (config.extractedSymbolsOut == null)
 							config.extractedSymbolsOut = new File("_jnaerator.extractedSymbols.h");
+						if (config.bridgesupportOutFile == null)
+							config.bridgesupportOutFile = new File("_jnaerator.bridgesupport.h");
 					}
 					
 					config.cacheDir = getDir("cache");

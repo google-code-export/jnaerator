@@ -214,6 +214,7 @@ public class JNAeratorConfig {
 	public boolean genCPlusPlus = false;
 	public File extractedSymbolsOut;
 	public boolean stringifyConstCStringReturnValues = true;
+	public File bridgesupportOutFile;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override
