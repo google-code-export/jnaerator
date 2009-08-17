@@ -82,12 +82,14 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
-import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
-import com.ochafik.lang.jnaerator.runtime.CGFloat;
+import org.rococoa.cocoa.*;
+
+import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalByte;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalCGFloat;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalDouble;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalFloat;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
@@ -272,8 +274,7 @@ public class TypeConversion {
 		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.NSInteger, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.NSUInteger, NativeLongByReference.class);
-		
-		//primToByReference.put(JavaPrim.CGFloat, CGFloatByReference.class);
+		primToByReference.put(JavaPrim.CGFloat, CGFloatByReference.class);
 		
 		//primsByReference.put(JavaPrim.Void, PointerByReference.class);
 		for (Class<?> c : primToByReference.values())
@@ -287,6 +288,9 @@ public class TypeConversion {
 		primToGlobal.put(JavaPrim.Float, GlobalFloat.class);
 		primToGlobal.put(JavaPrim.Double, GlobalDouble.class);
 		primToGlobal.put(JavaPrim.NativeLong, GlobalNativeLong.class);
+		primToGlobal.put(JavaPrim.NSInteger, GlobalNativeLong.class);
+		primToGlobal.put(JavaPrim.NSUInteger, GlobalNativeLong.class);
+		primToGlobal.put(JavaPrim.CGFloat, GlobalCGFloat.class);
 		
 		primToBuffer.put(JavaPrim.Int, IntBuffer.class);
 		primToBuffer.put(JavaPrim.Short, ShortBuffer.class);
@@ -516,11 +520,11 @@ public class TypeConversion {
 		if (name == null)
 			return null;
 		
-		if (name.equals(NativeLong.class.getName()))
+		if (name.equals(NativeLong.class.getSimpleName()))
 			return JavaPrim.NativeLong;
-		if (name.equals(NSInteger.class.getName()))
+		if (name.equals(NSInteger.class.getSimpleName()))
 			return JavaPrim.NSInteger;
-		if (name.equals(NSUInteger.class.getName()))
+		if (name.equals(NSUInteger.class.getSimpleName()))
 			return JavaPrim.NSUInteger;
 		if (name.equals(CGFloat.class.getName()))
 			return JavaPrim.CGFloat;

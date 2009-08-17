@@ -1,6 +1,7 @@
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.ochafik.lang.jnaerator.runtime.CGFloat;
+import org.rococoa.cocoa.CGFloat;
+
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
 import com.sun.jna.Library;
 
@@ -9,9 +10,9 @@ public class GlobalCGFloat extends GlobalPrimitive<CGFloatByReference> {
 		super(library, CGFloatByReference.class, symbols);
 	}
 	public CGFloat get() {
-		return getValue().getValue();
+		return getValue().get();
 	}
 	public void set(CGFloat v) {
-		getValue().setValue(v);
+		getValue().set(v);
 	}
 }
