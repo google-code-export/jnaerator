@@ -36,7 +36,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.rococoa.cocoa.foundation.NSClass;
+import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSObject;
+import org.rococoa.cocoa.foundation.NSUInteger;
 
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
@@ -81,6 +83,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
+import com.ochafik.lang.jnaerator.runtime.CGFloat;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
@@ -153,7 +156,10 @@ public class TypeConversion {
 		Boolean, 
 		Float, 
 		Double, 
-		NativeLong;
+		NativeLong, 
+		NSInteger, 
+		NSUInteger, 
+		CGFloat;
 	}
 	public void initTypes() {
 		
@@ -197,6 +203,10 @@ public class TypeConversion {
 		
 		prim("DWORD", JavaPrim.Int);
 		prim("__int32", JavaPrim.Int);
+		
+		prim("NSInteger", JavaPrim.NSInteger);
+		prim("NSUInteger", JavaPrim.NSUInteger);
+		prim("CGFloat", JavaPrim.CGFloat);
 		
 		prim("long", JavaPrim.NativeLong);
 		prim("LONG", JavaPrim.NativeLong);
@@ -260,6 +270,11 @@ public class TypeConversion {
 		primToByReference.put(JavaPrim.Float, FloatByReference.class);
 		primToByReference.put(JavaPrim.Double, DoubleByReference.class);
 		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
+		primToByReference.put(JavaPrim.NSInteger, NativeLongByReference.class);
+		primToByReference.put(JavaPrim.NSUInteger, NativeLongByReference.class);
+		
+		//primToByReference.put(JavaPrim.CGFloat, CGFloatByReference.class);
+		
 		//primsByReference.put(JavaPrim.Void, PointerByReference.class);
 		for (Class<?> c : primToByReference.values())
 			byReferenceClassesNames.add(c.getName());
@@ -503,6 +518,12 @@ public class TypeConversion {
 		
 		if (name.equals(NativeLong.class.getName()))
 			return JavaPrim.NativeLong;
+		if (name.equals(NSInteger.class.getName()))
+			return JavaPrim.NSInteger;
+		if (name.equals(NSUInteger.class.getName()))
+			return JavaPrim.NSUInteger;
+		if (name.equals(CGFloat.class.getName()))
+			return JavaPrim.CGFloat;
 		
 		boolean isLong = false;
 		String str;
@@ -768,16 +789,22 @@ public class TypeConversion {
 				}
 			}
 		} else {
-			if (conversionMode == TypeConversionMode.BufferParameter ||
+			if (conversionMode == TypeConversionMode.ReturnType && result.config.stringifyConstCStringReturnValues) {
+				if (valueTypeString.matches("(__)?const char\\*"))
+					return typeRef(String.class);
+				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
+					return typeRef(WString.class);
+				
+			} else if (conversionMode == TypeConversionMode.BufferParameter ||
 					conversionMode == TypeConversionMode.PrimitiveParameter) 
 			{
 				if (valueTypeString.matches("(__)?const char\\*"))
 					return typeRef(String.class);
 				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
 					return typeRef(WString.class);
-				else if (valueTypeString.matches("(__)?const char\\*\\*"))
+				else if (valueTypeString.matches("((__)?const )?char\\*\\*"))
 					return arrayRef(typeRef(String.class));
-				else if (valueTypeString.matches("(__)?const wchar_t\\*\\*"))
+				else if (valueTypeString.matches("((__)?const )?wchar_t\\*\\*"))
 					return arrayRef(typeRef(WString.class));
 				else if (conversionMode == TypeConversionMode.PrimitiveParameter) {
 					if (valueTypeString.matches("char\\*"))
@@ -1398,6 +1425,12 @@ public class TypeConversion {
 		switch (prim) {
 		case NativeLong:
 			return memberRef(expr(typeRef(NativeLong.class)), MemberRefStyle.Dot, "SIZE");
+		case NSInteger:
+			return memberRef(expr(typeRef(NSInteger.class)), MemberRefStyle.Dot, "SIZE");
+		case NSUInteger:
+			return memberRef(expr(typeRef(NSUInteger.class)), MemberRefStyle.Dot, "SIZE");
+		case CGFloat:
+			return memberRef(expr(typeRef(CGFloat.class)), MemberRefStyle.Dot, "SIZE");
 		case Boolean:
 		case Byte:
 			return new Constant(Constant.Type.Int, 1);
@@ -1531,6 +1564,12 @@ public class TypeConversion {
 	public static String toPrimString(JavaPrim prim) {
 		if (prim == JavaPrim.NativeLong)
 			return NativeLong.class.getName();
+		if (prim == JavaPrim.NSInteger)
+			return NSInteger.class.getName();
+		if (prim == JavaPrim.NSUInteger)
+			return NSUInteger.class.getName();
+		if (prim == JavaPrim.CGFloat)
+			return CGFloat.class.getName();
 		return prim.toString().toLowerCase();
 	}
 
@@ -1550,7 +1589,13 @@ public class TypeConversion {
 			case Int:
 				return memberRef(expr(typeRef(ident(Integer.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
 			case NativeLong:
-				return memberRef(expr(typeRef(ident(Long.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
+				return classLiteral(NativeLong.class);
+			case NSInteger:
+				return classLiteral(NSInteger.class);
+			case NSUInteger:
+				return classLiteral(NSUInteger.class);
+			case CGFloat:
+				return classLiteral(CGFloat.class);
 			case Void:
 				return null;
 			}

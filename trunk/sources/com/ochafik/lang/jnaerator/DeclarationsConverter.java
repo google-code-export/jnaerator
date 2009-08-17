@@ -505,6 +505,8 @@ public class DeclarationsConverter {
 				returnType = function.getValueType();
 				if (returnType == null)
 					returnType = new TypeRef.Primitive("int");
+				if (returnType != null)
+					returnType.addModifiers(function.getModifiers());
 			} else {
 				returnType = RococoaUtils.fixReturnType(function);
 				functionName = ident(RococoaUtils.getMethodName(function));

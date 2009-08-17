@@ -241,6 +241,9 @@ public class JNAerator {
 					case NoCompile:
 						config.compile = false;
 						break;
+					case NoStringReturns:
+						config.stringifyConstCStringReturnValues = false;
+						break;
 					case CPlusPlusGen:
 						config.genCPlusPlus = true;
 						break;
