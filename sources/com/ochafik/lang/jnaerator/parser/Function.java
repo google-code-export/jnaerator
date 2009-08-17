@@ -223,7 +223,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 					argsStr.append(arg.getName());
 				}
 			}
-			return pre + s + " " + "(" + getValueType() + ")" + name + argsStr + ";" + post;
+			return pre + s + " " + (valueType == null ? "" : "(" + valueType + ")") + name + argsStr + ";" + post;
 		default:
 			throw new NoSuchElementException(type.toString());
 		}

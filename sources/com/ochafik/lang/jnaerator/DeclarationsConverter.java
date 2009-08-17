@@ -458,6 +458,9 @@ public class DeclarationsConverter {
 		if (functionName.toString().contains("<")) {
 			return;
 		}
+		if (functionName.toString().contains("setUsesWeakReadAndWriteBarriers")) {
+			functionName.toString();
+		}
 		functionName = result.typeConverter.getValidJavaMethodName(functionName);
 		if (functionName == null)
 			return;
@@ -1379,7 +1382,8 @@ public class DeclarationsConverter {
 	}
 	
 	private String chooseJavaArgName(String name, int iArg, Set<String> names) {
-		String baseArgName = result.typeConverter.getValidJavaArgumentName(ident(name)).toString();
+		Identifier jan = result.typeConverter.getValidJavaArgumentName(ident(name));
+		String baseArgName = jan == null ? null : jan.toString();
 		int i = 1;
 		if (baseArgName == null)
 			baseArgName = "arg";

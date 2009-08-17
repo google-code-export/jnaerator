@@ -92,7 +92,7 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 		predefRefs.put("Q", typeRef("long").addModifiers(Modifier.Unsigned, Modifier.Long));
 		predefRefs.put("f", typeRef("float"));
 		predefRefs.put("d", typeRef("double"));
-		predefRefs.put("B", typeRef("bool"));
+		predefRefs.put("B", typeRef("BOOL"));
 		predefRefs.put("v", typeRef("void"));
 	}
 	boolean isPredefRef(String s) {
@@ -184,6 +184,20 @@ arrayType returns [TypeRef type]
 		']' 
 	; 
 	
+methodType returns [Function method]
+	:
+		rt=mangledType {
+			$method = new Function(Function.Type.ObjCMethod, null, $rt.type);
+		}
+		DECIMAL_NUMBER 
+		'@' DECIMAL_NUMBER ':' DECIMAL_NUMBER 
+		(
+			at=mangledType DECIMAL_NUMBER {
+				$method.addArg(new Arg(null, $at.type));
+			}
+		)*
+		EOF
+	;
 unionType returns [Struct type]
 	:	{ 
 			$type = new Struct();

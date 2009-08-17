@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g 2009-08-11 02:05:22
+// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g 2009-08-17 22:33:12
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -49,7 +49,6 @@ import java.util.ArrayList;
 	It lacks serious expression support, which is being worked on.
 	Complex variable declarations may not be supported, such as complex signatures of functions that return function pointers...
 */
-@SuppressWarnings("unused")
 public class ObjCDemanglingParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "IDENTIFIER", "DECIMAL_NUMBER", "STRING", "Letter", "OCTAL_NUMBER", "OctalEscape", "CharEscape", "'^'", "'*'", "'@'", "'#'", "':'", "'?'", "'{'", "'='", "'}'", "'['", "']'", "'('", "')'", "'b'"
@@ -113,7 +112,7 @@ public class ObjCDemanglingParser extends Parser {
     		predefRefs.put("Q", typeRef("long").addModifiers(Modifier.Unsigned, Modifier.Long));
     		predefRefs.put("f", typeRef("float"));
     		predefRefs.put("d", typeRef("double"));
-    		predefRefs.put("B", typeRef("bool"));
+    		predefRefs.put("B", typeRef("BOOL"));
     		predefRefs.put("v", typeRef("void"));
     	}
     	boolean isPredefRef(String s) {
@@ -552,8 +551,84 @@ public class ObjCDemanglingParser extends Parser {
     // $ANTLR end "arrayType"
 
 
+    // $ANTLR start "methodType"
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:187:1: methodType returns [Function method] : rt= mangledType DECIMAL_NUMBER '@' DECIMAL_NUMBER ':' DECIMAL_NUMBER (at= mangledType DECIMAL_NUMBER )* EOF ;
+    public final Function methodType() throws RecognitionException {
+        Function method = null;
+
+        TypeRef rt = null;
+
+        TypeRef at = null;
+
+
+        try {
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:188:2: (rt= mangledType DECIMAL_NUMBER '@' DECIMAL_NUMBER ':' DECIMAL_NUMBER (at= mangledType DECIMAL_NUMBER )* EOF )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:189:3: rt= mangledType DECIMAL_NUMBER '@' DECIMAL_NUMBER ':' DECIMAL_NUMBER (at= mangledType DECIMAL_NUMBER )* EOF
+            {
+            pushFollow(FOLLOW_mangledType_in_methodType314);
+            rt=mangledType();
+
+            state._fsp--;
+
+
+            			method = new Function(Function.Type.ObjCMethod, null, rt);
+            		
+            match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_methodType320); 
+            match(input,13,FOLLOW_13_in_methodType325); 
+            match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_methodType327); 
+            match(input,15,FOLLOW_15_in_methodType329); 
+            match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_methodType331); 
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:194:3: (at= mangledType DECIMAL_NUMBER )*
+            loop5:
+            do {
+                int alt5=2;
+                int LA5_0 = input.LA(1);
+
+                if ( (LA5_0==IDENTIFIER||(LA5_0>=11 && LA5_0<=17)||LA5_0==20||LA5_0==22) ) {
+                    alt5=1;
+                }
+
+
+                switch (alt5) {
+            	case 1 :
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:195:4: at= mangledType DECIMAL_NUMBER
+            	    {
+            	    pushFollow(FOLLOW_mangledType_in_methodType343);
+            	    at=mangledType();
+
+            	    state._fsp--;
+
+            	    match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_methodType345); 
+
+            	    				method.addArg(new Arg(null, at));
+            	    			
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop5;
+                }
+            } while (true);
+
+            match(input,EOF,FOLLOW_EOF_in_methodType356); 
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return method;
+    }
+    // $ANTLR end "methodType"
+
+
     // $ANTLR start "unionType"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:187:1: unionType returns [Struct type] : '(' (tagName= IDENTIFIER '=' )? (f= structField )+ ')' ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:201:1: unionType returns [Struct type] : '(' (tagName= IDENTIFIER '=' )? (f= structField )+ ')' ;
     public final Struct unionType() throws RecognitionException {
         Struct type = null;
 
@@ -562,31 +637,31 @@ public class ObjCDemanglingParser extends Parser {
 
 
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:188:2: ( '(' (tagName= IDENTIFIER '=' )? (f= structField )+ ')' )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:188:4: '(' (tagName= IDENTIFIER '=' )? (f= structField )+ ')'
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:202:2: ( '(' (tagName= IDENTIFIER '=' )? (f= structField )+ ')' )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:202:4: '(' (tagName= IDENTIFIER '=' )? (f= structField )+ ')'
             {
              
             			type = new Struct();
             			type.setType(Struct.Type.CUnion);
             		
-            match(input,22,FOLLOW_22_in_unionType312); 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:192:3: (tagName= IDENTIFIER '=' )?
-            int alt5=2;
-            int LA5_0 = input.LA(1);
+            match(input,22,FOLLOW_22_in_unionType372); 
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:206:3: (tagName= IDENTIFIER '=' )?
+            int alt6=2;
+            int LA6_0 = input.LA(1);
 
-            if ( (LA5_0==IDENTIFIER) ) {
-                int LA5_1 = input.LA(2);
+            if ( (LA6_0==IDENTIFIER) ) {
+                int LA6_1 = input.LA(2);
 
-                if ( (LA5_1==18) ) {
-                    alt5=1;
+                if ( (LA6_1==18) ) {
+                    alt6=1;
                 }
             }
-            switch (alt5) {
+            switch (alt6) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:193:4: tagName= IDENTIFIER '='
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:207:4: tagName= IDENTIFIER '='
                     {
-                    tagName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_unionType324); 
-                    match(input,18,FOLLOW_18_in_unionType326); 
+                    tagName=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_unionType384); 
+                    match(input,18,FOLLOW_18_in_unionType386); 
 
                     				type.setTag(ident((tagName!=null?tagName.getText():null)));
                     			
@@ -596,23 +671,23 @@ public class ObjCDemanglingParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:197:3: (f= structField )+
-            int cnt6=0;
-            loop6:
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:211:3: (f= structField )+
+            int cnt7=0;
+            loop7:
             do {
-                int alt6=2;
-                int LA6_0 = input.LA(1);
+                int alt7=2;
+                int LA7_0 = input.LA(1);
 
-                if ( (LA6_0==IDENTIFIER||LA6_0==STRING||(LA6_0>=11 && LA6_0<=17)||LA6_0==20||LA6_0==22||LA6_0==24) ) {
-                    alt6=1;
+                if ( (LA7_0==IDENTIFIER||LA7_0==STRING||(LA7_0>=11 && LA7_0<=17)||LA7_0==20||LA7_0==22||LA7_0==24) ) {
+                    alt7=1;
                 }
 
 
-                switch (alt6) {
+                switch (alt7) {
             	case 1 :
-            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:198:4: f= structField
+            	    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:212:4: f= structField
             	    {
-            	    pushFollow(FOLLOW_structField_in_unionType346);
+            	    pushFollow(FOLLOW_structField_in_unionType406);
             	    f=structField();
 
             	    state._fsp--;
@@ -623,15 +698,15 @@ public class ObjCDemanglingParser extends Parser {
             	    break;
 
             	default :
-            	    if ( cnt6 >= 1 ) break loop6;
+            	    if ( cnt7 >= 1 ) break loop7;
                         EarlyExitException eee =
-                            new EarlyExitException(6, input);
+                            new EarlyExitException(7, input);
                         throw eee;
                 }
-                cnt6++;
+                cnt7++;
             } while (true);
 
-            match(input,23,FOLLOW_23_in_unionType358); 
+            match(input,23,FOLLOW_23_in_unionType418); 
 
             }
 
@@ -648,7 +723,7 @@ public class ObjCDemanglingParser extends Parser {
 
 
     // $ANTLR start "structField"
-    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:204:1: structField returns [VariablesDeclaration field] : (fieldName= STRING )? (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER ) ;
+    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:218:1: structField returns [VariablesDeclaration field] : (fieldName= STRING )? (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER ) ;
     public final VariablesDeclaration structField() throws RecognitionException {
         VariablesDeclaration field = null;
 
@@ -661,25 +736,25 @@ public class ObjCDemanglingParser extends Parser {
         	DirectDeclarator declarator = null;
 
         try {
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:208:2: ( (fieldName= STRING )? (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER ) )
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:209:3: (fieldName= STRING )? (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:222:2: ( (fieldName= STRING )? (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER ) )
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:223:3: (fieldName= STRING )? (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER )
             {
              
             			field = new VariablesDeclaration(); 
             			field.addDeclarator(declarator = new DirectDeclarator());
             		
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:213:3: (fieldName= STRING )?
-            int alt7=2;
-            int LA7_0 = input.LA(1);
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:227:3: (fieldName= STRING )?
+            int alt8=2;
+            int LA8_0 = input.LA(1);
 
-            if ( (LA7_0==STRING) ) {
-                alt7=1;
+            if ( (LA8_0==STRING) ) {
+                alt8=1;
             }
-            switch (alt7) {
+            switch (alt8) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:214:4: fieldName= STRING
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:228:4: fieldName= STRING
                     {
-                    fieldName=(Token)match(input,STRING,FOLLOW_STRING_in_structField393); 
+                    fieldName=(Token)match(input,STRING,FOLLOW_STRING_in_structField453); 
 
                     				declarator.setName(String.valueOf(Constant.parseString((fieldName!=null?fieldName.getText():null)).getValue()));
                     			
@@ -689,27 +764,27 @@ public class ObjCDemanglingParser extends Parser {
 
             }
 
-            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:218:3: (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER )
-            int alt8=2;
-            int LA8_0 = input.LA(1);
+            // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:232:3: (fieldType= mangledType | 'b' bits= DECIMAL_NUMBER )
+            int alt9=2;
+            int LA9_0 = input.LA(1);
 
-            if ( (LA8_0==IDENTIFIER||(LA8_0>=11 && LA8_0<=17)||LA8_0==20||LA8_0==22) ) {
-                alt8=1;
+            if ( (LA9_0==IDENTIFIER||(LA9_0>=11 && LA9_0<=17)||LA9_0==20||LA9_0==22) ) {
+                alt9=1;
             }
-            else if ( (LA8_0==24) ) {
-                alt8=2;
+            else if ( (LA9_0==24) ) {
+                alt9=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 8, 0, input);
+                    new NoViableAltException("", 9, 0, input);
 
                 throw nvae;
             }
-            switch (alt8) {
+            switch (alt9) {
                 case 1 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:219:4: fieldType= mangledType
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:233:4: fieldType= mangledType
                     {
-                    pushFollow(FOLLOW_mangledType_in_structField411);
+                    pushFollow(FOLLOW_mangledType_in_structField471);
                     fieldType=mangledType();
 
                     state._fsp--;
@@ -721,10 +796,10 @@ public class ObjCDemanglingParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:222:4: 'b' bits= DECIMAL_NUMBER
+                    // /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g:236:4: 'b' bits= DECIMAL_NUMBER
                     {
-                    match(input,24,FOLLOW_24_in_structField420); 
-                    bits=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_structField424); 
+                    match(input,24,FOLLOW_24_in_structField480); 
+                    bits=(Token)match(input,DECIMAL_NUMBER,FOLLOW_DECIMAL_NUMBER_in_structField484); 
 
                     				declarator.setBits(Integer.parseInt((bits!=null?bits.getText():null)));
                     				field.setValueType(typeRef("int"));
@@ -777,14 +852,23 @@ public class ObjCDemanglingParser extends Parser {
     public static final BitSet FOLLOW_DECIMAL_NUMBER_in_arrayType278 = new BitSet(new long[]{0x000000000053F810L});
     public static final BitSet FOLLOW_mangledType_in_arrayType286 = new BitSet(new long[]{0x0000000000200000L});
     public static final BitSet FOLLOW_21_in_arrayType292 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_22_in_unionType312 = new BitSet(new long[]{0x000000000153F850L});
-    public static final BitSet FOLLOW_IDENTIFIER_in_unionType324 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_unionType326 = new BitSet(new long[]{0x000000000153F850L});
-    public static final BitSet FOLLOW_structField_in_unionType346 = new BitSet(new long[]{0x0000000001D3F850L});
-    public static final BitSet FOLLOW_23_in_unionType358 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_structField393 = new BitSet(new long[]{0x000000000153F810L});
-    public static final BitSet FOLLOW_mangledType_in_structField411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_24_in_structField420 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_structField424 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_mangledType_in_methodType314 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_methodType320 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_13_in_methodType325 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_methodType327 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_methodType329 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_methodType331 = new BitSet(new long[]{0x000000000053F810L});
+    public static final BitSet FOLLOW_mangledType_in_methodType343 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_methodType345 = new BitSet(new long[]{0x000000000053F810L});
+    public static final BitSet FOLLOW_EOF_in_methodType356 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_22_in_unionType372 = new BitSet(new long[]{0x000000000153F850L});
+    public static final BitSet FOLLOW_IDENTIFIER_in_unionType384 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_unionType386 = new BitSet(new long[]{0x000000000153F850L});
+    public static final BitSet FOLLOW_structField_in_unionType406 = new BitSet(new long[]{0x0000000001D3F850L});
+    public static final BitSet FOLLOW_23_in_unionType418 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_structField453 = new BitSet(new long[]{0x000000000153F810L});
+    public static final BitSet FOLLOW_mangledType_in_structField471 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_24_in_structField480 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_DECIMAL_NUMBER_in_structField484 = new BitSet(new long[]{0x0000000000000002L});
 
 }

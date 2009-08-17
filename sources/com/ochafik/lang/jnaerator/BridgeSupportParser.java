@@ -19,7 +19,9 @@
 package com.ochafik.lang.jnaerator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -33,12 +35,18 @@ import org.w3c.dom.Node;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.ObjCDemanglingLexer;
 import com.ochafik.lang.jnaerator.parser.ObjCDemanglingParser;
 import com.ochafik.lang.jnaerator.parser.ObjCppParser;
+import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
+import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
+import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.xml.XMLUtils;
 import com.ochafik.xml.XPathUtils;
@@ -65,18 +73,30 @@ public class BridgeSupportParser {
 			ex.printStackTrace();
 		}
 	}
-	public void parseBridgeSupportFiles() {
-		for (File bsf : result.config.bridgeSupportFiles) {
-			try {
-				parseBridgeSupportFile(bsf);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	public void parseBridgeSupportFiles() throws FileNotFoundException {
+		SourceFiles sfs = new SourceFiles();
+		try {
+			for (File bsf : result.config.bridgeSupportFiles) {
+				try {
+					sfs.add(parseBridgeSupportFile(bsf));
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} finally {
+			if (result.config.bridgesupportOutFile != null)
+			{
+				if (result.config.verbose)
+					System.out.println("Writing bridgesupport definitions to " + result.config.bridgesupportOutFile.getAbsolutePath());
+				PrintWriter pw = new PrintWriter(result.config.bridgesupportOutFile);
+				pw.println(sfs);
+				pw.close();
 			}
 		}
 	}
 
-	private void parseBridgeSupportFile(File bsf) throws Exception {
+	private SourceFile parseBridgeSupportFile(File bsf) throws Exception {
 
 		String framework = bsf.getName();
 		if (framework.toLowerCase().endsWith(".bridgesupport"))
@@ -87,23 +107,68 @@ public class BridgeSupportParser {
 		String sourceFilePath = bsf.toString();
 		Node signatures = XMLUtils.getFirstNamedNode(xml, "signatures");
 		if (signatures == null)
-			return;
+			return null;
 		
-		parseStructs(framework, signatures, sourceFilePath);
-		parseStringConstants(framework, signatures);
-		parseFunctions(framework, signatures, sourceFilePath);
-		parseClasses(framework, signatures, sourceFilePath);
+		SourceFile sf = new SourceFile();
+		sf.setElementFile(sourceFilePath);
+
+		parseClasses(framework, signatures, sf);
+		parseStructs(signatures, sf);
+		parseEnums(signatures, sf);
+		parseConstants(signatures, sf);
+		parseStringConstants(framework, signatures, sf);
+		parseFunctions(framework, signatures, sf);
+		
+		return sf;
 	}
 
-	private void parseClasses(String framework, Node signatures, String sourceFilePath) throws XPathExpressionException {
+	private void parseEnums(Node signatures, SourceFile sf) {
+		for (Node en : XMLUtils.getChildrenByName(signatures, "enum")) {
+			String name = XMLUtils.getAttribute(en, "name");
+			String value = XMLUtils.getAttribute(en, "value");
+			if (value != null) {
+				try {
+					Constant ct;
+					try {
+						int i = value.matches(".*?\\.0+$") ? value.lastIndexOf('.') : -1;
+						String v = i > 0 ? value.substring(0, i) : value; 
+						sf.addDeclaration(new VariablesDeclaration(typeRef("int").addModifiers(Modifier.Const), new DirectDeclarator(name, expr(Constant.Type.Int, Integer.parseInt(v)))));
+					} catch (NumberFormatException fex) {
+						sf.addDeclaration(new VariablesDeclaration(typeRef("double").addModifiers(Modifier.Const), new DirectDeclarator(name, expr(Constant.Type.Double, Double.parseDouble(value)))));
+					}
+					
+				} catch (Exception ex) {
+					System.err.println("Parsing of enum " + name + " with value '" + value + "' failed : " + ex);
+				}
+			}
+			
+		}
+	}
+	private void parseConstants(Node signatures, SourceFile sf) {
+		for (Node cn : XMLUtils.getChildrenByName(signatures, "constant")) {
+			String name = XMLUtils.getAttribute(cn, "name");
+			try {
+				TypeRef tr = parseType(cn);
+				if (tr == null)
+					continue;
+			
+				sf.addDeclaration(new VariablesDeclaration(tr.addModifiers(Modifier.Extern, Modifier.Const), 
+						new DirectDeclarator(name)));
+			} catch (Exception ex) {
+				System.err.println("Parsing of constant " + name + " failed : " + ex);
+			}
+		}
+	}
+
+	private void parseClasses(String framework, Node signatures, SourceFile sf) throws XPathExpressionException {
 		for (Node classe : XMLUtils.getChildrenByName(signatures, "class")) {
-			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sourceFilePath);
+			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sf);
 			if (cs == null)
 				continue;
 			cs.accept(result);
 		}
 		for (Node classe : XMLUtils.getChildrenByName(signatures, "informal_protocol")) {
-			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sourceFilePath);
+			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sf);
 			if (cs == null)
 				continue;
 			cs.setCategoryName(cs.getTag() == null ? null : cs.getTag().toString());
@@ -113,7 +178,7 @@ public class BridgeSupportParser {
 	}
 	private Struct parseClasse(Node classe,
 			com.ochafik.lang.jnaerator.parser.Struct.Type type,
-			String sourceFilePath) throws XPathExpressionException {
+			SourceFile sf) throws XPathExpressionException {
 		
 		Struct cs = new Struct();
 		cs.setType(type);
@@ -125,15 +190,16 @@ public class BridgeSupportParser {
 		for (Node method : XPathUtils.findNodesIterableByXPath("method", classe)) {
 			
 			try {
-				cs.addDeclaration(parseFunction(Type.ObjCMethod, method, sourceFilePath));
+				cs.addDeclaration(parseFunction(Type.ObjCMethod, method, sf));
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
+		sf.addDeclaration(new TaggedTypeRefDeclaration(cs));
 		return cs;
 	}
 
-	private void parseFunctions(String framework, Node signatures, String sourceFilePath) throws XPathExpressionException {
+	private void parseFunctions(String framework, Node signatures, SourceFile sf) throws XPathExpressionException {
 		for (Node function : XMLUtils.getChildrenByName(signatures, "function")) {
 			String name = XMLUtils.getAttribute(function, "name");
 			Node retval = XMLUtils.getFirstNamedNode(function, "retval");
@@ -147,9 +213,10 @@ public class BridgeSupportParser {
 				continue; // TODO handle inline functions : link to BridgeSupport auxiliary library
 			
 			try {
-				Function f = parseFunction(Type.CFunction, function, sourceFilePath);
+				Function f = parseFunction(Type.CFunction, function, sf);
 				if (f == null)
 					continue;
+				sf.addDeclaration(f);
 				f.accept(result);
 				
 			} catch (Exception ex) {
@@ -174,7 +241,7 @@ public class BridgeSupportParser {
 		}
 		return parseAndReconciliateType(XMLUtils.getAttribute(node, "type"), XMLUtils.getAttribute(node, "type64"));
 	}
-	private Function parseFunction(Type cfunction, Node function, String sourceFilePath) throws XPathExpressionException, RecognitionException, IOException {
+	private Function parseFunction(Type cfunction, Node function, SourceFile sf) throws XPathExpressionException, RecognitionException, IOException {
 		TypeRef tr = parseType(XMLUtils.getFirstNamedNode(function, "retval"));
 //		if (tr == null)
 //			tr = typeRef("id");
@@ -184,11 +251,27 @@ public class BridgeSupportParser {
 		String name = XMLUtils.getAttribute(function, "name");
 		if (name == null && splitSelector != null && splitSelector.length > 0)
 			name = splitSelector[0];
-		Function f = new Function(Type.CFunction, ident(name), tr);
-		f.setElementFile(sourceFilePath);
+		
+		String type = XMLUtils.getAttribute(function, "type");
+		Function methodType = null;
+		if (type != null) {
+			methodType = newObjCDemangler(type, result.config.verbose).methodType();
+			if (tr == null)
+				tr = methodType.getValueType();
+//			System.out.println(methodType.toString());
+		}
+		
+		Function f = new Function(cfunction, ident(name), tr);
+//		f.setElementFile(sf);
 		int iArg = 0;
 		for (Node arg : XMLUtils.getChildrenByName(function, "arg")) {//XPathUtils.findNodesIterableByXPath("arg", function)) {
 			TypeRef at = parseType(arg);
+			if (at == null && methodType != null) {
+				if (iArg < methodType.getArgs().size())
+					at = methodType.getArgs().get(iArg).getValueType();
+				else
+					at = null;
+			}
 			if (at == null)
 				return null;
 			Arg a = new Arg();
@@ -224,7 +307,7 @@ public class BridgeSupportParser {
 			return tr32;
 		
 	}
-	private void parseStructs(String framework, Node signatures, String sourceFilePath) throws XPathExpressionException {
+	private void parseStructs(Node signatures, SourceFile sf) throws XPathExpressionException {
 		for (Node function : XMLUtils.getChildrenByName(signatures, "struct")) {//PathUtils.findNodesIterableByXPath("signatures/struct", xml)) {
 			String name = XMLUtils.getAttribute(function, "name");
 			String type32 = XMLUtils.getAttribute(function, "type"), type64 = XMLUtils.getAttribute(function, "type64");
@@ -233,7 +316,7 @@ public class BridgeSupportParser {
 					TypeRef tr = parseAndReconciliateType(type32, type64);
 					StoredDeclarations.TypeDef td = new StoredDeclarations.TypeDef(tr, new Declarator.DirectDeclarator(name));
 					//td.addToCommentBefore("Original signature : " + type32);
-					td.setElementFile(sourceFilePath);
+					sf.addDeclaration(td);
 					
 //					System.out.println(td);
 //					System.out.println();
@@ -269,7 +352,7 @@ public class BridgeSupportParser {
 		};
 	}
 
-	private void parseStringConstants(String framework, Node signatures) throws XPathExpressionException {
+	private void parseStringConstants(String framework, Node signatures, SourceFile sf) throws XPathExpressionException {
 		for (Node string_constant : XMLUtils.getChildrenByName(signatures, "string_constant")) {
 			String name = XMLUtils.getAttribute(string_constant, "name");
 			String value = XMLUtils.getAttribute(string_constant, "value");
