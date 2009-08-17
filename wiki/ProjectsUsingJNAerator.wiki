@@ -1,0 +1,3 @@
+#summary List of projects and blog posts that use / refer to JNAerator
+
+[http://adam.younglogic.com/?p=502 Using JNA with librpm]
