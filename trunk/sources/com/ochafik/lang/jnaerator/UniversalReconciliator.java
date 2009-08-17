@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
@@ -83,7 +84,7 @@ public class UniversalReconciliator {
 			TypeRef.SimpleTypeRef t32 = s32.simpleTypeRefs.get(i), t64 = s64.simpleTypeRefs.get(i);
 			if (t32.toString().equals(t64.toString()))
 				continue;
-			TypeRef.SimpleTypeRef tr = reconciliateSimple32bitsAnd64bits(t32, t64);
+			TypeRef tr = reconciliateSimple32bitsAnd64bits(t32, t64);
 			if (tr == null)
 				throw new ReconciliationException(tr32, tr64, t32, t64);
 			t32.replaceBy(tr);
@@ -92,23 +93,23 @@ public class UniversalReconciliator {
 		return tr32;
 	}
 
-	static Map<Pair<String, String>, String> predefined32_64Reconciliations = new HashMap<Pair<String,String>, String>();
+	static Map<Pair<String, String>, TypeRef> predefined32_64Reconciliations = new HashMap<Pair<String,String>, TypeRef>();
 	static {
-		defRecon("float", "double", "CGFloat");
-		defRecon("long", "long long", "long");
-		defRecon("int", "long long", "int");
-		defRecon("unsigned long", "unsigned long long", "unsigned long");
-		defRecon("unsigned int", "unsigned long long", "unsigned int");
-		defRecon("signed long", "signed long long", "signed long");
-		defRecon("signed int", "signed long long", "signed int");
+		defRecon("float", "double", typeRef("CGFloat"));
+		defRecon("long", "long long", typeRef("long"));
+		defRecon("int", "long long", typeRef("int"));
+		defRecon("unsigned long", "unsigned long long", typeRef("long").addModifiers(Modifier.Unsigned));
+		defRecon("unsigned int", "unsigned long long", typeRef("int").addModifiers(Modifier.Unsigned));
+		defRecon("signed long", "signed long long", typeRef("long").addModifiers(Modifier.Signed));
+		defRecon("signed int", "signed long long", typeRef("int").addModifiers(Modifier.Signed));
 	}
-	static void defRecon(String s32, String s64, String sRecon) {
+	static void defRecon(String s32, String s64, TypeRef sRecon) {
 		predefined32_64Reconciliations.put(new Pair<String, String>(s32, s64), sRecon);
 	}
-	public static SimpleTypeRef reconciliateSimple32bitsAnd64bits(SimpleTypeRef t32, SimpleTypeRef t64) {
-		String recon = predefined32_64Reconciliations.get(new Pair<String, String>(t32.toString(), t64.toString()));
+	public static TypeRef reconciliateSimple32bitsAnd64bits(SimpleTypeRef t32, SimpleTypeRef t64) {
+		TypeRef recon = predefined32_64Reconciliations.get(new Pair<String, String>(t32.toString(), t64.toString()));
 		
-		return typeRef(recon);
+		return recon == null ? null : recon.clone();
 	}
 
 }

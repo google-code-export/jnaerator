@@ -458,9 +458,6 @@ public class DeclarationsConverter {
 		if (functionName.toString().contains("<")) {
 			return;
 		}
-		if (functionName.toString().contains("setUsesWeakReadAndWriteBarriers")) {
-			functionName.toString();
-		}
 		functionName = result.typeConverter.getValidJavaMethodName(functionName);
 		if (functionName == null)
 			return;
