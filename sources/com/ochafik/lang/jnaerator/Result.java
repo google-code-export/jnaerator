@@ -269,10 +269,7 @@ public class Result extends Scanner {
 		}
 		if (library == null) {
 			Element e = decl;
-			String file = null;
-			while (e != null && (file = e.getElementFile()) == null) {
-				e = e.getParentElement();
-			}
+			String file = resolveFile(e);
 			if (decl instanceof Define) {
 				e = decl;
 			}
@@ -281,6 +278,13 @@ public class Result extends Scanner {
 		return library;
 	}
 	
+	public String resolveFile(Element e) {
+		String file = null;
+		while (e != null && (file = e.getElementFile()) == null) {
+			e = e.getParentElement();
+		}
+		return file;
+	}
 	@Override
 	public void visitFunction(Function function) {
 		super.visitFunction(function);
@@ -543,5 +547,18 @@ public class Result extends Scanner {
 		if ((m = classes.get(Struct.Type.ObjCProtocol)) != null && !m.isEmpty())
 			return true;
 		return false;
+	}
+	public final Map<String, TypeRef> weakTypeDefs = new HashMap<String, TypeRef>();
+	public void addWeakTypeDef(TypeRef clone, String sn) {
+		weakTypeDefs.put(sn, clone);
+	}
+	public void rehabilitateWeakTypeDefs() {
+		for (Map.Entry<String, TypeRef> e : weakTypeDefs.entrySet()) {
+			if (typeDefs.get(e.getKey()) == null) {
+				DirectDeclarator dd = new DirectDeclarator(e.getKey());
+				TypeDef td = new TypeDef(e.getValue(), dd);
+				typeDefs.put(e.getKey(), new Pair<TypeDef, Declarator>(td, dd));
+			}
+		}
 	}
 }
