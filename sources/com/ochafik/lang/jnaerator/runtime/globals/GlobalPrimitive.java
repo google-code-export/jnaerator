@@ -35,7 +35,7 @@ public abstract class GlobalPrimitive<T extends PointerType> extends Global {
 	}
 	protected T value;
 	protected T getValue() {
-		if (value != null) {
+		if (value == null) {
 			try {
 				value = type.newInstance();
 			} catch (Exception e) {

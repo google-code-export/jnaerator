@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jna.Pointer;
+import com.sun.jna.WString;
 
 public class RuntimeTests {
 	public static class BitFieldStruct extends com.sun.jna.Structure {
@@ -29,6 +30,26 @@ public class RuntimeTests {
 			super();
 			useMemory(p);
 		}
+	}
+	public static class DummyStruct extends BitFieldStruct {
+		public int i;
+		public long l;
+		public short s;
+		public byte b;
+		public char c;
+		public boolean z;
+		public Pointer p;
+		public String str;
+		public WString wstr;
+		public int[] ii = new int[10];
+
+	}
+	@Test
+	public void dummyStruct() {
+		DummyStruct ds = new DummyStruct();
+		ds.write();
+		ds.read();
+		
 	}
 	@Test
 	public void simpleBitField() {
@@ -101,8 +122,8 @@ public class RuntimeTests {
 			s.read();
 			
 			randl = randl & ~(1 << 63);
-			Assert.assertEquals(Integer.MAX_VALUE, s.i);
 			Assert.assertEquals(randl, s.l);
+			Assert.assertEquals(Integer.MAX_VALUE, s.i);
 			Assert.assertEquals(8, s.end);
 		}
 	}
