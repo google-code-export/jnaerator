@@ -1,5 +1,5 @@
 /* 
- * Copyright Olivier Chafik 2009
+ * Copyright (c) 2009 Olivier Chafik, All Rights Reserved
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,7 +62,7 @@ class BitFields {
 		}
 		public Object readObject(Pointer p, long offset) {
 			p = p.getPointer(offset);
-            return p != null ? wide ? new WString(p.getString(0, true)) : p.getString(0) : null;
+            return p != null ? wide ? (Object)new WString(p.getString(0, true)) : (Object)p.getString(0) : null;
 		}		
 		public int size() {
 			return Native.POINTER_SIZE;
@@ -89,7 +89,7 @@ class BitFields {
 			return ((Integer)value).longValue();
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setInt(offset, ((Integer)value).intValue());
+			p.setInt(offset, value == null ? 0 : ((Integer)value).intValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Integer(p.getInt(offset));
@@ -106,13 +106,13 @@ class BitFields {
 			return p.getLong(offset);
 		}
 		public Object objectValue(long value) {
-			return new Long((Long)value);
+			return new Long(value);
 		}
 		public long longValue(Object value) {
 			return ((Long)value).longValue();
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setLong(offset, ((Long)value).longValue());
+			p.setLong(offset, value == null ? 0 : ((Long)value).longValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Long(p.getLong(offset));
@@ -135,7 +135,7 @@ class BitFields {
 			return ((Short)value).longValue();
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setShort(offset, ((Short)value).shortValue());
+			p.setShort(offset, value == null ? 0 : ((Short)value).shortValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Short(p.getShort(offset));
@@ -158,7 +158,7 @@ class BitFields {
 			return ((Byte)value).longValue();
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setByte(offset, ((Byte)value).byteValue());
+			p.setByte(offset, value == null ? 0 : ((Byte)value).byteValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Byte(p.getByte(offset));
@@ -181,7 +181,7 @@ class BitFields {
 			return ((Character)value).charValue();
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setChar(offset, ((Character)value).charValue());
+			p.setChar(offset, value == null ? (char)0 : ((Character)value).charValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Character(p.getChar(offset));
@@ -204,7 +204,7 @@ class BitFields {
 			return ((Boolean)value).booleanValue() ? -1 : 0;
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setByte(offset, (byte)(Boolean.TRUE.equals(value) ? -1 : 0));
+			p.setByte(offset, value == null ? 0 : (byte)(Boolean.TRUE.equals(value) ? -1 : 0));
 		}
 		public Object readObject(Pointer p, long offset) {
 			return p.getByte(offset) == 0 ? Boolean.FALSE : Boolean.TRUE;
@@ -227,7 +227,7 @@ class BitFields {
 			return new Double(Double.longBitsToDouble((long)value));
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setDouble(offset, ((Double)value).doubleValue());
+			p.setDouble(offset, value == null ? 0 : ((Double)value).doubleValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Double(p.getDouble(offset));
@@ -250,7 +250,7 @@ class BitFields {
 			return new Float(Float.intBitsToFloat((int)value));
 		}
 		public void writeObject(Pointer p, long offset, Object value) {
-			p.setFloat(offset, ((Float)value).floatValue());
+			p.setFloat(offset, value == null ? 0 : ((Float)value).floatValue());
 		}
 		public Object readObject(Pointer p, long offset) {
 			return new Float(p.getFloat(offset));
@@ -335,6 +335,8 @@ class BitFields {
 			)
 		)
 			throw new UnsupportedOperationException("Bit fields only support integral fields !!!");
+		//if ((bits & ~63) != 0)
+		//	throw new UnsupportedOperationException("Bit fields cannot be larger than 64 bits !!!");
 		
 		return handler;
 	}
@@ -355,7 +357,6 @@ class BitFields {
 			for (int i = 0; i < bitOffset; i++)
 				mask.clearBit(i);
 		}
-		print(mask);
 		return mask;
 	}
 
@@ -415,14 +416,14 @@ class BitFields {
 		} else {
 			BigInteger bigValue = BigInteger.valueOf(handler.longValue(value));
 			bigValue = bigValue.shiftLeft(bitOffset);
-			print(bigValue);
 			
 			byte[] bs = getBigEndianByteArray(pointer, offset, bytesToFetch);
 			BigInteger existing = new BigInteger(bs);
 			BigInteger mask = shiftedMask(bits, bitOffset);
 			bigValue = bigValue.and(mask);
-			existing = existing.and(mask.negate());
+			existing = existing.and(mask.not());
 			bigValue = bigValue.or(existing);
+			
 			setBigEndianByteArray(pointer, offset, bigValue.toByteArray());
 		}
 		return true;
@@ -465,3 +466,4 @@ class BitFields {
 	
 	
 }
+

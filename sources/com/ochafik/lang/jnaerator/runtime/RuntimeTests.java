@@ -121,9 +121,42 @@ public class RuntimeTests {
 			s = new BigBitOffset(s.getPointer());
 			s.read();
 			
-			randl = randl & ~(1 << 63);
-			Assert.assertEquals(randl, s.l);
+//			long initRandl = randl;
+//			long rr = (initRandl << 1) >> 1;
+			randl = randl & ~(1L << 63);
 			Assert.assertEquals(Integer.MAX_VALUE, s.i);
+			Assert.assertEquals(randl, s.l);
+			Assert.assertEquals(8, s.end);
+		}
+	}
+	
+	
+	
+	public static class BitOffsetPointer extends BitFieldStruct {
+		@Bits(3)
+		public int i;
+		public Pointer p;
+		public int end;
+		public BitOffsetPointer() { super(); }
+		public BitOffsetPointer(Pointer p) {
+			super();
+			useMemory(p);
+		}
+	}
+	public void testBitOffsetPointer() {
+		Pointer pconstant = Pointer.createConstant(10);
+		for (int i = 5; i-- != 0;) {
+			BitOffsetPointer s = new BitOffsetPointer();
+			s.i = -1;
+			s.p = pconstant;
+			s.end = 8;
+	
+			s.write();
+			s = new BitOffsetPointer(s.getPointer());
+			s.read();
+			
+			Assert.assertEquals(pconstant, s.p);
+			Assert.assertEquals(8, s.i);
 			Assert.assertEquals(8, s.end);
 		}
 	}

@@ -15,5 +15,6 @@ fi
 	cd ..
 
 	cp ~/src/jna/jnalib/dist/jna.jar libraries
+	cp ~/src/jna/jnalib/dist/src.zip libraries/jna-src.zip
 
 svn status
