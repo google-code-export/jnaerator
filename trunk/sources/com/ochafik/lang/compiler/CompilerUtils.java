@@ -19,6 +19,7 @@
 package com.ochafik.lang.compiler;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,6 +30,8 @@ import javax.tools.*;
 import javax.tools.Diagnostic.Kind;
 
 import com.ochafik.io.IOUtils;
+import com.ochafik.util.listenable.Adapter;
+import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 
 public class CompilerUtils {
@@ -139,14 +142,25 @@ public class CompilerUtils {
 //		DebugUtils.println(fileManager.inputs.values());
 		compiler.getTask(null, fileManager, diagnostics, options, null, fileObjects).call();
 		
-		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-			if (diagnostic == null)
-				continue;
-			//diagnostic.getKind()
-			//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
-			if (diagnostic.getKind() == Kind.ERROR)
-				System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
-		}
+//		for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+//			if (diagnostic == null)
+//				continue;
+//			//diagnostic.getKind()
+//			//System.out.format("Error on line %d in %d%n", diagnostic.getLineNumber(), diagnostic.getSource());//.toUri());
+//			if (diagnostic.getKind() == Kind.ERROR) {
+//				System.err.println("\n" +  diagnostic.getSource().toUri() + ":");
+//				System.err.println(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" +  diagnostic.getSource().getCharContent(true), new Adapter<String[], String>() {
+//					int line = 0;
+//
+//					@Override
+//					public String adapt(String[] value) {
+//						line++;
+//						return "\n" + line + ":" + (diagnostic.getLineNumber() == line ? ">>>" : "") +"\t\t";
+//					}
+//				}));
+//			}
+////				System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
+//		}
 	}
 	
 	public static JavaCompiler getJavaCompiler(boolean preferJavac) throws FileNotFoundException {

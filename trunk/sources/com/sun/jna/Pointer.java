@@ -386,8 +386,11 @@ public class Pointer {
     Object getValue(long offset, int bitOffset, int bits, Class type, Object currentValue) {
 
         Object result = BitFields.getPrimitiveValue(this, offset, bitOffset, bits, type);
-    	if (result != BitFields.UNHANDLED_TYPE) {} 
-    	else if (Structure.class.isAssignableFrom(type)) {
+    	if (result != BitFields.UNHANDLED_TYPE)
+			return result;
+		
+		result = null;
+    	if (Structure.class.isAssignableFrom(type)) {
 			Structure s = (Structure)currentValue;
             if (Structure.ByReference.class.isAssignableFrom(type)) {
                 s = Structure.updateStructureByReference(type, s, getPointer(offset));
@@ -398,7 +401,7 @@ public class Pointer {
             }
             result = s;
         }
-        else if (Pointer.class.isAssignableFrom(type)) {
+    	else if (Pointer.class.isAssignableFrom(type)) {
             Pointer p = getPointer(offset);
             if (p != null) {
                 Pointer oldp = currentValue instanceof Pointer
@@ -451,7 +454,7 @@ public class Pointer {
             }
         }
         else if (type.isArray()) {
-			result = currentValue;
+            result = currentValue;
             if (result == null) {
                 throw new IllegalStateException("Need an initialized array");
             }
@@ -819,7 +822,9 @@ v     * @param wide whether to convert from a wide or standard C string
 		if (BitFields.setPrimitiveValue(this, offset, bitOffset, bits, value, type))
 			return;
 		
-		if (Structure.class.isAssignableFrom(type)) {
+		if (type == Pointer.class) {
+            setPointer(offset, (Pointer)value);
+        } else if (Structure.class.isAssignableFrom(type)) {
             Structure s = (Structure)value;
             if (Structure.ByReference.class.isAssignableFrom(type)) {
                 setPointer(offset, s == null ? null : s.getPointer());
@@ -831,9 +836,6 @@ v     * @param wide whether to convert from a wide or standard C string
                 s.useMemory(this, (int)offset);
                 s.write();
             }
-        }
-		else if (type == Pointer.class) {
-            setPointer(offset, (Pointer)value);
         }
         else if (Callback.class.isAssignableFrom(type)) {
             setPointer(offset, CallbackReference.getFunctionPointer((Callback)value));
