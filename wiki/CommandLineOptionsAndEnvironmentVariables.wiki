@@ -23,6 +23,8 @@
   Add a directory to the include path. See doc of JNAERATOR_INCLUDE_PATH
  * *-arch* <archName: String>
   Define the current architecture for libraries (state variable)
+ * *-bridgeSupportOut* <outFile: OutputFile>
+  Write the definitions extracted from bridgesupport files in a file (automatically set when ${Verbose} is used).
  * *-defaultLibrary* <libName: String>
   Name of output library for elements declared in files not covered by a ${CurrentLibrary} switch
  * *-direct*
@@ -61,6 +63,8 @@
   No auto-configuration of preprocessor symbols and paths
  * *-noRuntime*
   Don't copy runtime classes to JAR output
+ * *-noStringReturns*
+  Prevent const char`*` and const wchar_t`*` return types from being converted to String and WString.
  * *-nocpp*
   Do not define the __cplusplus symbol
  * *-o* <outDir: OutputDir>
