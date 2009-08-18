@@ -193,7 +193,7 @@ public class JNAerator {
 						"-root", "org.rococoa.cocoa",
 						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
 						"-o", "/Users/ochafik/Prog/Java/test/bridgesupport",
-//						"-noComp",
+//						"-noComp",	
 //						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
 //						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"

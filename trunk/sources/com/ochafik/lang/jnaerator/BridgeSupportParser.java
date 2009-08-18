@@ -190,6 +190,7 @@ public class BridgeSupportParser {
 		String name = XMLUtils.getAttribute(classe, "name");
 		if (result.config.verbose)
 			System.out.println("Parsing class " + name);
+		
 		cs.setTag(ident(name));
 		
 		for (Node method : XPathUtils.findNodesIterableByXPath("method", classe)) {
@@ -248,6 +249,7 @@ public class BridgeSupportParser {
 	}
 	private Function parseFunction(Type cfunction, Node function, SourceFile sf) throws XPathExpressionException, RecognitionException, IOException {
 		TypeRef tr = parseType(XMLUtils.getFirstNamedNode(function, "retval"));
+		
 //		if (tr == null)
 //			tr = typeRef("id");
 		
@@ -257,16 +259,21 @@ public class BridgeSupportParser {
 		if (name == null && splitSelector != null && splitSelector.length > 0)
 			name = splitSelector[0];
 		
-		String type = XMLUtils.getAttribute(function, "type");
+		String type = XMLUtils.getAttribute(function, "type"), type64 = XMLUtils.getAttribute(function, "type64");
 		Function methodType = null;
 		if (type != null) {
-			methodType = newObjCDemangler(type, result.config.verbose).methodType();
+			methodType = parseAndReconciliateMethods(type, type64);
 			if (tr == null)
 				tr = methodType.getValueType();
 //			System.out.println(methodType.toString());
 		}
 		
 		Function f = new Function(cfunction, ident(name), tr);
+
+		String class_method = XMLUtils.getAttribute(function, "class_method");
+		if ("true".equals(class_method))
+			f.addModifiers(Modifier.Static);
+		
 //		f.setElementFile(sf);
 		int iArg = 0;
 		for (Node arg : XMLUtils.getChildrenByName(function, "arg")) {//XPathUtils.findNodesIterableByXPath("arg", function)) {
@@ -292,6 +299,9 @@ public class BridgeSupportParser {
 	TypeRef parseType(String mangled) throws RecognitionException, IOException {
 		return newObjCDemangler(mangled, true).mangledTypeEOF();
 	}
+	Function parseMethod(String mangled) throws RecognitionException, IOException {
+		return newObjCDemangler(mangled, true).methodType();
+	}
 	TypeRef parseAndReconciliateType(String mangled32, String mangled64) throws RecognitionException, IOException {
 //		System.out.println("Parsing \"" + mangled32 + "\":");
 		if (mangled32 == null)
@@ -303,7 +313,27 @@ public class BridgeSupportParser {
 			TypeRef tr64 = parseType(mangled64);
 		
 			try {
-				return result.universalReconciliator.reconciliate32bitsAnd64bits(tr32, tr64);
+				return (TypeRef)result.universalReconciliator.reconciliate32bitsAnd64bits(tr32, tr64);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return null;
+			}
+		} else
+			return tr32;
+		
+	}
+	Function parseAndReconciliateMethods(String mangled32, String mangled64) throws RecognitionException, IOException {
+//		System.out.println("Parsing \"" + mangled32 + "\":");
+		if (mangled32 == null)
+			return null;
+		
+		Function tr32 = parseMethod(mangled32);
+		if (mangled64 != null  && mangled64.trim().length() > 0 && !mangled32.equals(mangled64)) {
+//			System.out.println("Parsing \"" + mangled64 + "\":");
+			Function tr64 = parseMethod(mangled64);
+		
+			try {
+				return (Function)result.universalReconciliator.reconciliate32bitsAnd64bits(tr32, tr64);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				return null;

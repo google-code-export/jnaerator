@@ -68,7 +68,7 @@ public class Annotation extends Element {
 	@Override
 	public String toString(CharSequence indent) {
 		return indent + "@" + getAnnotationClass().getName() + 
-			(getArgument() != null ? getArgument() : "");
+			(getArgument() != null ? getArgument() : getArguments().isEmpty() ? "" : "(" + implode(getArguments(), ", ", indent) + ")");
 	}
 	
 	@Override
