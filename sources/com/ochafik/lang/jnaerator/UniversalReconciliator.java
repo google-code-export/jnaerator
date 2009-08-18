@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ochafik.lang.jnaerator.parser.Declarator;
+import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
@@ -35,7 +36,7 @@ public class UniversalReconciliator {
 			return true;
 		}
 	}
-	DefSeq extractDefSeq(TypeRef tr) {
+	DefSeq extractDefSeq(Element tr) {
 		final DefSeq ret = new DefSeq();
 		tr.accept(new Scanner() {
 			@Override
@@ -57,14 +58,14 @@ public class UniversalReconciliator {
 	}
 	public static class ReconciliationException extends Exception {
 		private static final long serialVersionUID = -8197343041734256268L;
-		public ReconciliationException(TypeRef t1, TypeRef t2, TypeRef reason1, TypeRef reason2) {
+		public ReconciliationException(Element t1, Element t2, Element reason1, Element reason2) {
 			this(t1, t2, "\"" + reason1 + "\" and \"" + reason2 + "\" cannot be matched");
 		}
-		public ReconciliationException(TypeRef t1, TypeRef t2, String reason) {
+		public ReconciliationException(Element t1, Element t2, String reason) {
 			super("Types \"" + t1 + "\" and \"" + t2 + "\" could not be reconciliated" + (reason == null ? "" : ". Reason = " + reason));
 		}
 	}
-	public TypeRef reconciliate32bitsAnd64bits(TypeRef tr32, TypeRef tr64) throws ReconciliationException {
+	public Element reconciliate32bitsAnd64bits(Element tr32, Element tr64) throws ReconciliationException {
 		if (tr32 == null && tr64 == null)
 			return null;
 		if ((tr32 == null) != (tr64 == null)) {
@@ -97,11 +98,11 @@ public class UniversalReconciliator {
 	static {
 		defRecon("float", "double", typeRef("CGFloat"));
 		defRecon("long", "long long", typeRef("long"));
-		defRecon("int", "long long", typeRef("int"));
+		defRecon("int", "long long", typeRef("NSInteger"));
 		defRecon("unsigned long", "unsigned long long", typeRef("long").addModifiers(Modifier.Unsigned));
-		defRecon("unsigned int", "unsigned long long", typeRef("int").addModifiers(Modifier.Unsigned));
+		defRecon("unsigned int", "unsigned long long", typeRef("NSUInteger"));//int").addModifiers(Modifier.Unsigned));
 		defRecon("signed long", "signed long long", typeRef("long").addModifiers(Modifier.Signed));
-		defRecon("signed int", "signed long long", typeRef("int").addModifiers(Modifier.Signed));
+		defRecon("signed int", "signed long long", typeRef("NSInteger"));//int").addModifiers(Modifier.Signed));
 	}
 	static void defRecon(String s32, String s64, TypeRef sRecon) {
 		predefined32_64Reconciliations.put(new Pair<String, String>(s32, s64), sRecon);
