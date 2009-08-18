@@ -487,6 +487,7 @@ public class Scanner implements Visitor {
 	@Override
 	public void visitFriendDeclaration(FriendDeclaration friendDeclaration) {
 		visitDeclaration(friendDeclaration);
+		visit(friendDeclaration.getFriend());
 	}
 
 }

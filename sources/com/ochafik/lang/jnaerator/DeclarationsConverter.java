@@ -226,7 +226,7 @@ public class DeclarationsConverter {
 			return;
 		
 		TypeRef tr = typeRef(String.class);
-		VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, expr(Constant.Type.String, value)));
+		VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, expr(value)));
 		for (Element e : elementsToTakeCommentsFrom) {
 			vd.addToCommentBefore(e.getCommentBefore());
 			vd.addToCommentBefore(e.getCommentAfter());
@@ -307,11 +307,11 @@ public class DeclarationsConverter {
 					if (lastRefValue == null) {
 						if (lastAdditiveValue != null) {
 							lastAdditiveValue++;
-							resultingExpression = expr(Constant.Type.Int, lastAdditiveValue);
+							resultingExpression = expr(lastAdditiveValue);
 						} else {
 							if (item == e.getItems().get(0)) {
 								lastAdditiveValue = 0;
-								resultingExpression = expr(Constant.Type.Int, lastAdditiveValue);
+								resultingExpression = expr(lastAdditiveValue);
 							} else
 								resultingExpression = null;
 						}
@@ -326,7 +326,7 @@ public class DeclarationsConverter {
 							expr(
 								lastRefValue.clone(), 
 								Expression.BinaryOperator.Plus, 
-								expr(Constant.Type.Int, lastAdditiveValue)
+								expr(lastAdditiveValue)
 							//)
 						);
 					}
@@ -391,7 +391,7 @@ public class DeclarationsConverter {
 			if (forceInteger && prim == JavaPrim.Boolean) {
 				prim = JavaPrim.Int;
 				tr = typeRef("int");
-				converted = expr(Constant.Type.Int, "true".equals(String.valueOf(converted.toString())) ? 1 : 0);
+				converted = expr("true".equals(String.valueOf(converted.toString())) ? 1 : 0);
 			}
 			
 			if ((prim == null || tr == null) && signalErrors) {
@@ -485,7 +485,7 @@ public class DeclarationsConverter {
 		if (!isMethod && library != null) {
 			Boolean alreadyRetained = Result.getMap(result.retainedRetValFunctions, library).get(functionName.toString());
 			if (alreadyRetained != null && alreadyRetained) {
-				natFunc.addAnnotation(new Annotation(AlreadyRetained.class, expr(Constant.Type.Bool, alreadyRetained)));
+				natFunc.addAnnotation(new Annotation(AlreadyRetained.class, expr(alreadyRetained)));
 			}
 		}
 		//String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";
@@ -1242,13 +1242,13 @@ public class DeclarationsConverter {
 //			//null : 
 //			block(
 //					stat(methodCall("super")),
-//					stat(methodCall("useMemory", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0))),
+//					stat(methodCall("useMemory", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(0))),
 //					stat(methodCall("read"))
 //			)
 //		;
 //		shareMemConstructor.setBody(//addedPointerConstructor ? 
 ////			block(
-////					stat(methodCall("super", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
+////					stat(methodCall("super", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(0)))
 ////			).setCompact(true) :
 //			useCopyMem
 //		);
@@ -1261,7 +1261,7 @@ public class DeclarationsConverter {
 //			shareMemConstructor = shareMemConstructor.clone();
 //			shareMemConstructor.setBody(/*addedPointerConstructor ?
 //				block(
-//					stat(methodCall("this", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(Constant.Type.Int, 0)))
+//					stat(methodCall("this", methodCall(varRef(copyArgName), MemberRefStyle.Dot, "getPointer"), expr(0)))
 //				).setCompact(true) :*/
 //				useCopyMem.clone()
 //			);
@@ -1284,7 +1284,7 @@ public class DeclarationsConverter {
 				BinaryOperator.IsDifferent,
 				memberRef(memberRef(varRef("this"), MemberRefStyle.Dot, varAndFieldName), MemberRefStyle.Dot, "length")
 			),
-			new Statement.Throw(new Expression.New(typeRef(IllegalArgumentException.class), expr(Constant.Type.String, "Wrong array size !"))),
+			new Statement.Throw(new Expression.New(typeRef(IllegalArgumentException.class), expr("Wrong array size !"))),
 			null
 		);
 	}

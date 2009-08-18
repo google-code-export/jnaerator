@@ -266,7 +266,7 @@ public class ObjectiveCGenerator {
 		classHolder.setValueType(typeRef(classClassName));
 		
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
-		call.addArgument(expr(Constant.Type.String, in.getTag().toString()));
+		call.addArgument(expr(in.getTag().toString()));
 		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
 		
 		Function classGetter;

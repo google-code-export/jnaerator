@@ -24,11 +24,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -43,7 +47,11 @@ import com.ochafik.junit.ParameterizedWithDescription;
 import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.net.URLUtils;
+import com.ochafik.util.CompoundCollection;
+import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
+import com.ochafik.util.listenable.Pair;
+import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 
 @RunWith(ParameterizedWithDescription.class)
@@ -88,7 +96,7 @@ public class JNAerationTests {
 				"\tpublic static void main(String[] args) {\n\t\t" + 
 				StringUtils.implode(content, "\n\t\t").trim() + "\n" +
 				"\t}\n}";
-			System.out.println(transformedContent);
+//			System.out.println(transformedContent);
 			extraJavaSourceFilesContents.put(className.replace('.', '/') + ".java", transformedContent);
 			return this;
 		}
@@ -120,8 +128,21 @@ public class JNAerationTests {
 			}
 			
 			@Override
-			public void setFinished(Throwable e) {
-				Assert.assertTrue("Error : " + e, false);
+			public void setFinished(Throwable ex) {
+				Collection<Entry<String, String>> cc = test.extraJavaSourceFilesContents.entrySet();//new CompoundCollection<Map.Entry<String, String>>(test.extraJavaSourceFilesContents.entrySet(), Arrays.asList(new Pair<String, String>("?.java", test.cSource)));
+				for (final Map.Entry<String, String> e : cc) {
+					System.err.println("\n" + e.getKey() + ":");
+					System.err.println(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" + e.getValue(), new Adapter<String[], String>() {
+						int line = 0;
+
+						@Override
+						public String adapt(String[] value) {
+							return "\n" + (++line) + ":\t\t";
+						}
+					}));
+				}
+				Assert.assertTrue("Error : " + ex, false);
+//				throw new RuntimeException(e);
 			}
 			
 			@Override

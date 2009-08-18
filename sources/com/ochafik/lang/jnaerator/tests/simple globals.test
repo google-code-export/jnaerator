@@ -2,11 +2,28 @@ extern int *pInt;
 extern void *pVoid;
 extern int i;
 extern void (*fptr)(int);
+
+extern NSInteger nsi;
+extern CGFloat cgf;
+
 --
 import test.*;
+import org.rococoa.cocoa.*;
 import static test.TestLibrary.*;
 
-IntByReference pInt = TestLibrary.pInt.get().value;
-PointerByReference pVoid = TestLibrary.pVoid.get();
-IntByReference i = TestLibrary.i.get();
+IntByReference pInt = TestLibrary.pInt.get();
+TestLibrary.pInt.set(pInt);
+
+Pointer pVoid = TestLibrary.pVoid.get();
+TestLibrary.pVoid.set(pVoid);
+
+int i = TestLibrary.i.get();
+TestLibrary.i.set(i);
+
+NativeLong nsi = TestLibrary.nsi.get();
+TestLibrary.nsi.set(nsi);
+
+CGFloat cgf = TestLibrary.cgf.get();
+TestLibrary.cgf.set(cgf);
+
 //TestLibrary.fptr.get().value.invoke(10);

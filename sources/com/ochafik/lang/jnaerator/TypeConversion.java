@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator;
 import java.nio.Buffer;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -85,11 +86,13 @@ import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import org.rococoa.cocoa.*;
 
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
+import com.ochafik.lang.jnaerator.runtime.CharByReference;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalByte;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalCGFloat;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalChar;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalDouble;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalFloat;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
@@ -98,6 +101,7 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeLong;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalShort;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
+import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.WString;
 import com.sun.jna.ptr.ByReference;
@@ -149,19 +153,68 @@ public class TypeConversion {
 		return javaPrims.containsKey(s);
 	}
 	enum JavaPrim {
-		Void, 
-		Char, 
-		Long, 
-		Int, 
-		Short, 
-		Byte, 
-		Boolean, 
-		Float, 
-		Double, 
-		NativeLong, 
-		NSInteger, 
-		NSUInteger, 
-		CGFloat;
+		Void(null, ESize.Zero), 
+		Char(Character.TYPE, ESize.CharSize), 
+		Long(java.lang.Long.TYPE, ESize.Eight), 
+		Int(Integer.TYPE, ESize.Four), 
+		Short(java.lang.Short.TYPE, ESize.Two), 
+		Byte(java.lang.Byte.TYPE, ESize.One), 
+		Boolean(java.lang.Boolean.TYPE, ESize.One), 
+		Float(java.lang.Float.TYPE, ESize.Four), 
+		Double(java.lang.Double.TYPE, ESize.Eight), 
+		NativeLong(com.sun.jna.NativeLong.class, ESize.StaticSizeField), 
+		NSInteger(org.rococoa.cocoa.foundation.NSInteger.class, ESize.StaticSizeField), 
+		NSUInteger(org.rococoa.cocoa.foundation.NSUInteger.class, ESize.StaticSizeField), 
+		CGFloat(org.rococoa.cocoa.CGFloat.class, ESize.StaticSizeField);
+		
+		public final Class<?> type;
+		public final String simpleName, name;
+		public final boolean isPrimitive;
+		public enum ESize {
+			One(expr(1)), 
+			Two(expr(2)), 
+			Four(expr(4)), 
+			Eight(expr(8)), 
+			StaticSizeField(null) {
+				@Override
+				public Expression sizeof(JavaPrim p) {
+					return staticField(p.type, "SIZE");
+				}
+			},
+			CharSize(null) {
+				@Override
+				public Expression sizeof(JavaPrim p) {
+					return staticField(Native.class, "WCHAR_SIZE");
+				}
+			},
+			Zero(expr(0));
+			
+			private final Expression sizeOfExpression;
+			ESize(Expression sizeOfExpression) {
+				this.sizeOfExpression = sizeOfExpression;
+			}
+			public Expression sizeof(JavaPrim p) {
+				return sizeOfExpression.clone();
+			}
+		}
+		public final ESize size;
+
+		private static Map<String, JavaPrim> nameToPrim;
+		public static JavaPrim getJavaPrim(String name) {
+			if (nameToPrim == null) {
+				nameToPrim = new HashMap<String, JavaPrim>();
+				for (JavaPrim p : values())
+					nameToPrim.put(p.simpleName, p);
+			}
+			return nameToPrim.get(name);
+		}
+		JavaPrim(Class<?> type, ESize size) {
+			this.type = type;
+			this.size = size;
+			this.name = type == null ? "void" : type.getName();
+			this.isPrimitive = type == null || type.isPrimitive();
+			this.simpleName = type == null ? "void" : type.getSimpleName();
+		}
 	}
 	public void initTypes() {
 		
@@ -266,6 +319,7 @@ public class TypeConversion {
 		
 		
 		primToByReference.put(JavaPrim.Int, IntByReference.class);
+		primToByReference.put(JavaPrim.Char, CharByReference.class);
 		primToByReference.put(JavaPrim.Short, ShortByReference.class);
 		primToByReference.put(JavaPrim.Byte, ByteByReference.class);
 		primToByReference.put(JavaPrim.Long, LongByReference.class);
@@ -282,6 +336,7 @@ public class TypeConversion {
 //		byReferenceClassesNames.add(PointerByReference.class.getName());
 		
 		primToGlobal.put(JavaPrim.Int, GlobalInt.class);
+		primToGlobal.put(JavaPrim.Char, GlobalChar.class);
 		primToGlobal.put(JavaPrim.Short, GlobalShort.class);
 		primToGlobal.put(JavaPrim.Byte, GlobalByte.class);
 		primToGlobal.put(JavaPrim.Long, GlobalLong.class);
@@ -293,6 +348,7 @@ public class TypeConversion {
 		primToGlobal.put(JavaPrim.CGFloat, GlobalCGFloat.class);
 		
 		primToBuffer.put(JavaPrim.Int, IntBuffer.class);
+		primToBuffer.put(JavaPrim.Char, CharBuffer.class);
 		primToBuffer.put(JavaPrim.Short, ShortBuffer.class);
 		primToBuffer.put(JavaPrim.Byte, ByteBuffer.class);
 		primToBuffer.put(JavaPrim.Long, LongBuffer.class);
@@ -364,6 +420,9 @@ public class TypeConversion {
 					
 					String nameStr = name.toString();
 					if (nameStr == null)
+						return;
+					
+					if (JavaPrim.getJavaPrim(nameStr) != null)
 						return;
 					
 					if (names.contains(nameStr))
@@ -530,14 +589,9 @@ public class TypeConversion {
 		if (name == null)
 			return null;
 		
-		if (name.equals(NativeLong.class.getSimpleName()))
-			return JavaPrim.NativeLong;
-		if (name.equals(NSInteger.class.getSimpleName()))
-			return JavaPrim.NSInteger;
-		if (name.equals(NSUInteger.class.getSimpleName()))
-			return JavaPrim.NSUInteger;
-		if (name.equals(CGFloat.class.getName()))
-			return JavaPrim.CGFloat;
+		JavaPrim p = JavaPrim.getJavaPrim(name.toString());
+		if (p != null && !p.isPrimitive)
+			return p;
 		
 		boolean isLong = false;
 		String str;
@@ -1356,9 +1410,9 @@ public class TypeConversion {
 			if (name != null) {
 				String sname = name.toString();
 				if ("True".equals(sname))
-					res = new Constant(Constant.Type.Bool, true);
+					res = expr(true);
 				else if ("False".equals(sname))
-					res = new Constant(Constant.Type.Bool, false);
+					res = expr(false);
 				else {
 					EnumItem enumItem = result.enumItems.get(name);
 					if (enumItem != null)
@@ -1436,29 +1490,7 @@ public class TypeConversion {
 	}
 
 	private Expression sizeof(JavaPrim prim) {
-		switch (prim) {
-		case NativeLong:
-			return memberRef(expr(typeRef(NativeLong.class)), MemberRefStyle.Dot, "SIZE");
-		case NSInteger:
-			return memberRef(expr(typeRef(NSInteger.class)), MemberRefStyle.Dot, "SIZE");
-		case NSUInteger:
-			return memberRef(expr(typeRef(NSUInteger.class)), MemberRefStyle.Dot, "SIZE");
-		case CGFloat:
-			return memberRef(expr(typeRef(CGFloat.class)), MemberRefStyle.Dot, "SIZE");
-		case Boolean:
-		case Byte:
-			return new Constant(Constant.Type.Int, 1);
-		case Char:
-		case Short:
-			return new Constant(Constant.Type.Int, 2);
-		case Double:
-		case Long:
-			return new Constant(Constant.Type.Int, 8);
-		case Float:
-		case Int:
-			return new Constant(Constant.Type.Int, 4);
-		}
-		return null;
+		return prim.size.sizeof(prim);
 	}
 
 	private Expression findEnumItem(EnumItem enumItem) {
@@ -1576,45 +1608,12 @@ public class TypeConversion {
 	}
 
 	public static String toPrimString(JavaPrim prim) {
-		if (prim == JavaPrim.NativeLong)
-			return NativeLong.class.getName();
-		if (prim == JavaPrim.NSInteger)
-			return NSInteger.class.getName();
-		if (prim == JavaPrim.NSUInteger)
-			return NSUInteger.class.getName();
-		if (prim == JavaPrim.CGFloat)
-			return CGFloat.class.getName();
-		return prim.toString().toLowerCase();
+		return prim.name;
 	}
 
 	public Expression getJavaClassLitteralExpression(TypeRef tr) {
 		JavaPrim prim = result.typeConverter.getPrimitive(tr, null);
-		if (prim != null) {
-			switch (prim) {
-			case Boolean:
-			case Byte:
-			case Double:
-			case Long:
-			case Short:
-			case Float:
-				return memberRef(expr(typeRef(ident(prim.toString()))), MemberRefStyle.Dot, ident("TYPE"));
-			case Char:
-				return memberRef(expr(typeRef(ident(Character.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
-			case Int:
-				return memberRef(expr(typeRef(ident(Integer.class.getSimpleName()))), MemberRefStyle.Dot, ident("TYPE"));
-			case NativeLong:
-				return classLiteral(NativeLong.class);
-			case NSInteger:
-				return classLiteral(NSInteger.class);
-			case NSUInteger:
-				return classLiteral(NSUInteger.class);
-			case CGFloat:
-				return classLiteral(CGFloat.class);
-			case Void:
-				return null;
-			}
-		}
-		return classLiteral(tr.clone());
+		return prim != null ? classLiteral(prim.type) : classLiteral(tr.clone());
 	}
 
 

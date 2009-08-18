@@ -1,9 +1,5 @@
 package com.ochafik.lang.jnaerator.parser;
 
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.expr;
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.ident;
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.memberRef;
-import static com.ochafik.lang.jnaerator.parser.ElementsHelper.typeRef;
 import static com.ochafik.lang.jnaerator.parser.Expression.*;
 
 import java.util.Arrays;
@@ -11,6 +7,7 @@ import java.util.Arrays;
 import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 import static com.ochafik.lang.jnaerator.parser.Statement.*;
 
+import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
@@ -19,7 +16,32 @@ public class ElementsHelper {
 		return new Expression.MemberRef(x, style, new SimpleIdentifier(name));
 	}
 	public static Expression classLiteral(Class<?> c) {
-		return memberRef(expr(typeRef(ident(c))), MemberRefStyle.Dot, "class");
+		if (c == null)
+			return null;
+		if (c.isPrimitive()) {
+			if (c == Integer.TYPE)
+				c = Integer.class;
+			else if (c == Long.TYPE)
+				c = Long.class;
+			else if (c == Short.TYPE)
+				c = Short.class;
+			else if (c == Byte.TYPE)
+				c = Byte.class;
+			else if (c == Character.TYPE)
+				c = Character.class;
+			else if (c == Boolean.TYPE)
+				c = Boolean.class;
+			else if (c == Float.TYPE)
+				c = Float.class;
+			else if (c == Double.TYPE)
+				c = Double.class;
+			
+			return staticField(c, "TYPE");
+		}
+		return staticField(c, "class");
+	}
+	public static Expression staticField(Class<?> c, String name) {
+		return memberRef(expr(typeRef(ident(c))), MemberRefStyle.Dot, name);
 	}
 	public static Expression classLiteral(TypeRef c) {
 		return memberRef(expr(c), MemberRefStyle.Dot, "class");
@@ -74,6 +96,18 @@ public class ElementsHelper {
 	}
 	public static Expression expr(TypeRef tr) {
 		return new TypeRefExpression(tr);
+	}
+	public static Expression expr(boolean c) {
+		return expr(Constant.Type.Bool, c);
+	}
+	public static Expression expr(double c) {
+		return expr(Constant.Type.Double, c);
+	}
+	public static Expression expr(int c) {
+		return expr(Constant.Type.Int, c);
+	}
+	public static Expression expr(String c) {
+		return expr(Constant.Type.String, c);
 	}
 	public static Expression expr(Constant.Type type, Object value) {
 		return new Constant(type, value);
