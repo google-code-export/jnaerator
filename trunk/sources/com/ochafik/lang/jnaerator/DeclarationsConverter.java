@@ -657,7 +657,7 @@ public class DeclarationsConverter {
 		if (function.getType() == Type.ObjCMethod)
 			return;
 		
-		String elementFile = function.getElementFile();
+		String elementFile = result.resolveFile(function);
 		if (elementFile != null && (
 				elementFile.contains(".framework/") ||
 				elementFile.endsWith(".bridgesupport")))

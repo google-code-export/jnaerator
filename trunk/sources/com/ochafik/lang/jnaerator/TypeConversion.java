@@ -777,7 +777,7 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
-//		if (String.valueOf(valueType).contains("_NSRange"))
+//		if (String.valueOf(valueType).contains("FourCharCode"))
 //			valueType.toString();
 		
 		TypeRef original = valueType; 

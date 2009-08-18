@@ -88,7 +88,10 @@ public class UniversalReconciliator {
 			TypeRef tr = reconciliateSimple32bitsAnd64bits(t32, t64);
 			if (tr == null)
 				throw new ReconciliationException(tr32, tr64, t32, t64);
-			t32.replaceBy(tr);
+			if (t32 == tr32)
+				tr32 = tr;
+			else
+				t32.replaceBy(tr);
 		}
 		// TODO Auto-generated method stub
 		return tr32;
@@ -99,15 +102,25 @@ public class UniversalReconciliator {
 		defRecon("float", "double", typeRef("CGFloat"));
 		defRecon("long", "long long", typeRef("long"));
 		defRecon("int", "long long", typeRef("NSInteger"));
+		
+		defRecon("int", "unsigned long long", typeRef("NSInteger"));
+		defRecon("int", "signed long long", typeRef("NSInteger"));
+		defRecon("long", "unsigned long long", typeRef("NSInteger"));
+		defRecon("long", "signed long long", typeRef("NSInteger"));
 		defRecon("unsigned long", "unsigned long long", typeRef("long").addModifiers(Modifier.Unsigned));
 		defRecon("unsigned int", "unsigned long long", typeRef("NSUInteger"));//int").addModifiers(Modifier.Unsigned));
+		
+		defRecon("unsigned long", "unsigned int", typeRef("int").addModifiers(Modifier.Unsigned));
+		defRecon("signed long", "signed int", typeRef("int").addModifiers(Modifier.Signed));
+		defRecon("long", "int", typeRef("int"));
+		
 		defRecon("signed long", "signed long long", typeRef("long").addModifiers(Modifier.Signed));
 		defRecon("signed int", "signed long long", typeRef("NSInteger"));//int").addModifiers(Modifier.Signed));
 	}
 	static void defRecon(String s32, String s64, TypeRef sRecon) {
 		predefined32_64Reconciliations.put(new Pair<String, String>(s32, s64), sRecon);
 	}
-	public static TypeRef reconciliateSimple32bitsAnd64bits(SimpleTypeRef t32, SimpleTypeRef t64) {
+	public static TypeRef reconciliateSimple32bitsAnd64bits(TypeRef t32, TypeRef t64) {
 		TypeRef recon = predefined32_64Reconciliations.get(new Pair<String, String>(t32.toString(), t64.toString()));
 		
 		return recon == null ? null : recon.clone();

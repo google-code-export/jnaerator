@@ -328,8 +328,6 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 			f.addModifiers(Modifier.Synchronized);
 		
 		ReturnType returnType = m.getAnnotation(ReturnType.class);
-		if (m.getName().equals("getArgumentTypeAtIndex"))
-			m.toString();
 		if (returnType != null && returnType.value() != null) {
 			f.addAnnotation(new Annotation(ReturnType.class, classLiteral(returnType.value())));
 		}

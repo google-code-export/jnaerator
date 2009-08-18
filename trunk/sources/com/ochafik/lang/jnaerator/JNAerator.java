@@ -123,7 +123,7 @@ public class JNAerator {
 	static final boolean fullFilePathInComments = true;
 	
 	private static final String DEFAULT_CONFIG_FILE = "config.jnaerator";
-	protected static final Pattern fileRadixPattern = Pattern.compile("(?:[/\\\\]|^)(.*?)\\.[^.]+$");
+	protected static final Pattern fileRadixPattern = Pattern.compile("(?:[/\\\\]|^)(.*?)(?:Full\\.bridgesupport|\\.[^.]+)$");
 	private static final Pattern classAndMethodNamePattern = Pattern.compile("(.+?)::([^:]+)");
 
 	//"@C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.jnaerator"
@@ -1109,13 +1109,14 @@ public class JNAerator {
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######
 		//##################################################################
 		
-		/// Gather Objective-C classes
-		sourceFiles.accept(result);
-		
 		if (feedback != null && !result.config.bridgeSupportFiles.isEmpty())
 			feedback.setStatus("Parsing BridgeSupport files...");
 		
 		new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
+		
+		/// Gather Objective-C classes
+		sourceFiles.accept(result);
+		result.rehabilitateWeakTypeDefs();
 		
 		result.chooseLibraryClasses(config.packageName, config.rootPackageName);
 		

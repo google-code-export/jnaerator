@@ -48,6 +48,7 @@ import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.xml.XMLUtils;
 import com.ochafik.xml.XPathUtils;
 
@@ -93,6 +94,8 @@ public class BridgeSupportParser {
 				pw.println(sfs);
 				pw.close();
 			}
+			for (SourceFile sf : sfs.getSourceFiles())
+				sourceFiles.add(sf);
 		}
 	}
 
@@ -169,7 +172,7 @@ public class BridgeSupportParser {
 			if (!"NSObject".equals(String.valueOf(cs.getTag().toString())))
 				cs.setParents(ident("NSObject"));
 			
-			cs.accept(result);
+//			cs.accept(result);
 		}
 		for (Node classe : XMLUtils.getChildrenByName(signatures, "informal_protocol")) {
 			Struct cs = parseClasse(classe, Struct.Type.ObjCClass, sf);
@@ -178,7 +181,7 @@ public class BridgeSupportParser {
 			
 			cs.setCategoryName(cs.getTag() == null ? null : cs.getTag().toString());
 			cs.setTag(ident("NSObject"));
-			cs.accept(result);
+//			cs.accept(result);
 		}
 	}
 	private Struct parseClasse(Node classe,
@@ -194,8 +197,10 @@ public class BridgeSupportParser {
 		cs.setTag(ident(name));
 		
 		for (Node method : XPathUtils.findNodesIterableByXPath("method", classe)) {
-			
+			String mname = XMLUtils.getAttribute(method, "selector");
 			try {
+//				if ((name.equals("NSScriptClassDescription") || name.equals("NSObject")) && mname.contains("classCode"))
+//					name.toString();
 				cs.addDeclaration(parseFunction(Type.ObjCMethod, method, sf));
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -223,7 +228,7 @@ public class BridgeSupportParser {
 				if (f == null)
 					continue;
 				sf.addDeclaration(f);
-				f.accept(result);
+//				f.accept(result);
 				
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -233,19 +238,28 @@ public class BridgeSupportParser {
 	public TypeRef parseType(Node node) throws XPathExpressionException, RecognitionException, IOException {
 		if (node == null)
 			return null;
+		
+		TypeRef declaredType = null;
 		try {
 			String dt = XMLUtils.getAttribute(node, "declared_type");
 			if (dt != null) {
 				ObjCppParser parser = JNAeratorParser.newObjCppParser(result.typeConverter, dt, false);
 				parser.setupSymbolsStack();
-				TypeRef tr = parser.mutableTypeRef();
-				if (tr != null)
-					return tr;
+				declaredType = parser.mutableTypeRef();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		return parseAndReconciliateType(XMLUtils.getAttribute(node, "type"), XMLUtils.getAttribute(node, "type64"));
+		
+		TypeRef inferredType = null;
+		if (declaredType == null || declaredType instanceof SimpleTypeRef) {
+			inferredType = parseAndReconciliateType(XMLUtils.getAttribute(node, "type"), XMLUtils.getAttribute(node, "type64"));
+			if (inferredType != null && declaredType instanceof SimpleTypeRef && !inferredType.toString().equals(declaredType.toString())) {
+				String sn = ((SimpleTypeRef)declaredType).getName().toString();
+				result.addWeakTypeDef(inferredType.clone(), sn);
+			}
+		}
+		return declaredType != null ? declaredType : inferredType;
 	}
 	private Function parseFunction(Type cfunction, Node function, SourceFile sf) throws XPathExpressionException, RecognitionException, IOException {
 		TypeRef tr = parseType(XMLUtils.getFirstNamedNode(function, "retval"));
@@ -360,7 +374,7 @@ public class BridgeSupportParser {
 					
 //					if (name.equals("NSRange") || name.equals("NSSize"))
 //						name.toString();
-					td.accept(result);
+//					td.accept(result);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					continue;
@@ -385,8 +399,10 @@ public class BridgeSupportParser {
 		) {
 			@Override
 			public void reportError(RecognitionException arg0) {
-				if (verbose)
+				if (verbose) {
+//					System.err.println(arg0 + " (next = '" + next() + "')");
 					super.reportError(arg0);
+				}
 			}
 		};
 	}
