@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator.parser;
 
 import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -42,6 +43,8 @@ import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
 import com.ochafik.lang.SyntaxUtils;
 import com.ochafik.lang.grammar.DummyDebugEventListener;
+import com.ochafik.lang.jnaerator.JNAeratorConfig;
+import com.ochafik.lang.jnaerator.Result;
 
 /*
  include com/ochafik/lang/jnaerator/parser/ObjCppTest.mm
@@ -176,9 +179,12 @@ public class ObjCppParsingTests {
 	}
 
 	public static ObjCppParser newParser(String s) throws IOException {
-		return new ObjCppParser(new CommonTokenStream(new ObjCppLexer(
+		Result result = new Result(new JNAeratorConfig(), null);
+		ObjCppParser parser = new ObjCppParser(new CommonTokenStream(new ObjCppLexer(
 				new ANTLRReaderStream(new StringReader(s))))
 		// , new DummyDebugEventListener()
 		);
+		parser.typeConverter = result.typeConverter;
+		return parser;
 	}
 }

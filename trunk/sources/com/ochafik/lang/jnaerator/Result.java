@@ -152,6 +152,15 @@ public class Result extends Scanner {
 		Identifier lib = findFakePointer(name);
 		if (lib != null)
 			return lib;
+		String nameStr = name.toString();
+		if (nameStr.startsWith("_")) {
+			String nicerName = nameStr.substring(1);
+			Pair<TypeDef, Declarator> pair = typeDefs.get(nicerName);
+			if (pair != null) {
+				if (pair.getFirst().getValueType().toString().equals(nameStr+"*"))
+					name = ident(nameStr = nicerName);
+			}
+		}
 		Set<String> set = fakePointersByLibrary.get(libraryToUseIfNotDefinedYet);
 		if (set == null)
 			fakePointersByLibrary.put(libraryToUseIfNotDefinedYet.toString(), set = new HashSet<String>());

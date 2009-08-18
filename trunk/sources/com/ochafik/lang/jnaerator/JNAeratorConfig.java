@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,7 +69,7 @@ public class JNAeratorConfig {
 		public boolean WORKAROUND_PP_BUGS = true;
 
 		public final List<String> includes = new ArrayList<String>();
-		public final Map<String, String> macros = new HashMap<String, String>();
+		public final Map<String, String> macros = new LinkedHashMap<String, String>();
 		public final List<String> frameworksPath = new ArrayList<String>();
 
 		public List<String> includeStrings = new ArrayList<String>();
@@ -88,14 +88,14 @@ public class JNAeratorConfig {
 	public String entryName;
 	public int maxConstructedFields = 10;
 	
-	public Map<String, String> extraJavaSourceFilesContents = new HashMap<String, String>();
+	public Map<String, String> extraJavaSourceFilesContents = new LinkedHashMap<String, String>();
 	
 	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
 	
-	public Map<String, List<File>> libraryFilesByArch = new HashMap<String, List<File>>();
+	public Map<String, List<File>> libraryFilesByArch = new LinkedHashMap<String, List<File>>();
 	public List<File> libraryFiles = new ArrayList<File>();
 	
-	public Map<File, String> libraryByFile = new HashMap<File, String>();
+	public Map<File, String> libraryByFile = new LinkedHashMap<File, String>();
 	public void addLibraryFile(File file, String arch) {
 		
 		List<File> others = libraryFilesByArch.get(arch);
@@ -138,7 +138,7 @@ public class JNAeratorConfig {
 	public Adapter<Function, Boolean> functionsAccepter;
 	public String packageName = null, rootPackageName = null;
 	public String defaultLibrary;
-	public Map<String, File> libraryProjectSources = new HashMap<String, File>();
+	public Map<String, File> libraryProjectSources = new LinkedHashMap<String, File>();
 	public Adapter<File, String> fileToLibrary = new Adapter<File, String>() {
 		public String adapt(File value) {
 			String libraryFile = null;
@@ -191,7 +191,7 @@ public class JNAeratorConfig {
 	public String cPlusPlusNameSpaceSeparator = "_";
 	public boolean useJNAeratorUnionAndStructClasses = true;
 	public boolean preferJavac = false;
-	public Set<File> bridgeSupportFiles = new HashSet<File>();
+	public Set<File> bridgeSupportFiles = new LinkedHashSet<File>();
 	public File outputJar;
 	public File cacheDir;
 	public boolean autoConf = true;
@@ -208,7 +208,7 @@ public class JNAeratorConfig {
 				fileToLibrary.adapt(new File(elementFile));
 	}
 
-	Set<File> sourceFiles = new HashSet<File>();
+	Set<File> sourceFiles = new LinkedHashSet<File>();
 	public boolean bundleLibraries = true;
 	public boolean wcharAsShort = false;
 	public boolean genCPlusPlus = false;

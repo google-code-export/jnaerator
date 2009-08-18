@@ -228,10 +228,10 @@ public class JNAerator {
 				List<String> parsed(ParsedArg a) throws Exception {
 					switch (a.def) {					
 					
-					case AddFrameworksPath:
+					case AddIncludePath:
 						config.preprocessorConfig.includes.add(a.getFileParam(0).toString());
 						break;
-					case AddIncludePath:
+					case AddFrameworksPath:
 						config.preprocessorConfig.frameworksPath.add(a.getFileParam(0).toString());
 						break;
 					case NoPreprocessing:
@@ -620,10 +620,28 @@ public class JNAerator {
 				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, NativeLibrary.class, JNAerator.class, NSClass.class, Mangling.class);
 				if (!diagnostics.getDiagnostics().isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-						if (diagnostic.getKind() == Kind.ERROR)
-							sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
+					
+					for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+						if (diagnostic == null)
+							continue;
+						if (diagnostic.getKind() == Kind.ERROR) {
+							sb.append("Error in " + diagnostic.getSource().toUri() + " at line " + diagnostic.getLineNumber() + ", col " + diagnostic.getColumnNumber() + " :\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
+							sb.append(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" +  diagnostic.getSource().getCharContent(true), new Adapter<String[], String>() {
+								int line = 0;
+
+								@Override
+								public String adapt(String[] value) {
+									line++;
+									return "\n" + line + ":" + (diagnostic.getLineNumber() == line ? ">>>" : "") +"\t\t";
+								}
+							}) + "\n");
+						}
+//							System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
 					}
+//					for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+//						if (diagnostic.getKind() == Kind.ERROR)
+//							sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
+//					}
 					if (sb.length() > 0) {
 						//System.out.println(sb);
 						throw new SyntaxException(sb.toString());
@@ -952,7 +970,7 @@ public class JNAerator {
 				MemberRefStyle.Dot,
 				"getLibraryPath",
 				libNameExpr,
-				expr(Expression.Constant.Type.Bool, true),
+				expr(true),
 				libClassLiteral
 			);
 			
@@ -1004,12 +1022,13 @@ public class JNAerator {
 			Set<String> fakePointers = result.fakePointersByLibrary.get(fullLibraryClassName);
 			if (fakePointers != null)
 			for (String fakePointerName : fakePointers) {
-				Identifier fakePointer = ident(fakePointerName);
-				if (!fakePointer.isPlain() || fakePointer.toString().contains("::"))
+				if (fakePointerName.contains("::"))
 					continue;
+				
+				Identifier fakePointer = ident(fakePointerName);
 				if (!signatures.classSignatures.add(fakePointer))
 					continue;
-					
+				
 				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
 				ptClass.addToCommentBefore("Pointer to unknown (opaque) type");
 				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,

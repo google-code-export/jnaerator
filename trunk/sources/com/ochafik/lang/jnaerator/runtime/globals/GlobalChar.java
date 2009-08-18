@@ -18,27 +18,17 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
+import com.ochafik.lang.jnaerator.runtime.CharByReference;
 import com.sun.jna.Library;
-import com.sun.jna.Pointer;
-import com.sun.jna.PointerType;
 
-public class GlobalPointerType<T extends PointerType> extends GlobalPrimitive<T> {
-	public GlobalPointerType(Library library, Class<T> type, String... symbols) {
-		super(library, type, symbols);
-		indirected = true;
+public class GlobalChar extends GlobalPrimitive<CharByReference> {
+	public GlobalChar(Library library, String... symbols) {
+		super(library, CharByReference.class, symbols);
 	}
-	Pointer pointer;
-	protected Pointer getPointer() {
-		if (pointer == null)
-			pointer = createPointer();
-		
-		return pointer;
+	public char get() {
+		return getValue().getValue();
 	}
-	public T get() {
-		return getValue();
-	}
-	public void set(T value) {
-		this.value = value;
-		getPointer().setPointer(0, value.getPointer());
+	public void set(char v) {
+		getValue().setValue(v);
 	}
 }

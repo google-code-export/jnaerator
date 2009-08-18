@@ -39,6 +39,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
 import com.sun.jna.NativeLibrary;
@@ -102,6 +103,8 @@ public class GlobalsGenerator {
 							if (brt != null) {
 								globalType = typeRef(ident(GlobalPointerType.class, expr(typeRef(ident(brt)))));
 								extraArg = classLiteral(brt);
+							} else if (prim == JavaPrim.Void) {
+								globalType = typeRef(GlobalPointer.class);
 							}
 						} else {
 							Class<?> globalClass = TypeConversion.primToGlobal.get(prim);
@@ -114,7 +117,7 @@ public class GlobalsGenerator {
 							if (extraArg != null) {
 								constructorArgs.add(extraArg);
 							}
-							constructorArgs.add(expr(Constant.Type.String, name.toString()));
+							constructorArgs.add(expr(name.toString()));
 							VariablesDeclaration vd = new VariablesDeclaration(
 									globalType, 
 								new Declarator.DirectDeclarator(
@@ -176,7 +179,7 @@ public class GlobalsGenerator {
 						hasOffset = false;
 						pointerConstructor.setBody(new Statement.Block(
 								new Statement.ExpressionStatement(methodCall("super")),
-								new Statement.ExpressionStatement(methodCall("useMemory", varRef("pointer"), expr(Expression.Constant.Type.Int, 0))),
+								new Statement.ExpressionStatement(methodCall("useMemory", varRef("pointer"), expr(0))),
 								new Statement.ExpressionStatement(methodCall("read"))
 						));
 						holderStruct.addDeclaration(pointerConstructor);
@@ -206,7 +209,7 @@ public class GlobalsGenerator {
 					).setParenthesis(true),
 					MemberRefStyle.Dot,
 					"getGlobalVariableAddress",
-					expr(Expression.Constant.Type.String, name.toString())
+					expr(name.toString())
 				);
 				List<Statement> initStats = new ArrayList<Statement>();
 				initStats.add(new Statement.ExpressionStatement(
@@ -215,7 +218,7 @@ public class GlobalsGenerator {
 						Expression.AssignmentOperator.Equal,
 						isPtr ? ptrExpr :
 						isByRef ? new Expression.New(instType) :
-						new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? expr(Expression.Constant.Type.Int, 0) : null))
+						new Expression.New(instType, new Expression.FunctionCall(null, ptrExpr, hasOffset ? expr(0) : null))
 					)
 				));
 				if (isByRef)

@@ -55,6 +55,16 @@ public class LibraryExtractor {
 	}
 	public static String getLibraryPath(String libraryName, boolean extractAllLibraries, Class<?> cl) {
 		try {
+			String customPath = System.getProperty("library." + libraryName);
+			if (customPath == null)
+				customPath = System.getenv(libraryName.toUpperCase() + "_LIBRARY");
+			if (customPath != null) {
+				File f = new File(customPath);
+				if (!f.exists())
+					System.err.println("Library file '" + customPath + "' does not exist !");
+				else
+					return f.getAbsolutePath();
+			}
 			//ClassLoader cl = LibraryExtractor.class.getClassLoader();
 			String prefix = "(?i)" + (Platform.isWindows() || Platform.isWindowsCE() ? "" : "lib") + libraryName + "[^A-Za-z_].*";
 			String libsuffix = "(?i).*\\.(so|dll|dylib|jnilib)";
