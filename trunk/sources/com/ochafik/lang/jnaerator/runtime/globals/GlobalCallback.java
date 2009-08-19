@@ -29,12 +29,6 @@ public class GlobalCallback<T extends Callback> extends Global {
 		super(library, symbols);
 		this.type = type;
 	}
-	Pointer pointer;
-	protected Pointer getPointer() {
-		if (pointer == null)
-			pointer = createPointer();
-		return pointer;
-	}
 	protected T value;
 	public T get() {
 		if (value == null) {

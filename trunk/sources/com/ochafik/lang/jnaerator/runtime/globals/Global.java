@@ -25,16 +25,16 @@ import com.sun.jna.Pointer;
 public abstract class Global {
 	protected String[] symbols;
 	protected NativeLibrary library;
+	protected Pointer pointer;
 	public Global(Library library, String... symbols) {
 		this.symbols = symbols;
 		this.library = (NativeLibrary) library;
 	}
-	protected Pointer createPointer() {
-		for (String symbol : symbols) {
-			Pointer pointer = library.getGlobalVariableAddress(symbol);
-			if (pointer != null)
-				return pointer;
-		}
-		return null;
+	protected Pointer getPointer() {
+		if (pointer == null)
+			for (String symbol : symbols)
+				if ((pointer = library.getGlobalVariableAddress(symbol)) != null)
+					break;
+		return pointer;
 	}
 }

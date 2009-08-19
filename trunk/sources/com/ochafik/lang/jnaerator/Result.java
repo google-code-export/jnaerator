@@ -71,6 +71,7 @@ public class Result extends Scanner {
 		
 	public final Set<Identifier> 
 		structsFullNames = new HashSet<Identifier>(),
+		unionsFullNames = new HashSet<Identifier>(),
 		callbacksFullNames = new HashSet<Identifier>();
 	
 	/**
@@ -378,8 +379,11 @@ public class Result extends Scanner {
 				
 				getList(structsByLibrary, getLibrary(struct)).add(struct);
 				Identifier identifier = getTaggedTypeIdentifierInJava(struct);
-				if (identifier != null)
+				if (identifier != null) {
+					if (struct.getType() == Type.CUnion)
+						unionsFullNames.add(identifier);
 					structsFullNames.add(identifier);
+				}
 				
 				break;
 			case ObjCClass:
