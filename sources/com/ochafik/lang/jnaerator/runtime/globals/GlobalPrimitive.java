@@ -30,9 +30,6 @@ public abstract class GlobalPrimitive<T extends PointerType> extends Global {
 		super(library, symbols);
 		this.type = type;
 	}
-	protected Pointer getPointer() {
-		return createPointer();
-	}
 	protected T value;
 	protected T getValue() {
 		if (value == null) {

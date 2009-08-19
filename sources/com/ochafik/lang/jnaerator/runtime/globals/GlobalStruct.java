@@ -20,6 +20,7 @@ package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.ochafik.lang.jnaerator.runtime.Structure;
 import com.sun.jna.Library;
+import com.sun.jna.Pointer;
 
 public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 	S value;
@@ -29,15 +30,32 @@ public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 		this.valueClass = valueClass;
 	}
 	public S get() {
-		if (value != null) {
+		if (value == null) {
 			try {
 				value = valueClass.newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			value.useMemory(createPointer());
+			Pointer p = getPointer();
+			if (!isByValue())
+				p = p.getPointer(0);
+			value.useMemory(p);
 		}
 		value.read();
 		return value;
+	}
+	public void set(S value) {
+		if (isByValue()) {
+			Pointer p = getPointer();
+			int s = value.size();
+			p.write(0, value.getPointer().getByteArray(0, s), 0, s);
+			get();
+		} else {
+			this.value = value;
+			getPointer().setPointer(0, value.getPointer());
+		}
+	}
+	protected boolean isByValue() {
+		return com.sun.jna.Structure.ByValue.class.isAssignableFrom(valueClass);
 	}
 }

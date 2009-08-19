@@ -39,11 +39,14 @@ import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
+import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalCallback;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalStruct;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalUnion;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
@@ -92,17 +95,31 @@ public class GlobalsGenerator {
 				}
 				
 				
-				if (!signatures.classSignatures.add(name))
-					continue;
-				
 				if (!result.config.useJNADirectCalls) {
+					if (!signatures.variablesSignatures.add(name.toString()))
+						continue;
+					
 					boolean isPointer = type instanceof com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 					JavaPrim prim = result.typeConverter.getPrimitive(isPointer ? ((com.ochafik.lang.jnaerator.parser.TypeRef.Pointer)type).getTarget() : type, callerLibraryName);
-					if (prim != null || isCallback) {
+					TypeRef convertedType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.NativeParameter, callerLibraryName);
+					String convTypStr = convertedType.toString();
+					if (convTypStr.endsWith(".ByValue"))
+						convTypStr = convTypStr.substring(0, convTypStr.length() - ".ByValue".length());
+					boolean isStruct = result.structsFullNames.contains(ident(convTypStr));
+					boolean isUnion = result.unionsFullNames.contains(ident(convTypStr));
+					
+					//if (result. convertedType)
+					if (prim != null || isCallback || isStruct || isUnion) {
 						TypeRef globalType = null;
 						Expression extraArg = null;
 						//Class<? extends Global> optionA;
-						if (isCallback) {
+						if (isUnion) {
+							globalType = typeRef(ident(GlobalUnion.class, expr(convertedType.clone())));
+							extraArg = memberRef(expr(convertedType.clone()), MemberRefStyle.Dot, "class");
+						} else if (isStruct) {
+							globalType = typeRef(ident(GlobalStruct.class, expr(convertedType.clone())));
+							extraArg = memberRef(expr(convertedType.clone()), MemberRefStyle.Dot, "class");
+						} else if (isCallback) {
 							globalType = typeRef(ident(GlobalCallback.class, expr(type.clone())));
 							extraArg = memberRef(expr(type.clone()), MemberRefStyle.Dot, "class");
 						} else if (isPointer) {
@@ -145,6 +162,10 @@ public class GlobalsGenerator {
 						}
 					}
 				}
+				
+				if (!signatures.classSignatures.add(name))
+					continue;
+				
 				
 				/// We get a pointer to the global, not the global itself
 				Struct struct = result.declarationsConverter.publicStaticClass(name, null, Struct.Type.JavaClass, null);
