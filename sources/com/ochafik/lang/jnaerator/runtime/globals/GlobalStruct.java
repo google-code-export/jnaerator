@@ -28,7 +28,7 @@ public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 		super(library, symbols);
 		this.valueClass = valueClass;
 	}
-	public S read() {
+	public S get() {
 		if (value != null) {
 			try {
 				value = valueClass.newInstance();
