@@ -38,7 +38,9 @@ import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
+import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalCallback;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
@@ -78,8 +80,10 @@ public class GlobalsGenerator {
 				if (type == null)
 					continue;
 				
+				boolean isCallback = result.callbacksByName.containsKey(ident(type.toString()));//type instanceof FunctionSignature;
 				List<Modifier> modifiers = type.getModifiers();
-				if (	type == null || 
+				
+				if (	!isCallback && 
 						!(Modifier.Extern.isContainedBy(modifiers) || Modifier.Dllexport.isContainedBy(modifiers) || Modifier.Dllimport.isContainedBy(modifiers))
 						//|| Modifier.Const.isContainedBy(modifiers) && d.getDefaultValue() != null
 						) {
@@ -94,11 +98,14 @@ public class GlobalsGenerator {
 				if (!result.config.useJNADirectCalls) {
 					boolean isPointer = type instanceof com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 					JavaPrim prim = result.typeConverter.getPrimitive(isPointer ? ((com.ochafik.lang.jnaerator.parser.TypeRef.Pointer)type).getTarget() : type, callerLibraryName);
-					if (prim != null) {
+					if (prim != null || isCallback) {
 						TypeRef globalType = null;
 						Expression extraArg = null;
 						//Class<? extends Global> optionA;
-						if (isPointer) {
+						if (isCallback) {
+							globalType = typeRef(ident(GlobalCallback.class, expr(type.clone())));
+							extraArg = memberRef(expr(type.clone()), MemberRefStyle.Dot, "class");
+						} else if (isPointer) {
 							Class<? extends ByReference> brt = TypeConversion.primToByReference.get(prim);
 							if (brt != null) {
 								globalType = typeRef(ident(GlobalPointerType.class, expr(typeRef(ident(brt)))));

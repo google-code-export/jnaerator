@@ -26,4 +26,7 @@ TestLibrary.nsi.set(nsi);
 CGFloat cgf = TestLibrary.cgf.get();
 TestLibrary.cgf.set(cgf);
 
-//TestLibrary.fptr.get().value.invoke(10);
+TestLibrary.fptr.get().invoke(10);
+TestLibrary.fptr.set(new TestLibrary.fptr_callback() {
+	public void invoke(int value) {}
+});

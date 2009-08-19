@@ -23,7 +23,7 @@ import com.sun.jna.CallbackReference;
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;
 
-public abstract class GlobalCallback<T extends Callback> extends Global {
+public class GlobalCallback<T extends Callback> extends Global {
 	protected final Class<T> type;
 	public GlobalCallback(Library library, Class<T> type, String... symbols) {
 		super(library, symbols);
