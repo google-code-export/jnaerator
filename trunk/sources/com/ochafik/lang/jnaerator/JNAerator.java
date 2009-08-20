@@ -974,13 +974,33 @@ public class JNAerator {
 				libClassLiteral
 			);
 			
+			String libNameStringFieldName = "JNA_LIBRARY_NAME", nativeLibFieldName = "JNA_NATIVE_LIB";
+			interf.addDeclaration(new VariablesDeclaration(typeRef(String.class), new Declarator.DirectDeclarator(
+				libNameStringFieldName,
+				libraryPathGetterExpr
+			)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final));
+			
+			Expression libraryNameFieldExpr = memberRef(expr(libTypeRef.clone()), MemberRefStyle.Dot, ident(libNameStringFieldName));
+			Expression optionsMapExpr = memberRef(expr(typeRef(MangledFunctionMapper.class)), MemberRefStyle.Dot, "DEFAULT_OPTIONS");
+			interf.addDeclaration(new VariablesDeclaration(typeRef(NativeLibrary.class), new Declarator.DirectDeclarator(
+				nativeLibFieldName,
+				methodCall(
+					expr(typeRef(NativeLibrary.class)),
+					MemberRefStyle.Dot,
+					"getInstance",
+					libraryNameFieldExpr.clone(),
+					optionsMapExpr.clone()
+				)
+			)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final));
+			Expression nativeLibFieldExpr = memberRef(expr(libTypeRef.clone()), MemberRefStyle.Dot, ident(nativeLibFieldName));
+				
 			if (result.config.useJNADirectCalls) {
 				interf.addDeclaration(new Function(Function.Type.StaticInit, null, null).setBody(block(
 					stat(methodCall(
 						expr(typeRef(Native.class)),
 						MemberRefStyle.Dot,
 						"register",
-						libraryPathGetterExpr
+						libraryNameFieldExpr.clone()
 					))
 				)).addModifiers(Modifier.Static));
 			} else {
@@ -992,9 +1012,9 @@ public class JNAerator {
 							expr(typeRef(Native.class)),
 							MemberRefStyle.Dot,
 							"loadLibrary",
-							libraryPathGetterExpr,
+							libraryNameFieldExpr.clone(),
 							libClassLiteral,
-							memberRef(expr(typeRef(MangledFunctionMapper.class)), MemberRefStyle.Dot, "DEFAULT_OPTIONS")
+							optionsMapExpr.clone()
 						)
 					)
 				)).addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
@@ -1015,7 +1035,7 @@ public class JNAerator {
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			
-			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, fullLibraryClassName, library);
+			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, nativeLibFieldExpr, fullLibraryClassName, library);
 			
 			result.typeConverter.allowFakePointers = false;
 			

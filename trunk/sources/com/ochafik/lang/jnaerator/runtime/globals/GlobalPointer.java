@@ -18,12 +18,12 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
 public class GlobalPointer extends GlobalPrimitive<PointerByReference> {
-	public GlobalPointer(Library library, String... symbols) {
+	public GlobalPointer(NativeLibrary library, String... symbols) {
 		super(library, PointerByReference.class, symbols);
 	}
 	public Pointer get() {

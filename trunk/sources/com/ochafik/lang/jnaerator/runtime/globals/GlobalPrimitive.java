@@ -19,14 +19,14 @@
 package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.ochafik.util.string.StringUtils;
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 public abstract class GlobalPrimitive<T extends PointerType> extends Global {
 	protected final Class<T> type;
 	protected boolean indirected = false;
-	public GlobalPrimitive(Library library, Class<T> type, String... symbols) {
+	public GlobalPrimitive(NativeLibrary library, Class<T> type, String... symbols) {
 		super(library, symbols);
 		this.type = type;
 	}

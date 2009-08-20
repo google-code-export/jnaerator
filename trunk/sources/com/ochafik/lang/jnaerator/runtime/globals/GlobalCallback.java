@@ -20,16 +20,16 @@ package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.sun.jna.Callback;
 import com.sun.jna.CallbackReference;
-import com.sun.jna.Library;
-import com.sun.jna.Pointer;
+import com.sun.jna.NativeLibrary;
 
 public class GlobalCallback<T extends Callback> extends Global {
 	protected final Class<T> type;
-	public GlobalCallback(Library library, Class<T> type, String... symbols) {
+	public GlobalCallback(NativeLibrary library, Class<T> type, String... symbols) {
 		super(library, symbols);
 		this.type = type;
 	}
 	protected T value;
+	@SuppressWarnings("unchecked")
 	public T get() {
 		if (value == null) {
 			value = (T)CallbackReference.getCallback(type, getPointer());

@@ -18,12 +18,12 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 
 public class GlobalNativeLong extends GlobalPrimitive<NativeLongByReference> {
-	public GlobalNativeLong(Library library, String... symbols) {
+	public GlobalNativeLong(NativeLibrary library, String... symbols) {
 		super(library, NativeLongByReference.class, symbols);
 	}
 	public NativeLong get() {
