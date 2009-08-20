@@ -137,7 +137,7 @@ public class GlobalsGenerator {
 						}
 						if (globalType != null) {
 							List<Expression> constructorArgs = new ArrayList<Expression>();
-							constructorArgs.add(result.getLibraryInstanceReferenceExpression(callerLibrary));
+							constructorArgs.add(nativeLibFieldExpr.clone());
 							if (extraArg != null) {
 								constructorArgs.add(extraArg);
 							}
