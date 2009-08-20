@@ -158,7 +158,8 @@ public class Result extends Scanner {
 			String nicerName = nameStr.substring(1);
 			Pair<TypeDef, Declarator> pair = typeDefs.get(nicerName);
 			if (pair != null) {
-				if (pair.getFirst().getValueType().toString().equals(nameStr+"*"))
+				String target = pair.getFirst().getValueType().toString();
+				if (target.equals(nameStr) || target.equals(nameStr+"*"))
 					name = ident(nameStr = nicerName);
 			}
 		}

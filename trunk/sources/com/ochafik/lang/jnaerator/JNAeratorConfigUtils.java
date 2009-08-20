@@ -273,6 +273,13 @@ public class JNAeratorConfigUtils {
 		if (!config.noCPlusPlus)
 			addCPlusPlus(config.preprocessorConfig);
 		
+		if (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) {
+			config.preprocessorConfig.macros.put("__BIG_ENDIAN__", "1");
+			config.preprocessorConfig.macros.put("G_BYTE_ORDER", "4321"); //glibc: #define G_BIG_ENDIAN    4321
+		} else {
+			config.preprocessorConfig.macros.put("__LITTLE_ENDIAN__", "1");
+			config.preprocessorConfig.macros.put("G_BYTE_ORDER", "1234"); //glibc: #define G_LITTLE_ENDIAN 1234
+		}
 		//prevent a jcpp bug to happen when expanding assert(...) :
 		config.preprocessorConfig.macros.put("NDEBUG", null);
 		
@@ -390,13 +397,7 @@ public class JNAeratorConfigUtils {
 			config.preprocessorConfig.macros.put("__PPC_64__", null);
 //			config.preprocessorConfig.macros.put("__powerpc64__", null);
 			config.preprocessorConfig.macros.put("__BIG_ENDIAN__", null);
-		} else {
-			if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN)
-				config.preprocessorConfig.macros.put("__LITTLE_ENDIAN__", "1");
-			else
-				config.preprocessorConfig.macros.put("__BIG_ENDIAN__", "1");
-			
-		}
+		} 
 		
 	}
 

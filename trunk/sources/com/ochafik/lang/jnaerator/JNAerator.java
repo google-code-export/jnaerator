@@ -440,11 +440,14 @@ public class JNAerator {
 							continue;
 						
 						boolean allowMissing = token.endsWith("?");
-						if (token.contains("*"))
-							for (String r : FileListUtils.resolveShellLikeFileList(allowMissing ? token.substring(0, token.length() - 1) : token))
+						if (token.contains("*")) {
+							Collection<String> rs = FileListUtils.resolveShellLikeFileList(allowMissing ? token.substring(0, token.length() - 1) : token);
+							for (String r : rs)
 								ret.add(allowMissing ? r + "?" : r);
-						else
-							ret.add(token);
+							if (!rs.isEmpty())
+								continue;
+						}
+						ret.add(token);
 					}
 					return ret;
 				}
