@@ -95,7 +95,7 @@ public class GlobalsGenerator {
 				}
 				
 				
-				if (!result.config.useJNADirectCalls) {
+				if (true) {//!result.config.useJNADirectCalls) {
 					if (!signatures.variablesSignatures.add(name.toString()))
 						continue;
 					
