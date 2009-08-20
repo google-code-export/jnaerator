@@ -1,4 +1,4 @@
-// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g 2009-08-17 22:33:12
+// $ANTLR 3.1.2 /Users/ochafik/Prog/Java/sources/com/ochafik/lang/jnaerator/parser/ObjCDemangling.g 2009-08-20 22:47:42
  
 /*
 	Copyright (c) 2009 Olivier Chafik, All Rights Reserved
@@ -28,28 +28,28 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class ObjCDemanglingLexer extends Lexer {
-    public static final int T__12=12;
-    public static final int T__23=23;
-    public static final int T__20=20;
-    public static final int T__13=13;
-    public static final int STRING=6;
-    public static final int OCTAL_NUMBER=8;
-    public static final int T__21=21;
-    public static final int T__19=19;
-    public static final int T__14=14;
-    public static final int T__11=11;
-    public static final int T__22=22;
-    public static final int DECIMAL_NUMBER=5;
-    public static final int Letter=7;
-    public static final int T__17=17;
-    public static final int EOF=-1;
-    public static final int T__16=16;
     public static final int T__24=24;
-    public static final int OctalEscape=9;
-    public static final int CharEscape=10;
-    public static final int IDENTIFIER=4;
-    public static final int T__18=18;
+    public static final int T__23=23;
+    public static final int T__22=22;
+    public static final int T__21=21;
+    public static final int T__20=20;
+    public static final int EOF=-1;
+    public static final int T__19=19;
+    public static final int T__16=16;
     public static final int T__15=15;
+    public static final int T__18=18;
+    public static final int T__17=17;
+    public static final int T__12=12;
+    public static final int T__11=11;
+    public static final int T__14=14;
+    public static final int T__13=13;
+    public static final int IDENTIFIER=4;
+    public static final int CharEscape=10;
+    public static final int Letter=7;
+    public static final int OctalEscape=9;
+    public static final int OCTAL_NUMBER=8;
+    public static final int STRING=6;
+    public static final int DECIMAL_NUMBER=5;
 
     // delegates
     // delegators
@@ -621,9 +621,9 @@ public class ObjCDemanglingLexer extends Lexer {
                 int LA6_1 = input.LA(2);
 
                 if ( ((LA6_1>='0' && LA6_1<='7')) ) {
-                    int LA6_4 = input.LA(3);
+                    int LA6_3 = input.LA(3);
 
-                    if ( ((LA6_4>='0' && LA6_4<='7')) ) {
+                    if ( ((LA6_3>='0' && LA6_3<='7')) ) {
                         alt6=1;
                     }
                     else {
