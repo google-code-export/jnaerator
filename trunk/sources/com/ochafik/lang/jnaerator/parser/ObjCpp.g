@@ -71,6 +71,7 @@ import static com.ochafik.lang.jnaerator.parser.Declaration.*;
 import static com.ochafik.lang.jnaerator.parser.Identifier.*;
 import static com.ochafik.lang.jnaerator.parser.Statement.*;
 import static com.ochafik.lang.jnaerator.parser.Declarator.*;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 }
 
@@ -1453,12 +1454,14 @@ castExpr returns [Expression expr]
 
 unaryExpr returns [Expression expr] 
 	:
+		{ next("sizeof") }? IDENTIFIER (
+			'(' tr=mutableTypeRef ')' {
+				$expr = new FunctionCall(varRef("sizeof"), new TypeRefExpression($tr.type));
+			}
+			//| unaryExpr // TODO check this !!!
+		) |
 		p=postfixExpr { $expr = $p.expr; } |
-		uo=unaryOp castExpr { $expr = new UnaryOp($castExpr.expr, $uo.op); } |
-		'sizeof' (
-			'(' tr=mutableTypeRef ')' | 
-			unaryExpr // TODO check this !!!
-		)
+		uo=unaryOp castExpr { $expr = new UnaryOp($castExpr.expr, $uo.op); }
 	;
 
 unaryOp returns [Expression.UnaryOperator op]
