@@ -19,13 +19,13 @@
 package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.ochafik.lang.jnaerator.runtime.Structure;
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 
 public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 	S value;
 	Class<S> valueClass;
-	public GlobalStruct(Library library, Class<S> valueClass, String... symbols) {
+	public GlobalStruct(NativeLibrary library, Class<S> valueClass, String... symbols) {
 		super(library, symbols);
 		this.valueClass = valueClass;
 	}

@@ -75,7 +75,7 @@ public class GlobalsGenerator {
 //		}
 //	}
 	
-	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName, String callerLibrary) throws UnsupportedConversionException {
+	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Expression nativeLibFieldExpr, Identifier callerLibraryName, String callerLibrary) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
 			try {
 				Identifier name = result.typeConverter.getValidJavaArgumentName(ident(d.resolveName()));
@@ -221,20 +221,7 @@ public class GlobalsGenerator {
 				struct.addDeclaration(new VariablesDeclaration(instType, new Declarator.DirectDeclarator(instName.toString())).addModifiers(Modifier.Private, Modifier.Static));
 				VariableRef instRef = new VariableRef(instName);
 				Expression ptrExpr = methodCall(
-					cast(
-						typeRef(NativeLibrary.class),
-						result.config.entryName == null ?
-							memberRef(
-								expr(typeRef(callerLibraryName)), 
-								MemberRefStyle.Dot, 
-								"INSTANCE"
-							) :
-							memberRef(
-								expr(typeRef(result.config.entryName.toLowerCase() + "." + result.config.entryName)), 
-								MemberRefStyle.Dot, 
-								callerLibrary
-							)	
-					).setParenthesis(true),
+					nativeLibFieldExpr.clone(),
 					MemberRefStyle.Dot,
 					"getGlobalVariableAddress",
 					expr(name.toString())
@@ -267,13 +254,13 @@ public class GlobalsGenerator {
 		}
 	}
 
-	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, Identifier libraryNameExpression, String library) {		
+	public void convertGlobals(List<VariablesDeclaration> list, Signatures signatures, DeclarationsHolder out, Expression nativeLibFieldExpr, Identifier libraryNameExpression, String library) {		
 		if (list == null)
 			return;
 		
 		for (VariablesDeclaration v : list) {
 			try {
-				convertGlobals(v, signatures, out, libraryNameExpression, library);
+				convertGlobals(v, signatures, out, nativeLibFieldExpr, libraryNameExpression, library);
 			} catch (UnsupportedConversionException ex) {
 				out.addDeclaration(result.declarationsConverter.skipDeclaration(v, ex.toString()));
 			}

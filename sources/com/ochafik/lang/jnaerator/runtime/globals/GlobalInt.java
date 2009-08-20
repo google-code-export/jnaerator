@@ -18,11 +18,11 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.ptr.IntByReference;
 
 public class GlobalInt extends GlobalPrimitive<IntByReference> {
-	public GlobalInt(Library library, String... symbols) {
+	public GlobalInt(NativeLibrary library, String... symbols) {
 		super(library, IntByReference.class, symbols);
 	}
 	public int get() {

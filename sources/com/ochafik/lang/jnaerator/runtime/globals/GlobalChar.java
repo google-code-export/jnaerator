@@ -19,10 +19,10 @@
 package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.ochafik.lang.jnaerator.runtime.CharByReference;
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 
 public class GlobalChar extends GlobalPrimitive<CharByReference> {
-	public GlobalChar(Library library, String... symbols) {
+	public GlobalChar(NativeLibrary library, String... symbols) {
 		super(library, CharByReference.class, symbols);
 	}
 	public char get() {

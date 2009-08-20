@@ -18,11 +18,11 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.ptr.DoubleByReference;
 
 public class GlobalDouble extends GlobalPrimitive<DoubleByReference> {
-	public GlobalDouble(Library library, String... symbols) {
+	public GlobalDouble(NativeLibrary library, String... symbols) {
 		super(library, DoubleByReference.class, symbols);
 	}
 	public double get() {

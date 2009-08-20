@@ -21,10 +21,10 @@ package com.ochafik.lang.jnaerator.runtime.globals;
 import org.rococoa.cocoa.CGFloat;
 
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 
 public class GlobalCGFloat extends GlobalPrimitive<CGFloatByReference> {
-	public GlobalCGFloat(Library library, String... symbols) {
+	public GlobalCGFloat(NativeLibrary library, String... symbols) {
 		super(library, CGFloatByReference.class, symbols);
 	}
 	public CGFloat get() {

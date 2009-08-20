@@ -18,11 +18,11 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.ptr.FloatByReference;
 
 public class GlobalFloat extends GlobalPrimitive<FloatByReference> {
-	public GlobalFloat(Library library, String... symbols) {
+	public GlobalFloat(NativeLibrary library, String... symbols) {
 		super(library, FloatByReference.class, symbols);
 	}
 	public float get() {

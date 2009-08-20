@@ -19,13 +19,13 @@
 package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.ochafik.lang.jnaerator.runtime.Union;
-import com.sun.jna.Library;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 
 public class GlobalUnion<S extends Union<?, ?, ?>> extends Global {
 	S value;
 	Class<S> valueClass;
-	public GlobalUnion(Library library, Class<S> valueClass, String... symbols) {
+	public GlobalUnion(NativeLibrary library, Class<S> valueClass, String... symbols) {
 		super(library, symbols);
 		this.valueClass = valueClass;
 	}
