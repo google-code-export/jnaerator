@@ -18,52 +18,47 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 
 import com.sun.jna.Pointer;
 
 public abstract class Structure<S extends Structure<S, V, R>, V extends S, R extends S> 
 	extends com.sun.jna.Structure
-	implements Comparable<Structure<S, V, R>> 
-{
-//	protected void jnaRead() {
-//		super.read();
-//	}
-//	
-//	protected void jnaWrite() {
-//		super.write();
-//	}
-//	
-//	protected abstract StructIO getStructIO();
-//	
-//	public void read() {
-//		getStructIO().read(this);
-//	}
-//	public void write() {
-//		getStructIO().write(this);
-//	}
-//	
-//	/// Class responsible for the read/write operations of a struct.
-//	public interface StructIO  {
-//		void read(Structure<?, ?, ?> s);
-//		void write(Structure<?, ?, ?> s);
-//	}
-//	public static StructIO getStructIO(Class<? extends Structure<?, ?, ?>> structClass) {
-//		// TODO generate bytecode with specialized read/write methods for the class
-//		return new StructIO() {
-//			public void read(Structure<?, ?, ?> s) {
-//				s.jnaRead();
-//			}
-//			public void write(Structure<?, ?, ?> s) {
-//				s.jnaWrite();
-//			}
-//		};
-//	}
+	implements 
+		Comparable<Structure<S, V, R>>,
+		StructureType,
+		StructureTypeDependent
+{	
+	public interface ByReference extends com.sun.jna.Structure.ByReference, StructureTypeDependent {}
+	public interface ByValue extends com.sun.jna.Structure.ByValue, StructureTypeDependent {}
 	
-	protected <T extends Structure<?, ?, ?>> T setupClone(T clone) {
+	transient WeakReference<StructureType> dependency;
+	@Override
+	public void setDependency(StructureType type) {
+		this.dependency = type == null ? null : new WeakReference<StructureType>(type);
+	}
+	protected void readDependency() {
+		StructureType dep;
+		if (dependency == null || (dep = dependency.get()) == null)
+			return;
+		dep.read();
+	}
+	@Override
+	public void read() {
+		super.read();
+		readDependency();
+	}
+	@Override
+	public void write() {
+		super.write();
+		readDependency();
+	}
+	
+	protected <T extends Structure<S, V, R>> T setupClone(T clone, StructureType dependency) {
 		write();
 		clone.useMemory(getPointer());
-		clone.read();
+		clone.setDependency(this);
 		return clone;
 	}
 	
@@ -78,9 +73,9 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	protected abstract V newByValue();
 	protected abstract R newByReference();
 	
-	public R byReference() { return setupClone(newByReference()); }
-	public V byValue() { return setupClone(newByValue()); }
-	public S clone() { return setupClone(newInstance()); }
+	public R byReference() { return setupClone(newByReference(), this); }
+	public V byValue() { return setupClone(newByValue(), this); }
+	public S clone() { return setupClone(newInstance(), this); }
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -89,6 +84,20 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	}
 	public S[] toArray() {
 		return toArray(1);
+	}
+	@SuppressWarnings("unchecked")
+	public R[] toReferenceArray(int size) {
+		return (R[])byReference().toArray(size);
+	}
+	@SuppressWarnings("unchecked")
+	public V[] toValueArray(int size) {
+		return (V[])byValue().toArray(size);
+	}
+	public R[] toReferenceArray() {
+		return toReferenceArray(1);
+	}
+	public V[] toValueArray() {
+		return toValueArray(1);
 	}
 	@SuppressWarnings("unchecked")
 	@Override
@@ -130,22 +139,5 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
         		return b1 < b2 ? -1 : 1;
         }
         return 0;
-//        try {
-//	        for (Field f : getClass().getFields()) {
-//	        	Object v1 = f.get(this), v2 = f.get(o);
-//	        	if (v1 == null) {
-//	        		if (v2 != null)
-//	        			return -1;
-//	        	} else if (v2 == null)
-//	        		return 1;
-//	        	
-//	        	d = ((Comparable)v1).compareTo(v2);
-//	        	if (d != 0)
-//	        		return d;
-//	        }
-//	        return 0;
-//        } catch (Exception ex) {
-//        	throw new RuntimeException("Failed to compare structures of type " + getClass().getName(), ex);
-//        }
     }
 }

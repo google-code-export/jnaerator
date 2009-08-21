@@ -18,12 +18,40 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import java.lang.ref.WeakReference;
+
 import com.sun.jna.Pointer;
 
 public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S> 
 	extends com.sun.jna.Union
-{
-//<S extends Union<S>> extends com.sun.jna.Union {
+	implements
+		StructureType,
+		StructureTypeDependent
+{	
+	public interface ByReference extends com.sun.jna.Union.ByReference, StructureTypeDependent {}
+	public interface ByValue extends com.sun.jna.Union.ByValue, StructureTypeDependent {}
+
+	transient WeakReference<StructureType> dependency;
+	@Override
+	public void setDependency(StructureType type) {
+		this.dependency = type == null ? null : new WeakReference<StructureType>(type);
+	}
+	protected void readDependency() {
+		StructureType dep;
+		if (dependency == null || (dep = dependency.get()) == null)
+			return;
+		dep.read();
+	}
+	@Override
+	public void read() {
+		super.read();
+		readDependency();
+	}
+	@Override
+	public void write() {
+		super.write();
+		readDependency();
+	}
 	protected <T extends Union<?, ?, ?>> T setupClone(T clone) {
 		write();
 		clone.useMemory(getPointer());

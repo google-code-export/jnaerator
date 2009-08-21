@@ -142,6 +142,7 @@ public class Result extends Scanner {
 	}
 	
 	public Identifier findFakePointer(Identifier name) {
+		name = getFakePointerName(name);
 		String s = name.toString();
 		for (Map.Entry<String, Set<String>> e : fakePointersByLibrary.entrySet()) {
 			if (e.getValue().contains(s))
@@ -153,6 +154,15 @@ public class Result extends Scanner {
 		Identifier lib = findFakePointer(name);
 		if (lib != null)
 			return lib;
+		name = getFakePointerName(name);
+		Set<String> set = fakePointersByLibrary.get(libraryToUseIfNotDefinedYet);
+		if (set == null)
+			fakePointersByLibrary.put(libraryToUseIfNotDefinedYet.toString(), set = new HashSet<String>());
+		set.add(name.toString());
+		return ident(libraryToUseIfNotDefinedYet, name);
+	}
+	private Identifier getFakePointerName(Identifier name) {
+
 		String nameStr = name.toString();
 		if (nameStr.startsWith("_")) {
 			String nicerName = nameStr.substring(1);
@@ -163,11 +173,7 @@ public class Result extends Scanner {
 					name = ident(nameStr = nicerName);
 			}
 		}
-		Set<String> set = fakePointersByLibrary.get(libraryToUseIfNotDefinedYet);
-		if (set == null)
-			fakePointersByLibrary.put(libraryToUseIfNotDefinedYet.toString(), set = new HashSet<String>());
-		set.add(name.toString());
-		return ident(libraryToUseIfNotDefinedYet, name);
+		return name;
 	}
 	public Signatures getSignaturesForOutputClass(Identifier name) {
 		Signatures s = signaturesByOutputClass.get(name);
