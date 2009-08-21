@@ -831,12 +831,15 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
-//		if (String.valueOf(valueType).contains("FourCharCode"))
-//			valueType.toString();
+		if (String.valueOf(valueType).contains("MonoObject**"))
+			valueType.toString();
 		
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType, libraryClassName, true);
 		
+
+//		if (String.valueOf(valueType).contains("MonoObject"))
+//			valueType.toString();
 		String valueTypeString = String.valueOf(valueType);
 		
 		if (valueTypeString.matches("void\\s*\\*") || valueTypeString.matches("const\\s*void\\s*\\*")) {
@@ -971,9 +974,11 @@ public class TypeConversion {
 					TypeRef ptarget = pt.getTarget();
 					if (ptarget instanceof SimpleTypeRef) {
 						SimpleTypeRef ptargett = (SimpleTypeRef) ptarget;
-						if (result.structsFullNames.contains(ptargett.getName())) {
+						Identifier tname = ptargett.getName();
+						if (result.structsFullNames.contains(tname)) {
 							return new ArrayRef(typeRef(ident(ptargett.getName(), "ByReference")));
-						}
+						} else if ((tname = result.findFakePointer(tname)) != null)
+							return new ArrayRef(typeRef(tname.clone()));
 					}
 				}
 				if (name != null) {
