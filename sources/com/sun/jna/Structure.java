@@ -604,6 +604,9 @@ public abstract class Structure {
             Field field = fields[i];
             int modifiers = field.getModifiers();
 
+			if (Modifier.isTransient(modifiers))
+                continue;
+			
             Class type = field.getType();
             StructField structField = new StructField();
             structField.isVolatile = Modifier.isVolatile(modifiers);

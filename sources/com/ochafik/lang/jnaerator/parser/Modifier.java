@@ -28,15 +28,19 @@ import java.util.Map;
  */
 public enum Modifier {
 	__cdecl(Kind.CallingConvention),
-	_cdecl(__cdecl, Kind.CallingConvention),
+		_cdecl(__cdecl, Kind.CallingConvention),
+	
 	__stdcall(Kind.CallingConvention),
-	_stdcall(__stdcall, Kind.CallingConvention),
+		_stdcall(__stdcall, Kind.CallingConvention),
+	
 	__fastcall(Kind.CallingConvention),
-	_fastcall(__fastcall, Kind.CallingConvention),
+		_fastcall(__fastcall, Kind.CallingConvention),
+	
 	__thiscall(Kind.CallingConvention),
-	_thiscall(__thiscall, Kind.CallingConvention),
+		_thiscall(__thiscall, Kind.CallingConvention),
+	
 	__pascal(Kind.CallingConvention),
-	_pascal(__pascal, Kind.CallingConvention),
+		_pascal(__pascal, Kind.CallingConvention),
 	
 	/// VC++ annotations 
 	/// @see http://msdn.microsoft.com/en-us/library/cc264104.aspx
@@ -290,7 +294,13 @@ public enum Modifier {
 		if (k == Kind.ObjC && kinds.contains(Kind.C))
 			return true;
 		
-		return kinds.contains(k);
+		if (kinds.contains(k))
+			return true;
+		
+		if (alias != null && alias.isA(k))
+			return true;
+		
+		return false;
 	}
 	
 	public boolean isAnyOf(Kind...kinds) {
@@ -309,20 +319,30 @@ public enum Modifier {
 		return true;
 	}
 	
+
+	public enum Language {
+		C,
+		CPlusPlus,
+		ObjectiveC,
+		Java,
+		CSharp,
+		CPlusPlusCLI;
+	}
+
 	public enum Compiler {
-		GCC, MSVC, Other, Any
+		GCC, MSVC, Intel
 	}
 
 	@Override
 	public String toString() {
-		return toString(Compiler.Any);
+		return toString(null);
 	}
 	public String toString(Modifier.Compiler compiler) {
 		String low = super.toString().toLowerCase();
-		if (kinds.contains(Kind.Declspec) && (compiler == Compiler.Any || compiler == Compiler.MSVC))
+		if (kinds.contains(Kind.Declspec) && (compiler == null || compiler == Compiler.MSVC))
 			return "__declspec(" + low + ")";
 		
-		if (kinds.contains(Kind.Attribute) && (compiler == Compiler.Any || compiler == Compiler.GCC))
+		if (kinds.contains(Kind.Attribute) && (compiler == null || compiler == Compiler.GCC))
 			return "__attribute__((" + low + "))";
 		
 		return low;
