@@ -31,11 +31,7 @@ public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 	}
 	public S get() {
 		if (value == null) {
-			try {
-				value = valueClass.newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			value = newInstance();
 			Pointer p = getPointer();
 			if (!isByValue())
 				p = p.getPointer(0);
@@ -43,6 +39,13 @@ public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 		}
 		value.read();
 		return value;
+	}
+	protected S newInstance() {
+		try {
+			return valueClass.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	public void set(S value) {
 		if (isByValue()) {
