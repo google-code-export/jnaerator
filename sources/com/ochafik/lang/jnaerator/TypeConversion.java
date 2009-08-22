@@ -831,7 +831,7 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
-		if (String.valueOf(valueType).contains("MonoObject**"))
+		if (String.valueOf(valueType).contains("MonoImageOpenStatus"))
 			valueType.toString();
 		
 		TypeRef original = valueType; 
@@ -1007,6 +1007,7 @@ public class TypeConversion {
 						} else {
 							try {
 								convArgType = convertTypeToJNA(target, conversionMode, libraryClassName);
+								prim = getPrimitive(convArgType, libraryClassName);
 							} catch (UnsupportedConversionException ex) {
 								//convArgType = null;//return typeRef(com.sun.jna.Pointer.class);
 								if (valueType instanceof TypeRef.Pointer && 
@@ -1031,6 +1032,7 @@ public class TypeConversion {
 				} else {
 					try {
 						convArgType = convertTypeToJNA(target, conversionMode, libraryClassName);
+						prim = getPrimitive(convArgType, libraryClassName);
 					} catch (UnsupportedConversionException ex) {
 						//convArgType = null;//
 						return typeRef(com.sun.jna.Pointer.class);
@@ -1057,7 +1059,7 @@ public class TypeConversion {
 					if (prim != null) {
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
 						if (byRefClass != null)
-							return typeRef(byRefClass);
+							return typeRef(byRefClass).importDetails(convArgType, false);
 					}
 					if (convArgType != null && !convArgType.toString().equals(com.sun.jna.Pointer.class.getName()) && valueType instanceof TypeRef.Pointer && target instanceof TypeRef.SimpleTypeRef)
 						return convArgType;

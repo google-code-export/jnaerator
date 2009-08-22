@@ -39,6 +39,10 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		return markedAsResolved;
 	}
 	@Override
+	public TypeRef importDetails(Element from, boolean move) {
+		return (TypeRef) super.importDetails(from, move);
+	}
+	@Override
 	public TypeRef addModifiers(Modifier... mds) {
 		return (TypeRef) super.addModifiers(mds);
 	}
