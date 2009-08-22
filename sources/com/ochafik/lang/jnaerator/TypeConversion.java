@@ -831,8 +831,8 @@ public class TypeConversion {
 	}
 	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
-		if (String.valueOf(valueType).contains("MonoImageOpenStatus"))
-			valueType.toString();
+//		if (String.valueOf(valueType).contains("MonoImageOpenStatus"))
+//			valueType.toString();
 		
 		TypeRef original = valueType; 
 		valueType =  resolveTypeDef(valueType, libraryClassName, true);
