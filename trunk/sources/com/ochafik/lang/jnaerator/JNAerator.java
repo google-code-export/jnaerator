@@ -339,6 +339,7 @@ public class JNAerator {
 					case Studio:
 						try {
 							JNAeratorStudio.main(new String[0]);
+							return null;
 						} catch (Exception ex) {
 							ex.printStackTrace();
 							System.exit(1);
