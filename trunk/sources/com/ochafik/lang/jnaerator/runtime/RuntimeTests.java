@@ -52,7 +52,7 @@ public class RuntimeTests {
 		
 	}
 	@Test
-	public void simpleBitField() {
+	public void testSimpleBitField() {
 		TestStruct s = new TestStruct();
 		s.i0 = 3;
 		s.s = -1;
@@ -80,7 +80,7 @@ public class RuntimeTests {
 		}
 	}
 	@Test
-	public void floatOffsetBitField() {
+	public void testFloatOffsetBitField() {
 		FloatBitOffset s = new FloatBitOffset();
 		s.i = 27;
 		s.f = (float)Math.PI;
@@ -109,7 +109,7 @@ public class RuntimeTests {
 	}
 	Random random = new Random(System.currentTimeMillis());
 	@Test
-	public void bigBitField() {
+	public void testBigBitField() {
 		for (int i = 5; i-- != 0;) {
 			long randl = random.nextLong();
 			BigBitOffset s = new BigBitOffset();
@@ -143,6 +143,8 @@ public class RuntimeTests {
 			useMemory(p);
 		}
 	}
+
+	@Test
 	public void testBitOffsetPointer() {
 		Pointer pconstant = Pointer.createConstant(10);
 		for (int i = 5; i-- != 0;) {
@@ -156,8 +158,34 @@ public class RuntimeTests {
 			s.read();
 			
 			Assert.assertEquals(pconstant, s.p);
-			Assert.assertEquals(8, s.i);
+			Assert.assertEquals(7, s.i);
 			Assert.assertEquals(8, s.end);
 		}
+	}
+	public static class PaddingTest extends BitFieldStruct {
+		@Bits(1)
+		public int i;
+		public int afterFields;
+		public PaddingTest() {
+			super();
+		}
+		public PaddingTest(Pointer p) {
+			super();
+			useMemory(p);
+		}
+	}
+	@Test
+	public void testPaddingAfterBitFields() {
+		PaddingTest t = new PaddingTest();
+		t.i = 15;
+		t.afterFields = 3;
+		t.write();
+		
+		PaddingTest o = new PaddingTest(t.getPointer());
+		o.read();
+		Assert.assertEquals(1, o.i);
+		Assert.assertEquals(t.afterFields, o.afterFields);
+		Assert.assertEquals(t.afterFields, t.getPointer().getInt(4));
+		
 	}
 }
