@@ -109,7 +109,10 @@ public class JNAeratorCommandLineArgs {
 						for (; iArg < opt.args.length; iArg++)
 							pa.params[iArg] = convertArg(args.get(++i), opt.args[iArg].type);
 						
-						args.addAll(i + 1, parsed(pa));
+						List<String> parsed = parsed(pa);
+						if (parsed == null)
+							return;
+						args.addAll(i + 1, parsed);
 						defaultOpt = null;
 						break;
 					}
