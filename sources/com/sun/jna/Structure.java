@@ -701,6 +701,10 @@ public abstract class Structure {
 			Integer bits = getBitsAnnotation(field);
 			if (bits == null || i == 0) {
 				// Align fields as appropriate
+				if (cumulativeBitOffset != 0) {
+					cumulativeBitOffset = 0;
+					calculatedSize++;
+				}
 				structAlignment = Math.max(structAlignment, fieldAlignment);
 				if ((calculatedSize % fieldAlignment) != 0) {
 					calculatedSize += fieldAlignment - (calculatedSize % fieldAlignment);
