@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -562,6 +564,9 @@ public class JNAerator {
 				feedback.setStatus("Auto-configuring parser...");
 				JNAeratorConfigUtils.autoConfigure(config);
 			}
+			
+			if (config.verbose)
+				JNAeratorConfigUtils.logger.log(Level.INFO, "Include path : \n\t" + StringUtils.implode(config.preprocessorConfig.includes, "\n\t"));
 			
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 			JavaCompiler c = CompilerUtils.getJavaCompiler(config.preferJavac);

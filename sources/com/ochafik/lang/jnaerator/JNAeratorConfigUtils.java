@@ -48,7 +48,7 @@ import com.ochafik.util.string.StringUtils;
 
 public class JNAeratorConfigUtils {
 
-	private static Logger logger = Logger.getLogger(JNAeratorConfigUtils.class.getName());
+	public static Logger logger = Logger.getLogger(JNAeratorConfigUtils.class.getName());
 	
 	public static final class MSC_VER {
 		public final int 
@@ -60,10 +60,11 @@ public class JNAeratorConfigUtils {
 	}
 
 	
-	static String getProp(String name, String defVal) {
+	static String getProp(String name, String defVal, boolean verbose) {
 		String v = System.getenv(name);
 		v = v == null ? System.getProperty(name, defVal) : v;
-		logger.log(Level.INFO, "[environment] " + name + "=" + v);
+		if (verbose)
+			logger.log(Level.INFO, "[environment] " + name + "=" + v);
 		return v;
 	}
 
@@ -283,8 +284,8 @@ public class JNAeratorConfigUtils {
 		//prevent a jcpp bug to happen when expanding assert(...) :
 		config.preprocessorConfig.macros.put("NDEBUG", null);
 		
-		config.preprocessorConfig.includes.addAll(getDefaultIncludePath());//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
-		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath());//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
+		config.preprocessorConfig.includes.addAll(getDefaultIncludePath(config.verbose));//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
+		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath(config.verbose));//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
 			//http://msdn.microsoft.com/en-us/library/b0084kay(VS.80).aspx
 			
@@ -344,12 +345,12 @@ public class JNAeratorConfigUtils {
 		JNAeratorConfigUtils.autoConfigureArchitecture(config);
 	}
 
-	private static Collection<? extends String> getDefaultFrameworkPath() {
-		return Arrays.asList(getProp("JNAERATOR_FRAMEWORKS_PATH", StringUtils.implode(DEFAULT_FRAMEWORKS_PATH, File.pathSeparator)).split(File.pathSeparator));
+	private static Collection<? extends String> getDefaultFrameworkPath(boolean verbose) {
+		return Arrays.asList(getProp("JNAERATOR_FRAMEWORKS_PATH", StringUtils.implode(DEFAULT_FRAMEWORKS_PATH, File.pathSeparator), verbose).split(File.pathSeparator));
 	}
 
-	private static Collection<? extends String> getDefaultIncludePath() {
-		return Arrays.asList(getProp("JNAERATOR_INCLUDE_PATH", StringUtils.implode(DEFAULT_INCLUDE_PATH, File.pathSeparator)).split(File.pathSeparator));
+	private static Collection<? extends String> getDefaultIncludePath(boolean verbose) {
+		return Arrays.asList(getProp("JNAERATOR_INCLUDE_PATH", StringUtils.implode(DEFAULT_INCLUDE_PATH, File.pathSeparator), verbose).split(File.pathSeparator));
 		
 	}
 
