@@ -42,3 +42,7 @@ java -jar jnaerator.jar -framework Framework1 -framework Framework2 lib1.dylib l
 = What command-line options and environment variables are available ? = 
 
 There are quite a few of them : [CommandLineOptionsAndEnvironmentVariables]
+
+= Is there a mailing list where I can ask for some help ? =
+
+For now, [https://jna.dev.java.net/servlets/SummarizeList?listName=users JNA's users mailing list] is THE place to be.
