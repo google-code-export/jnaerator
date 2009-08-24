@@ -1008,6 +1008,8 @@ public class TypeConversion {
 										return convArgType;
 									break;
 								default:
+									if (isQualStruct && (valueType instanceof ArrayRef) && conversionMode != TypeConversionMode.NativeParameter)
+										return arrayRef(typeRef(structRef));
 									convArgType = typeRef(structRef);
 									if (valueType instanceof Pointer)
 										return convArgType;

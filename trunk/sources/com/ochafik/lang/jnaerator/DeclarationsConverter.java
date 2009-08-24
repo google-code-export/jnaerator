@@ -577,11 +577,12 @@ public class DeclarationsConverter {
 			
 			natFunc.setName(modifiedMethodName);
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, libraryClassName));
-			natFunc.importDetails(function, false);
-			natFunc.moveAllCommentsBefore();
-			if (!result.config.noComments)
+			if (!result.config.noComments) {
+				natFunc.importDetails(function, false);
+				natFunc.moveAllCommentsBefore();
 				if (!isCallback)
 					natFunc.addToCommentBefore(getFileCommentContent(function));
+			}
 			
 			boolean alternativeOutputs = !isCallback;
 			
