@@ -61,6 +61,14 @@
   Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.
  * *-noAuto*
   No auto-configuration of preprocessor symbols and paths
+ * *-noBufferReturns*
+  Prevent <primitive>`*` return types from being converted to NIO <Primitive>Buffer.
+ * *-noComments*
+  Don't output any member comment.
+ * *-noMangling*
+  Don't output any C++ name mangling information (may cause C++-decorated symbols not to be found at execution time).
+ * *-noPrimitiveArrays*
+  Never output primitive arrays for function arguments (use NIO buffers instead)
  * *-noRuntime*
   Don't copy runtime classes to JAR output
  * *-noStringReturns*
@@ -95,7 +103,6 @@
   Output a wiki-friendly help
  * *@(.+)?* <argumentsFile.jnaerator: ExistingFile>
   Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content, as well as variables substitutions : $(someEnvOrJavaVarName), with $(DIR) being the parent directory of the current arguments file.
-
 
 = Environment Variables =
 
