@@ -152,6 +152,7 @@ public class JNAeratorCommandLineArgs {
 		Test(				"-test",				"Launch JNAerator's unit tests (DEBUG option)"),
 		Studio(				"-studio",				"Launch JNAeratorStudio"),
 		NoStringReturns(	"-noStringReturns",		"Prevent const char* and const wchar_t* return types from being converted to String and WString."),
+		NoBufferReturns(	"-noBufferReturns",		"Prevent <primitive>* return types from being converted to NIO <Primitive>Buffer."),
 		Project(			"-project",				"Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. \"Release|Win32\").", new ArgDef(Type.ExistingFile, "solutionFile"), new ArgDef(Type.String, "\"Config|Platform\"")),
 		NoAuto(				"-noAuto",		 		"No auto-configuration of preprocessor symbols and paths"),
 		Direct(				"-direct",		 		"JNAerate libraries that use JNA's faster direct call convention"),

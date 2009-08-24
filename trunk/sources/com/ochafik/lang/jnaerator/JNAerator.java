@@ -248,6 +248,8 @@ public class JNAerator {
 					case NoCompile:
 						config.compile = false;
 						break;
+					case NoBufferReturns:
+						config.returnNIOBuffersForPrimitivePointers = false;
 					case NoStringReturns:
 						config.stringifyConstCStringReturnValues = false;
 						break;
