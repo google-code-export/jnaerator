@@ -242,6 +242,9 @@ public class JNAerator {
 					case MaxConstructedFields:
 						config.maxConstructedFields = a.getIntParam(0);
 						break;
+					case NoPrimitiveArrays:
+						config.noPrimitiveArrays = true;
+						break;
 					case NoCompile:
 						config.compile = false;
 						break;
@@ -294,6 +297,12 @@ public class JNAerator {
 						break;
 					case JarOut:
 						config.outputJar = a.getFileParam(0);
+						break;
+					case NoMangling:
+						config.noMangling = true;
+						break;
+					case NoComments:
+						config.noComments = true;
 						break;
 					case LimitComments:
 						config.limitComments = true;

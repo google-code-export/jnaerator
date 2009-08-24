@@ -17,8 +17,9 @@ public class JavaDocCreator extends Scanner {
 	
 	@Override
 	public void visitFunction(Function function) {
-		if (!(function.getParentElement() instanceof FunctionSignature) && result.config.features.contains(GenFeatures.OriginalFunctionSignatures))
-			function.addToCommentBefore("Original signature : <code>" + function.computeSignature(true) + "</code>");
+		if (!result.config.noComments)
+			if (!(function.getParentElement() instanceof FunctionSignature) && result.config.features.contains(GenFeatures.OriginalFunctionSignatures))
+				function.addToCommentBefore("Original signature : <code>" + function.computeSignature(true) + "</code>");
 //		function.addToCommentBefore("File : " + Element.getFileOfAscendency(function));
 		super.visitFunction(function);
 //		if (function.getValueType() != null && !function.getValueType().toString().equals("void"))
@@ -51,7 +52,8 @@ public class JavaDocCreator extends Scanner {
 		ca = cleanCom(ca);
 		cb = cleanCom(cb);
 		
-		f.addToCommentBefore("@param " + arg.getName() + " " + StringUtils.implode(new String[] { ca, cb }, "<br>"));
+		if (!result.config.noComments)
+			f.addToCommentBefore("@param " + arg.getName() + " " + StringUtils.implode(new String[] { ca, cb }, "<br>"));
 		arg.setCommentAfter(null);
 		arg.setCommentBefore(null);
 	}

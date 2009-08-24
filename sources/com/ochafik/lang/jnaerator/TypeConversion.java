@@ -130,9 +130,10 @@ public class TypeConversion {
 	//public Set<Identifier> fakePointersSink;
 
 	enum TypeConversionMode {
-		PrimitiveParameter, 
-		NativeParameter,
-		BufferParameter,
+		PrimitiveOrBufferParameter, 
+		NativeParameter, 
+		NativeParameterWithStructsPtrPtrs,
+		
 		FieldType, 
 		ReturnType, 
 		ExpressionType, 
@@ -872,8 +873,7 @@ public class TypeConversion {
 				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
 					return typeRef(WString.class);
 				
-			} else if (conversionMode == TypeConversionMode.BufferParameter ||
-					conversionMode == TypeConversionMode.PrimitiveParameter) 
+			} else if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter) 
 			{
 				if (valueTypeString.matches("(__)?const char\\*"))
 					return typeRef(String.class);
@@ -883,7 +883,7 @@ public class TypeConversion {
 					return arrayRef(typeRef(String.class));
 				else if (valueTypeString.matches("((__)?const )?wchar_t\\*\\*"))
 					return arrayRef(typeRef(WString.class));
-				else if (conversionMode == TypeConversionMode.PrimitiveParameter) {
+				else if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter) {
 					if (valueTypeString.matches("char\\*"))
 						return typeRef(StringPointer.ByValue.class);
 					else if (valueTypeString.matches("wchar_t\\*"))
@@ -915,9 +915,9 @@ public class TypeConversion {
 					if (tr != null) {
 						switch (conversionMode) {
 						case PointedValue:
-						case BufferParameter:
+						case NativeParameterWithStructsPtrPtrs:
 						case NativeParameter:
-						case PrimitiveParameter:
+						case PrimitiveOrBufferParameter:
 						case ReturnType:
 						case PrimitiveReturnType:
 						case FieldType:
@@ -976,6 +976,9 @@ public class TypeConversion {
 					//else
 					//	return typeRef(((FunctionSignature)valueType).getFunction().getName());
 				} else if (target instanceof Pointer) {
+					if (conversionMode == TypeConversionMode.NativeParameter)
+						return typeRef(PointerByReference.class);
+					
 					Pointer pt = ((Pointer)target);
 					TypeRef ptarget = pt.getTarget();
 					if (ptarget instanceof SimpleTypeRef) {
@@ -1048,11 +1051,10 @@ public class TypeConversion {
 			switch (conversionMode) {
 				case StaticallySizedArrayField:
 					return new ArrayRef(convArgType);
-				case PrimitiveParameter:
-					if (target.getModifiers().contains(Modifier.Const) ||
-							valueType.getModifiers().contains(Modifier.Const))
+				case PrimitiveOrBufferParameter:
+					if (!result.config.noPrimitiveArrays && (target.getModifiers().contains(Modifier.Const) ||
+							valueType.getModifiers().contains(Modifier.Const)))
 						return new ArrayRef(convArgType);
-				case BufferParameter:
 					Class<? extends Buffer> bc = primToBuffer.get(prim);
 					if (bc != null) {
 						return typeRef(bc);
@@ -1096,7 +1098,11 @@ public class TypeConversion {
 				if (tr != null)
 					return tr;
 				
-				if (n.equals("id") && sname.getTemplateArguments().size() == 1 && conversionMode != TypeConversionMode.NativeParameter) {
+				if (n.equals("id") && 
+						sname.getTemplateArguments().size() == 1 && 
+						conversionMode != TypeConversionMode.NativeParameter && 
+						conversionMode != TypeConversionMode.NativeParameterWithStructsPtrPtrs) 
+				{
 					Expression x = sname.getTemplateArguments().get(0);
 					TypeRefExpression trx = x instanceof TypeRefExpression ? (TypeRefExpression)x : null;
 					SimpleTypeRef str = trx.getType() instanceof SimpleTypeRef ? (SimpleTypeRef)trx.getType() : null;

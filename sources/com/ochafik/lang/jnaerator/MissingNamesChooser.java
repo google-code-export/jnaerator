@@ -30,6 +30,7 @@ import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
 import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.lang.jnaerator.parser.Identifier;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -172,6 +173,10 @@ public class MissingNamesChooser extends Scanner {
 					parent.replaceBy(null);
 				} else {
 					TypeRef tr = new TypeRef.SimpleTypeRef(taggedTypeRef.getTag().clone());
+					for (Modifier mod : taggedTypeRef.getModifiers()) {
+						if (mod.isA(Modifier.Kind.StorageClassSpecifier))
+							tr.addModifiers(mod);
+					}
 					taggedTypeRef.replaceBy(tr);
 					if (taggedTypeRef instanceof Struct)
 						tr.setMarkedAsResolved(true);

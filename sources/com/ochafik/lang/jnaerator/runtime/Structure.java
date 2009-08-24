@@ -44,6 +44,7 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 			return;
 		dep.read();
 	}
+	
 	@Override
 	public void read() {
 		super.read();
@@ -67,6 +68,12 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 		super.useMemory(m);
 		read();
 	}
+	
+	public Structure<S, V, R> use(Pointer m) {
+		useMemory(m);
+		return this;
+	}
+	
 	//getFieldOffset(String fieldName);
 	
 	protected abstract S newInstance();
