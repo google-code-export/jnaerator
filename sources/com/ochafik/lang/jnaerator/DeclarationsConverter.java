@@ -720,6 +720,21 @@ public class DeclarationsConverter {
 			TypeDef parentDef = as(struct.getParentElement(), TypeDef.class);
 			if (parentDef != null) {
 				structName = new Identifier.SimpleIdentifier(JNAeratorUtils.findBestPlainStorageName(parentDef));
+			} else if (tag != null) {
+				String better = tag.toString().substring(1);
+				Pair<TypeDef, Declarator> pair = result.typeDefs.get(better);
+				if (pair != null && pair.getFirst().getValueType() != null && pair.getSecond() instanceof DirectDeclarator) {
+					TypeRef tr = pair.getFirst().getValueType();
+					DirectDeclarator dd = (DirectDeclarator) pair.getSecond();
+					
+					if (tr instanceof SimpleTypeRef) {
+						if (tag.equals(((SimpleTypeRef)tr).getName()))
+							structName = ident(dd.resolveName());
+					} else if (tr instanceof TaggedTypeRef) {
+						if (tag.equals(((TaggedTypeRef)tr).getTag()))
+							structName = ident(dd.resolveName());
+					}
+				}
 			}
 		}
 		if (structName == null || structName.toString().equals(""))
@@ -730,6 +745,9 @@ public class DeclarationsConverter {
 		Identifier structName = getActualTaggedTypeName(struct);
 		if (structName == null)
 			return null;
+		
+		//if (structName.toString().contains("MonoSymbolFile"))
+		//	structName.toString();
 		
 		if (struct.isForwardDeclaration())// && !result.structsByName.get(structName).isForwardDeclaration())
 			return null;

@@ -467,10 +467,16 @@ public class TypeConversion {
 									tr = findCallbackRef((FunctionSignature)tr, libraryClassName);
 								}
 							}
-							if (tr != null && !simpleTypeRef.toString().equals(tr.toString())) {
-								simpleTypeRef.replaceBy(tr.clone());
+							String strs = simpleTypeRef.toString();
+							String trs = tr == null ? null : tr.toString();
+							if (trs != null && !strs.equals(trs)) {
+								if (trs.equals("_" + strs) && !strs.startsWith("_")) {
+									trs.toString();
+								}
+								TypeRef clo = tr.clone();
+								simpleTypeRef.replaceBy(clo);
 								if (depth < 10) {
-//									tr.accept(this);
+									clo.accept(this);
 								} else {
 									System.err.println("Infinite loop in type conversion ? " + tr);
 								}
