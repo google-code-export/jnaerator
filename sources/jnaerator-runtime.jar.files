@@ -1,6 +1,5 @@
 LICENSE
 NOTICE
-VERSION
 com/ochafik/lang/jnaerator/runtime/Bits.class
 com/ochafik/lang/jnaerator/runtime/CGFloatByReference.class
 com/ochafik/lang/jnaerator/runtime/CharByReference.class

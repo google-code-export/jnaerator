@@ -217,6 +217,7 @@ public class JNAeratorConfig {
 	public File bridgesupportOutFile;
 	public boolean noMangling;
 	public boolean noPrimitiveArrays;
+	public boolean returnNIOBuffersForPrimitivePointers = true;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override
