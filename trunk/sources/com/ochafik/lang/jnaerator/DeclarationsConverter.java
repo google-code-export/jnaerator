@@ -93,7 +93,8 @@ public class DeclarationsConverter {
 		callbackStruct.addModifiers(Modifier.Public);
 		callbackStruct.setParents(Arrays.asList(ident(Callback.class)));
 		callbackStruct.setTag(ident(chosenName));
-		callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
+		if (!result.config.noComments)
+			callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
 		convertFunction(function, new Signatures(), true, callbackStruct, callerLibraryName);
 		for (Declaration d : callbackStruct.getDeclarations()) {
 			if (d instanceof Function) {
@@ -187,10 +188,12 @@ public class DeclarationsConverter {
 						
 						TypeRef tr = result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName);
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, val));
-						vd.setCommentBefore(v.getCommentBefore());
-						vd.addToCommentBefore(decl.getCommentBefore());
-						vd.addToCommentBefore(decl.getCommentAfter());
-						vd.addToCommentBefore(v.getCommentAfter());
+						if (!result.config.noComments) {
+							vd.setCommentBefore(v.getCommentBefore());
+							vd.addToCommentBefore(decl.getCommentBefore());
+							vd.addToCommentBefore(decl.getCommentAfter());
+							vd.addToCommentBefore(v.getCommentAfter());
+						}
 						
 						out.addDeclaration(vd);
 					} catch (UnsupportedConversionException e) {
@@ -227,10 +230,11 @@ public class DeclarationsConverter {
 		
 		TypeRef tr = typeRef(String.class);
 		VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, expr(value)));
-		for (Element e : elementsToTakeCommentsFrom) {
-			vd.addToCommentBefore(e.getCommentBefore());
-			vd.addToCommentBefore(e.getCommentAfter());
-		}
+		if (!result.config.noComments)
+			for (Element e : elementsToTakeCommentsFrom) {
+				vd.addToCommentBefore(e.getCommentBefore());
+				vd.addToCommentBefore(e.getCommentAfter());
+			}
 		vd.addModifiers(Modifier.Public);
 		out.addDeclaration(vd);
 	}
@@ -287,8 +291,9 @@ public class DeclarationsConverter {
 			repeatFullEnumComment = false;
 			
 			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
-			if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
-				enumInterf.addToCommentBefore("enum values");
+			if (!result.config.noComments)
+				if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
+					enumInterf.addToCommentBefore("enum values");
 			out.addDeclaration(new TaggedTypeRefDeclaration(enumInterf));
 			
 			localSignatures = new Signatures();
@@ -363,11 +368,12 @@ public class DeclarationsConverter {
 						true,
 						true
 					);
-					if (ct != null && repeatFullEnumComment) {
-						String c = ct.getCommentBefore();
-						ct.setCommentBefore(e.getCommentBefore());
-						ct.addToCommentBefore(c);
-					}
+					if (!result.config.noComments)
+						if (ct != null && repeatFullEnumComment) {
+							String c = ct.getCommentBefore();
+							ct.setCommentBefore(e.getCommentBefore());
+							ct.addToCommentBefore(c);
+						}
 					localOut.addDeclaration(ct);
 				} catch (Exception ex) {
 					out.addDeclaration(skipDeclaration(item, ex.toString()));
@@ -414,8 +420,9 @@ public class DeclarationsConverter {
 					declaration.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
 					declaration.importDetails(element, false);
 					declaration.moveAllCommentsBefore();
-					if (addFileComment)
-						declaration.addToCommentBefore(getFileCommentContent(element));
+					if (!result.config.noComments)
+						if (addFileComment)
+							declaration.addToCommentBefore(getFileCommentContent(element));
 					return declaration;
 				}
 			}
@@ -521,8 +528,9 @@ public class DeclarationsConverter {
 			Set<String> names = new LinkedHashSet<String>();
 			//if (ns.isEmpty())
 			
-			if (!isCallback && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
-				addCPlusPlusMangledNames(function, names);
+			if (!result.config.noMangling)
+				if (!isCallback && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
+					addCPlusPlusMangledNames(function, names);
 			
 			if (!modifiedMethodName.equals(functionName) && ns.isEmpty())
 				names.add(function.getName().toString());
@@ -571,13 +579,14 @@ public class DeclarationsConverter {
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, libraryClassName));
 			natFunc.importDetails(function, false);
 			natFunc.moveAllCommentsBefore();
-			if (!isCallback)
-				natFunc.addToCommentBefore(getFileCommentContent(function));
+			if (!result.config.noComments)
+				if (!isCallback)
+					natFunc.addToCommentBefore(getFileCommentContent(function));
 			
 			boolean alternativeOutputs = !isCallback;
 			
-			Function primFunc = alternativeOutputs ? natFunc.clone() : null;
-			Function bufFunc = alternativeOutputs ? natFunc.clone() : null;
+			Function primOrBufFunc = alternativeOutputs ? natFunc.clone() : null;
+			Function natStructFunc = alternativeOutputs ? natFunc.clone() : null;
 			
 			Set<String> argNames = new TreeSet<String>();
 //			for (Arg arg : function.getArgs())
@@ -592,8 +601,8 @@ public class DeclarationsConverter {
 					String argName = chooseJavaArgName("varargs", iArg, argNames);
 					natFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
 					if (alternativeOutputs) {
-						primFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
-						bufFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
+						primOrBufFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
+						natStructFunc.addArg(new Arg(argName, typeRef(vaType.clone()))).setVarArg(true);
 					}
 				} else {
 					String argName = chooseJavaArgName(arg.getName(), iArg, argNames);
@@ -607,23 +616,25 @@ public class DeclarationsConverter {
 					}
 					natFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.NativeParameter, libraryClassName)));
 					if (alternativeOutputs) {
-						primFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.PrimitiveParameter, libraryClassName)));
-						bufFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.BufferParameter, libraryClassName)));
+						primOrBufFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.PrimitiveOrBufferParameter, libraryClassName)));
+						natStructFunc.addArg(new Arg(argName, result.typeConverter.convertTypeToJNA(mutType, TypeConversionMode.NativeParameterWithStructsPtrPtrs, libraryClassName)));
 					}
 				}
 				iArg++;
 			}
 			
 			String natSign = natFunc.computeSignature(false),
-				primSign = alternativeOutputs ? primFunc.computeSignature(false) : null,
-				bufSign = alternativeOutputs ? bufFunc.computeSignature(false) : null;
+				primOrBufSign = alternativeOutputs ? primOrBufFunc.computeSignature(false) : null,
+				bufSign = alternativeOutputs ? natStructFunc.computeSignature(false) : null;
 				
 			if (signatures == null || signatures.methodsSignatures.add(natSign)) {
-				if (alternativeOutputs && !primSign.equals(natSign)) {
-					if (primSign.equals(bufSign))
-						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primSign + "} instead"));
-					else
-						natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primSign + "} and {@link #" + bufSign + "} instead"));
+				if (alternativeOutputs && !primOrBufSign.equals(natSign)) {
+					if (!result.config.noComments) {
+						if (primOrBufSign.equals(bufSign))
+							natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer method {@link #" + primOrBufSign + "} instead"));
+						else
+							natFunc.addToCommentBefore(Arrays.asList("@deprecated use the safer methods {@link #" + primOrBufSign + "} and {@link #" + bufSign + "} instead"));
+					}
 					natFunc.addAnnotation(new Annotation(Deprecated.class));
 				}
 				collectParamComments(natFunc);
@@ -631,13 +642,13 @@ public class DeclarationsConverter {
 			}
 			
 			if (alternativeOutputs) {
-				if (signatures == null || signatures.methodsSignatures.add(primSign)) {
-					collectParamComments(primFunc);
-					out.addDeclaration(primFunc);
+				if (signatures == null || signatures.methodsSignatures.add(primOrBufSign)) {
+					collectParamComments(primOrBufFunc);
+					out.addDeclaration(primOrBufFunc);
 				}
 				if (signatures == null || signatures.methodsSignatures.add(bufSign)) {
-					collectParamComments(bufFunc);
-					out.addDeclaration(bufFunc);
+					collectParamComments(natStructFunc);
+					out.addDeclaration(natStructFunc);
 				}
 			}
 		} catch (UnsupportedConversionException ex) {
@@ -693,12 +704,15 @@ public class DeclarationsConverter {
 			arg.moveAllCommentsBefore();
 			TypeRef argType = arg.getValueType();
 			if (argType != null) {
-				argType.moveAllCommentsBefore();
-				arg.addToCommentBefore(argType.getCommentBefore());
+				if (!result.config.noComments) {
+					argType.moveAllCommentsBefore();
+					arg.addToCommentBefore(argType.getCommentBefore());
+				}
 				argType.stripDetails();
 			}
 			if (arg.getCommentBefore() != null) {
-				f.addToCommentBefore("@param " + arg.getName() + " " + Element.cleanComment(arg.getCommentBefore()));
+				if (!result.config.noComments)
+					f.addToCommentBefore("@param " + arg.getName() + " " + Element.cleanComment(arg.getCommentBefore()));
 				arg.stripDetails();
 			}
 		}
@@ -1081,11 +1095,13 @@ public class DeclarationsConverter {
 				cl.addParent(inter);
 		else
 			cl.setProtocols(Arrays.asList(interfaces));
-		if (toCloneCommentsFrom != null ) {
-			cl.importDetails(toCloneCommentsFrom, false);
-			cl.moveAllCommentsBefore();
-			cl.addToCommentBefore(getFileCommentContent(toCloneCommentsFrom));
-		}
+		
+		if (!result.config.noComments)
+			if (toCloneCommentsFrom != null ) {
+				cl.importDetails(toCloneCommentsFrom, false);
+				cl.moveAllCommentsBefore();
+				cl.addToCommentBefore(getFileCommentContent(toCloneCommentsFrom));
+			}
 		cl.addModifiers(Modifier.Public, Modifier.Static);
 		return cl;
 	}
@@ -1167,8 +1183,9 @@ public class DeclarationsConverter {
 				String name = StringUtils.implode(nameBits, "_or_");
 				TypeRef tr = pair.getFirst();
 				Function unionValConstr = new Function(Function.Type.JavaMethod, structName.clone(), null, new Arg(name, tr.clone()));
-				if (!commentBits.isEmpty())
-					unionValConstr.addToCommentBefore("@param " + name + " " + StringUtils.implode(commentBits, ", or "));
+				if (!result.config.noComments)
+					if (!commentBits.isEmpty())
+						unionValConstr.addToCommentBefore("@param " + name + " " + StringUtils.implode(commentBits, ", or "));
 				
 				unionValConstr.addModifiers(Modifier.Public);
 				
@@ -1208,15 +1225,17 @@ public class DeclarationsConverter {
 				String name = vd.getDeclarators().get(0).resolveName(), uname = namesById.get(vd.getId());
 				Struct parent = (Struct)vd.getParentElement();
 				Identifier parentTgName = result.getTaggedTypeIdentifierInJava(parent);
-				fieldsConstr.addToCommentBefore("@param " + name + " @see " + parentTgName + "#" + vd.getDeclarators().get(0).resolveName());
+				if (!result.config.noComments)
+					fieldsConstr.addToCommentBefore("@param " + name + " @see " + parentTgName + "#" + vd.getDeclarators().get(0).resolveName());
 				superCall.addArgument(varRef(uname));
 			}
 			fieldsConstr.getBody().addStatement(stat(superCall));
 			
 			for (VariablesDeclaration vd : decls.getSecond()) {
 				String name = vd.getDeclarators().get(0).resolveName(), uname = namesById.get(vd.getId());
-				if (vd.getCommentBefore() != null)
-					fieldsConstr.addToCommentBefore("@param " + uname + " " + vd.getCommentBefore());
+				if (!result.config.noComments)
+					if (vd.getCommentBefore() != null)
+						fieldsConstr.addToCommentBefore("@param " + uname + " " + vd.getCommentBefore());
 				if (vd.getValueType() instanceof TypeRef.ArrayRef)
 					fieldsConstr.getBody().addStatement(throwIfArraySizeDifferent(uname));
 				fieldsConstr.getBody().addStatement(stat(

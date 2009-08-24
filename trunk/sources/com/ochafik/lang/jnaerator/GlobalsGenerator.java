@@ -18,6 +18,8 @@
 package com.ochafik.lang.jnaerator;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import java.util.List;
 
@@ -84,7 +86,10 @@ public class GlobalsGenerator {
 					continue;
 				
 				boolean isCallback = result.callbacksByName.containsKey(ident(type.toString()));//type instanceof FunctionSignature;
-				List<Modifier> modifiers = type.getModifiers();
+				List<Modifier> modifiers = new ArrayList<Modifier>(type.getModifiers());
+				modifiers.addAll(globals.getModifiers());
+				
+				type.setModifiers(Collections.EMPTY_LIST);
 				
 				if (	!isCallback && 
 						!(Modifier.Extern.isContainedBy(modifiers) || Modifier.Dllexport.isContainedBy(modifiers) || Modifier.Dllimport.isContainedBy(modifiers))
@@ -101,6 +106,7 @@ public class GlobalsGenerator {
 					
 					boolean isPointer = type instanceof com.ochafik.lang.jnaerator.parser.TypeRef.Pointer;
 					JavaPrim prim = result.typeConverter.getPrimitive(isPointer ? ((com.ochafik.lang.jnaerator.parser.TypeRef.Pointer)type).getTarget() : type, callerLibraryName);
+					type.setMarkedAsResolved(false);
 					TypeRef convertedType = result.typeConverter.convertTypeToJNA(type, TypeConversionMode.NativeParameter, callerLibraryName);
 					String convTypStr = convertedType.toString();
 					if (convTypStr.endsWith(".ByValue"))

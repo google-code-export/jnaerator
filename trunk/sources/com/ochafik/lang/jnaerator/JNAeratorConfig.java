@@ -81,7 +81,7 @@ public class JNAeratorConfig {
 	public boolean followIncludes = false;
 	public File preprocessingOutFile, macrosOutFile;
 	public boolean useJNADirectCalls = false;
-	public boolean limitComments = false;
+	public boolean limitComments = false, noComments = false;
 	public boolean putTopStructsInSeparateFiles = true;
 	public boolean bundleRuntime = true;
 	public boolean extractLibSymbols = false;
@@ -215,6 +215,8 @@ public class JNAeratorConfig {
 	public File extractedSymbolsOut;
 	public boolean stringifyConstCStringReturnValues = true;
 	public File bridgesupportOutFile;
+	public boolean noMangling;
+	public boolean noPrimitiveArrays;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override

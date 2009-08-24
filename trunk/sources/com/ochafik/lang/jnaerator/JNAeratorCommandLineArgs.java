@@ -142,6 +142,8 @@ public class JNAeratorCommandLineArgs {
 		FrameworksPath(		"-frameworksPath", 		"See doc of JNAERATOR_FRAMEWORKS_PATH", new ArgDef(Type.String, "path1:path2...")),
 		Framework(			"-framework", 			"JNAerate a framework using its headers and its *.bridgesupport files if available", new ArgDef(Type.String, "frameworkName")),
 		LimitComments(		"-limitComments", 		"Avoid useless comments (source file + line, skipped items...)"),
+		NoComments(			"-noComments", 			"Don't output any member comment."),
+		NoMangling(			"-noMangling", 			"Don't output any C++ name mangling information (may cause C++-decorated symbols not to be found at execution time)."),
 		NoCPP(				"-nocpp",		 		"Do not define the __cplusplus symbol"),
 		GUI(				"-gui",		 			"Show minimalist progression GUI"),
 		NoRuntime(			"-noRuntime",		 	"Don't copy runtime classes to JAR output"),
@@ -174,7 +176,7 @@ public class JNAeratorCommandLineArgs {
 		WikiDoc(			"-wikiHelp",		 	"Output a wiki-friendly help"),
 		Arch(				"-arch",		 		"Define the current architecture for libraries (state variable)", new ArgDef(Type.String, "archName")),
 		MacrosOut(			"-macrosOut", 			"Write the preprocessor macros in a file (automatically set when ${Verbose} is used).", new ArgDef(Type.OutputFile, "outFile")),
-		
+		NoPrimitiveArrays(	"-noPrimitiveArrays",	"Never output primitive arrays for function arguments (use NIO buffers instead)"),
 		File(				null,		 			"Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file", new ArgDef(Type.OptionalFile, "file")), 
 		NoPreprocessing(	"-fpreprocessed",		"Consider source files as being already preprocessed (preprocessor won't be run)"),
 		NoCompile(			"(?i)-noComp",				"Do not compile JNAerated headers"),

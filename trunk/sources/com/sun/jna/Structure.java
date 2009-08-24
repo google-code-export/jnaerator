@@ -205,7 +205,7 @@ public abstract class Structure {
      * memory.
      */
     protected void useMemory(Pointer m) {
-        useMemory(m, 0);
+		useMemory(m, 0);
     }
 
     /** Set the memory used by this structure.  This method is used to

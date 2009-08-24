@@ -24,6 +24,7 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Modifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations;
 import com.ochafik.lang.jnaerator.parser.Struct;
@@ -48,6 +49,10 @@ public class CToJavaPreScanner extends Scanner {
 			Element parent = struct.getParentElement();
 			if (!(parent instanceof TaggedTypeRefDeclaration)) {
 				TypeRef tr = new TypeRef.SimpleTypeRef(struct.getTag());
+				for (Modifier mod : struct.getModifiers()) {
+					if (mod.isA(Modifier.Kind.StorageClassSpecifier))
+						tr.addModifiers(mod);
+				}
 				struct.replaceBy(tr);
 				tr.accept(this);
 			}
