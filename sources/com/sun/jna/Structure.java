@@ -14,8 +14,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.Buffer;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,7 +48,9 @@ import java.util.WeakHashMap;
  * <li><code>volatile</code> JNA will not write the field unless specifically
  * instructed to do so via {@link #writeField(String)}.
  * <li><code>final</code> JNA will overwrite the field via {@link #read()},
- * but otherwise the field is not modifiable from Java.
+ * but otherwise the field is not modifiable from Java.  Take care when using
+ * this option, since the compiler will usually assume <em>all</em> accesses
+ * to the field (for a given Structure instance) have the same value.
  * </ul>
  * NOTE: Strings are used to represent native C strings because usage of
  * <code>char *</code> is generally more common than <code>wchar_t *</code>.
@@ -218,6 +222,7 @@ public abstract class Structure {
         // from the ctor, to ensure fields are properly scanned and allocated
         try {
             this.memory = m.share(offset, size());
+            this.array = null;
         }
         catch(IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Structure exceeds provided memory bounds");
@@ -291,11 +296,67 @@ public abstract class Structure {
     // Keep track of what is currently being read/written to avoid redundant
     // reads (avoids problems with circular references).
     private static final ThreadLocal busy = new ThreadLocal() {
+        /** Avoid using a hash-based implementation since the hash code
+            will change if structure field values change.
+        */
+        class StructureSet extends AbstractCollection implements Set {
+            private Structure[] elements;
+            private int count;
+            private void ensureCapacity(int size) {
+                if (elements == null) {
+                    elements = new Structure[size*3/2];
+                }
+                else if (elements.length < size) {
+                    Structure[] e = new Structure[size*3/2];
+                    System.arraycopy(elements, 0, e, 0, elements.length);
+                    elements = e;
+                }
+            }
+            public int size() { return count; }
+            public boolean contains(Object o) {
+                return indexOf(o) != -1;
+            }
+            public boolean add(Object o) {
+                if (!contains(o)) {
+                    ensureCapacity(count+1);
+                    elements[count++] = (Structure)o;
+                }
+                return true;
+            }
+            private int indexOf(Object o) {
+                Structure s1 = (Structure)o;
+                for (int i=0;i < count;i++) {
+                    Structure s2 = (Structure)elements[i];
+                    if (s1 == s2
+                        || (s1.baseClass() == s2.baseClass()
+                            && s1.size() == s2.size()
+                            && s1.getPointer().equals(s2.getPointer()))) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+            public boolean remove(Object o) {
+                int idx = indexOf(o);
+                if (idx != -1) {
+                    if (--count > 0) {
+                        elements[idx] = elements[count];
+                        elements[count] = null;
+                    }
+                    return true;
+                }
+                return false;
+            }
+            public Iterator iterator() {
+                // never actually used
+                return null;
+            }
+        }
         protected synchronized Object initialValue() {
-            return new HashSet();
+            return new StructureSet();
         }
     };
-    private Set busy() {
+    Set busy() {
         return (Set)busy.get();
     }
 
@@ -474,6 +535,10 @@ public abstract class Structure {
     }
 
     void writeField(StructField structField) {
+
+        if (structField.isReadOnly) 
+            return;
+
         // Get the offset of the field
         int offset = structField.offset;
 
@@ -610,10 +675,11 @@ public abstract class Structure {
             Class type = field.getType();
             StructField structField = new StructField();
             structField.isVolatile = Modifier.isVolatile(modifiers);
-            structField.field = field;
+            structField.isReadOnly = Modifier.isFinal(modifiers);
             if (Modifier.isFinal(modifiers)) {
                 field.setAccessible(true);
             }
+            structField.field = field;
             structField.name = field.getName();
             structField.type = type;
 
@@ -847,7 +913,7 @@ public abstract class Structure {
     }
 
     public String toString() {
-        return toString(0);
+        return toString(0, true);
     }
 
     private String format(Class type) {
@@ -856,7 +922,7 @@ public abstract class Structure {
         return s.substring(dot + 1);
     }
 
-    private String toString(int indent) {
+    private String toString(int indent, boolean showContents) {
         String LS = System.getProperty("line.separator");
         String name = format(getClass()) + "(" + getPointer() + ")";
         if (!(getPointer() instanceof Memory)) {
@@ -866,9 +932,11 @@ public abstract class Structure {
         for (int idx=0;idx < indent;idx++) {
             prefix += "  ";
         }
-        String contents = "";
-        // Write all fields
-        for (Iterator i=structFields.values().iterator();i.hasNext();) {
+        String contents = LS;
+        if (!showContents) {
+            contents = "...}";
+        }
+        else for (Iterator i=structFields.values().iterator();i.hasNext();) {
             StructField sf = (StructField)i.next();
             Object value = getField(sf);
             String type = format(sf.type);
@@ -881,16 +949,7 @@ public abstract class Structure {
             contents += "  " + type + " "
                 + sf.name + index + "@" + Integer.toHexString(sf.offset);
             if (value instanceof Structure) {
-                if (value instanceof Structure.ByReference) {
-                    String v = value.toString();
-                    if (v.indexOf(LS) != -1) {
-                        v = v.substring(0, v.indexOf(LS));
-                    }
-                    value = v + "...}";
-                }
-                else {
-                    value = ((Structure)value).toString(indent + 1);
-                }
+                value = ((Structure)value).toString(indent + 1, !(value instanceof Structure.ByReference));
             }
             contents += "=";
             if (value instanceof Long) {
@@ -926,13 +985,14 @@ public abstract class Structure {
             }
             contents += "]";
         }
-        return name + " {" + LS + contents;
+        return name + " {" + contents;
     }
 
     /** Returns a view of this structure's memory as an array of structures.
      * Note that this <code>Structure</code> must have a public, no-arg
-     * constructor.  If the structure is currently using a {@link Memory}
-     * backing, the memory will be resized to fit the entire array.
+     * constructor.  If the structure is currently using auto-allocated
+     * {@link Memory} backing, the memory will be resized to fit the entire
+     * array. 
      */
     public Structure[] toArray(Structure[] array) {
         ensureAllocated();
@@ -954,7 +1014,8 @@ public abstract class Structure {
             array[i].read();
         }
 
-        if (this instanceof ByReference) {
+        if (!(this instanceof ByValue)) {
+            // keep track for later auto-read/writes
             this.array = array;
         }
 
@@ -963,38 +1024,42 @@ public abstract class Structure {
 
     /** Returns a view of this structure's memory as an array of structures.
      * Note that this <code>Structure</code> must have a public, no-arg
-     * constructor.  If the structure is currently using a {@link Memory}
-     * backing, the memory will be resized to fit the entire array.
+     * constructor.  If the structure is currently using auto-allocated
+     * {@link Memory} backing, the memory will be resized to fit the entire
+     * array. 
      */
     public Structure[] toArray(int size) {
         return toArray((Structure[])Array.newInstance(getClass(), size));
     }
 
-    /** This structure is only equal to another based on the same native
-     * memory address and data type.
+    private Class baseClass() {
+        if ((this instanceof Structure.ByReference
+             || this instanceof Structure.ByValue)
+            && Structure.class.isAssignableFrom(getClass().getSuperclass())) {
+            return getClass().getSuperclass();
+        }
+        return getClass();
+    }
+
+    /** This structure is equal to another based on the same data type
+     * and visible data fields.
      */
     public boolean equals(Object o) {
         if (o == this)
             return true;
-        if (o instanceof Structure && ((Structure)o).size() == size()) {
-            if (o.getClass().isAssignableFrom(getClass())
-                || getClass().isAssignableFrom(o.getClass())) {
-                Structure s = (Structure)o;
-                for (Iterator i=fields().keySet().iterator();i.hasNext();) {
-                    String name = (String)i.next();
-                    Object f1 = readField(name);
-                    Object f2 = s.readField(name);
-                    if (f1 != null) {
-                        if (!f1.equals(f2))
-                            return false;
-                    }
-                    else if (f2 != null) {
-                        if (!f2.equals(f1))
-                            return false;
-                    }
-                }
-                return true;
-            }
+        if (o == null)
+            return false;
+        if (o.getClass() != getClass()
+            && ((Structure)o).baseClass() != baseClass()) {
+            return false;
+        }
+        Structure s = (Structure)o;
+        if (s.size() == size()) {
+            clear(); write();
+            byte[] buf = getPointer().getByteArray(0, size());
+            s.clear(); s.write();
+            byte[] sbuf = s.getPointer().getByteArray(0, s.size());
+            return Arrays.equals(buf, sbuf);
         }
         return false;
     }
@@ -1003,8 +1068,8 @@ public abstract class Structure {
      * as the hash code.
      */
     public int hashCode() {
-        Pointer p = getPointer();
-        return p != null ? p.hashCode() : 0;
+        clear(); write();
+        return Arrays.hashCode(getPointer().getByteArray(0, size()));
     }
 
     protected void cacheTypeInfo(Pointer p) {
@@ -1096,6 +1161,7 @@ public abstract class Structure {
         public int offset = -1;
 		public int bitOffset = 0, bits = 0;
         public boolean isVolatile;
+        public boolean isReadOnly;
         public FromNativeConverter readConverter;
         public ToNativeConverter writeConverter;
         public FromNativeContext context;
@@ -1111,8 +1177,8 @@ public abstract class Structure {
         }
         private static Map typeInfoMap = new WeakHashMap();
         // Native.initIDs initializes these fields to their appropriate
-        // pointer values.  These are in a separate class so that they may
-        // be initialized prior to loading the FFIType class
+        // pointer values.  These are in a separate class from FFIType so that
+        // they may be initialized prior to loading the FFIType class
         private static class FFITypes {
             private static Pointer ffi_type_void;
             private static Pointer ffi_type_float;
@@ -1252,6 +1318,30 @@ public abstract class Structure {
         }
     }
 
+    private static void structureArrayCheck(Structure[] ss) {
+        Pointer base = ss[0].getPointer();
+        int size = ss[0].size();
+        for (int si=1;si < ss.length;si++) {
+            if (ss[si].getPointer().peer != base.peer + size*si) {
+                String msg = "Structure array elements must use"
+                    + " contiguous memory (bad backing address at Structure array index " + si + ")";     
+                throw new IllegalArgumentException(msg);
+            }
+        }
+    }
+
+    public static void autoRead(Structure[] ss) {
+        structureArrayCheck(ss);
+        if (ss[0].array == ss) {
+            ss[0].autoRead();
+        }
+        else {
+            for (int si=0;si < ss.length;si++) {
+                ss[si].autoRead();
+            }
+        }
+    }
+
     public void autoRead() {
         if (getAutoRead()) {
             read();
@@ -1259,6 +1349,18 @@ public abstract class Structure {
                 for (int i=1;i < array.length;i++) {
                     array[i].autoRead();
                 }
+            }
+        }
+    }
+
+    public static void autoWrite(Structure[] ss) {
+        structureArrayCheck(ss);
+        if (ss[0].array == ss) {
+            ss[0].autoWrite();
+        }
+        else {
+            for (int si=0;si < ss.length;si++) {
+                ss[si].autoWrite();
             }
         }
     }
