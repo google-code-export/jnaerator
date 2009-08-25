@@ -61,8 +61,6 @@
   Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.
  * *-noAuto*
   No auto-configuration of preprocessor symbols and paths
- * *-noBufferReturns*
-  Prevent <primitive>`*` return types from being converted to NIO <Primitive>Buffer.
  * *-noComments*
   Don't output any member comment.
  * *-noMangling*
