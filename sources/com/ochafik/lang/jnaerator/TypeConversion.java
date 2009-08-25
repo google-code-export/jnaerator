@@ -1057,13 +1057,10 @@ public class TypeConversion {
 					if (!result.config.noPrimitiveArrays && (target.getModifiers().contains(Modifier.Const) ||
 							valueType.getModifiers().contains(Modifier.Const)))
 						return new ArrayRef(convArgType);
+					Class<? extends Buffer> bc = primToBuffer.get(prim);
+					if (bc != null)
+						return typeRef(bc);
 				case ReturnType:
-					if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter || result.config.returnNIOBuffersForPrimitivePointers) {
-						Class<? extends Buffer> bc = primToBuffer.get(prim);
-						if (bc != null) {
-							return typeRef(bc);
-						}
-					}
 				case FieldType:
 					if (staticallySized) {
 						return arrayRef(convArgType);
