@@ -43,5 +43,22 @@ void myfuncV(simplestruct);
 
 --
 
+import test.*;
+import org.rococoa.cocoa.*;
+import static test.TestLibrary.*;
+
+outerstruct o1 = new outerstruct(new simplestruct(10));
+simplestruct s1 = o1.nested;
+
+outerstruct2 o2 = new outerstruct2(new simplestruct(10).byReference());
+simplestruct.ByReference s2 = o2.byref_;
+
+outerstruct3 o3 = new outerstruct3(new simplestruct[0]);
+simplestruct[] s3 = o3.array;
+
+outerstruct4 o4 = new outerstruct4(new simplestruct.ByReference[0]);
+simplestruct.ByReference[] s4 = o4.ptr_array;
+
+simplestruct.ByValue fv = INSTANCE.myfuncV();
 
 
