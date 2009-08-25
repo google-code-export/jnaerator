@@ -122,6 +122,7 @@ com/sun/jna/ptr/NativeLongByReference.class
 com/sun/jna/ptr/PointerByReference.class
 com/sun/jna/ptr/ShortByReference.class
 com/sun/jna/StringArray.class
+com/sun/jna/Structure$1$StructureSet.class
 com/sun/jna/Structure$1.class
 com/sun/jna/Structure$AutoAllocated.class
 com/sun/jna/Structure$ByReference.class
