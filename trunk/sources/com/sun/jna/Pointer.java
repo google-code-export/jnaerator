@@ -92,9 +92,9 @@ public class Pointer {
      *			equal. Returns false otherwise.
      */
     public boolean equals(Object o) {
-        if (o == null)
-            return peer == 0;
-        return (o instanceof Pointer) && ((Pointer)o).peer == peer;
+        if (o == this) return true;
+        if (o == null) return false;
+        return o instanceof Pointer && ((Pointer)o).peer == peer;
     }
 
     /**
@@ -437,7 +437,7 @@ public class Pointer {
                 Pointer oldbp = currentValue == null ? null
                     : Native.getDirectBufferPointer((Buffer)currentValue);
                 if (oldbp == null || !oldbp.equals(bp)) {
-                    throw new IllegalStateException("Can't autogenerate a direct buffers on memory read");
+                    throw new IllegalStateException("Can't autogenerate a direct buffer on memory read");
                 }
             }
         }
@@ -445,7 +445,7 @@ public class Pointer {
             NativeMapped nm = (NativeMapped)currentValue;
             if (nm != null) {
                 Object value = getValue(offset, nm.nativeType(), null);
-                nm.fromNative(value, new FromNativeContext(type));
+                result = nm.fromNative(value, new FromNativeContext(type));
             }
             else {
                 NativeMappedConverter tc = NativeMappedConverter.getInstance(type);
@@ -789,7 +789,14 @@ v     * @param wide whether to convert from a wide or standard C string
      * NULL-valued terminating element. 
      */
     public String[] getStringArray(long base) {
-        return getStringArray(base, false);
+        return getStringArray(base, -1, false);
+    }
+
+    /** Returns an array of <code>String</code> based on a native array
+     * of <code>char *</code>, using the given array length. 
+     */
+    public String[] getStringArray(long base, int length) {
+        return getStringArray(base, length, false);
     }
 
     /** Returns an array of <code>String</code> based on a native array
@@ -798,13 +805,32 @@ v     * @param wide whether to convert from a wide or standard C string
      * NULL-valued terminating element. 
      */
     public String[] getStringArray(long base, boolean wide) {
+        return getStringArray(base, -1, wide);
+    }
+
+    /** Returns an array of <code>String</code> based on a native array
+     * of <code>char*</code> or <code>wchar_t*</code> based on the
+     * <code>wide</code> parameter, using the given array length.
+     */
+    public String[] getStringArray(long base, int length, boolean wide) {
+    
         List strings = new ArrayList();
         int offset = 0;
         Pointer p = getPointer(base);
-        while (p != null) {
-            strings.add(p.getString(0, wide));
-            offset += SIZE;
-            p = getPointer(base + offset);
+        if (length != -1) {
+            int count = 0;
+            while (count++ < length) {
+                strings.add(p.getString(0, wide));
+                offset += SIZE;
+                p = getPointer(base + offset);
+            }
+        }
+        else {
+            while (p != null) {
+                strings.add(p.getString(0, wide));
+                offset += SIZE;
+                p = getPointer(base + offset);
+            }
         }
         return (String[])strings.toArray(new String[strings.size()]);
     }
