@@ -87,6 +87,8 @@
   Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. "Release|Win32").
  * *-root(?:Package)?* <package: String>
   Define the root package for all output classes
+ * *-scalaOut* <outDir: OutputDir>
+  [Experimental] Output Scala wrappers (callbacks implicits...)
  * *-scanSymbols*
   Extract, unmangle and parse the symbols all listed shared libraries
  * *-structsInLibrary*
