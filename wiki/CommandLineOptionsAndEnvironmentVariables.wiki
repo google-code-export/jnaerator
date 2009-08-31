@@ -21,6 +21,8 @@
   Add a directory to the frameworks path. See doc of JNAERATOR_FRAMEWORKS_PATH
  * *-I(.+)?* <dir: File>
   Add a directory to the include path. See doc of JNAERATOR_INCLUDE_PATH
+ * *-allowedFileExts* <extensions: String>
+  Colon-separated list of file extensions used to restrict files used when recursing on directories, or "`*`" to parse all files (by default = h:hpp:hxx)
  * *-arch* <archName: String>
   Define the current architecture for libraries (state variable)
  * *-bridgeSupportOut* <outFile: OutputFile>
@@ -128,3 +130,4 @@ C:\Program Files\Microsoft SDKs\Windows\v6.0A
 /Library/Frameworks:\
 ~/Library/Frameworks 
    }}}
+
