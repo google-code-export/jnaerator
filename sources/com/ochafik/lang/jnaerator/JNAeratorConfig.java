@@ -93,7 +93,7 @@ public class JNAeratorConfig {
 	
 	public Map<String, String> extraJavaSourceFilesContents = new LinkedHashMap<String, String>();
 	
-	public FileFilter fileFilter = new FileExtensionFilter(DEFAULT_HEADER_EXTENSIONS.split("[:;"));
+	public FileFilter fileFilter = new FileExtensionFilter(DEFAULT_HEADER_EXTENSIONS.split("[:;]"));
 	
 	public Map<String, List<File>> libraryFilesByArch = new LinkedHashMap<String, List<File>>();
 	public List<File> libraryFiles = new ArrayList<File>();

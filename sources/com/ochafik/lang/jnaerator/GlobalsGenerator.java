@@ -42,7 +42,6 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalCallback;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalStruct;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalUnion;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.ByReference;
@@ -113,10 +112,7 @@ public class GlobalsGenerator {
 						TypeRef globalType = null;
 						Expression extraArg = null;
 						//Class<? extends Global> optionA;
-						if (isUnion) {
-							globalType = typeRef(ident(GlobalUnion.class, expr(convertedType.clone())));
-							extraArg = memberRef(expr(convertedType.clone()), MemberRefStyle.Dot, "class");
-						} else if (isStruct) {
+						if (isUnion || isStruct) {
 							globalType = typeRef(ident(GlobalStruct.class, expr(convertedType.clone())));
 							extraArg = memberRef(expr(convertedType.clone()), MemberRefStyle.Dot, "class");
 						} else if (isCallback) {
