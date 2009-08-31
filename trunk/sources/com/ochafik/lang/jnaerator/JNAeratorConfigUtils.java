@@ -128,49 +128,24 @@ public class JNAeratorConfigUtils {
 		} 
 		DEFAULT_INCLUDE_PATH = Collections.unmodifiableList(DEFAULT_INCLUDE_PATH);
 	}
-
-	static final Set<String> objCppExtensions = new TreeSet<String>();
-	static final Set<String> headerExtensions = new TreeSet<String>();
-	static final Set<String> implemsExtensions = new TreeSet<String>();
-	static {
-		implemsExtensions.add("cpp");
-		implemsExtensions.add("cxx");
-		headerExtensions.add("hpp");
-		headerExtensions.add("hxx");
-		headerExtensions.add("h");
-		implemsExtensions.add("m");
-		implemsExtensions.add("mm");
-		
-		objCppExtensions.addAll(headerExtensions);
-		objCppExtensions.addAll(implemsExtensions);
+	
+	public static class FileExtensionFilter implements FileFilter {
+		final Collection<String> allowedExtensions;
+		public FileExtensionFilter(Collection<String> allowedExtensions) {
+			this.allowedExtensions = allowedExtensions;
+		}
+		public FileExtensionFilter(String[] split) {
+			this(Arrays.asList(split));
+		}
+		public boolean accept(File file) {
+			String name = file.getName().toLowerCase();
+			int i = name.lastIndexOf('.');
+			return accept(file, i > 0 ? name.substring(i + 1) : "");
+		}	
+		public boolean accept(File file, String extension) {
+			return allowedExtensions.contains(extension);
+		}
 	}
-	
-
-	public static FileFilter OBJCPP_FILE_FILTER = new FileFilter() {
-		public boolean accept(File file) {
-			String name = file.getName().toLowerCase();
-			int i = name.lastIndexOf('.');
-			if (i > 0) {
-				String ext = name.substring(i + 1);
-				return objCppExtensions.contains(ext);
-			}
-			return false;
-		}
-		
-	};
-	
-	public static FileFilter HEADERS_FILE_FILTER = new FileFilter() {
-		public boolean accept(File file) {
-			String name = file.getName().toLowerCase();
-			int i = name.lastIndexOf('.');
-			if (i > 0) {
-				String ext = name.substring(i + 1);
-				return headerExtensions.contains(ext);
-			}
-			return false;
-		}
-		
-	};
 	
 	public static void addCPlusPlus(JNAeratorConfig.PreprocessorConfig config) {
 		config.macros.put("__cplusplus", null);
@@ -446,7 +421,7 @@ public class JNAeratorConfigUtils {
 					try {
 						file = file.getCanonicalFile();
 						System.out.println(file + "\n\t-> " + libraryFile);
-						config.addSourceFile(file, libraryFile);
+						config.addSourceFile(file, libraryFile, false);
 						
 						//config.preprocessorConfig
 						//config.libraryByFile.put(file, libraryFile)
@@ -481,7 +456,7 @@ public class JNAeratorConfigUtils {
 
 		File headers = new File(file, "Headers");
 		if (headers.exists())
-			config.addSourceFile(headers, framework);
+			config.addSourceFile(headers, framework, true);
 		else
 			new IOException("No Headers subdirectory in framework '" + framework + "' found here : " + file).printStackTrace();
 		

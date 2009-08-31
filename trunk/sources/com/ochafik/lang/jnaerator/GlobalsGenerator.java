@@ -18,7 +18,6 @@
 package com.ochafik.lang.jnaerator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import java.util.List;
@@ -37,19 +36,13 @@ import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.PointerStyle;
-import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Expression.VariableRef;
-import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
-import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
-import com.ochafik.lang.jnaerator.runtime.globals.Global;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalCallback;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalStruct;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalUnion;
-import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.ByReference;
@@ -77,6 +70,7 @@ public class GlobalsGenerator {
 //		}
 //	}
 	
+	@SuppressWarnings("unchecked")
 	public void convertGlobals(VariablesDeclaration globals, Signatures signatures, DeclarationsHolder out, Expression nativeLibFieldExpr, Identifier callerLibraryName, String callerLibrary) throws UnsupportedConversionException {
 		for (Declarator d : globals.getDeclarators()) {
 			try {

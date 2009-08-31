@@ -46,7 +46,6 @@ import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
-import com.ochafik.lang.jnaerator.parser.Expression.Constant;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.xml.XMLUtils;
@@ -131,7 +130,6 @@ public class BridgeSupportParser {
 			String value = XMLUtils.getAttribute(en, "value");
 			if (value != null) {
 				try {
-					Constant ct;
 					try {
 						int i = value.matches(".*?\\.0+$") ? value.lastIndexOf('.') : -1;
 						String v = i > 0 ? value.substring(0, i) : value; 
@@ -197,7 +195,7 @@ public class BridgeSupportParser {
 		cs.setTag(ident(name));
 		
 		for (Node method : XPathUtils.findNodesIterableByXPath("method", classe)) {
-			String mname = XMLUtils.getAttribute(method, "selector");
+//			String mname = XMLUtils.getAttribute(method, "selector");
 			try {
 //				if ((name.equals("NSScriptClassDescription") || name.equals("NSObject")) && mname.contains("classCode"))
 //					name.toString();
