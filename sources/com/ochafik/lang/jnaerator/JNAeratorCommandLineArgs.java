@@ -151,6 +151,7 @@ public class JNAeratorCommandLineArgs {
 		WCharAsShort(		"-wcharAsShort",		"Force treatment of wchar_t as short (char by default)"),
 		Test(				"-test",				"Launch JNAerator's unit tests (DEBUG option)"),
 		Studio(				"-studio",				"Launch JNAeratorStudio"),
+		ScalaOut(			"-scalaOut",				"[Experimental] Output Scala wrappers (callbacks implicits...)", new ArgDef(Type.OutputDir, "outDir")),
 		NoStringReturns(	"-noStringReturns",		"Prevent const char* and const wchar_t* return types from being converted to String and WString."),
 		Project(			"-project",				"Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. \"Release|Win32\").", new ArgDef(Type.ExistingFile, "solutionFile"), new ArgDef(Type.String, "\"Config|Platform\"")),
 		NoAuto(				"-noAuto",		 		"No auto-configuration of preprocessor symbols and paths"),

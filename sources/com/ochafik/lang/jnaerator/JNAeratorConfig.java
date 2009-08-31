@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -116,7 +117,7 @@ public class JNAeratorConfig {
 	}
 	public void addSourceFile(File file, String library, boolean applyFilters) throws IOException {
 		if (file.isFile()) {
-			if (fileFilter == null || applyFilters && fileFilter.accept(file)) {
+			if (fileFilter == null || !applyFilters || fileFilter.accept(file)) {
 				file = file.getCanonicalFile();
 				libraryByFile.put(file, library);
 				sourceFiles.add(file);
@@ -220,6 +221,7 @@ public class JNAeratorConfig {
 	public File bridgesupportOutFile;
 	public boolean noMangling;
 	public boolean noPrimitiveArrays;
+	public File scalaOut;
 	public Collection<File> getFiles() {
 		/*return new AdaptedCollection<String, File>(libraryByFile.keySet(), new Adapter<String, File>() {
 			@Override

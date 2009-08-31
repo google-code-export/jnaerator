@@ -180,7 +180,7 @@ public class JNAerator {
 //						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
 						
-//						"@/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
+//						"/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
 //						"@",
 //						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
 //						"-limitComments",
@@ -192,9 +192,13 @@ public class JNAerator {
 //						"-framework", "CoreGraphics",
 //						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 //						"-noRuntime",
-						"-root", "org.rococoa.cocoa",
-						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
-						"-o", "/Users/ochafik/Prog/Java/test/bridgesupport",
+						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/tests/callbacks/test.h",
+						"-noComp",
+						"-root", "outpackage",
+//						"-root", "org.rococoa.cocoa",
+//						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
+						"-o", "/Users/ochafik/Prog/Java/test/opencv",
+						"-scalaOut", "/Users/ochafik/Prog/Java/test/opencv/scala",
 //						"-noComp",	
 //						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
@@ -319,6 +323,9 @@ public class JNAerator {
 					case NoCPP:
 						config.noCPlusPlus = true;
 						break;
+					case ScalaOut:
+						config.scalaOut = a.getFileParam(0);
+						break;
 					case NoRuntime:
 						config.bundleRuntime = false;
 						break;
@@ -331,7 +338,6 @@ public class JNAerator {
 					case BridgeSupportOutFile:
 						config.bridgesupportOutFile = a.getFileParam(0);
 						break;
-						
 					case PreprocessingOut:
 						config.preprocessingOutFile = a.getFileParam(0);
 						break;
@@ -630,7 +636,13 @@ public class JNAerator {
 			
 			feedback.sourcesParsed(sourceFiles);
 			
+			ScalaGenerator sgen = null;
+			if (config.scalaOut != null)
+				sgen = new ScalaGenerator(result);
+			
 			jnaerationCore(sourceFiles, result, feedback);
+			if (sgen != null)
+				sgen.jnaerationCompleted();
 			feedback.wrappersGenerated(result);
 			
 			if (config.compile) {

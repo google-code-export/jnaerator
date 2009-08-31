@@ -19,7 +19,9 @@
 package com.ochafik.lang.jnaerator;
 
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -494,6 +496,9 @@ public class Result extends Scanner {
 		NSInvocation.class,
 		FoundationLibrary.class	
 	};
+	public interface ClassWritingNotifiable {
+		Struct writingClass(Identifier fullClassName, Struct interf, Signatures signatures);
+	}
 	public Struct notifyBeforeWritingClass(Identifier fullClassName, Struct interf, Signatures signatures) {
 		for (Class<?> c : overwrittenClassesThatNeedToKeepAllTheirMethods) {
 			if (fullClassName.equals(c.getName())) {
@@ -528,9 +533,16 @@ public class Result extends Scanner {
 			"<a href=\"http://rococoa.dev.java.net/\">Rococoa</a>, " +
 			"or <a href=\"http://jna.dev.java.net/\">JNA</a>."
 		); 
-			
+		
+		for (ClassWritingNotifiable n : classWritingNotifiables) {
+			interf = n.writingClass(fullClassName, interf, signatures);
+			if (interf == null)
+				return null;
+		}
 		return interf;
 	}
+	public List<ClassWritingNotifiable> classWritingNotifiables = new ArrayList<ClassWritingNotifiable>();
+	
 	public void printJavaHeader(Identifier javaPackage, PrintWriter out) {
 
 		if (javaPackage != null)
