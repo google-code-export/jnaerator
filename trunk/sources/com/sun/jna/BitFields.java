@@ -22,7 +22,7 @@ import java.util.Map;
  * Support for C bit fields
  * @author Olivier Chafik
  */
-class BitFields {
+public class BitFields {
 	private static abstract class PrimHandler {
 		abstract long longValue(Object value);
 		abstract Object objectValue(long value);
@@ -392,7 +392,7 @@ class BitFields {
 			return true;
 		}
 	
-		if (bits == 0)
+		if (bits <= 0)
 			bits = handler.size() << 3;
 		
 		// Read existing alien bits to OR them, 
@@ -436,7 +436,7 @@ class BitFields {
 		if ((bitOffset | bits) == 0)
 			return handler.readObject(pointer, offset);
 
-		if (bits == 0)
+		if (bits <= 0)
 			bits = handler.size() << 3;
 		
 		// Read bits to up to bits + bitOffset - 1
