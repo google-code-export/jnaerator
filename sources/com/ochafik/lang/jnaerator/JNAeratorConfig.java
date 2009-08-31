@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ochafik.lang.jnaerator.JNAeratorConfigUtils.FileExtensionFilter;
 import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Function;
@@ -60,6 +61,8 @@ public class JNAeratorConfig {
 		OriginalFunctionSignatures, 
 		FunctionArgsJavaDoc
 	}
+	public static final String DEFAULT_HEADER_EXTENSIONS = "h:hpp:hxx";
+	public static final String DEFAULT_IMPLEMS_EXTENSIONS = "cpp:c:cxx:m:mm";
 	
 	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
 	public final List<CPlusPlusMangler> cPlusPlusManglers = new ArrayList<CPlusPlusMangler>();
@@ -90,7 +93,7 @@ public class JNAeratorConfig {
 	
 	public Map<String, String> extraJavaSourceFilesContents = new LinkedHashMap<String, String>();
 	
-	public FileFilter fileFilter = JNAeratorConfigUtils.HEADERS_FILE_FILTER;
+	public FileFilter fileFilter = new FileExtensionFilter(DEFAULT_HEADER_EXTENSIONS.split("[:;"));
 	
 	public Map<String, List<File>> libraryFilesByArch = new LinkedHashMap<String, List<File>>();
 	public List<File> libraryFiles = new ArrayList<File>();
@@ -111,9 +114,9 @@ public class JNAeratorConfig {
 		libraryByFile.put(file, fn);
 		libraryFiles.add(file);
 	}
-	public void addSourceFile(File file, String library) throws IOException {
+	public void addSourceFile(File file, String library, boolean applyFilters) throws IOException {
 		if (file.isFile()) {
-			if (fileFilter == null || fileFilter.accept(file)) {
+			if (fileFilter == null || applyFilters && fileFilter.accept(file)) {
 				file = file.getCanonicalFile();
 				libraryByFile.put(file, library);
 				sourceFiles.add(file);
@@ -122,7 +125,7 @@ public class JNAeratorConfig {
 			File[] fs = file.listFiles();
 			if (fs != null) {
 				for (File f : fs) {
-					addSourceFile(f, library);
+					addSourceFile(f, library, true);
 				}
 			}
 		}

@@ -37,10 +37,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.rococoa.cocoa.foundation.NSClass;
-import org.rococoa.cocoa.foundation.NSInteger;
 import org.rococoa.cocoa.foundation.NSObject;
-import org.rococoa.cocoa.foundation.NSUInteger;
-
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
@@ -83,8 +80,6 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.SimpleTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
-import org.rococoa.cocoa.*;
-
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
 import com.ochafik.lang.jnaerator.runtime.CharByReference;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
@@ -102,7 +97,6 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalShort;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
 import com.sun.jna.WString;
 import com.sun.jna.ptr.ByReference;
 import com.sun.jna.ptr.ByteByReference;

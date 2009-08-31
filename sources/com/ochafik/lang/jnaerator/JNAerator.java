@@ -266,6 +266,9 @@ public class JNAerator {
 					case DefaultLibrary:
 						config.defaultLibrary = a.getStringParam(0);
 						break;
+					case RecursedExtensions:
+						config.fileFilter = "*".equals(a.getStringParam(0)) ? null : new JNAeratorConfigUtils.FileExtensionFilter(a.getStringParam(0).split("[:;"));
+						break;
 					case DefineMacro:
 						config.preprocessorConfig.macros.put(a.getStringParam(0), a.getStringParam(1));
 						break;
@@ -409,7 +412,7 @@ public class JNAerator {
 										lib = name;
 									System.out.println("Warning: no -library option for file '" + fn + "', using \"" + lib + "\".");
 								}
-								config.addSourceFile(file, lib);//config.defaultLibrary);
+								config.addSourceFile(file, lib, !file.isFile());//config.defaultLibrary);
 							}
 						}
 					}
