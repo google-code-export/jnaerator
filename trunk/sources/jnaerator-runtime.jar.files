@@ -15,7 +15,6 @@ com/ochafik/lang/jnaerator/runtime/globals/GlobalPointer.class
 com/ochafik/lang/jnaerator/runtime/globals/GlobalPrimitive.class
 com/ochafik/lang/jnaerator/runtime/globals/GlobalShort.class
 com/ochafik/lang/jnaerator/runtime/globals/GlobalStruct.class
-com/ochafik/lang/jnaerator/runtime/globals/GlobalUnion.class
 com/ochafik/lang/jnaerator/runtime/JNAeratorRuntime.class
 com/ochafik/lang/jnaerator/runtime/LibraryExtractor.class
 com/ochafik/lang/jnaerator/runtime/MangledFunctionMapper.class
