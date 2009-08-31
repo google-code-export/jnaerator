@@ -30,7 +30,6 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPrimitive;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalShort;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalStruct;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalUnion;
 
 public class JNAeratorRuntime {
 	@SuppressWarnings("unused")
@@ -47,7 +46,6 @@ public class JNAeratorRuntime {
 		GlobalFloat.class,
 		GlobalDouble.class,
 		GlobalStruct.class,
-		GlobalUnion.class,
 		GlobalNativeLong.class,
 		GlobalPointer.class,
 		GlobalPrimitive.class,
