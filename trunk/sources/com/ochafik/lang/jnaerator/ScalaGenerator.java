@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import com.ochafik.lang.jnaerator.Result.ClassWritingNotifiable;
 import com.ochafik.lang.jnaerator.parser.Arg;
@@ -49,13 +50,15 @@ public class ScalaGenerator implements ClassWritingNotifiable {
 			File p = f.getParentFile();
 			if (!p.exists())
 				p.mkdirs();
+			
+			result.feedback.setStatus("Generating " + f);
 			out = new PrintWriter(f);
 			outByLib.put(lib, out);
 		}
 		return out;
 	}
-	private void visit(Identifier fullClassName, Element interf) throws FileNotFoundException {
-		Identifier pack = fullClassName.resolveAllButLastIdentifier();
+	private void visit(final Identifier fullClassName, Element interf) throws FileNotFoundException {
+		final Identifier pack = fullClassName.resolveAllButLastIdentifier();
 		String spack, lib;
 		if (pack == null) {
 			spack = "";
@@ -66,6 +69,16 @@ public class ScalaGenerator implements ClassWritingNotifiable {
 		}
 		final PrintWriter out = getLibOut(spack, lib);
 		interf.accept(new Scanner() {
+			Stack<Identifier> path = new Stack<Identifier>();
+			{
+				path.add(pack);
+			}
+			@Override
+			public void visitStruct(Struct struct) {
+				path.push(ident(path.peek(), struct.getTag()));
+				super.visitStruct(struct);
+				path.pop();
+			}
 			@Override
 			public void visitJavaInterface(Struct struct) {
 				super.visitJavaInterface(struct);
@@ -92,9 +105,10 @@ public class ScalaGenerator implements ClassWritingNotifiable {
 							argDefs.add(n + ": " + vt);
 						}
 						String cbClassName = struct.getTag().toString(), scbClassName = cbClassName + "_scala";
+						String cbClassPath = path.peek().toString();
 						int ac = argTypes.size();
 						String fsig = (ac == 0 ? "" : ac == 1 ? argTypes.get(0)  : "(" + StringUtils.implode(argTypes, ", ") + ")") + " => " + rt;
-						out.println("class " + scbClassName + "(var scala_func: " + fsig + ") extends " + cbClassName + " {");
+						out.println("class " + scbClassName + "(scala_func: " + fsig + ") extends " + cbClassPath + " {");
 						out.println("\tdef callback(" + StringUtils.implode(argDefs, ", ") + "): " + rt + " {");
 						out.println("\t\tscala_func(" + StringUtils.implode(argNames, ", ") + ")");
 						out.println("\t}");
