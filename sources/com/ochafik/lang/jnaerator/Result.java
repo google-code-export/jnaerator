@@ -36,6 +36,8 @@ import org.rococoa.cocoa.foundation.NSInvocation;
 import org.rococoa.cocoa.foundation.NSMethodSignature;
 import org.rococoa.cocoa.foundation.NSObject;
 import org.rococoa.cocoa.foundation.NSString;
+
+import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Element;
 import com.ochafik.lang.jnaerator.parser.Enum;
@@ -581,6 +583,7 @@ public class Result extends Scanner {
 		return false;
 	}
 	public final Map<String, TypeRef> weakTypeDefs = new HashMap<String, TypeRef>();
+	public Feedback feedback;
 	public void addWeakTypeDef(TypeRef clone, String sn) {
 		weakTypeDefs.put(sn, clone);
 	}

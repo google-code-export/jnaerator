@@ -35,7 +35,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -628,11 +627,11 @@ public class JNAerator {
 				public PrintWriter getClassSourceWriter(String className) throws IOException {
 					return JNAerator.this.getClassSourceWriter(classOutputter[0], className);
 				}
-			});
+			}, feedback);
 			
 			SourceFiles sourceFiles = parseSources(feedback, result.typeConverter);
 			if (config.extractLibSymbols)
-				parseLibSymbols(sourceFiles, feedback, result);
+				parseLibSymbols(sourceFiles, result);
 			
 			feedback.sourcesParsed(sourceFiles);
 			
@@ -640,7 +639,7 @@ public class JNAerator {
 			if (config.scalaOut != null)
 				sgen = new ScalaGenerator(result);
 			
-			jnaerationCore(sourceFiles, result, feedback);
+			jnaerationCore(sourceFiles, result);
 			if (sgen != null)
 				sgen.jnaerationCompleted();
 			feedback.wrappersGenerated(result);
@@ -697,7 +696,7 @@ public class JNAerator {
 			feedback.setFinished(th);
 		}
 	}
-	public void parseLibSymbols(SourceFiles sourceFiles, Feedback feedback, Result result) throws FileNotFoundException {
+	public void parseLibSymbols(SourceFiles sourceFiles, Result result) throws FileNotFoundException {
 		PrintWriter fileOut = null;
 		if (config.extractedSymbolsOut != null) {
 			if (config.verbose)
@@ -708,7 +707,7 @@ public class JNAerator {
 		for (File libFile : config.libraryFiles) {
 			if (libFile.getName().toLowerCase().endsWith(".dll")) {
 				try {
-					feedback.setStatus("Extracting symbols from " + libFile.getName() + "...");
+					result.feedback.setStatus("Extracting symbols from " + libFile.getName() + "...");
 					
 					SourceFile sf = new SourceFile();
 					sf.setElementFile(libFile.toString());
@@ -1113,8 +1112,8 @@ public class JNAerator {
 		}
 	}
 	/// To be overridden
-	public Result createResult(final ClassOutputter outputter) {
-		return new Result(config, new ClassOutputter() {
+	public Result createResult(final ClassOutputter outputter, Feedback feedback) {
+		Result r = new Result(config, new ClassOutputter() {
 			@Override
 			public PrintWriter getClassSourceWriter(String className)
 					throws IOException {
@@ -1129,10 +1128,12 @@ public class JNAerator {
 				};
 			}
 		});
+		r.feedback = feedback;
+		return r;
 	}
 		
-	public void jnaerationCore(SourceFiles sourceFiles, Result result, Feedback feedback) throws IOException, LexerException, RecognitionException {
-		feedback.setStatus("Normalizing parsed code...");
+	public void jnaerationCore(SourceFiles sourceFiles, Result result) throws IOException, LexerException, RecognitionException {
+		result.feedback.setStatus("Normalizing parsed code...");
 		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());
@@ -1181,8 +1182,8 @@ public class JNAerator {
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######
 		//##################################################################
 		
-		if (feedback != null && !result.config.bridgeSupportFiles.isEmpty())
-			feedback.setStatus("Parsing BridgeSupport files...");
+		if (result.feedback != null && !result.config.bridgeSupportFiles.isEmpty())
+			result.feedback.setStatus("Parsing BridgeSupport files...");
 		
 		new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
 		
@@ -1215,11 +1216,11 @@ public class JNAerator {
 		
 		/// Spit Objective-C classes out
 		if (!result.classes.isEmpty()) {
-			feedback.setStatus("Generating Objective-C classes...");
+			result.feedback.setStatus("Generating Objective-C classes...");
 			result.objectiveCGenerator.generateObjectiveCClasses();
 		}
 		
-		feedback.setStatus("Generating libraries...");
+		result.feedback.setStatus("Generating libraries...");
 		
 		if (result.libraries.size() == 1) {
 			List<Define> list = result.definesByLibrary.get(null);
