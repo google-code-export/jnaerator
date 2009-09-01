@@ -2,13 +2,17 @@ package com.ochafik.lang.jnaerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import com.ochafik.io.ReadText;
 import com.ochafik.lang.jnaerator.Result.ClassWritingNotifiable;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
@@ -18,13 +22,21 @@ import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.lang.jnaerator.parser.Scanner;
 import com.ochafik.lang.jnaerator.parser.Struct;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
+import com.ochafik.lang.jnaerator.runtime.JNAeratorRuntime;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Callback;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
+/*
+include com/ochafik/lang/jnaerator/runtime/*.scala
+*/
 public class ScalaGenerator implements ClassWritingNotifiable {
 
-	Map<String, PrintWriter> outByLib = new HashMap<String, PrintWriter>();
+	class ScalaClassFile {
+		public String path, name;
+		public StringWriter content = new StringWriter();
+	}
+	Map<String, ScalaClassFile> outByLib = new HashMap<String, ScalaClassFile>();
 	Result result;
 	public ScalaGenerator(Result result) throws FileNotFoundException {
 		this.result = result;
@@ -32,42 +44,41 @@ public class ScalaGenerator implements ClassWritingNotifiable {
 	}
 	
 	@Override
-	public Struct writingClass(Identifier fullClassName, Struct interf,
-			Signatures signatures) {
+	public Struct writingClass(Identifier fullClassName, Struct interf, Signatures signatures, String currentLibrary) {
 		
 		try {
-			visit(fullClassName, interf);
+			visit(fullClassName, interf, currentLibrary);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		return interf;
 	}
 
-	PrintWriter getLibOut(String pack, String lib) throws FileNotFoundException {
-		PrintWriter out = outByLib.get(lib);
-		if (out == null) {
-			File f = new File(result.config.scalaOut, pack.replace('.', '/').replace('\\', '/') + '/' + StringUtils.capitalize(lib) + "Support.scala");
-			File p = f.getParentFile();
-			if (!p.exists())
-				p.mkdirs();
-			
-			result.feedback.setStatus("Generating " + f);
-			out = new PrintWriter(f);
-			outByLib.put(lib, out);
-		}
-		return out;
+	PrintWriter openFile(File f) throws FileNotFoundException {
+		File p = f.getAbsoluteFile().getParentFile();
+		if (!p.exists())
+			p.mkdirs();
+		result.feedback.setStatus("Generating " + f);
+		return new PrintWriter(f);
 	}
-	private void visit(final Identifier fullClassName, Element interf) throws FileNotFoundException {
-		final Identifier pack = fullClassName.resolveAllButLastIdentifier();
-		String spack, lib;
-		if (pack == null) {
-			spack = "";
-			lib = "Lib";
-		} else {
-			spack = pack.toString();
-			lib = pack.resolveLastSimpleIdentifier().toString();
+	StringWriter getLibOut(String pack, String lib) throws FileNotFoundException {
+		ScalaClassFile out = outByLib.get(lib);
+		if (out == null) {
+			outByLib.put(lib, out = new ScalaClassFile());
+			out.name = getLibScalaClassName(lib);
+			out.path = pack.replace('.', '/').replace('\\', '/') + '/' + StringUtils.capitalize(lib) + "Support.scala";
 		}
-		final PrintWriter out = getLibOut(spack, lib);
+		return out.content;
+	}
+	private String getLibScalaClassName(String lib) {
+		return lib + "_scala";
+	}
+
+	private void visit(final Identifier fullClassName, Element interf, String currentLibrary) throws FileNotFoundException {
+		final Identifier pack = fullClassName.resolveAllButLastIdentifier();
+		String spack = result.getLibraryPackage(currentLibrary).toString();
+		final PrintWriter out = new PrintWriter(getLibOut(spack, currentLibrary));
+		boolean[] printedSomething = { false };
 		interf.accept(new Scanner() {
 			Stack<Identifier> path = new Stack<Identifier>();
 			{
@@ -109,37 +120,18 @@ public class ScalaGenerator implements ClassWritingNotifiable {
 						int ac = argTypes.size();
 						String fsig = (ac == 0 ? "" : ac == 1 ? argTypes.get(0)  : "(" + StringUtils.implode(argTypes, ", ") + ")") + " => " + rt;
 						out.println("class " + scbClassName + "(scala_func: " + fsig + ") extends " + cbClassPath + " {");
-						out.println("\tdef callback(" + StringUtils.implode(argDefs, ", ") + "): " + rt + " {");
+						out.println("\tdef callback(" + StringUtils.implode(argDefs, ", ") + "): " + rt + " = {");
 						out.println("\t\tscala_func(" + StringUtils.implode(argNames, ", ") + ")");
 						out.println("\t}");
 						out.println("}");
 						out.println("implicit def scala_func2" + scbClassName + "(scala_func: " + fsig + ") = {");
-						out.println("\t" + scbClassName + "(scala_func)");
+						out.println("\tnew " + scbClassName + "(scala_func)");
 						out.println("}");
-						
-						/*
-						 * 
-class ScalaJNAeratorSupport {
-	implicit def long2NativeLong(v: Long) = { new NativeLong(v); }
-	implicit def int2NativeLong(v: Int) = { new NativeLong(v); }
-}
-
-class MyLibSupport {
-	class MyCallback_scala(var fptr:(Pointer, NativeLong)=>Int) extends MyCallback {
-		def callback(p: Pointer, l:com.sun.jna.NativeLong) : Int = fptr(p, l)
-	}
-
-	implicit def fun2MyCallback_scala(fun: MyCallback_scala) : MyCallback_scala = {
-		return null;
-	}
-}
-						 */
 					}
 				}
 			}
-
-			
 		});
+		out.flush();
 	}
 	protected String getScalaType(TypeRef valueType) {
 		String vt = valueType.toString();
@@ -147,8 +139,72 @@ class MyLibSupport {
 			vt = "Unit";
 		return vt;
 	}
-	public void jnaerationCompleted() {
-		for (PrintWriter out : outByLib.values())
+	public void jnaerationCompleted() throws IOException {
+		outputSampleScalaSource();
+		outputScalaRuntime();
+		
+		for (ScalaClassFile f : outByLib.values()) {
+			PrintWriter out = openFile(new File(result.config.scalaOut, f.path));
+			out.println("trait " + f.name + " {");
+			f.content.close();
+			out.println(f.content);
+			out.println("}");
 			out.close();
+		}
+	}
+
+	URL getScalaPartResource(String name) throws IOException {
+		String path = "com/ochafik/lang/jnaerator/runtime/scala/" + name + ".scala.part";
+		URL url = JNAeratorRuntime.class.getClassLoader().getResource(path);
+		return url;
+	}
+	static final String SCALA_JNAERATOR_RT_CLASS_NAME = "ScalaJNAerator";
+	static final String SCALA_JNA_RT_CLASS_NAME = "ScalaJNA";
+	static final String SCALA_ROCOCOA_RT_CLASS_NAME = "ScalaRococoa";
+	
+	private void outputScalaRuntime() throws IOException {
+		PrintWriter out = openFile(new File(result.config.scalaOut, SCALA_JNAERATOR_RT_CLASS_NAME + ".scala"));
+		out.println(ReadText.readText(getScalaPartResource(SCALA_JNA_RT_CLASS_NAME)));
+		boolean objc = result.hasObjectiveC();
+		
+		if (objc)
+			out.println(ReadText.readText(getScalaPartResource(SCALA_ROCOCOA_RT_CLASS_NAME)));
+		out.print("trait " + SCALA_JNAERATOR_RT_CLASS_NAME + " extends " + SCALA_JNA_RT_CLASS_NAME);
+		if (objc)
+			out.print(" with " + SCALA_ROCOCOA_RT_CLASS_NAME);
+		//out.println(" {");
+		out.close();
+	}
+
+	private void outputSampleScalaSource() throws FileNotFoundException {
+
+		PrintWriter out = openFile(new File(result.config.scalaOut, "JNAeratorSample.scala"));
+		out.println("import com.sun.jna._;");
+		out.println("import com.sun.jna.ptr._;");
+		if (result.hasObjectiveC())
+			out.println("import org.rococoa._;");
+		out.println();
+		out.println("import com.ochafik.lang.jnaerator.runtime._;");
+		out.println("import com.ochafik.lang.jnaerator.runtime.globals._;");
+		out.println();
+		for (String lib : result.libraries) {
+			if (lib == null)
+				continue;
+			Identifier fn = result.getLibraryClassFullName(lib);
+			out.println("import " + fn + "._;");
+			Identifier pack = fn.resolveAllButLastIdentifier();
+			if (pack != null)
+				out.println("import " + pack + "._;");
+			out.println("import " + getLibScalaClassName(lib) + "._");
+		}
+		
+		out.println();
+		
+		out.println("object ExampleApp extends Application with " + SCALA_JNAERATOR_RT_CLASS_NAME + " {");
+		out.println("  override def main(args : Array[String]) : Unit = {");
+		out.println("    ");
+		out.println("  }");
+		out.println("}");
+		out.close();
 	}
 }

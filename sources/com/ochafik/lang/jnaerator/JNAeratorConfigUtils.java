@@ -454,9 +454,10 @@ public class JNAeratorConfigUtils {
 			throw new IOException("Could not find framework '" + framework + "' in path " + config.preprocessorConfig.frameworksPath);
 
 		File headers = new File(file, "Headers");
-		if (headers.exists())
+		if (headers.exists()) {
+			config.preprocessorConfig.includes.add(headers.getAbsolutePath());
 			config.addSourceFile(headers, framework, true);
-		else
+		} else
 			new IOException("No Headers subdirectory in framework '" + framework + "' found here : " + file).printStackTrace();
 		
 		File naturalDir = new File(file, "Resources/BridgeSupport");

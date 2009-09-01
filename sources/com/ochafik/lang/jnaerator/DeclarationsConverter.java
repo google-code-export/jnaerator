@@ -903,7 +903,7 @@ public class DeclarationsConverter {
 			Identifier fullClassName = ident(javaPackage, structJavaClass.getTag().clone());
 			
 			structJavaClass.removeModifiers(Modifier.Static);
-			structJavaClass = result.notifyBeforeWritingClass(fullClassName, structJavaClass, signatures);
+			structJavaClass = result.notifyBeforeWritingClass(fullClassName, structJavaClass, signatures, library);
 			if (structJavaClass != null) {
 				PrintWriter pout = result.classOutputter.getClassSourceWriter(fullClassName.toString());
 				result.printJavaHeader(javaPackage, pout);
