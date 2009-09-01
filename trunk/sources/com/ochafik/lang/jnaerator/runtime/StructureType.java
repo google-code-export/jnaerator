@@ -4,7 +4,7 @@ import com.sun.jna.Pointer;
 
 public interface StructureType {
 	int size();
-	void useMemory(Pointer p);
+	StructureType use(Pointer p);
 	Pointer getPointer();
 	void read();
 	void write();

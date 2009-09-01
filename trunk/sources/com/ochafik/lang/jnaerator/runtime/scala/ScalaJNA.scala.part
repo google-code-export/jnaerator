@@ -1,5 +1,5 @@
 
-class ScalaJNA {
+trait ScalaJNA {
 	import com.sun.jna._;
 	import com.sun.jna.ptr._;
 

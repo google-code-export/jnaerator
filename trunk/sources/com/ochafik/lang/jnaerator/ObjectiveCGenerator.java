@@ -174,7 +174,7 @@ public class ObjectiveCGenerator {
 		Signatures signatures = new Signatures();
 
 		Struct s = generateObjectiveCClass(in, signatures);
-		result.notifyBeforeWritingClass(fullClassName, s, signatures);
+		result.notifyBeforeWritingClass(fullClassName, s, signatures, result.getLibrary(in));
 		
 		out.println(s);
 		out.close();

@@ -1,5 +1,5 @@
 
-class ScalaRococoa {
+trait ScalaRococoa {
 	import org.rococoa._;
 	import org.rococoa.cocoa._;
 	

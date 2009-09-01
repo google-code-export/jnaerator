@@ -1096,7 +1096,7 @@ public class JNAerator {
 				interf.addDeclaration(decl(ptClass));
 			}
 			
-			interf = result.notifyBeforeWritingClass(fullLibraryClassName, interf, signatures);
+			interf = result.notifyBeforeWritingClass(fullLibraryClassName, interf, signatures, library);
 			if (interf != null) {
 				final PrintWriter out = result.classOutputter.getClassSourceWriter(fullLibraryClassName.toString());
 				

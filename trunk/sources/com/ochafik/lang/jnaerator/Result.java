@@ -499,9 +499,9 @@ public class Result extends Scanner {
 		FoundationLibrary.class	
 	};
 	public interface ClassWritingNotifiable {
-		Struct writingClass(Identifier fullClassName, Struct interf, Signatures signatures);
+		Struct writingClass(Identifier fullClassName, Struct interf, Signatures signatures, String currentLibrary);
 	}
-	public Struct notifyBeforeWritingClass(Identifier fullClassName, Struct interf, Signatures signatures) {
+	public Struct notifyBeforeWritingClass(Identifier fullClassName, Struct interf, Signatures signatures, String currentLibrary) {
 		for (Class<?> c : overwrittenClassesThatNeedToKeepAllTheirMethods) {
 			if (fullClassName.equals(c.getName())) {
 				declarationsConverter.addMissingMethods(c, signatures, interf);
@@ -537,7 +537,7 @@ public class Result extends Scanner {
 		); 
 		
 		for (ClassWritingNotifiable n : classWritingNotifiables) {
-			interf = n.writingClass(fullClassName, interf, signatures);
+			interf = n.writingClass(fullClassName, interf, signatures, currentLibrary);
 			if (interf == null)
 				return null;
 		}

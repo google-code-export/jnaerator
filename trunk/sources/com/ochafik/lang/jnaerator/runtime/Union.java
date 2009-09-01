@@ -19,7 +19,9 @@
 package com.ochafik.lang.jnaerator.runtime;
 
 import java.lang.ref.WeakReference;
+import java.nio.Buffer;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
 public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S> 
@@ -52,12 +54,6 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 		super.write();
 		readDependency();
 	}
-	protected <T extends Union<?, ?, ?>> T setupClone(T clone) {
-		write();
-		clone.useMemory(getPointer());
-		clone.read();
-		return clone;
-	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public S[] toArray(int size) {
@@ -82,9 +78,25 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 		return (S[])super.toArray(array);
 	}
 
-	@Override
-	public void useMemory(Pointer m) {
-		super.useMemory(m);
-		read();
+	protected <T extends Union<?, ?, ?>> T setupClone(T clone) {
+		write();
+		clone.use(getPointer());
+		return clone;
 	}
+	
+	public Union<S, V, R> use(Pointer m) {
+		return use(m, 0);
+	}
+	public Union<S, V, R> use(Pointer m, long byteOffset) {
+		useMemory(m, (int)byteOffset);
+		return this;
+	}
+	public Union<S, V, R> use(Buffer m) {
+		return use(m, 0);
+	}
+	public Union<S, V, R> use(Buffer b, long byteOffset) {
+		useMemory(Native.getDirectBufferPointer(b), (int)byteOffset);
+		return this;
+	}
+	
 }
