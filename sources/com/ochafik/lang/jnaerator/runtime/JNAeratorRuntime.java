@@ -37,6 +37,7 @@ public class JNAeratorRuntime {
 		LibraryExtractor.class,
 		MangledFunctionMapper.class,
 		Structure.class,
+		ScalaRuntime.class,
 		Union.class,
 		AlreadyRetained.class, 
 		GlobalInt.class,
