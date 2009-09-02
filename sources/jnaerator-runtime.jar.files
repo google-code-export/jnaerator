@@ -19,6 +19,9 @@ com/ochafik/lang/jnaerator/runtime/JNAeratorRuntime.class
 com/ochafik/lang/jnaerator/runtime/LibraryExtractor.class
 com/ochafik/lang/jnaerator/runtime/MangledFunctionMapper.class
 com/ochafik/lang/jnaerator/runtime/Mangling.class
+com/ochafik/lang/jnaerator/runtime/scala/ScalaJNA.scala.part
+com/ochafik/lang/jnaerator/runtime/scala/ScalaRococoa.scala.part
+com/ochafik/lang/jnaerator/runtime/ScalaRuntime.class
 com/ochafik/lang/jnaerator/runtime/StringPointer$ByReference.class
 com/ochafik/lang/jnaerator/runtime/StringPointer$ByValue.class
 com/ochafik/lang/jnaerator/runtime/StringPointer.class
