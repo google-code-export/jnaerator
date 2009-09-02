@@ -35,7 +35,7 @@ public class GlobalStruct<S extends Structure<?, ?, ?>> extends Global {
 			Pointer p = getPointer();
 			if (!isByValue())
 				p = p.getPointer(0);
-			value.useMemory(p);
+			value.use(p);
 		}
 		value.read();
 		return value;
