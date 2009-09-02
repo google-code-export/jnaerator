@@ -39,9 +39,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
+//import javax.net.ssl.HostnameVerifier;
+//import javax.net.ssl.HttpsURLConnection;
+//import javax.net.ssl.SSLSession;
 
 import com.ochafik.util.string.RegexUtils;
 public class ReadText { 
@@ -100,13 +100,13 @@ public class ReadText {
 
 		String encoding = null;
 		URLConnection con = u.openConnection();
-		if (con instanceof HttpsURLConnection) {
-			((HttpsURLConnection)con).setHostnameVerifier(new HostnameVerifier() {
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			});
-		}
+//		if (con instanceof HttpsURLConnection) {
+//			((HttpsURLConnection)con).setHostnameVerifier(new HostnameVerifier() {
+//				public boolean verify(String hostname, SSLSession session) {
+//					return true;
+//				}
+//			});
+//		}
 		if (con instanceof HttpURLConnection) {
 			String contentType = con.getContentType();
 			encoding = RegexUtils.findFirst(contentType, charsetPattern, 1);
