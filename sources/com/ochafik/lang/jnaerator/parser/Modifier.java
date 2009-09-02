@@ -146,6 +146,7 @@ public enum Modifier {
 	Constructor(Kind.Attribute),
 	Destructor(Kind.Attribute),
 	Dllexport(Kind.Attribute),
+	Weak_import(Kind.Attribute),
 	Dllimport(Kind.Attribute),
 	Eightbit_data(Kind.Attribute),
 	Exception(Kind.Attribute),
