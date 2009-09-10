@@ -28,7 +28,7 @@ import com.sun.jna.Callback;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 /*
-include com/ochafik/lang/jnaerator/runtime/*.scala
+include com/ochafik/lang/jnaerator/runtime/scala/*.scala.part
 */
 public class ScalaGenerator implements ClassWritingNotifiable {
 
