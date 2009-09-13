@@ -631,7 +631,7 @@ public class JNAeratorStudio extends JPanel {
 		{
 			String[] nargs = null;
 			if (prefArgs != null)
-				nargs = prefArgs;
+				nargs = new String[0];
 			else if (args.length == 1) {
 				nargs = new String[] {"@", args[0], "-gui"};
 			} else if (args.length == 2 && args[0].equals("-open")) {
