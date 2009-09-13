@@ -129,7 +129,21 @@ public class JNAerator {
 
 	//"@C:\Prog\jnaerator\sources\com\ochafik\lang\jnaerator\nativesupport\dllexport.jnaerator"
 	//"C:\Prog\CPP\CppLibTest\jnaerator\CppLibTest.jnaerator"
+	
+	public static String[] getJNAeratorArgsFromPref() {
+		String argsPref = System.getProperty("jnaerator.args");
+		if (argsPref == null)
+			return null;
+		return argsPref.split(",");
+	}
 	public static void main(String[] argsArray) {
+		String[] jnAeratorArgsFromPref = getJNAeratorArgsFromPref();
+		if (jnAeratorArgsFromPref != null) {
+			ArrayList<String> list = new ArrayList<String>();
+			list.addAll(Arrays.asList(jnAeratorArgsFromPref));
+			list.addAll(Arrays.asList(argsArray));
+			argsArray = list.toArray(new String[list.size()]);
+		}
 		if (argsArray.length == 0) {
 			if (new File("/Users/ochafik").exists()) {
 				argsArray = new String[] {
