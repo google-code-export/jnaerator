@@ -10,22 +10,22 @@
   <packaging>jar</packaging>
   
   <dependencies>
-	<dependency>
-	  <groupId>com.jnaerator</groupId>
-	  <artifactId>jnaerator-runtime</artifactId>
-	  <version>0.9.630</version>
-	  <scope>compile</scope>
-	</dependency>
 	
-	<dependency>
+  	<dependency>
 	  <groupId>net.java.dev.jna</groupId>
 	  <artifactId>jna</artifactId>
 	  <version>3.2.2</version>
 	  <scope>compile</scope>
 	</dependency>
 	
+	<dependency>
+	  <groupId>net.java.dev.rococoa</groupId>
+	  <artifactId>rococoa-jnaerator</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	  <scope>compile</scope>
+	</dependency>
+	
   </dependencies>
-  
   <parent>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
@@ -33,6 +33,20 @@
 	  <relativePath>..</relativePath>
   </parent>
   
+  
+  <build>
+		<plugins>
+		  <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>2.0.2</version>
+			<configuration>
+			  <source>1.5</source>
+			  <target>1.5</target>
+			</configuration>
+		  </plugin>
+		</plugins>
+	</build>
 </project>
 
 
