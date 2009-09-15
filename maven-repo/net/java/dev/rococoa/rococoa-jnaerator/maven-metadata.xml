@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>net.java.dev.rococoa</groupId>
+  <artifactId>rococoa-jnaerator</artifactId>
+  <version>1.0</version>
+  <versioning>
+    <versions>
+      <version>1.0</version>
+    </versions>
+    <lastUpdated>20090915231344</lastUpdated>
+  </versioning>
+</metadata>
