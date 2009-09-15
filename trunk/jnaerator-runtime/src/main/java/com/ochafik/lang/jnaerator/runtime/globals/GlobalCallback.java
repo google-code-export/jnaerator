@@ -19,7 +19,7 @@
 package com.ochafik.lang.jnaerator.runtime.globals;
 
 import com.sun.jna.Callback;
-import com.sun.jna.CallbackReference;
+import com.sun.jna.CallbackReferenceHack;
 import com.sun.jna.NativeLibrary;
 
 public class GlobalCallback<T extends Callback> extends Global {
@@ -32,12 +32,12 @@ public class GlobalCallback<T extends Callback> extends Global {
 	@SuppressWarnings("unchecked")
 	public T get() {
 		if (value == null) {
-			value = (T)CallbackReference.getCallback(type, getPointer());
+			value = (T)CallbackReferenceHack.getCallback(type, getPointer());
 		}
 		return value;
 	}
 	public void set(T value) {
-		getPointer().setPointer(0, CallbackReference.getFunctionPointer(this.value = value));
+		getPointer().setPointer(0, CallbackReferenceHack.getFunctionPointer(this.value = value));
 	}
 	
 	@Override
