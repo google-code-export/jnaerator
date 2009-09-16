@@ -149,7 +149,7 @@ public class JNAeratorCommandLineArgs {
 		NoRuntime(			"-noRuntime",		 	"Don't copy runtime classes to JAR output"),
 		JarOut(				"-jar",					"Jar file where all generated sources and the compiled classes go", new ArgDef(Type.OutputFile, "outFile")),
 		WCharAsShort(		"-wcharAsShort",		"Force treatment of wchar_t as short (char by default)"),
-		Test(				"-test",				"Launch JNAerator's unit tests (DEBUG option)"),
+		//Test(				"-test",				"Launch JNAerator's unit tests (DEBUG option)"),
 		Studio(				"-studio",				"Launch JNAeratorStudio"),
 		ScalaOut(			"-scalaOut",				"[Experimental] Output Scala wrappers (callbacks implicits...)", new ArgDef(Type.OutputDir, "outDir")),
 		NoStringReturns(	"-noStringReturns",		"Prevent const char* and const wchar_t* return types from being converted to String and WString."),
