@@ -3,34 +3,34 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
   <groupId>com.jnaerator</groupId>
-  <artifactId>jnaerator-runtime</artifactId>
-  <name>JNAerator Runtime</name>
+  <artifactId>jnaerator</artifactId>
+  <name>JNAerator</name>
   <url>http://code.google.com/p/jnaerator/</url>
-  <version>0.9-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   <dependencies>
-	
-  	<dependency>
-	  <groupId>net.java.dev.jna</groupId>
-	  <artifactId>jna</artifactId>
-	  <version>3.2.2</version>
+	<dependency>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-runtime</artifactId>
+	  <version>0.9-SNAPSHOT</version>
 	  <scope>compile</scope>
 	</dependency>
 	
 	<dependency>
-	  <groupId>net.java.dev.rococoa</groupId>
-	  <artifactId>rococoa-jnaerator</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <scope>compile</scope>
+		<groupId>org.antlr</groupId>
+		<artifactId>antlr-runtime</artifactId>
+		<version>3.1.3</version>
+		<scope>compile</scope>
 	</dependency>
-	
+
 	<dependency>
       <groupId>junit</groupId>
 	  <artifactId>junit</artifactId>
       <version>4.7</version>
       <scope>test</scope>
     </dependency>
+	
 	
   </dependencies>
   <parent>
@@ -40,7 +40,6 @@
 	  <relativePath>..</relativePath>
   </parent>
   
-  
   <build>
 		<plugins>
 		  <plugin>
@@ -48,8 +47,8 @@
 			<artifactId>maven-compiler-plugin</artifactId>
 			<version>2.0.2</version>
 			<configuration>
-			  <source>1.5</source>
-			  <target>1.5</target>
+			  <source>1.6</source>
+			  <target>1.6</target>
 			</configuration>
 		  </plugin>
 		</plugins>
