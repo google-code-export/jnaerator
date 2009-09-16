@@ -46,7 +46,7 @@ import javax.tools.Diagnostic.Kind;
 
 import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
-import org.junit.runner.JUnitCore;
+//import org.junit.runner.JUnitCore;
 import org.rococoa.cocoa.foundation.NSClass;
 
 import com.ochafik.io.FileListUtils;
@@ -376,15 +376,15 @@ public class JNAerator {
 							System.exit(1);
 						}
 						break;
-					case Test:
-						try {
-							JUnitCore.main(JNAeratorTests.class.getName());
-							System.exit(0);
-						} catch (Exception ex) {
-							ex.printStackTrace();
-							System.exit(1);
-						}
-						break;
+//					case Test:
+//						try {
+//							JUnitCore.main(JNAeratorTests.class.getName());
+//							System.exit(0);
+//						} catch (Exception ex) {
+//							ex.printStackTrace();
+//							System.exit(1);
+//						}
+//						break;
 					case Verbose:
 						config.verbose = true;
 						break;
