@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Maven repository and usage instructions
 
 = Snapshot Repository =
 
@@ -14,12 +14,12 @@
 Depending on JNAerator-runtime :
 
 {{{
-  <dependencies>
-	<dependency>
-	  <groupId>com.jnaerator</groupId>
-	  <artifactId>jnaerator-runtime</artifactId>
-	  <version>0.9-SNAPSHOT</version>
-	  <scope>compile</scope>
-	</dependency>
-  </dependencies>
+<dependencies>
+  <dependency>
+    <groupId>com.jnaerator</groupId>
+    <artifactId>jnaerator-runtime</artifactId>
+    <version>0.9-SNAPSHOT</version>
+    <scope>compile</scope>
+  </dependency>
+</dependencies>
 }}}
