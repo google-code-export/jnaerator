@@ -1,0 +1,12 @@
+mvn deploy:deploy-file  \
+	-f scripts/deploy.pom \
+	-Durl=svn:https://jnaerator.googlecode.com/svn/trunk/maven-repo \
+	-DrepositoryId=jnaerator-repo \
+	-Dfile=../../jnaerator/trunk/libraries/anarres/build/tar/lib/anarres-cpp.jar \
+	-DgroupId=org.anarres.cpp \
+	-DartifactId=anarres-cpp-jnaerator \
+	"-Dversion=1.0" \
+	-Dpackaging=jar \
+	-DgeneratePom=true \
+	-DgeneratePom.description="JNAerator's version of Anarres JCPP" \
+	-DuniqueVersion=true
