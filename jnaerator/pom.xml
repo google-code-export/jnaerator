@@ -73,7 +73,6 @@
 			</configuration>
 		  </plugin>
 		  
-		  
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-shade-plugin</artifactId>
@@ -87,6 +86,28 @@
 			  </execution>
 			</executions>
 		  </plugin>
+		  
+		  <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<executions>
+			  <execution>
+				<goals>
+				  <goal>sign</goal>
+				</goals>
+			  </execution>
+			</executions>
+			<configuration>
+			  <keystore>/Users/ochafik/Prog/Java/security/ochafik.keystore</keystore>
+			  <alias>ochafik2009</alias>
+			  <!--   
+				  mvn "-Dstorepass=$KEYSTORE_PASS" -Dmaven.test.skip=true package  
+				  <storepass>yourstorepassword</storepass>
+			  -->
+			  <verify>true</verify>
+			</configuration>
+		  </plugin>
+		  
 		</plugins>
 	</build>
 </project>
