@@ -1,0 +1,25 @@
+#summary One-sentence summary of this page.
+
+= Snapshot Repository =
+
+{{{
+<repository>
+  <id>jnaerator</id>
+  <url>http://jnaerator.googlecode.com/svn/trunk/maven-repo</url>
+</repository>
+}}}
+
+= Usage = 
+
+Depending on JNAerator-runtime :
+
+{{{
+  <dependencies>
+	<dependency>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-runtime</artifactId>
+	  <version>0.9-SNAPSHOT</version>
+	  <scope>compile</scope>
+	</dependency>
+  </dependencies>
+}}}
