@@ -13,7 +13,7 @@ will produce {{{ MyLib.jar }}}
 
 This is experimental and has big limitations, but simple cases should work :
 {{{
-java -jar jnaerator.jar MyLib.dll MyLibHeader.h
+java -jar jnaerator.jar MyLib.dll MyLibHeader.h -scanSymbols
 }}}
 will produce {{{ MyLib.jar }}}
 
