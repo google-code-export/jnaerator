@@ -132,4 +132,4 @@ C:\Program Files\Microsoft SDKs\Windows\v6.0A
 /Library/Frameworks:\
 ~/Library/Frameworks 
    }}}
-
+ * library.Xxx (Java property) or XXX_LIBRARY (env. variable) : path to the binary  of library Xxx.
