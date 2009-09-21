@@ -50,7 +50,7 @@ import com.ochafik.lang.jnaerator.Result;
  include com/ochafik/lang/jnaerator/parser/ObjCppTest.mm
  */
 @SuppressWarnings("unused")
-@RunWith(ParameterizedWithDescription.class)
+@RunWith(Parameterized.class)
 // @RunWith(Parameterized.class)
 public class ObjCppParsingTests {
 	static final String TEST_FILE = "com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";

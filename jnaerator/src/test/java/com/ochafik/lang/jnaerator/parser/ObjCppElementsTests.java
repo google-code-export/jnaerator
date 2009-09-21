@@ -53,7 +53,7 @@ import com.ochafik.util.listenable.Pair;
 
 @SuppressWarnings("unused")
 //@RunWith(Parameterized.class)
-@RunWith(ParameterizedWithDescription.class)
+@RunWith(Parameterized.class)
 public class ObjCppElementsTests {
 	String description;
 	Class<? extends Element> type;
