@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.internal.runners.ClassRoadie;
-import org.junit.internal.runners.CompositeRunner;
+//import org.junit.internal.runners.CompositeRunner;
 import org.junit.internal.runners.InitializationError;
 import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.internal.runners.MethodValidator;
@@ -36,7 +36,7 @@ import org.junit.internal.runners.TestClass;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Parameterized.Parameters;
 
-public class ParameterizedWithDescription extends CompositeRunner {
+public class ParameterizedWithDescription {} /*extends CompositeRunner {
 	static class TestClassRunnerForParameters extends JUnit4ClassRunner {
 		private final Object[] fParameters;
 
@@ -143,4 +143,4 @@ public class ParameterizedWithDescription extends CompositeRunner {
 			results.add(new Object[] { param });
 		return results;
 	}
-}
+}*/

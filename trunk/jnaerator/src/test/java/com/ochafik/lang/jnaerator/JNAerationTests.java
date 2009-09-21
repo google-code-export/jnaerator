@@ -50,8 +50,9 @@ import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
+import org.junit.runners.Parameterized;
 
-@RunWith(ParameterizedWithDescription.class)
+@RunWith(Parameterized.class)
 public class JNAerationTests {
 	String title;
 	TestDesc test;
