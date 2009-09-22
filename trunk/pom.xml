@@ -153,7 +153,7 @@
 		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/${project.name}/site</url>
 	    </site>
 		<repository>
-           <uniqueVersion>true</uniqueVersion>
+           <uniqueVersion>false</uniqueVersion>
 		   <id>jnaerator-repo</id>
            <name>JNAerator Sourceforge Maven Repository</name>
 		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/maven</url>

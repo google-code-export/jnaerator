@@ -6,7 +6,7 @@
   <artifactId>jnaerator</artifactId>
   <name>JNAerator</name>
   <url>http://code.google.com/p/jnaerator/</url>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   <dependencies>
@@ -95,18 +95,81 @@
 			</executions>
 		  </plugin>
 		  
-		  
+		  	<plugin>
+				<groupId>org.codehaus.mojo.webstart</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<executions>
+				   <execution>
+					  <goals>
+						 <goal>jnlp</goal> <!-- use jnlp, jnlp-inline or jnlp-single as appropriate -->
+					  </goals>
+				   </execution>
+				</executions>
+				<configuration>
+				   <!--
+				   Set to true to exclude all transitive dependencies. Default is false.
+				   -->
+				   <excludeTransitive>false</excludeTransitive>
+		
+				   <!-- JNLP generation -->
+				   <jnlp>
+					 <!-- default values -->
+					 <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
+					 <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
+					 <outputFile>JNAeratorStudio.jnlp</outputFile> <!-- defaults to launch.jnlp -->
+		
+					 <!-- used to automatically identify the jar containing the main class. -->
+					 <!-- this is perhaps going to change -->
+					 <mainClass>com.ochafik.lang.jnaerator.studio.JNAeratorStudio</mainClass>
+				   </jnlp>
+		
+		
+				   <!-- SIGNING -->
+				   <!-- defining this will automatically sign the jar and its dependencies, if necessary -->
+				   <sign>
+					 <keystore>/Users/ochafik/Prog/Java/security/ochafik.keystore</keystore>
+					 <alias>ochafik2009</alias>
+			   
+					 <!--keypass>fillme</keypass-->  <!-- we need to override passwords easily from the command line. ${keypass} -->
+					 <!--storepass>fillme</storepass--> <!-- ${storepass} -->
+					 <!--storetype>fillme</storetype-->
+		
+					 <!--validity>fillme</validity-->
+		
+					 <!-- only required for generating the keystore -->
+					 <!--dnameCn>fillme</dnameCn>
+					 <dnameOu>fillme</dnameOu>
+					 <dnameO>fillme</dnameO>
+					 <dnameL>fillme</dnameL>
+					 <dnameSt>fillme</dnameSt>
+					 <dnameC>fillme</dnameC-->
+		
+					 <verify>true</verify> <!-- verify that the signing operation succeeded -->
+		
+				   </sign>
+		
+				   <!-- BUILDING PROCESS -->
+		
+				   <pack200>true</pack200>
+				   <gzip>true</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
+		
+				   <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
+				   <outputJarVersions>true</outputJarVersions>
+		
+				   <!--install>false</install--> <!-- not yet supported -->
+				   <verbose>true</verbose>
+		
+				</configuration>
+			  </plugin>
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-jar-plugin</artifactId>
 			<executions>
-			<!--
 			  <execution>
 				<goals>
 				  <goal>sign</goal>
 				</goals>
 			  </execution>
-			-->
 			</executions>
 			<configuration>
 			  <keystore>/Users/ochafik/Prog/Java/security/ochafik.keystore</keystore>
