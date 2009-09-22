@@ -24,6 +24,14 @@
 		<scope>compile</scope>
 	</dependency>
 	
+	
+	<dependency>
+		<groupId>org.eclipse.jdt</groupId>
+		<artifactId>core</artifactId>
+		<version>3.5</version>
+		<scope>compile</scope>
+	</dependency>
+	
 	<dependency>
 		<groupId>org.anarres.cpp</groupId>
 		<artifactId>anarres-cpp-jnaerator</artifactId>
@@ -87,15 +95,18 @@
 			</executions>
 		  </plugin>
 		  
+		  
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-jar-plugin</artifactId>
 			<executions>
+			<!--
 			  <execution>
 				<goals>
 				  <goal>sign</goal>
 				</goals>
 			  </execution>
+			-->
 			</executions>
 			<configuration>
 			  <keystore>/Users/ochafik/Prog/Java/security/ochafik.keystore</keystore>

@@ -19,25 +19,32 @@
 package com.ochafik.lang.jnaerator.runtime;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.jna.FunctionMapper;
 import com.sun.jna.Library;
 import com.sun.jna.NativeLibrary;
+import com.sun.jna.win32.StdCallFunctionMapper;
+import com.sun.jna.win32.W32APIFunctionMapper;
 
 public class MangledFunctionMapper implements FunctionMapper {
 	public static final Map<Object, Object> DEFAULT_OPTIONS;
 	static {
 		Map<Object, Object> m = new HashMap<Object, Object>();
-		m.put(Library.OPTION_FUNCTION_MAPPER, new MangledFunctionMapper(null));
+		m.put(Library.OPTION_FUNCTION_MAPPER, new MangledFunctionMapper(
+			new StdCallFunctionMapper()
+		));
 		
 		DEFAULT_OPTIONS = Collections.unmodifiableMap(m);
 	}
-	FunctionMapper linked;
-	public MangledFunctionMapper(FunctionMapper linked ) {
-		this.linked = linked;
+	public List<FunctionMapper> linked = new ArrayList<FunctionMapper>();
+	public MangledFunctionMapper(FunctionMapper... linked ) {
+		this.linked.addAll(Arrays.asList(linked));
 	}
 	public String getFunctionName(NativeLibrary library, Method method) {
 		Mangling name = method.getAnnotation(Mangling.class);
@@ -57,7 +64,11 @@ public class MangledFunctionMapper implements FunctionMapper {
 			}
 		}
 		if (linked != null)
-			return linked.getFunctionName(library, method);
+			for (FunctionMapper fm : linked) {
+				String n = fm.getFunctionName(library, method);
+				if (n != null && library.getGlobalVariableAddress(n) != null)
+					return n;
+			}
 		return method.getName();
 	}
 	
