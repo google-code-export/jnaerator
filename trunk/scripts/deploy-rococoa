@@ -1,6 +1,6 @@
 mvn deploy:deploy-file  \
 	-f scripts/deploy.pom \
-	-Durl=svn:https://jnaerator.googlecode.com/svn/trunk/maven-repo \
+	-Durl=scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/maven \
 	-DrepositoryId=jnaerator-repo \
 	-Dfile=../libraries/rococoa.jar \
 	-DgroupId=net.java.dev.rococoa \
@@ -10,3 +10,16 @@ mvn deploy:deploy-file  \
 	-DgeneratePom=true \
 	-DgeneratePom.description="JNAerator's version of Rococoa" \
 	-DuniqueVersion=true
+
+#mvn deploy:deploy-file  \
+#	-f scripts/deploy.pom \
+#	-Durl=svn:https://jnaerator.googlecode.com/svn/trunk/maven-repo \
+#	-DrepositoryId=jnaerator-repo \
+#	-Dfile=../libraries/rococoa.jar \
+#	-DgroupId=net.java.dev.rococoa \
+#	-DartifactId=rococoa-jnaerator \
+#	"-Dversion=1.0-SNAPSHOT" \
+#	-Dpackaging=jar \
+#	-DgeneratePom=true \
+#	-DgeneratePom.description="JNAerator's version of Rococoa" \
+#	-DuniqueVersion=true

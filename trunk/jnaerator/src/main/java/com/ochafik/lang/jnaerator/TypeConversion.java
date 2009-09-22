@@ -1065,6 +1065,9 @@ public class TypeConversion {
 					}
 				default:
 					if (prim != null) {
+						if (prim == JavaPrim.Byte)
+							return typeRef(Pointer.class).importDetails(convArgType, false);
+						
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
 						if (byRefClass != null)
 							return typeRef(byRefClass).importDetails(convArgType, false);
