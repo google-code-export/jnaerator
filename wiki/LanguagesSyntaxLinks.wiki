@@ -39,7 +39,7 @@
 
 = Other interoperability tools =
 
-JNAerator builds on the following libraries :
+JNAerator builds on the following libraries (also see [CreditsAndLicense]) :
  * [http://jna.dev.java.net/ JNA (Java/C interop layer)]
  * [http://rococoa.dev.java.net/ Rococoa (Java/ObjectiveC interop layer]
  * [http://www.anarres.org/projects/jcpp/ Anarres (a Java C preprocessor)]
