@@ -1066,7 +1066,7 @@ public class TypeConversion {
 				default:
 					if (prim != null) {
 						if (prim == JavaPrim.Byte)
-							return typeRef(Pointer.class).importDetails(convArgType, false);
+							return typeRef(com.sun.jna.Pointer.class).importDetails(convArgType, false);
 						
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
 						if (byRefClass != null)
@@ -1463,7 +1463,7 @@ public class TypeConversion {
 		
 		Expression res = null;
 		if (type instanceof Pointer) 
-			res = memberRef(expr(typeRef(Pointer.class)), MemberRefStyle.Dot, "SIZE");
+			res = memberRef(expr(typeRef(com.sun.jna.Pointer.class)), MemberRefStyle.Dot, "SIZE");
 		else if (type instanceof ArrayRef) {
 			res = sizeofToJava(((ArrayRef) type).getTarget(), libraryClassName);
 			if (res == null)
