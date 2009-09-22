@@ -40,8 +40,10 @@
 = Other interoperability tools =
 
 JNAerator builds on the following libraries :
- * [http://jna.dev.java.net/ JNA]
- * [http://rococoa.dev.java.net/ Rococoa]
+ * [http://jna.dev.java.net/ JNA (Java/C interop layer)]
+ * [http://rococoa.dev.java.net/ Rococoa (Java/ObjectiveC interop layer]
+ * [http://www.anarres.org/projects/jcpp/ Anarres (a Java C preprocessor)]
+ * [http://www.antlr.org ANTLR (parser generator)]
 
 And some of its goal and achievements are similar to these opensource projects :
  * [http://code.google.com/p/javada/ JavAda (An object oriented Java to Ada binding generator)]
