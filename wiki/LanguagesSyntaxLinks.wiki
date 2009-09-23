@@ -46,6 +46,7 @@ JNAerator builds on the following libraries (also see [CreditsAndLicense]) :
  * [http://www.antlr.org ANTLR (parser generator)]
 
 And some of its goal and achievements are similar to these opensource projects :
+ * [https://com4j.dev.java.net/ com4j : integration of Java and COM]
  * [http://code.google.com/p/javada/ JavAda (An object oriented Java to Ada binding generator)]
  * [http://code.google.com/p/jnyikes/ JNYikes (A simple and easy JNI wrapper)]
  * [https://gluegen.dev.java.net/ GlueGen (Java/JNI glue code generator to call out to ANSI C)]
