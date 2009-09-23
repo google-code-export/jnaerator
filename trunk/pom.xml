@@ -75,7 +75,8 @@
 	
 	<build>
 		<extensions>
-		  <extension>
+		
+		  <!--<extension>
                <groupId>org.apache.maven.wagon</groupId>
                <artifactId>wagon-ssh</artifactId>
                <version>1.0-beta-5</version>
@@ -84,7 +85,7 @@
 			<groupId>org.jvnet.wagon-svn</groupId>
 			<artifactId>wagon-svn</artifactId>
 			<version>1.8</version>
-		  </extension>
+		  </extension>-->
 		</extensions>
 		
 		<plugins>
