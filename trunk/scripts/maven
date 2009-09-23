@@ -1,5 +1,0 @@
-cd jnaerator-runtime
-mvn package install
-cd ../jnaerator
-mvn package install
-cd ..
