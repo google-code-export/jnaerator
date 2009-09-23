@@ -871,6 +871,10 @@ public class JNAerator {
 					System.out.println("JNA library missing : " + file);
 					continue;
 				}
+				if (file.matches("com/ochafik/lang/jnaerator/runtime/scala/.*\\.part")) {
+					System.out.println("Scala code missing : " + file);
+					continue;
+				}
 				throw new FileNotFoundException(file);
 			}
 			

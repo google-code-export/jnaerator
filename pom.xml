@@ -6,7 +6,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2009</inceptionYear>
-    <name>JNAerator "Abstract" Parent Project</name>
+    <name>JNAerator Abstract Parent Project</name>
 	
 	<developers>
 		<developer>
@@ -17,12 +17,33 @@
 	</developers>
 
 	<reporting>
+	
+		
+		  
 		<plugins>
+		
+			
+		  <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-checkstyle-plugin</artifactId>
+			<version>2.3</version>
+		  </plugin>
+		  
+		  <plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>taglist-maven-plugin</artifactId>
+			<version>2.4</version>
+		  </plugin>
 		
 		  <plugin>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>findbugs-maven-plugin</artifactId>
-			<version>2.0.1</version>
+			<!--<version>2.0.1</version>-->
+			<version>RELEASE</version>
+			<configuration>
+			 <effort>Max</effort>
+			 <onlyAnalyze>~com\.ochafik\..*</onlyAnalyze>
+			</configuration>
 		  </plugin>
 		  
 		  <plugin>
@@ -43,12 +64,14 @@
 					<link>http://java.sun.com/javase/6/docs/api/</link>
 					<link>https://jna.dev.java.net/javadoc</link>
 				</links>
+			    <excludePackageNames>com.ochafik.swing.syntaxcoloring</excludePackageNames>
 			</configuration>
 		  </plugin>
 	
 		</plugins>
 		
 	</reporting>
+	
 	<repositories>
 	
 		
@@ -102,6 +125,7 @@
 				</execution>  
 			  </executions>  
 			</plugin>  
+			
 		  <!--
 		  <plugin>
 			<groupId>org.codehaus.mojo</groupId>
@@ -151,7 +175,7 @@
 		<site>
            <id>jnaerator-sites</id>
            <name>JNAerator Sourceforge Sites</name>
-		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/${project.name}/site</url>
+		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/</url>
 	    </site>
 		<repository>
            <uniqueVersion>false</uniqueVersion>
