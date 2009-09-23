@@ -25,7 +25,7 @@ import static test.TestLibrary.*;
 
 U c 			 = new U(0).clone();
 U.ByValue bv 	 = new U(0f).byValue();
-U.ByReference br = new U((ByteByReference)null).byReference();
+U.ByReference br = new U((Pointer)null).byReference();
 
 S sc 			  = new S(0, 0f, 0.0).clone();
 S.ByValue sbv 	  = new S(0, 0f, 0.0).byValue();

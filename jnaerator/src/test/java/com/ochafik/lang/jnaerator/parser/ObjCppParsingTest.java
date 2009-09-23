@@ -102,7 +102,7 @@ public class ObjCppParsingTest {
 							: sourceFile.toString()))
 						sourceFile = newParser(string).sourceFile();
 
-					assertEquals(string, string.trim(),
+					assertEqualsNewLineAware(string, string.trim(),
 							sourceFile == null ? null : sourceFile.toString()
 									.trim());
 				}
@@ -129,9 +129,11 @@ public class ObjCppParsingTest {
 			System.setOut(originalOut);
 			System.setErr(originalErr);
 			if (!ok) {
-				System.out.println("IN:  " + string);
+                                int i = string.trim().length(), j = String.valueOf(sourceFile).trim().length();
+                                System.out.println("IN: " + i + " OUT: " + j );
+				System.out.println("IN:\n" + string.trim());
 				try {
-					System.out.println("OUT: " + sourceFile);
+					System.out.println("OUT:\n" + String.valueOf(sourceFile).trim());
 					System.out.write(bout.toByteArray());
 					System.out.println();
 				} catch (Throwable t) {
@@ -141,6 +143,12 @@ public class ObjCppParsingTest {
 		}
 
 	}
+        static String lineAware(String s) {
+            return s.replaceAll("\n\r", "\n").replace("\r", "\n").replaceAll("\\s+", " ");
+        }
+        public static void assertEqualsNewLineAware(String message, String a, String b) {
+            assertEquals(message, lineAware(a), lineAware(b));
+        }
 
 	@Parameters
 	public static List<Object[]> readDataFromFile() throws IOException {
