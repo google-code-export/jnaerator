@@ -52,10 +52,10 @@ import com.ochafik.lang.jnaerator.Result;
 @SuppressWarnings("unused")
 @RunWith(Parameterized.class)
 // @RunWith(Parameterized.class)
-public class ObjCppParsingTests {
+public class ObjCppParsingTest {
 	static final String TEST_FILE = "com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
 
-	Class<?> elementsTests = ObjCppElementsTests.class;
+	Class<?> elementsTests = ObjCppElementsTest.class;
 
 	enum TestOption {
 		ParseAndPrettyPrint, ParseOnly, ParseMustFail
@@ -64,7 +64,7 @@ public class ObjCppParsingTests {
 	String string;
 	TestOption testOption;
 
-	public ObjCppParsingTests(String string, TestOption testOption) {
+	public ObjCppParsingTest(String string, TestOption testOption) {
 		this.string = string;
 		this.testOption = testOption;
 	}
@@ -144,7 +144,7 @@ public class ObjCppParsingTests {
 
 	@Parameters
 	public static List<Object[]> readDataFromFile() throws IOException {
-		List<String> lines = ReadText.readLines(ObjCppParsingTests.class.getClassLoader().getResource(TEST_FILE));
+		List<String> lines = ReadText.readLines(ObjCppParsingTest.class.getClassLoader().getResource(TEST_FILE));
 		TestOption testOption = TestOption.ParseAndPrettyPrint;
 		List<Object[]> data = new ArrayList<Object[]>();
 

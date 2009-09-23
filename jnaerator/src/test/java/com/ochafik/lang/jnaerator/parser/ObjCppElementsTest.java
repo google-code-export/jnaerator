@@ -54,14 +54,14 @@ import com.ochafik.util.listenable.Pair;
 @SuppressWarnings("unused")
 //@RunWith(Parameterized.class)
 @RunWith(Parameterized.class)
-public class ObjCppElementsTests {
+public class ObjCppElementsTest {
 	String description;
 	Class<? extends Element> type;
 	
 	/// Gives the set of subclasses that implement a given abstract class or interface
 	Map<Class<?>, Set<Class<?>>> implementations;
 	
-	public ObjCppElementsTests(String description, Class<? extends Element> type, Map<Class<?>, Set<Class<?>>> implementations) {
+	public ObjCppElementsTest(String description, Class<? extends Element> type, Map<Class<?>, Set<Class<?>>> implementations) {
 		super();
 		this.description = description;
 		this.type = type;

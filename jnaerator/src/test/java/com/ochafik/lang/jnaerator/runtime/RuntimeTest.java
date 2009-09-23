@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 
-public class RuntimeTests {
+public class RuntimeTest {
 	public static class BitFieldStruct extends com.sun.jna.Structure {
 		@Override
 		protected Integer getBitsAnnotation(Field field) {

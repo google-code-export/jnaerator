@@ -53,10 +53,10 @@ import com.ochafik.util.string.StringUtils;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class JNAerationTests {
+public class JNAerationTest {
 	String title;
 	TestDesc test;
-	public JNAerationTests(String title, TestDesc test) {
+	public JNAerationTest(String title, TestDesc test) {
 		this.title = title;
 		this.test = test;
 	}
@@ -165,7 +165,7 @@ public class JNAerationTests {
 		//List<URL> list = URLUtils.listFiles(new URL("jar:file:/Users/ochafik/Prog/Java/bin/jnaerator.jar!/com/ochafik/lang/jnaerator"), null);
 		List<Object[]> data = new ArrayList<Object[]>();
 		
-		URL dir = JNAerationTests.class.getClassLoader().getResource("com/ochafik/lang/jnaerator/tests");
+		URL dir = JNAerationTest.class.getClassLoader().getResource("com/ochafik/lang/jnaerator/tests");
 		if(dir == null)
 			throw new FileNotFoundException("Could not find test files !");
  		for (URL testURL : URLUtils.listFiles(dir, new Filter<String>() {
