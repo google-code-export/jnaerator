@@ -75,7 +75,10 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		
 		if (replaceChild(protocols, Identifier.class, this, child, by))
 			return true;
-		
+
+		if (replaceChild(parents, Identifier.class, this, child, by))
+			return true;
+
 		return replaceChild(declarations, Declaration.class, this, child, by);
 	}
 
