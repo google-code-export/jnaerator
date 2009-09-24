@@ -2,20 +2,22 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
-	  <groupId>com.jnaerator</groupId>
-	  <artifactId>jnaerator-parent</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <relativePath>..</relativePath>
-  </parent>
+
   <groupId>com.jnaerator</groupId>
   <artifactId>maven-jnaerator-plugin</artifactId>
   <version>0.9.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Maven JNAerator Plugin</name>
   <url>http://jnaerator.googlecode.com</url>
-    <build>
+    
+  <parent>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-parent</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	  <relativePath>..</relativePath>
+  </parent>
+  
+  <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
