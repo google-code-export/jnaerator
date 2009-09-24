@@ -24,7 +24,9 @@
 
 = Usage = 
 
-  * JNAnerator runtime classes, to support JNAerated sources :
+== JNAerator runtime classes ==
+
+Needed to support JNAerated sources :
 {{{
 <project>
 	...
@@ -40,21 +42,29 @@
 </project>
 }}}
 
-  * Maven JNAerator Plugin :
-    # Put command line arguments in file `src/main/jnaerator/config.jnaerator`
-    # Add the following lines to your `pom.xml` :
-    {{{
+== Maven JNAerator Plugin ==
+
+  # Put command line arguments in file `src/main/jnaerator/config.jnaerator`
+  # Add the following lines to your `pom.xml` :
+  {{{
 <project>
 	...
-	<dependencies>
-	   <dependency>
-		<groupId>com.jnaerator</groupId>
-		 <artifactId>jnaerator-runtime</artifactId>
-		 <version>0.9.1</version>
-		<scope>compile</scope>
-	   </dependency>
-	</dependencies>
+	<build>
+		<plugins>
+			...
+			<plugin>
+				<groupId>com.jnaerator</groupId>
+				<artifactId>maven-jnaerator-plugin</artifactId>
+				<version>0.9.1</version>
+			</plugin>
+			...
+		</plugin>
+	</build>
 	...
 </project>
 }}}
-    #  Run with `mvn com.jnaerator:maven-jnaerator:jnaerate` : will create Java & Scala files in `target/generated-sources`
+  #  Run JNAerator through Maven with the following command :
+  {{{ 
+mvn com.jnaerator:maven-jnaerator:jnaerate
+}}}
+  This will create Java & Scala files in `target/generated-sources`
