@@ -24,6 +24,14 @@
 	  <version>1.0-SNAPSHOT</version>
 	  <scope>compile</scope>
 	</dependency>
+	<!--
+	<dependency>
+	  <groupId>org.rococoa</groupId>
+	  <artifactId>rococoa-jnaerator</artifactId>
+	  <version>0.3.1-SNAPSHOT</version>
+	  <scope>compile</scope>
+	</dependency>
+	-->
 	
 	<dependency>
       <groupId>junit</groupId>

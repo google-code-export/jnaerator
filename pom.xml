@@ -247,7 +247,9 @@
             </build>
         </profile>
     </profiles>
+	<!--
   <modules>
     <module>maven-jnaerate</module>
   </modules>
+  -->
 </project>
