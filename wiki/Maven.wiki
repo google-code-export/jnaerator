@@ -1,24 +1,36 @@
 #summary Maven repository and usage instructions
 
-= Snapshot Repository =
+= Repository =
 
 {{{
-<repository>
-  <id>jnaerator</id>
-  <url>http://jnaerator.googlecode.com/svn/trunk/maven-repo</url>
-</repository>
+<project>
+	...
+	<repositories>
+		<repository>
+		  <id>jnaerator</id>
+		  <name>JNAerator Maven Repository</name>
+		  <url>http://jnaerator.sourceforge.net/maven</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+        	<pluginRepository>
+			  <id>jnaerator</id>
+			  <url>http://jnaerator.sourceforge.net/maven</url>
+	        </pluginRepository>
+	</pluginRepositories>
+	...
+</project>
 }}}
 
 = Usage = 
 
-Depending on JNAerator-runtime :
-
+JNAerator-runtime :
 {{{
 <dependencies>
   <dependency>
     <groupId>com.jnaerator</groupId>
     <artifactId>jnaerator-runtime</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.1</version>
     <scope>compile</scope>
   </dependency>
 </dependencies>
