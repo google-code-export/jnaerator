@@ -9,6 +9,8 @@ JNAerator is fully Maven-ized, which means that the following are possible :
   * Add a dependency to JNAerator runtime classes (which include JNA + Rococoa) in a Maven project
   * [CompilingJNAerator  Build JNAerator with Maven]
 
+JNAerator's Maven-generated sites are available [http://jnaerator.sourceforge.net/sites/ here].
+
 TODO future developments might include Maven archetypes to bootstrap standard native library wrappings projects
 
 = Repository =
