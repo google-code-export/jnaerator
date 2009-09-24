@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jnaerator</groupId>
     <artifactId>jnaerator-parent</artifactId>
@@ -17,12 +17,8 @@
 	</developers>
 
 	<reporting>
-	
-		
-		  
 		<plugins>
 		
-			
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-checkstyle-plugin</artifactId>
@@ -105,16 +101,26 @@
 	<build>
 		<extensions>
 		
-		  <!--<extension>
+		  <extension>
                <groupId>org.apache.maven.wagon</groupId>
                <artifactId>wagon-ssh</artifactId>
                <version>1.0-beta-5</version>
            </extension>
+		  <!--
 		  <extension>
 			<groupId>org.jvnet.wagon-svn</groupId>
 			<artifactId>wagon-svn</artifactId>
 			<version>1.8</version>
-		  </extension>-->
+		  </extension>
+		  -->
+		  <!--
+		  <extension>
+			 <groupId>org.apache.maven.wagon</groupId>
+			  <artifactId>wagon-http-googlecode</artifactId>
+			  <version>1.0-beta-3</version>
+		  </extension>
+		  -->
+		  
 		</extensions>
 		
 		<plugins>
@@ -184,9 +190,9 @@
 		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/</url>
 	    </site>
 		<repository>
+           <id>jnaerator-repo</id>
            <uniqueVersion>false</uniqueVersion>
-		   <id>jnaerator-repo</id>
-           <name>JNAerator Sourceforge Maven Repository</name>
+		   <name>JNAerator Sourceforge Maven Repository</name>
 		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/maven</url>
 	    </repository>
 	</distributionManagement>
@@ -241,5 +247,7 @@
             </build>
         </profile>
     </profiles>
+  <modules>
+    <module>maven-jnaerate</module>
+  </modules>
 </project>
-
