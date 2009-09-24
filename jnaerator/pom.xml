@@ -26,7 +26,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
   
   <licenses>
     <license>
-      <name>LGPL 3.0</name>
+      <name>LGPL 2.1</name>
       <url>http://www.gnu.org/copyleft/lesser.html</url>
       <distribution>repo</distribution>
       <comments>Covers everything under packages com.ochafik.*</comments>
