@@ -2,20 +2,28 @@
 #sidebar sidebar
 
 
-Checkout the latest sources (you'll need SVN installed) : 
+  # Checkout the latest sources (you'll need SVN installed) : 
 {{{ 
 svn co http://jnaerator.googlecode.com/svn/trunk jnaerator
 cd jnaerator
 }}}
 
-Run the compilation script :
- * On Windows :
-  {{{ script/compile }}}
- * On Mac OS X, Linux and other Unices :
-  {{{ sh scripts/compile }}}
+  # Install Maven
+  # Install jnaerator-parent project
+{{{
+mvn install
+}}}
+  # Run Maven on jnaerator-runtime
+{{{
+cd jnaerator-runtime
+mvn clean install
+cd ..
+}}}
+  # Run Maven on jnaerator
+{{{
+cd jnaerator
+mvn clean install
+cd ..
+}}}
 
-That should be it, you'll be able to run JNAerator with the following command :
- * On Windows :
-  {{{ java -cp libraries\anarres-cpp.jar;libraries\antlr-runtime-3.1.jar;libraries\jna.jar;libraries\junit-4.4.jar;classes com.ochafik.lang.jnaerator.JNAerator }}}
- * On Mac OS X, Linux and other Unices :
-  {{{ java -cp libraries/anarres-cpp.jar:libraries/antlr-runtime-3.1.jar:libraries/jna.jar:libraries/junit-4.4.jar:classes com.ochafik.lang.jnaerator.JNAerator }}}
+TODO use modules so that only one mvn command is needed.
