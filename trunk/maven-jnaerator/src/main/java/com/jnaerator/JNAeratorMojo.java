@@ -26,41 +26,55 @@ import java.util.*;
 
 /**
  * Goal which touches a timestamp file.
- *
  * @goal jnaerate
- * @phase generate-sources
+ * @execute phase=generate-sources
+ * @description Launches JNAerator with the command-line arguments contained in src/main/jnaerator/config.jnaerator. To launch from command line, use "mvn com.jnaerator:maven-jnaerator:jnaerate"
  */
 public class JNAeratorMojo
     extends AbstractMojo
 {
     /**
      * Output directory for JNAerated sources.
-     * @parameter expression="${project.build.directory}/src/jnaerator/config.jnaerator"
+     * @parameter expression="${project.build.directory}/../src/main/jnaerator/config.jnaerator"
      * @required
      */
     private File config;
 
     /**
-     * Output directory for JNAerated sources.
-     * @parameter expression="${project.build.directory}/generated-sources/jnaerator"
+     * Output directory for JNAerated Java sources.
+     * @parameter expression="${project.build.directory}/generated-sources/java"
      * @optional
      */
-    private File sourcesOutputDirectory;
+    private File javaOutputDirectory;
 
+    /**
+     * Output directory for JNAerated Scala sources.
+     * @parameter expression="${project.build.directory}/generated-sources/scala"
+     * @optional
+     */
+    private File scalaOutputDirectory;
+
+    static File canonizeDir(File f) throws IOException {
+        if (!f.exists())
+            f.mkdirs();
+        return f.getCanonicalFile();
+    }
     public void execute()
         throws MojoExecutionException
     {
-        System.out.println(getPluginContext());
-
-        List<String> args = new ArrayList<String>();
-        if (sourcesOutputDirectory != null) {
-            args.add("-o");
-            args.add(sourcesOutputDirectory.getAbsolutePath());
-        }
-        args.add(config.getAbsolutePath());
-
         try
         {
+            List<String> args = new ArrayList<String>();
+
+            args.add("-noComp");
+            args.add("-o");
+            args.add(canonizeDir(javaOutputDirectory).toString());
+            
+            args.add("-scalaOut");
+            args.add(canonizeDir(scalaOutputDirectory).toString());
+
+            args.add(config.getAbsolutePath());
+
             com.ochafik.lang.jnaerator.JNAerator.main(args.toArray(new String[0]));
         }
         catch (Exception e )
