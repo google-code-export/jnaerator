@@ -1,4 +1,5 @@
 #summary Maven repository and usage instructions
+<wiki:toc max_depth="3" />
 
 = Repository =
 
