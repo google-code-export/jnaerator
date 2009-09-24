@@ -1,4 +1,5 @@
 #summary Maven repository and usage instructions
+#labels Featured
 <wiki:toc max_depth="3" />
 
 = Repository =
