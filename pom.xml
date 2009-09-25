@@ -101,11 +101,11 @@
 	<build>
 		<extensions>
 		
-		  <extension>
+		  <!--extension>
                <groupId>org.apache.maven.wagon</groupId>
                <artifactId>wagon-ssh</artifactId>
-               <version>1.0-beta-5</version>
-           </extension>
+               <version>1.0-beta-6</version>
+           </extension-->
 		  <!--
 		  <extension>
 			<groupId>org.jvnet.wagon-svn</groupId>
@@ -187,7 +187,7 @@
 		<site>
            <id>jnaerator-sites</id>
            <name>JNAerator Sourceforge Sites</name>
-		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/</url>
+		   <url>scp://shell.sourceforge.net/home/groups/j/jn/jnaerator/htdocs/sites</url>
 	    </site>
 		<repository>
            <id>jnaerator-repo</id>
