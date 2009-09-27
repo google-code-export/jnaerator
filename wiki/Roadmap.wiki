@@ -2,61 +2,24 @@
 #labels Phase-Requirements,Featured
 #sidebar sidebar
 
-= New features =
+= Scheduled for v1.0 = 
 
-  # see what there is to do w/ Maven
-  # create a JNAerator Ant task
-  # *OK (Windows 32 only : -scanLibraries switch)* when the headers are not available, reverse engineer the functions signatures from the list of exported mangled symbols found in the dll (a-la-Dependency Walker, w/ [http://msdn.microsoft.com/en-us/library/ms681400(VS.85).aspx UnDecorateSymbolName]).
-  # fix file association of .jnaerator files on Mac OS X (register a listener to web start services so that the argument file is read... on Windows, it is passed with -open file as arguments, so it already works).
-  # Make JNAerator even more customizable : factory methods for all the scanners and transformers, split process into more functions
-  # *IN PROGRESS (fields = ok)* Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
-  # Support URLs in arguments, with automatic local caching, support of wildcards (list files at arbitrary http URL), integration with preprocessor...
-  # More elaborate variable replacements in .jnaerator files : default values (w/ or w/o prompt to user), implicit download, script expressions...)
-  # *OK (-direct switch)* generate code that uses the new [https://jna.dev.java.net/#direct direct invocation feature of JNA 3.1.0+] when possible : 
-{{{
-public class MyLibrary {
-	public static class MyStruct extends Structure {
-		int a;
-		float b;
-	}
-	private MyLibraryInterface INSTANCE = Native.loadLibrary("my", MyLibraryInterface.class);
-	public interface MyLibraryInterface extends NativeLibrary {
-		boolean complexFunction(MyStruct pStruct);
-	}
-	public static native int simpleFunction(float a, double b);
-	public static boolean complexFunction(MyStruct pStruct) {
-		return INSTANCE.complexFunction(pStruct);
-	}
-}
-}}}
-  # Once this is done, test some demanding library (OpenGL, for instance)...
-  # allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
-  # make jnaeration features selectable from the GUI & CLI
-  # *OK* include jna.jar & rococoa.jar in generated JARs (optional, otherwise link to them in classpath)
-  # [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
-  # rework globals entirely : {{{ int Lib.var.get() }}}, {{{ Lib.var.set(int) }}} when possible
-  # *IN PROGRESS (@mangling comment annotation supported...)* define source annotations in c comments to alter jmaerator behaviour
-  # *OK* include libraries in generated JARs, w/ auto extract
-  # *OK* create Pointer subclasses for unknown pointer references (would need adding a {{{ public Pointer(Pointer p) }}} constructor to JNA)
-  # *OK* text / xml format for jnaerator config (w/ variables, so that users might contribute configs for well-known libraries)
+  * context-sensitive C modifiers (right now cannot use "byval" as an identifier as it is an ObjectiveC function argument modifier !)
+  * GUI to choose 
+  * GUI to choose elements to JNAerate and customize mappings (with batchable actions, filter-as-you-type...)
+    * -choose creates a .jnaeratorChoices file
+    * -choices test.jnaeratorChoices uses it
 
-= Enhancements =
+= Unscheduled =
 
-  # Add runtime tests to existing parsing/compilation tests
-  # add option to switch NativeLong off : on MSVC++ 64bits, long is 32 bits !
-  # add progression bar to studio
-  # enhance the error reporting of parsing (work on antlr grammar) and of compilation
-  # refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
-  # select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
-  # *OK* add option not to keep comments (then by default, do not include sources in generated JAR)
-  # *OK* cache downloaded jars in JNAeratorStudio (update if lastmodified date changed)
-  # *OK* prefer simple names for structs and enums (S typedef instead of `_`S tag)
-  # *OK* automated tests for Objective-C (long time no try !)
- 
-= Bugfixes = 
-
-  # *Mostly OK* finalize VisualStudio parsing (replace $() variables)
-  # define -visibility switch to control choice of exported functions : __declspec(dllexport), not __attribute((visibility=hiddden)), always... + warnings when no symbol is exported : "are you sure you didn't miss a '-visibility all' switch ?"
-  # *OK* fix the compiler's classpath in in JNAeratorStudio + Web Start
-  # *OK* fix the line-numbering in comments
-  # *OK* parse {{{ typedef unsigned U; register U int i; }}} : either parse a soup of words and disambiguate in a separate pass or renounce to multithreaded parsing and lookup typedefs from inside the parser
+  * fix file association of .jnaerator files on Mac OS X (register a listener to web start services so that the argument file is read... on Windows, it is passed with -open file as arguments, so it already works).
+  * *IN PROGRESS (fields = ok)* Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
+  * Support URLs in arguments, with automatic local caching, support of wildcards (list files at arbitrary http URL), integration with preprocessor...
+  * More elaborate variable replacements in .jnaerator files : default values (w/ or w/o prompt to user), implicit download, script expressions...)
+  * allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
+  * make jnaeration features selectable from the GUI & CLI
+  * [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
+  * define -visibility switch to control choice of exported functions : __declspec(dllexport), not __attribute((visibility=hiddden)), always... + warnings when no symbol is exported : "are you sure you didn't miss a '-visibility all' switch ?"
+  * enhance the error reporting of parsing (work on antlr grammar) and of compilation
+  * refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
+  * select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
