@@ -160,6 +160,7 @@ public class JNAeratorCommandLineArgs {
 		StructsInLibrary(	"-structsInLibrary",	"Force structs to be JNAerated as inner classes of their declaring libraries (otherwise, each top-level structure is defined as a top-level class in its library's package)"),
 		CurrentPackage(		"-package",				"Set the Java package in which all the output will reside (by default, set to the library name).", new ArgDef(Type.String, "forcedPackageName")),
 		RecursedExtensions(	"-allowedFileExts", 	"Colon-separated list of file extensions used to restrict files used when recursing on directories, or \"*\" to parse all files (by default = " + JNAeratorConfig.DEFAULT_HEADER_EXTENSIONS + ")", new ArgDef(Type.String, "extensions")),
+		IfRegexMatch(		"-ifRegexMatch",		"Conditional evaluation of an argument if a java system property matches a regular expression", new ArgDef(Type.String, "javaProperty"), new ArgDef(Type.String, "regex"), new ArgDef(Type.String, "thenArg"), new ArgDef(Type.String, "elseArg")),
 		DefineMacro(		"-D([^=]*)(?:=(.*))?", 	"Define a macro symbol", new ArgDef(Type.String, "name"), new ArgDef(Type.String, "value")),
 		RootPackage(		"-root(?:Package)?", 	"Define the root package for all output classes", new ArgDef(Type.String, "package")),
 		CurrentLibrary(		"-library", 			"Define the name of the output library. This is a state parameter, it will affect all files listed after it, until another -library switch is provided. It does not affect sources included from a project file (Visual Studio...).\n" + 
