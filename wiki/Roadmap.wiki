@@ -5,7 +5,6 @@
 = Scheduled for v1.0 = 
 
   * context-sensitive C modifiers (right now cannot use "byval" as an identifier as it is an ObjectiveC function argument modifier !)
-  * GUI to choose 
   * GUI to choose elements to JNAerate and customize mappings (with batchable actions, filter-as-you-type...)
     * -choose creates a .jnaeratorChoices file
     * -choices test.jnaeratorChoices uses it
