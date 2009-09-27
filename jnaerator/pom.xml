@@ -99,7 +99,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
 	  <version>1.0-SNAPSHOT</version>
-	  <relativePath>..</relativePath>
+	  <relativePath>../jnaerator-parent</relativePath>
   </parent>
   
   <build>
