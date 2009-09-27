@@ -262,6 +262,15 @@ public class JNAerator {
 					case NoPrimitiveArrays:
 						config.noPrimitiveArrays = true;
 						break;
+					case IfRegexMatch:
+						String javaProperty = a.getStringParam(0),
+								regex = a.getStringParam(1),
+								thenCmd = a.getStringParam(2),
+								elseCmd = a.getStringParam(3);
+						String propValue = System.getProperty(javaProperty);
+						if (propValue == null)
+							propValue = "";
+						return Arrays.asList(propValue.matches(regex) ? thenCmd : elseCmd);
 					case NoCompile:
 						config.compile = false;
 						break;
