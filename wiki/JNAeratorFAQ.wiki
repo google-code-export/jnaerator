@@ -47,6 +47,15 @@ There are quite a few of them : [CommandLineOptionsAndEnvironmentVariables]
 
 For now, [https://jna.dev.java.net/servlets/SummarizeList?listName=users JNA's users mailing list] is THE place to be.
 
+= JNAerator stalls when fed with large headers = 
+
+This appears to be a bug coming from its ANTLR parser, which does not react well to low-memory conditions.
+
+You can solve this by increasing the maximum memory allocated to the JVM :
+{{{
+java -Xmx500m -jar jnaerator.jar your-arguments-here
+}}}
+
 = I found a bug in JNAerator. Where shall I file it ? = 
 
 The [http://code.google.com/p/jnaerator/issues Issues] section is here for that.
