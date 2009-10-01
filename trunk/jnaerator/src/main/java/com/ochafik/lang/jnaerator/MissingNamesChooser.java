@@ -38,6 +38,7 @@ import com.ochafik.lang.jnaerator.parser.TaggedTypeRefDeclaration;
 import com.ochafik.lang.jnaerator.parser.TypeRef;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
+import com.ochafik.lang.jnaerator.parser.ModifierKind;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
@@ -174,7 +175,7 @@ public class MissingNamesChooser extends Scanner {
 				} else {
 					TypeRef tr = new TypeRef.SimpleTypeRef(taggedTypeRef.getTag().clone());
 					for (Modifier mod : taggedTypeRef.getModifiers()) {
-						if (mod.isA(Modifier.Kind.StorageClassSpecifier))
+						if (mod.isA(ModifierKind.StorageClassSpecifier))
 							tr.addModifiers(mod);
 					}
 					taggedTypeRef.replaceBy(tr);

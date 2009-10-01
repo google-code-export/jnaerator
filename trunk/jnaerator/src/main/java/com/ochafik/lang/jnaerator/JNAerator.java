@@ -77,6 +77,7 @@ import com.ochafik.lang.jnaerator.parser.Expression.MemberRefStyle;
 import com.ochafik.lang.jnaerator.parser.Identifier.QualificationSeparator;
 import com.ochafik.lang.jnaerator.parser.Identifier.QualifiedIdentifier;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
+import com.ochafik.lang.jnaerator.parser.ModifierKind;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
@@ -1190,7 +1191,7 @@ public class JNAerator {
 			public List<Modifier> getStoMods(List<Modifier> mods) {
 				List<Modifier> ret = null;
 				for (Modifier mod : mods) {
-					if (mod.isA(Modifier.Kind.StorageClassSpecifier)) {
+					if (mod.isA(ModifierKind.StorageClassSpecifier)) {
 						if (ret == null)
 							ret = new ArrayList<Modifier>();
 						ret.add(mod);

@@ -237,6 +237,8 @@ typedef struct {
 --
 typedef char *byteptr;
 --
+int f(int* out, char byref, double in);
+--
 typedef int (*fncptr)(int);
 --
 struct GC_thread;
