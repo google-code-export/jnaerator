@@ -911,7 +911,7 @@ argDef	returns [Arg arg]
 	;
 
 typeMutator returns [TypeMutator mutator]
-	:	//{ next("const", "__const") }? IDENTIFIER '*' { $mutator = TypeMutator.CONST_STAR; } |
+	:	{ next("const", "__const") }?=> IDENTIFIER '*' { $mutator = TypeMutator.CONST_STAR; } |
 		t=('*' | '&') { 
 			$mutator = $t.text.equals("*") ? TypeMutator.STAR : TypeMutator.AMPERSTAND; 
 		} |

@@ -248,6 +248,8 @@ struct Test {__
 	int i, j, k;
 };
 --
+libvlc_instance_t* libvlc_new(char *const *);
+--
 typedef __success(return >= 0) long HRESULT;
 --
 static __inline__  int __inline_signbit( long double __x ){ 
