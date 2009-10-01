@@ -281,7 +281,7 @@ static __inline__  int __inline_isnormalf( float __x ) {
 - (BOOL)lockBeforeDate:(NSDate *)limit;
 
 //- (void)setName:(NSString *)n ;
-- (void)setName:(NSString *)n;
+- (void)setName:(NSString in*)n;
 //- (NSString *)name ;
 - (NSString *)name;
 
