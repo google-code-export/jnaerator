@@ -4,7 +4,7 @@ typedef struct _simplestruct {
 
 
 typedef struct _outerstruct2 {
-  simplestruct *byref_; // TODO rehabilitate byref and other modifiers when it makes sense
+  simplestruct *byref;
 } outerstruct2;
 
 --

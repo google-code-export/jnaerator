@@ -36,8 +36,14 @@ options {
 scope Symbols {
 	Set<String> typeIdentifiers;
 }
+scope ModifierKinds {
+	EnumSet<ModifierKind> allowedKinds;
+}
 scope IsTypeDef {
 	boolean isTypeDef;
+}
+scope IsObjCArgDef {
+	boolean isObjCArgDef;
 }
 
 @header { 
@@ -91,10 +97,26 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	boolean isPrimitiveType(String identifier) {
 		return typeConverter.isObjCppPrimitive(identifier);
 	}
+	public EnumSet<ModifierKind> newKinds(ModifierKind first, ModifierKind... rest) {
+		return EnumSet.of(first, rest);
+	}
 	public void setupSymbolsStack() {
     		Symbols_scope ss = new Symbols_scope();
     		ss.typeIdentifiers = new HashSet();
     		Symbols_stack.push(ss);
+	}
+	public boolean isAllowed(ModifierKind kind) {
+		if (ModifierKinds_stack.isEmpty())
+			return false;
+		ModifierKinds_scope scope = (ModifierKinds_scope)ModifierKinds_stack.get(ModifierKinds_stack.size() - 1);
+		return scope.allowedKinds.contains(kind);
+	}
+	
+	boolean isObjCArgDef() {
+		if (IsObjCArgDef_stack.isEmpty())
+			return false;
+		IsObjCArgDef_scope scope = (IsObjCArgDef_scope)IsObjCArgDef_stack.get(IsObjCArgDef_stack.size() - 1);
+		return scope.isObjCArgDef;
 	}
 	boolean isTypeDef() {
 		if (IsTypeDef_stack.isEmpty())
@@ -234,8 +256,16 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	protected String next(int i) {
 		return input.LT(i).getText();
 	}
-	protected boolean next(Modifier.Kind... anyModKind) {
-		return Modifier.parseModifier(next(), anyModKind) != null;
+	protected Modifier parseModifier(String s, ModifierKind... anyModKind) {
+		Modifier mod = Modifier.parseModifier(next(), anyModKind);
+		if (mod == null)
+			return null;
+		if (mod.isAllOf(ModifierKind.ObjectiveC, ModifierKind.OnlyInArgDef) && !isObjCArgDef())
+			return null;
+		return mod;
+	}
+	protected boolean next(ModifierKind... anyModKind) {
+		return parseModifier(next(), anyModKind) != null;
 	} 
 	protected boolean next(String... ss) {
 		return next(1, ss);
@@ -365,6 +395,7 @@ externDeclarations returns [ExternDeclarations declarations]
 
 declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex]
 scope IsTypeDef;
+scope IsObjCArgDef;
 @after {
 	try {
 		int i = $start.getTokenIndex();
@@ -469,6 +500,7 @@ enumItem returns [Enum.EnumItem item]
 	;
 	
 enumBody returns [Enum e]
+scope IsObjCArgDef;
 	:
 		{ 
 			$e = new Enum();
@@ -612,6 +644,10 @@ objCPropertyDecl returns [Property property]
 	;
 	
 objCMethodDecl returns [Function function]
+scope IsObjCArgDef;
+@init {
+	$IsObjCArgDef::isObjCArgDef = true;
+}
 	:	{ 	
 			$function = new Function(); 
 			$function.setType(Function.Type.ObjCMethod);
@@ -664,6 +700,7 @@ objCMethodDecl returns [Function function]
 	;
 
 structBody returns [Struct struct]
+scope IsObjCArgDef;
 	:
 		{ 
 			$struct = new Struct();
@@ -831,14 +868,14 @@ modifier returns [List<Modifier> modifiers, String asmName]
 		{ next("extern") }?=> IDENTIFIER ex=STRING {
 			$modifiers.add(Modifier.Extern); // TODO
 		} |
-		{ Modifier.parseModifier(next()) != null }? m=IDENTIFIER {
+		{ parseModifier(next()) != null }? m=IDENTIFIER {
 			$modifiers.add(Modifier.parseModifier($m.text));
 		} |
 		{ next("__success") }?=>
 		IDENTIFIER '(' 'return' binaryOp expression  ')' |
 		
 		// TODO handle it properly @see http://blogs.msdn.com/staticdrivertools/archive/2008/11/06/annotating-for-success.aspx
-		{ next(Modifier.Kind.VCAnnotation1Arg, Modifier.Kind.VCAnnotation2Args) }?=>
+		{ next(ModifierKind.VCAnnotation1Arg, ModifierKind.VCAnnotation2Args) }?=>
 		IDENTIFIER '(' expression ')' |
 		
 		{ next("__declspec", "__attribute__", "__asm") }?=>
@@ -861,7 +898,7 @@ modifier returns [List<Modifier> modifiers, String asmName]
 extendedModifiers returns [List<Modifier> modifiers]
 	:	{ $modifiers = new ArrayList<Modifier>(); }
 		(
-			{ next(Modifier.Kind.Extended) }? m=IDENTIFIER
+			{ next(ModifierKind.Extended) }? m=IDENTIFIER
 			(
 				{
 					$modifiers.add(Modifier.parseModifier($m.text));
@@ -1122,7 +1159,7 @@ declaratorsList returns [List<Declarator> declarators]
 directDeclarator returns [Declarator declarator]
 	:	
 		(
-			{ Modifier.parseModifier(next()) == null }?=> IDENTIFIER {
+			{ parseModifier(next()) == null }?=> IDENTIFIER {
 				$declarator = mark(new DirectDeclarator($IDENTIFIER.text), getLine($IDENTIFIER));
 				if (isTypeDef()) {
 					$Symbols::typeIdentifiers.add($IDENTIFIER.text);
@@ -1203,7 +1240,7 @@ typeRefCore returns [TypeRef type]
 			{ 
 				isTypeIdentifier(next()) || 
 				(
-					Modifier.parseModifier(next(1)) == null && 
+					parseModifier(next(1)) == null && 
 					!next(2, "=", ",", ";", ":", "[", "(", ")")
 				) 
 			}?=> an=typeName { $type = $an.type; } |

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
-import com.ochafik.lang.jnaerator.parser.Modifier.Kind;
+import com.ochafik.lang.jnaerator.parser.ModifierKind;
 import com.ochafik.util.string.StringUtils;
 
 public abstract class TypeRef extends ModifiableElement implements Declarator.MutableByDeclarator {
@@ -145,7 +145,7 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 		return toString(indent) + (isVarArg ? "... " : " ") + varName;
 	}
 	public boolean acceptsModifier(Modifier modifier) {
-		return modifier.isAnyOf(Kind.NumericTypeQualifier, Kind.TypeQualifier);
+		return modifier.isAnyOf(ModifierKind.NumericTypeQualifier, ModifierKind.TypeQualifier);
 	}
 	/*
 	public TypeRef addModifier(String modifier) {

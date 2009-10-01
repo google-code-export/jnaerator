@@ -20,185 +20,201 @@ package com.ochafik.lang.jnaerator.parser;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import static java.util.EnumSet.of;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.ochafik.lang.jnaerator.parser.ModifierKind.*;
 
 /**
  * @see http://msdn.microsoft.com/en-us/library/dabb5z75.aspx
  */
 public enum Modifier {
-	__cdecl(Kind.CallingConvention),
-		_cdecl(__cdecl, Kind.CallingConvention),
+	__cdecl(of(CallingConvention)),
+		_cdecl(__cdecl),
 	
-	__stdcall(Kind.CallingConvention),
-		_stdcall(__stdcall, Kind.CallingConvention),
+	__stdcall(of(CallingConvention)),
+		_stdcall(__stdcall),
 	
-	__fastcall(Kind.CallingConvention),
-		_fastcall(__fastcall, Kind.CallingConvention),
+	__fastcall(of(CallingConvention)),
+		_fastcall(__fastcall),
 	
-	__thiscall(Kind.CallingConvention),
-		_thiscall(__thiscall, Kind.CallingConvention),
+	__thiscall(of(CallingConvention)),
+		_thiscall(__thiscall),
 	
-	__pascal(Kind.CallingConvention),
-		_pascal(__pascal, Kind.CallingConvention),
+	__pascal(of(CallingConvention)),
+		_pascal(__pascal),
 	
 	/// VC++ annotations 
 	/// @see http://msdn.microsoft.com/en-us/library/cc264104.aspx
 	
-	__pre(Kind.VCAnnotationNoArg),
-	__valid(Kind.VCAnnotationNoArg),
-	__reserved(Kind.VCAnnotationNoArg),
-	__checkReturn(Kind.VCAnnotationNoArg),
-	__fallthrough(Kind.VCAnnotationNoArg),
-	__readonly(Kind.VCAnnotationNoArg),
-	__null(Kind.VCAnnotationNoArg),
-	__in(Kind.VCAnnotationNoArg),
-	__out(Kind.VCAnnotationNoArg),
-	__inout(Kind.VCAnnotationNoArg),
-	__refparam(Kind.VCAnnotationNoArg),
-	__exceptthat(Kind.VCAnnotationNoArg),
+	__pre(of(VCAnnotationNoArg)),
+	__valid(of(VCAnnotationNoArg)),
+	__reserved(of(VCAnnotationNoArg)),
+	__checkReturn(of(VCAnnotationNoArg)),
+	__fallthrough(of(VCAnnotationNoArg)),
+	__readonly(of(VCAnnotationNoArg)),
+	__null(of(VCAnnotationNoArg)),
+	__in(of(VCAnnotationNoArg)),
+	__out(of(VCAnnotationNoArg)),
+	__inout(of(VCAnnotationNoArg)),
+	__refparam(of(VCAnnotationNoArg)),
+	__exceptthat(of(VCAnnotationNoArg)),
 	
-	_opt(Kind.VCAnnotationNoArg),
-	_deref(Kind.VCAnnotationNoArg),
-	_deref_opt(Kind.VCAnnotationNoArg),
-	_ecount(Kind.VCAnnotation1Arg),
-	_bcount(Kind.VCAnnotation1Arg),
-	_full(Kind.VCAnnotation1Arg),
-	_part(Kind.VCAnnotation2Args),
+	_opt(of(VCAnnotationNoArg)),
+	_deref(of(VCAnnotationNoArg)),
+	_deref_opt(of(VCAnnotationNoArg)),
+	_ecount(of(VCAnnotation1Arg)),
+	_bcount(of(VCAnnotation1Arg)),
+	_full(of(VCAnnotation1Arg)),
+	_part(of(VCAnnotation2Args)),
 	
-	__ptr64(Kind.TypeQualifier), // TODO find better kind 
-	__maybenull(Kind.TypeQualifier),
-	__nullterminated(Kind.TypeQualifier, Kind.StringAnnotation),
-	__nullnullterminated(Kind.TypeQualifier, Kind.StringAnnotation),
-	__possibly_notnullterminated(Kind.TypeQualifier, Kind.StringAnnotation),
+	__ptr64(of(TypeQualifier)), // TODO find better kind 
+	__maybenull(of(TypeQualifier)),
+	__nullterminated(of(TypeQualifier, StringAnnotation)),
+	__nullnullterminated(of(TypeQualifier, StringAnnotation)),
+	__possibly_notnullterminated(of(TypeQualifier, StringAnnotation)),
 	//__success,
 	
-	Auto(Kind.StorageClassSpecifier),
-	Register(Kind.StorageClassSpecifier),
-	Static(Kind.StorageClassSpecifier), 
-	Virtual(Kind.StorageClassSpecifier), 
-	Extern(Kind.StorageClassSpecifier),
-	Pascal(Kind.StorageClassSpecifier),
-	//TypeDef(Kind.StorageClassSpecifier), // TODO propagate this to everywhere : need to remove TypeDef class
+	Auto(of(StorageClassSpecifier)),
+	Register(of(StorageClassSpecifier)),
+	Static(of(StorageClassSpecifier)), 
+	Virtual(of(StorageClassSpecifier)), 
+	Extern(of(StorageClassSpecifier)),
+	Pascal(of(StorageClassSpecifier)),
+	//TypeDef(of(StorageClassSpecifier)), // TODO propagate this to everywhere : need to remove TypeDef class
 	
-	__const(Kind.TypeQualifier), 
-	Const(__const, Kind.TypeQualifier), 
-	Volatile(Kind.TypeQualifier), 
-	Mutable(Kind.TypeQualifier),
+	__const(of(TypeQualifier)), 
+	Const(__const),
+	Volatile(of(TypeQualifier)), 
+	Mutable(of(TypeQualifier)),
 	
-	__unsigned(Kind.NumericTypeQualifier, Kind.SignModifier),
-	__signed(Kind.NumericTypeQualifier, Kind.SignModifier),
-	Unsigned(__unsigned, Kind.NumericTypeQualifier, Kind.SignModifier),
-	Signed(__signed, Kind.NumericTypeQualifier, Kind.SignModifier),
-	Long(Kind.NumericTypeQualifier, Kind.SizeModifier),
-	Short(Kind.NumericTypeQualifier, Kind.SizeModifier),
+	__unsigned(of(NumericTypeQualifier, SignModifier)),
+	__signed(of(NumericTypeQualifier, SignModifier)),
+	Unsigned(__unsigned),
+	Signed(__signed),
+	Long(of(NumericTypeQualifier, SizeModifier)),
+	Short(of(NumericTypeQualifier, SizeModifier)),
 	
-	Typename(Kind.ReferenceQualifier),
-	Struct(Kind.ReferenceQualifier),
-	Class(Kind.ReferenceQualifier),
+	Typename(of(ReferenceQualifier)),
+	Struct(of(ReferenceQualifier)),
+	Class(of(ReferenceQualifier)),
 
 	/*primSignModifier
 		:	'signed' | 'unsigned' | '__signed' | '__unsigned';
 		*/	
 	
-	//Transient(Kind.TypeQualifier, Kind.Java), 
+	//Transient(of(TypeQualifier, Java)), 
 	
-	Public(Kind.Publicity),
-	Abstract(Kind.Publicity),
-	Final(Kind.Publicity),
-	Private(Kind.Publicity), 
-	Protected(Kind.Publicity),
+	Public(of(Publicity)),
+	Abstract(of(Publicity)),
+	Final(of(Publicity)),
+	Private(of(Publicity)), 
+	Protected(of(Publicity)),
 	
-	Inline,
+	Inline(of(C, StorageClassSpecifier)),
 	__inline(Inline),
 	__inline__(Inline),
 
-	In(Kind.ObjC),
-	Out(Kind.ObjC),
-	InOut(Kind.ObjC),
-	ByCopy(Kind.ObjC),
-	ByRef(Kind.ObjC),
+	In(of(ObjectiveC, OnlyInArgDef)),
+	Out(of(ObjectiveC, OnlyInArgDef)),
+	InOut(of(ObjectiveC, OnlyInArgDef)),
+	ByCopy(of(ObjectiveC, OnlyInArgDef)),
+	ByRef(of(ObjectiveC, OnlyInArgDef)),
 
-	Align(Kind.Declspec, Kind.HasArguments),
-	Allocate(Kind.Declspec, Kind.HasArguments),
-	AppDomain(Kind.Declspec),
-	Deprecated(Kind.Declspec, Kind.Attribute),
-	DllExport(Kind.Declspec, Kind.StorageClassSpecifier),
-	DllImport(Kind.Declspec, Kind.StorageClassSpecifier),
-	JITIntrinsic(Kind.Declspec),
-	Naked(Kind.Declspec, Kind.StorageClassSpecifier, Kind.Attribute),
-	NoAlias(Kind.Declspec, Kind.StorageClassSpecifier),
-	NoInline(Kind.Declspec),
-	NoReturn(Kind.Declspec),
-	NoThrow(Kind.Declspec, Kind.StorageClassSpecifier),
-	NoVTable(Kind.Declspec),
-	Process(Kind.Declspec),
-	Property(Kind.Declspec, Kind.HasArguments, Kind.StorageClassSpecifier, Kind.COMSpecific), //TODO handle args
-	Restrict(Kind.Declspec, Kind.StorageClassSpecifier),
-	SelectAny(Kind.Declspec, Kind.StorageClassSpecifier, Kind.COMSpecific),
-	Thread(Kind.Declspec),
-	UUID(Kind.Declspec, Kind.HasArguments, Kind.StorageClassSpecifier, Kind.COMSpecific),
+	Align(of(Declspec, HasArguments)),
+	Allocate(of(Declspec, HasArguments)),
+	AppDomain(of(Declspec)),
+	Deprecated(of(Declspec, Attribute)),
+	DllExport(of(Declspec, StorageClassSpecifier)),
+	DllImport(of(Declspec, StorageClassSpecifier)),
+	JITIntrinsic(of(Declspec)),
+	Naked(of(Declspec, StorageClassSpecifier, Attribute)),
+	NoAlias(of(Declspec, StorageClassSpecifier)),
+	NoInline(of(Declspec)),
+	NoReturn(of(Declspec)),
+	NoThrow(of(Declspec, StorageClassSpecifier)),
+	NoVTable(of(Declspec)),
+	Process(of(Declspec)),
+	Property(of(Declspec, HasArguments, StorageClassSpecifier, COMSpecific)), //TODO handle args
+	Restrict(of(Declspec, StorageClassSpecifier)),
+	SelectAny(of(Declspec, StorageClassSpecifier, COMSpecific)),
+	Thread(of(Declspec)),
+	UUID(of(Declspec, HasArguments, StorageClassSpecifier, COMSpecific)),
 	
-	Alias(Kind.Attribute),
-	Always_inline(Kind.Attribute),
-	Cdecl(Kind.Attribute),
-	//Const(Kind.Attribute),
-	Constructor(Kind.Attribute),
-	Destructor(Kind.Attribute),
-	Dllexport(Kind.Attribute),
-	Weak_import(Kind.Attribute),
-	Dllimport(Kind.Attribute),
-	Eightbit_data(Kind.Attribute),
-	Exception(Kind.Attribute),
-	Far(Kind.Attribute),
-	Fastcall(Kind.Attribute),
-	Format(Kind.Attribute),
-	Format_arg(Kind.Attribute),
-	Function_vector(Kind.Attribute),
-	Interrupt(Kind.Attribute),
-	Interrupt_handler(Kind.Attribute),
-	Long_call(Kind.Attribute),
-	Short_call(Kind.Attribute),
-	Longcall(Kind.Attribute),
-	Shortcall(Kind.Attribute),
-	Malloc(Kind.Attribute),
-	Model(Kind.Attribute),
-	Near(Kind.Attribute),
-	No_check_memory_usage(Kind.Attribute),
-	No_instrument_function(Kind.Attribute),
-	Noinline(Kind.Attribute),
-	Nonnull(Kind.Attribute),
-	Noreturn(Kind.Attribute),
-	Nothrow(Kind.Attribute),
-	Pure(Kind.Attribute),
-	Regparm(Kind.Attribute),
-	Saveall(Kind.Attribute),
-	Section(Kind.Attribute),
-	Signal(Kind.Attribute),
-	Sp_switch(Kind.Attribute),
-	Stdcall(Kind.Attribute),
-	Tiny_data(Kind.Attribute),
-	Trap_exit(Kind.Attribute),
-	Unused(Kind.Attribute),
-	Used(Kind.Attribute),
-	Visibility(Kind.Attribute),
-	Warn_unused_result(Kind.Attribute),
-	Weak(Kind.Attribute), 
+	Alias(of(Attribute)),
+	Always_inline(of(Attribute)),
+	Cdecl(of(Attribute)),
+	//Const(of(Attribute)),
+	Constructor(of(Attribute)),
+	Destructor(of(Attribute)),
+	Dllexport(of(Attribute)),
+	Weak_import(of(Attribute)),
+	Dllimport(of(Attribute)),
+	Eightbit_data(of(Attribute)),
+	Exception(of(Attribute)),
+	Far(of(Attribute)),
+	Fastcall(of(Attribute)),
+	Format(of(Attribute)),
+	Format_arg(of(Attribute)),
+	Function_vector(of(Attribute)),
+	Interrupt(of(Attribute)),
+	Interrupt_handler(of(Attribute)),
+	Long_call(of(Attribute)),
+	Short_call(of(Attribute)),
+	Longcall(of(Attribute)),
+	Shortcall(of(Attribute)),
+	Malloc(of(Attribute)),
+	Model(of(Attribute)),
+	Near(of(Attribute)),
+	No_check_memory_usage(of(Attribute)),
+	No_instrument_function(of(Attribute)),
+	Noinline(of(Attribute)),
+	Nonnull(of(Attribute)),
+	Noreturn(of(Attribute)),
+	Nothrow(of(Attribute)),
+	Pure(of(Attribute)),
+	Regparm(of(Attribute)),
+	Saveall(of(Attribute)),
+	Section(of(Attribute)),
+	Signal(of(Attribute)),
+	Sp_switch(of(Attribute)),
+	Stdcall(of(Attribute)),
+	Tiny_data(of(Attribute)),
+	Trap_exit(of(Attribute)),
+	Unused(of(Attribute)),
+	Used(of(Attribute)),
+	Visibility(of(Attribute)),
+	Warn_unused_result(of(Attribute)),
+	Weak(of(Attribute)), 
 	
-	Synchronized, Native;
+	Synchronized(of(Java)),
+	Native(of(Java));
 	
-	EnumSet<Modifier.Kind> kinds = EnumSet.noneOf(Modifier.Kind.class);
+	EnumSet<ModifierKind> kinds;
 	Modifier alias;
-	
-	Modifier(Modifier.Kind... kinds) {
-		for (Modifier.Kind kind : kinds)
+
+	/*
+	Modifier(Kind... kinds) {
+		this.kinds = EnumSet.noneOf(Kind.class);
+		for (Kind kind : kinds)
 			this.kinds.add(kind);
 	}
-	Modifier(Modifier alias, Modifier.Kind... kinds) {
+	Modifier(Modifier alias, Kind... kinds) {
 		this(kinds);
 		this.alias = alias;
 	}
-	
+	Modifier(EnumSet<Kind> kinds) {
+		this.alias = alias;
+	}*/
+	Modifier(Modifier alias) {
+		this.kinds = alias.kinds;
+		this.alias = alias;
+	}
+	Modifier(EnumSet<ModifierKind> kinds) {
+		this.kinds = kinds;
+	}
+
 	public Modifier resolveAlias() {
 		if (alias == null)
 			return this;
@@ -223,38 +239,7 @@ public enum Modifier {
 	public Modifier getAlias() {
 		return alias;
 	}
-	
-	public enum ArgsType {
-		None,
-		SingleString,
-		KeyValues
-	}
-	
-	public ArgsType getArgsType() {
-		return ArgsType.None;
-	}
-	
-	public enum Kind {
-		StorageClassSpecifier, 
-		TypeQualifier, 
-		Declspec, /// VC++ __declspec
-		Attribute, /// GCC __attribute__ 
-		Publicity, 
-		CallingConvention,
-		HasArguments,
-		COMSpecific,
-		MSSpecific,
-		
-		Java, Cpp, C, ObjC, 
-		
-		Plain, Extended, 
-		
-		NumericTypeQualifier, ReferenceQualifier, SizeModifier, SignModifier, 
-		
-		///http://msdn.microsoft.com/en-us/library/cc264105.aspx
-		StringAnnotation, VCAnnotationNoArg
-	, VCAnnotation2Args, VCAnnotation1Arg};
-	
+
 	static Map<String, Modifier> mods = new 
 	HashMap<String, Modifier>();
 	static {
@@ -267,13 +252,13 @@ public enum Modifier {
 	 * @param kinds if not empty, returns only a modifier that matches all of the kinds
 	 * @return Modifier that matches any of the kinds constraints
 	 */
-	public static Modifier parseModifier(String name, Modifier.Kind... kinds) {
+	public static Modifier parseModifier(String name, ModifierKind... kinds) {
 		try {
 			//Modifier modifier = Modifier.valueOf(name);
 			Modifier modifier = mods.get(name);
 			if (kinds.length == 0 || modifier == null)
 				return modifier;
-			for (Modifier.Kind kind : kinds)
+			for (ModifierKind kind : kinds)
 				if (modifier.isA(kind))
 					return modifier;
 			return kinds.length > 0 ? null : modifier;
@@ -285,50 +270,39 @@ public enum Modifier {
 	/**
 	 * Try to be smart about Kind inheritance (C => C++ or Objective-C)
 	 */
-	public boolean isA(Kind k) {
-		if (k == Kind.Plain && !(kinds.contains(Kind.Attribute) || kinds.contains(Kind.Declspec)))
+	public boolean isA(ModifierKind k) {
+		if (k == Plain && !(kinds.contains(Attribute) || kinds.contains(Declspec)))
 			return true;
-		if (k == Kind.Extended && (kinds.contains(Kind.Attribute) || kinds.contains(Kind.Declspec)))
+		if (k == Extended && (kinds.contains(Attribute) || kinds.contains(Declspec)))
 			return true;
-		if (k == Kind.Cpp && kinds.contains(Kind.C))
-			return true;
-		if (k == Kind.ObjC && kinds.contains(Kind.C))
+		if ((k == CPlusPlus || k == CPlusPlusCLI || k == ObjectiveC) && kinds.contains(C))
 			return true;
 		
 		if (kinds.contains(k))
 			return true;
 		
-		if (alias != null && alias.isA(k))
-			return true;
+		//if (alias != null && alias.isA(k))
+		//	return true;
 		
 		return false;
 	}
 	
-	public boolean isAnyOf(Kind...kinds) {
-		for (Kind kind : kinds)
+	public boolean isAnyOf(ModifierKind...kinds) {
+		for (ModifierKind kind : kinds)
 			if (isA(kind))
 				return true;
 		
 		return false;
 	}
 	
-	public boolean isAllOf(Kind...kinds) {
-		for (Kind kind : kinds)
+	public boolean isAllOf(ModifierKind...kinds) {
+		for (ModifierKind kind : kinds)
 			if (!isA(kind))
 				return false;
 		
 		return true;
 	}
 	
-
-	public enum Language {
-		C,
-		CPlusPlus,
-		ObjectiveC,
-		Java,
-		CSharp,
-		CPlusPlusCLI;
-	}
 
 	public enum Compiler {
 		GCC, MSVC, Intel
@@ -340,10 +314,10 @@ public enum Modifier {
 	}
 	public String toString(Modifier.Compiler compiler) {
 		String low = super.toString().toLowerCase();
-		if (kinds.contains(Kind.Declspec) && (compiler == null || compiler == Compiler.MSVC))
+		if (kinds.contains(Declspec) && (compiler == null || compiler == Compiler.MSVC))
 			return "__declspec(" + low + ")";
 		
-		if (kinds.contains(Kind.Attribute) && (compiler == null || compiler == Compiler.GCC))
+		if (kinds.contains(Attribute) && (compiler == null || compiler == Compiler.GCC))
 			return "__attribute__((" + low + "))";
 		
 		return low;

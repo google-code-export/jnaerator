@@ -34,6 +34,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator;
 import com.ochafik.lang.jnaerator.parser.VariablesDeclaration;
 import com.ochafik.lang.jnaerator.parser.Declarator.DirectDeclarator;
 import com.ochafik.lang.jnaerator.parser.Declarator.MutableByDeclarator;
+import com.ochafik.lang.jnaerator.parser.ModifierKind;
 import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
@@ -50,7 +51,7 @@ public class CToJavaPreScanner extends Scanner {
 			if (!(parent instanceof TaggedTypeRefDeclaration)) {
 				TypeRef tr = new TypeRef.SimpleTypeRef(struct.getTag());
 				for (Modifier mod : struct.getModifiers()) {
-					if (mod.isA(Modifier.Kind.StorageClassSpecifier))
+					if (mod.isA(ModifierKind.StorageClassSpecifier))
 						tr.addModifiers(mod);
 				}
 				struct.replaceBy(tr);
