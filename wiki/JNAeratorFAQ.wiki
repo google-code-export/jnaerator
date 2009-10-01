@@ -49,7 +49,7 @@ For now, [https://jna.dev.java.net/servlets/SummarizeList?listName=users JNA's u
 
 = JNAerator stalls when fed with large headers = 
 
-This appears to be a bug coming from its ANTLR parser, which does not react well to low-memory conditions.
+This appears to be a bug coming from its ANTLR parser, which does not react well to low-memory conditions. The parsing takes ages and seems to never end.
 
 You can solve this by increasing the maximum memory allocated to the JVM :
 {{{
