@@ -836,7 +836,7 @@ public class DeclarationsConverter {
 					} else if (tr instanceof FunctionSignature) {
 						convertCallback((FunctionSignature)tr, childSignatures, structJavaClass, callerLibraryClass);
 					}
-				} else if (d instanceof Function) {
+				} else if (result.config.genCPlusPlus && d instanceof Function) {
 					Function f = (Function) d;
 					String library = result.getLibrary(struct);
 					if (library == null)
