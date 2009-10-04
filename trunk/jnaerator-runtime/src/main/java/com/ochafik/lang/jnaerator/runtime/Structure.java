@@ -18,12 +18,14 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import com.sun.jna.Memory;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.nio.Buffer;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import java.lang.reflect.Array;
 
 public abstract class Structure<S extends Structure<S, V, R>, V extends S, R extends S> 
 	extends com.sun.jna.Structure
@@ -74,34 +76,107 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	public R byReference() { return setupClone(newByReference(), this); }
 	public V byValue() { return setupClone(newByValue(), this); }
 	public S clone() { return setupClone(newInstance(), this); }
-	
+
+	public static <S extends Structure<S, V, R>, V extends S, R extends S>
+			S[] newArray(Class<S> structClass, int arrayLength) {
+		try {
+			S first = structClass.newInstance();
+			int sz = first.size();
+			Memory mem = new Memory(arrayLength * sz);
+			first.use(mem);
+			S[] array = first.castToArray(arrayLength);
+			for (int i = 1; i < arrayLength; i++) {
+				array[i] = structClass.newInstance().use(mem, i * sz);
+			}
+			return array;
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	@Override
 	public S[] toArray(int size) {
 		return (S[])super.toArray(size);
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	public S[] toArray() {
 		return toArray(1);
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public R[] toReferenceArray(int size) {
 		return (R[])byReference().toArray(size);
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public V[] toValueArray(int size) {
 		return (V[])byValue().toArray(size);
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	public R[] toReferenceArray() {
 		return toReferenceArray(1);
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	public V[] toValueArray() {
 		return toValueArray(1);
 	}
+
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	@Override
 	public S[] toArray(com.sun.jna.Structure[] array) {
 		return (S[])super.toArray(array);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public S[] castToArray(int size) {
+		return (S[])super.toArray(size);
+	}
+	public S[] castToArray() {
+		return castToArray(1);
+	}
+	@SuppressWarnings("unchecked")
+	public R[] castToReferenceArray(int size) {
+		return (R[])byReference().toArray(size);
+	}
+	@SuppressWarnings("unchecked")
+	public V[] castToValueArray(int size) {
+		return (V[])byValue().toArray(size);
+	}
+	public R[] castToReferenceArray() {
+		return castToReferenceArray(1);
+	}
+	public V[] castToValueArray() {
+		return castToValueArray(1);
+	}
+	@SuppressWarnings("unchecked")
+	public S[] castToArray(com.sun.jna.Structure[] array) {
+		return (S[])super.toArray(array);
+	}
+
+
 	@Override
 	protected Integer getBitsAnnotation(Field field) {
 		Bits bits = field.getAnnotation(Bits.class);
@@ -145,19 +220,19 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 		return clone;
 	}
 	
-	public Structure<S, V, R> use(Pointer m) {
+	public S use(Pointer m) {
 		return use(m, 0);
 	}
-	public Structure<S, V, R> use(Pointer m, long byteOffset) {
+	public S use(Pointer m, long byteOffset) {
 		useMemory(m, (int)byteOffset);
-		return this;
+		return (S)this;
 	}
-	public Structure<S, V, R> use(Buffer m) {
+	public S use(Buffer m) {
 		return use(m, 0);
 	}
-	public Structure<S, V, R> use(Buffer b, long byteOffset) {
+	public S use(Buffer b, long byteOffset) {
 		useMemory(Native.getDirectBufferPointer(b), (int)byteOffset);
-		return this;
+		return (S)this;
 	}
 	
 }

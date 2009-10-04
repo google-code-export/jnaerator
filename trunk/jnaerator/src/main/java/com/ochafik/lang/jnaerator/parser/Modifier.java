@@ -119,6 +119,7 @@ public enum Modifier {
 	In(of(ObjectiveC, OnlyInArgDef)),
 	Out(of(ObjectiveC, OnlyInArgDef)),
 	InOut(of(ObjectiveC, OnlyInArgDef)),
+	OneWay(of(ObjectiveC, OnlyInArgDef)),
 	ByCopy(of(ObjectiveC, OnlyInArgDef)),
 	ByRef(of(ObjectiveC, OnlyInArgDef)),
 

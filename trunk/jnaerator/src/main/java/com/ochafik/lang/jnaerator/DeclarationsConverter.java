@@ -886,7 +886,9 @@ public class DeclarationsConverter {
 				structJavaClass.addDeclaration(createNewStructMethod("newByValue", byVal));
 			}
 			structJavaClass.addDeclaration(createNewStructMethod("newInstance", structJavaClass));
-			
+
+			structJavaClass.addDeclaration(createNewStructArrayMethod(structJavaClass));
+
 			structJavaClass.addDeclaration(decl(byRef));
 			structJavaClass.addDeclaration(decl(byVal));
 		}
@@ -945,6 +947,7 @@ public class DeclarationsConverter {
 		return bVirtual;
 	}
 
+
 	private Function createNewStructMethod(String name, Struct byRef) {
 		TypeRef tr = typeRef(byRef.getTag().clone());
 		Function f = new Function(Function.Type.JavaMethod, ident(name), tr);
@@ -965,6 +968,21 @@ public class DeclarationsConverter {
 				new Statement.Return(varRef(varName))
 			));
 		}
+		return f;
+	}
+	private Function createNewStructArrayMethod(Struct struct) {
+		if (!result.config.useJNAeratorUnionAndStructClasses)
+			return null;
+
+		TypeRef tr = typeRef(struct.getTag().clone());
+		TypeRef ar = new TypeRef.ArrayRef(tr);
+		String varName = "arrayLength";
+		Function f = new Function(Function.Type.JavaMethod, ident("newArray"), ar, new Arg(varName, typeRef(Integer.TYPE)));
+		
+		f.addModifiers(Modifier.Public, Modifier.Static);
+		f.setBody(block(
+			new Statement.Return(methodCall("newArray", classLiteral(tr), varRef(varName)))
+		));
 		return f;
 	}
 
@@ -1073,6 +1091,8 @@ public class DeclarationsConverter {
 						if (!st.equals(mst))
 							vd.setValueType(new Primitive(mst));
 					}
+					if (!(mutatedType instanceof Primitive) && !result.config.noComments)
+						vd.addToCommentBefore("C type : " + mutatedType);
 					out.addDeclaration(vd);
 				}
 				iChild[0]++;

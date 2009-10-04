@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Goal which touches a timestamp file.
+ * Launch JNAerator to wrap native libraries in Java for use with JNA.
  * @goal jnaerate
  * @execute phase=generate-sources
  * @description Launches JNAerator with the command-line arguments contained in src/main/jnaerator/config.jnaerator. To launch from command line, use "mvn com.jnaerator:maven-jnaerator:jnaerate"

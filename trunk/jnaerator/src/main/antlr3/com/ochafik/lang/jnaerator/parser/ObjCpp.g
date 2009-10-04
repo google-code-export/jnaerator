@@ -42,8 +42,9 @@ scope ModifierKinds {
 scope IsTypeDef {
 	boolean isTypeDef;
 }
-scope IsObjCArgDef {
+scope ModContext {
 	boolean isObjCArgDef;
+	boolean isInExtMod;
 }
 
 @header { 
@@ -113,10 +114,16 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	}
 	
 	boolean isObjCArgDef() {
-		if (IsObjCArgDef_stack.isEmpty())
+		if (ModContext_stack.isEmpty())
 			return false;
-		IsObjCArgDef_scope scope = (IsObjCArgDef_scope)IsObjCArgDef_stack.get(IsObjCArgDef_stack.size() - 1);
+		ModContext_scope scope = (ModContext_scope)ModContext_stack.get(ModContext_stack.size() - 1);
 		return scope.isObjCArgDef;
+	}
+	boolean isInExtMod() {
+		if (ModContext_stack.isEmpty())
+			return false;
+		ModContext_scope scope = (ModContext_scope)ModContext_stack.get(ModContext_stack.size() - 1);
+		return scope.isInExtMod;
 	}
 	boolean isTypeDef() {
 		if (IsTypeDef_stack.isEmpty())
@@ -262,6 +269,11 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 			return null;
 		if (mod.isAllOf(ModifierKind.ObjectiveC, ModifierKind.OnlyInArgDef) && !isObjCArgDef())
 			return null;
+		if (mod.isA(ModifierKind.Java))
+			return null;
+			
+		if (mod.isAnyOf(ModifierKind.Declspec, ModifierKind.Attribute) && !isInExtMod())
+			return null;
 		return mod;
 	}
 	protected boolean next(ModifierKind... anyModKind) {
@@ -395,7 +407,7 @@ externDeclarations returns [ExternDeclarations declarations]
 
 declaration returns [List<Declaration> declarations, List<Modifier> modifiers, String preComment, int startTokenIndex]
 scope IsTypeDef;
-scope IsObjCArgDef;
+scope ModContext;
 @after {
 	try {
 		int i = $start.getTokenIndex();
@@ -500,7 +512,7 @@ enumItem returns [Enum.EnumItem item]
 	;
 	
 enumBody returns [Enum e]
-scope IsObjCArgDef;
+scope ModContext;
 	:
 		{ 
 			$e = new Enum();
@@ -644,9 +656,9 @@ objCPropertyDecl returns [Property property]
 	;
 	
 objCMethodDecl returns [Function function]
-scope IsObjCArgDef;
+scope ModContext;
 @init {
-	$IsObjCArgDef::isObjCArgDef = true;
+	$ModContext::isObjCArgDef = true;
 }
 	:	{ 	
 			$function = new Function(); 
@@ -700,7 +712,7 @@ scope IsObjCArgDef;
 	;
 
 structBody returns [Struct struct]
-scope IsObjCArgDef;
+scope ModContext;
 	:
 		{ 
 			$struct = new Struct();
@@ -896,6 +908,10 @@ modifier returns [List<Modifier> modifiers, String asmName]
 
 //http://msdn.microsoft.com/en-us/library/dabb5z75.aspx
 extendedModifiers returns [List<Modifier> modifiers]
+scope ModContext;
+@init {
+	$ModContext::isInExtMod = true;
+}
 	:	{ $modifiers = new ArrayList<Modifier>(); }
 		(
 			{ next(ModifierKind.Extended) }? m=IDENTIFIER
