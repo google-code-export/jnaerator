@@ -848,7 +848,8 @@ public class DeclarationsConverter {
 							continue;
 						Function method = (Function) md;
 						Identifier methodImplName = method.getName().clone();
-						method.setName(f.getName());
+						Identifier methodName = result.typeConverter.getValidJavaMethodName(f.getName());
+						method.setName(methodName);
 						List<Expression> args = new ArrayList<Expression>();
 						
 						boolean isStatic = Modifier.Static.isContainedBy(f.getModifiers());
