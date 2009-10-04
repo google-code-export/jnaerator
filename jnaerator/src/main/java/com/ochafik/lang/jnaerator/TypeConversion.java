@@ -1016,6 +1016,12 @@ public class TypeConversion {
 						} else {
 							try {
 								convArgType = convertTypeToJNA(target, conversionMode, libraryClassName);
+								if (convArgType != null && result.callbacksFullNames.contains(ident(convArgType.toString()))) {
+									TypeRef tr = typeRef(com.sun.jna.Pointer.class);
+									if (!result.config.noComments)
+										tr.setCommentBefore("@see " + convArgType);
+									return tr;
+								}
 								prim = getPrimitive(convArgType, libraryClassName);
 							} catch (UnsupportedConversionException ex) {
 								//convArgType = null;//return typeRef(com.sun.jna.Pointer.class);

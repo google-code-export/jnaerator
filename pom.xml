@@ -11,6 +11,7 @@
     <module>maven-jnaerator-plugin</module>
     <module>jnaerator-runtime</module>
     <module>jnaerator</module>
+    <module>maven-velocity-plugin</module>
   </modules>
   
 </project>
