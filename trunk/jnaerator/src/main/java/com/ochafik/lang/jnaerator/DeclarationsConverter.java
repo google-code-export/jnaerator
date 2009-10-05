@@ -769,7 +769,8 @@ public class DeclarationsConverter {
 		
 		if (!signatures.classSignatures.add(structName))
 			return null;
-		
+
+		boolean isUnion = struct.getType() == Struct.Type.CUnion;
 		boolean inheritsFromStruct = false;
 		Identifier baseClass = null;
 		if (!onlyFields) {
@@ -789,7 +790,7 @@ public class DeclarationsConverter {
 			}
 			if (baseClass == null) {
 				if (result.config.useJNAeratorUnionAndStructClasses) {
-					Class<?> c = struct.getType() == Struct.Type.CUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class;
+					Class<?> c = isUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class;
 					baseClass = ident(
 						c, 
 						expr(typeRef(structName.clone())), 
@@ -888,7 +889,7 @@ public class DeclarationsConverter {
 			}
 			structJavaClass.addDeclaration(createNewStructMethod("newInstance", structJavaClass));
 
-			structJavaClass.addDeclaration(createNewStructArrayMethod(structJavaClass));
+			structJavaClass.addDeclaration(createNewStructArrayMethod(structJavaClass, isUnion));
 
 			structJavaClass.addDeclaration(decl(byRef));
 			structJavaClass.addDeclaration(decl(byVal));
@@ -971,7 +972,7 @@ public class DeclarationsConverter {
 		}
 		return f;
 	}
-	private Function createNewStructArrayMethod(Struct struct) {
+	private Function createNewStructArrayMethod(Struct struct, boolean isUnion) {
 		if (!result.config.useJNAeratorUnionAndStructClasses)
 			return null;
 
@@ -982,7 +983,15 @@ public class DeclarationsConverter {
 		
 		f.addModifiers(Modifier.Public, Modifier.Static);
 		f.setBody(block(
-			new Statement.Return(methodCall("newArray", classLiteral(tr), varRef(varName)))
+			new Statement.Return(
+				methodCall(
+					expr(typeRef(isUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class)),
+					MemberRefStyle.Dot,
+					"newArray",
+					classLiteral(tr),
+					varRef(varName)
+				)
+			)
 		));
 		return f;
 	}

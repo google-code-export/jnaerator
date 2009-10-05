@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator.runtime;
 
+import com.sun.jna.Memory;
 import java.lang.ref.WeakReference;
 import java.nio.Buffer;
 
@@ -54,13 +55,61 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 		super.write();
 		readDependency();
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	@Override
 	public S[] toArray(int size) {
 		return (S[])super.toArray(size);
 	}
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
 	public S[] toArray() {
 		return toArray(1);
+	}
+
+	/**
+	 * @deprecated use castToArray instead
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	@Override
+	public S[] toArray(com.sun.jna.Structure[] array) {
+		return (S[])super.toArray(array);
+	}
+
+	@SuppressWarnings("unchecked")
+	public S[] castToArray(int size) {
+		return (S[])super.toArray(size);
+	}
+	public S[] castToArray() {
+		return castToArray(1);
+	}
+	@SuppressWarnings("unchecked")
+	public S[] castToArray(com.sun.jna.Structure[] array) {
+		return (S[])super.toArray(array);
+	}
+
+
+	public static <S extends Structure<S, V, R>, V extends S, R extends S>
+			S[] newArray(Class<S> structClass, int arrayLength) {
+		try {
+			S first = structClass.newInstance();
+			int sz = first.size();
+			Memory mem = new Memory(arrayLength * sz);
+			first.use(mem);
+			S[] array = first.castToArray(arrayLength);
+			for (int i = 1; i < arrayLength; i++) {
+				array[i] = structClass.newInstance().use(mem, i * sz);
+			}
+			return array;
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	protected abstract S newInstance();
@@ -71,13 +120,6 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 	public V byValue() { return setupClone(newByValue()); }
 	public S clone() { return setupClone(newInstance()); }
 	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public S[] toArray(com.sun.jna.Structure[] array) {
-		return (S[])super.toArray(array);
-	}
-
 	protected <T extends Union<?, ?, ?>> T setupClone(T clone) {
 		write();
 		clone.use(getPointer());
