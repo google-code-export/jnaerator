@@ -86,6 +86,7 @@ import com.ochafik.lang.jnaerator.runtime.Mangling;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.util.listenable.Adapter;
+import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Library;
@@ -1208,7 +1209,13 @@ public class JNAerator {
 				continue;
 			}
 			if (functions == null)
-				result.declarationsConverter.functionAlternativesByNativeSignature.put(function, functions = new ArrayList<Function>());
+				result.declarationsConverter.functionAlternativesByNativeSignature.put(
+					function.computeSignature(false),
+					new Pair<Function, List<Function>>(
+						function,
+						functions = new ArrayList<Function>()
+					)
+				);
 			else
 				functions.add(function);
 		}
@@ -1325,14 +1332,14 @@ public class JNAerator {
 
 		if (result.config.choicesOutFile != null) {
 			PrintWriter out = new PrintWriter(result.config.choicesOutFile);
-			for (Map.Entry<Function, List<Function>> e : result.declarationsConverter.functionAlternativesByNativeSignature.entrySet()) {
-				Function f = e.getKey();
+			for (Map.Entry<String, Pair<Function, List<Function>>> e : result.declarationsConverter.functionAlternativesByNativeSignature.entrySet()) {
+				Function f = e.getValue().getKey();
 				String ff = f.getElementFile();
 				if (ff != null)
 					out.println("// " + ff + (f.getElementLine() > 0 ? ":" + f.getElementLine() : ""));
 
 				out.println(f);
-				for (Function alt : e.getValue()) {
+				for (Function alt : e.getValue().getValue()) {
 					out.println(alt);
 				}
 				out.println();
