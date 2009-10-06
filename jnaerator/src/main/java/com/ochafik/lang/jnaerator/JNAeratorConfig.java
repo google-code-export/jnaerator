@@ -40,7 +40,7 @@ import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
 
 public class JNAeratorConfig {
-
+	
 	public enum Compiler {
 		GCC4, MSVC9
 	}
@@ -84,6 +84,7 @@ public class JNAeratorConfig {
 	public final JNAeratorConfig.PreprocessorConfig preprocessorConfig = new JNAeratorConfig.PreprocessorConfig();
 	public boolean followIncludes = false;
 	public File preprocessingOutFile, macrosOutFile;
+	public File choicesOutFile, choicesInputFile;
 	public boolean useJNADirectCalls = false;
 	public boolean limitComments = false, noComments = false;
 	public boolean putTopStructsInSeparateFiles = true;

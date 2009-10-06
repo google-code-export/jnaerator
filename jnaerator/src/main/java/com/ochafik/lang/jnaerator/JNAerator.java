@@ -78,6 +78,7 @@ import com.ochafik.lang.jnaerator.parser.Identifier.QualificationSeparator;
 import com.ochafik.lang.jnaerator.parser.Identifier.QualifiedIdentifier;
 import com.ochafik.lang.jnaerator.parser.Identifier.SimpleIdentifier;
 import com.ochafik.lang.jnaerator.parser.ModifierKind;
+import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.runtime.LibraryExtractor;
 import com.ochafik.lang.jnaerator.runtime.MangledFunctionMapper;
@@ -92,6 +93,13 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.StringReader;
+import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.CommonTokenStream;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 import static com.ochafik.lang.jnaerator.nativesupport.NativeExportUtils.*;
 /*
@@ -361,6 +369,12 @@ public class JNAerator {
 					case BridgeSupportOutFile:
 						config.bridgesupportOutFile = a.getFileParam(0);
 						break;
+					case ChoicesOut:
+						config.choicesOutFile = a.getFileParam(0);
+						break;
+					case ChoicesIn:
+						config.choicesInputFile = a.getFileParam(0);
+						break;
 					case PreprocessingOut:
 						config.preprocessingOutFile = a.getFileParam(0);
 						break;
@@ -525,6 +539,8 @@ public class JNAerator {
 					if (config.verbose) {
 						if (config.macrosOutFile == null)
 							config.macrosOutFile = new File("_jnaerator.macros.cpp");
+						if (config.choicesOutFile == null)
+							config.choicesOutFile = new File("_jnaerator.choices");
 						if (config.preprocessingOutFile == null)
 							config.preprocessingOutFile = new File("_jnaerator.preprocessed.c");
 						if (config.extractedSymbolsOut == null)
@@ -1159,9 +1175,52 @@ public class JNAerator {
 		r.feedback = feedback;
 		return r;
 	}
+
+	public static ObjCppParser newParser(String s) throws IOException {
+		Result result = new Result(new JNAeratorConfig(), null);
+		ObjCppParser parser = new ObjCppParser(new CommonTokenStream(new ObjCppLexer(
+				new ANTLRReaderStream(new StringReader(s))))
+		// , new DummyDebugEventListener()
+		);
+		parser.typeConverter = result.typeConverter;
+		return parser;
+	}
+	protected void readChoices(Result result) throws IOException, RecognitionException {
+		BufferedReader in = new BufferedReader(new FileReader(result.config.choicesInputFile));
+		String line;
+
+		List<Function> functions = null;
+
+		int iLine = 0;
+		while ((line = in.readLine()) != null) {
+			iLine++;
+			line = line.trim();
+			if (line.startsWith("//"))
+				continue;
+			if (line.length() == 0)
+				functions = null;
+
+
+
+			Function function = newParser(line).functionDeclaration().function;
+			if (function == null) {
+				System.err.println("Error: failed to parse function at line " + iLine + ": '" + line + "'");
+				continue;
+			}
+			if (functions == null)
+				result.declarationsConverter.functionAlternativesByNativeSignature.put(function, functions = new ArrayList<Function>());
+			else
+				functions.add(function);
+		}
+
+		System.err.println("Read " + result.declarationsConverter.functionAlternativesByNativeSignature.size() + " custom declarations from " + result.config.choicesInputFile);
+	}
 		
 	public void jnaerationCore(SourceFiles sourceFiles, Result result) throws IOException, LexerException, RecognitionException {
 		result.feedback.setStatus("Normalizing parsed code...");
+
+		if (result.config.choicesInputFile != null)
+			readChoices(result);
 		
 		/// Perform Objective-C-specific pre-transformation (javadoc conversion for enums + find name of enums based on next sibling integer typedefs)
 		sourceFiles.accept(new ObjectiveCToJavaPreScanner());
@@ -1263,7 +1322,23 @@ public class JNAerator {
 		//if (config.verbose)
 		for (String unknownType : result.typeConverter.unknownTypes) 
 			System.out.println("Unknown Type: " + unknownType);
-		
+
+		if (result.config.choicesOutFile != null) {
+			PrintWriter out = new PrintWriter(result.config.choicesOutFile);
+			for (Map.Entry<Function, List<Function>> e : result.declarationsConverter.functionAlternativesByNativeSignature.entrySet()) {
+				Function f = e.getKey();
+				String ff = f.getElementFile();
+				if (ff != null)
+					out.println("// " + ff + (f.getElementLine() > 0 ? ":" + f.getElementLine() : ""));
+
+				out.println(f);
+				for (Function alt : e.getValue()) {
+					out.println(alt);
+				}
+				out.println();
+			}
+			out.close();
+		}
 	}
 	private boolean checkNoCycles(SourceFiles sourceFiles) {
 		final HashSet<Integer> ids = new HashSet<Integer>(new Arg().getId());
