@@ -95,7 +95,7 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 	}
 
 
-	public static <S extends Structure<S, V, R>, V extends S, R extends S>
+	public static <S extends Union<S, V, R>, V extends S, R extends S>
 			S[] newArray(Class<S> structClass, int arrayLength) {
 		try {
 			S first = structClass.newInstance();
@@ -126,19 +126,19 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 		return clone;
 	}
 	
-	public Union<S, V, R> use(Pointer m) {
+	public S use(Pointer m) {
 		return use(m, 0);
 	}
-	public Union<S, V, R> use(Pointer m, long byteOffset) {
+	public S use(Pointer m, long byteOffset) {
 		useMemory(m, (int)byteOffset);
-		return this;
+		return (S)this;
 	}
-	public Union<S, V, R> use(Buffer m) {
+	public S use(Buffer m) {
 		return use(m, 0);
 	}
-	public Union<S, V, R> use(Buffer b, long byteOffset) {
+	public S use(Buffer b, long byteOffset) {
 		useMemory(Native.getDirectBufferPointer(b), (int)byteOffset);
-		return this;
+		return (S)this;
 	}
 	
 }
