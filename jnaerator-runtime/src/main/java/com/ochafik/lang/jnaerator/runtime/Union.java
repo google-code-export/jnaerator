@@ -95,16 +95,18 @@ public abstract class Union<S extends Union<S, V, R>, V extends S, R extends S>
 	}
 
 
-	public static <S extends Union<S, V, R>, V extends S, R extends S>
+	public static <S extends Union>
 			S[] newArray(Class<S> structClass, int arrayLength) {
 		try {
 			S first = structClass.newInstance();
 			int sz = first.size();
 			Memory mem = new Memory(arrayLength * sz);
 			first.use(mem);
-			S[] array = first.castToArray(arrayLength);
+			S[] array = (S[])first.castToArray(arrayLength);
 			for (int i = 1; i < arrayLength; i++) {
-				array[i] = structClass.newInstance().use(mem, i * sz);
+				S s = structClass.newInstance();
+				s.use(mem, i * sz);
+				array[i] = s;
 			}
 			return array;
 		} catch (Exception ex) {

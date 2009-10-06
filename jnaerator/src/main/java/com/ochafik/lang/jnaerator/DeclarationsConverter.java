@@ -446,8 +446,19 @@ public class DeclarationsConverter {
 		}
 	}
 
-	Map<Function, List<Function>> functionAlternativesByNativeSignature = new LinkedHashMap<Function, List<Function>>();
+	Map<String, Pair<Function, List<Function>>> functionAlternativesByNativeSignature = new LinkedHashMap<String, Pair<Function, List<Function>>>();
 
+	static <E extends Element> E cleanClone(E e) {
+		E c = (E)e.clone();
+		c.setCommentBefore(null);
+		c.setCommentAfter(null);
+		if (c instanceof Declaration) {
+			Declaration d = (Declaration)c;
+			d.setAnnotations(null);
+		}
+		return c;
+	}
+	
 	void convertFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
@@ -471,14 +482,23 @@ public class DeclarationsConverter {
 		if (functionName == null)
 			return;
 
-		List<Function> alternatives = functionAlternativesByNativeSignature.get(function);
-		if (alternatives != null) {
-			for (Function alt : alternatives)
+		String sig = function.computeSignature(false);
+		Pair<Function, List<Function>> alternativesPair = functionAlternativesByNativeSignature.get(sig);
+		if (alternativesPair != null) {
+			for (Function alt : alternativesPair.getValue())
 				out.addDeclaration(alt.clone());
 			return;
 		} else {
-			alternatives = new ArrayList<Function>();
+			functionAlternativesByNativeSignature.put(
+				sig,
+				alternativesPair = new Pair<Function, List<Function>>(
+					cleanClone(function),
+					new ArrayList<Function>()
+				)
+			);
 		}
+		List<Function> alternatives = alternativesPair.getValue();
+
 		Function natFunc = new Function();
 		
 		Element parent = function.getParentElement();
@@ -650,19 +670,19 @@ public class DeclarationsConverter {
 				}
 				collectParamComments(natFunc);
 				out.addDeclaration(natFunc);
-				alternatives.add(natFunc);
+				alternatives.add(cleanClone(natFunc));
 			}
 			
 			if (alternativeOutputs) {
 				if (signatures == null || signatures.methodsSignatures.add(primOrBufSign)) {
 					collectParamComments(primOrBufFunc);
 					out.addDeclaration(primOrBufFunc);
-					alternatives.add(primOrBufFunc);
+					alternatives.add(cleanClone(primOrBufFunc));
 				}
 				if (signatures == null || signatures.methodsSignatures.add(bufSign)) {
 					collectParamComments(natStructFunc);
 					out.addDeclaration(natStructFunc);
-					alternatives.add(natStructFunc);
+					alternatives.add(cleanClone(natStructFunc));
 				}
 			}
 		} catch (UnsupportedConversionException ex) {
