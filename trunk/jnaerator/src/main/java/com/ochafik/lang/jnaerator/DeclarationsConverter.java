@@ -446,6 +446,8 @@ public class DeclarationsConverter {
 		}
 	}
 
+	Map<Function, List<Function>> functionAlternativesByNativeSignature = new LinkedHashMap<Function, List<Function>>();
+
 	void convertFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
@@ -468,7 +470,15 @@ public class DeclarationsConverter {
 		functionName = result.typeConverter.getValidJavaMethodName(functionName);
 		if (functionName == null)
 			return;
-		
+
+		List<Function> alternatives = functionAlternativesByNativeSignature.get(function);
+		if (alternatives != null) {
+			for (Function alt : alternatives)
+				out.addDeclaration(alt.clone());
+			return;
+		} else {
+			alternatives = new ArrayList<Function>();
+		}
 		Function natFunc = new Function();
 		
 		Element parent = function.getParentElement();
@@ -640,16 +650,19 @@ public class DeclarationsConverter {
 				}
 				collectParamComments(natFunc);
 				out.addDeclaration(natFunc);
+				alternatives.add(natFunc);
 			}
 			
 			if (alternativeOutputs) {
 				if (signatures == null || signatures.methodsSignatures.add(primOrBufSign)) {
 					collectParamComments(primOrBufFunc);
 					out.addDeclaration(primOrBufFunc);
+					alternatives.add(primOrBufFunc);
 				}
 				if (signatures == null || signatures.methodsSignatures.add(bufSign)) {
 					collectParamComments(natStructFunc);
 					out.addDeclaration(natStructFunc);
+					alternatives.add(natStructFunc);
 				}
 			}
 		} catch (UnsupportedConversionException ex) {
