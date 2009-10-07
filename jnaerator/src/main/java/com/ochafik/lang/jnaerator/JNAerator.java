@@ -1203,7 +1203,12 @@ public class JNAerator {
 
 
 
-			Function function = newParser(line).functionDeclaration().function;
+			Function function = null;
+			if (functions == null) {
+				function = newParser(line).javaMethodDeclaration();
+			} else {
+				function = newParser(line).functionDeclaration().function;
+			}
 			if (function == null) {
 				System.err.println("Error: failed to parse function at line " + iLine + ": '" + line + "'");
 				continue;

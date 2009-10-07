@@ -21,6 +21,7 @@ package com.ochafik.lang.jnaerator.runtime;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
+@Deprecated
 public class StringPointer extends Structure<StringPointer, StringPointer.ByValue, StringPointer.ByReference> {
 	public String value;
 	public String toString() {
