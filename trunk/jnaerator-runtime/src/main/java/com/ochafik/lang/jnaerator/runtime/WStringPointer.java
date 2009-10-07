@@ -22,6 +22,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import com.sun.jna.WString;
 
+@Deprecated
 public class WStringPointer extends Structure<WStringPointer, WStringPointer.ByValue, WStringPointer.ByReference> {
 	public WString value;
 	public String toString() {

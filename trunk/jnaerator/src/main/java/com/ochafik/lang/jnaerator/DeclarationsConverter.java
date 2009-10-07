@@ -186,7 +186,7 @@ public class DeclarationsConverter {
 						if (!signatures.variablesSignatures.add(name))
 							continue;
 						
-						TypeRef tr = result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName);
+						TypeRef tr = (prim == JavaPrim.NativeLong ? typeRef("long") : result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName));
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, val));
 						if (!result.config.noComments) {
 							vd.setCommentBefore(v.getCommentBefore());
@@ -604,7 +604,10 @@ public class DeclarationsConverter {
 				
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
-			
+
+			if (modifiedMethodName.toString().equals("cv_Ipl"))
+				modifiedMethodName = ident("cv_Ipl");
+
 			natFunc.setName(modifiedMethodName);
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, libraryClassName));
 			if (!result.config.noComments) {

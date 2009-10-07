@@ -877,12 +877,12 @@ public class TypeConversion {
 					return arrayRef(typeRef(String.class));
 				else if (valueTypeString.matches("((__)?const )?wchar_t\\*\\*"))
 					return arrayRef(typeRef(WString.class));
-				else if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter) {
+				/*else if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter) {
 					if (valueTypeString.matches("char\\*"))
 						return typeRef(StringPointer.ByValue.class);
 					else if (valueTypeString.matches("wchar_t\\*"))
 						return typeRef(WStringPointer.ByValue.class);
-				}
+				}*/
 			}
 		}
 		

@@ -1639,6 +1639,84 @@ Letter
 		'a'..'z'
 	;
 
+javaTemplateArg returns [Expression expr]
+	:
+		t=javaType {
+			$expr = expr($t.typeRef);
+		} | 
+		tk='?' {
+			$expr = expr($tk.text);
+		}
+	;
+		
+javaTypeIdent returns [Identifier ident]
+	:
+		f=IDENTIFIER { 
+			$ident = ident($f.text); 
+		}
+		( 
+			'.' n=IDENTIFIER {
+				$ident = $ident.derive(Identifier.QualificationSeparator.Dot, $n.text);	
+			} 
+		)+
+		(
+			'<'
+				first=javaTemplateArg {
+					$ident.resolveLastSimpleIdentifier().addTemplateArgument($first.expr);
+				}
+				(
+					','
+					other=javaTemplateArg  {
+						$ident.resolveLastSimpleIdentifier().addTemplateArgument($other.expr);
+					}
+				)*
+			'>'
+		)?
+		
+	;
+	
+javaType returns [TypeRef typeRef]
+	:
+		i=javaTypeIdent {
+			$typeRef = new TypeRef.SimpleTypeRef($i.ident);
+		}
+		(
+			'[' ']' {
+				$typeRef = new TypeRef.ArrayRef($typeRef);
+			}
+		)
+	;
+
+javaArg returns [Arg arg]
+	:
+		t=javaType n=IDENTIFIER {
+			$arg = new Arg($n.text, $t.typeRef);
+		}
+	;
+	
+javaMethodDeclaration returns [Function function]
+	:
+		ret=javaType
+		name=IDENTIFIER {
+			$function = new Function(); 
+			$function.setType(Function.Type.JavaMethod);
+			$function.setName(ident($name.text));
+			$function.setValueType($ret.typeRef);
+		}
+		'('
+		first=javaArg {
+			$function.addArg($first.arg);
+		}
+		(
+			','
+			other=javaArg {
+				$function.addArg($other.arg);
+			}
+		)
+		')'
+		';'
+	;
+		
 IDENTIFIER
 	:	
 		(
