@@ -1255,8 +1255,10 @@ public class TypeConversion {
 		} else if (x instanceof Cast) {
 			TypeRef tr = convertTypeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType, libraryClassName);
 			JavaPrim prim = getPrimitive(tr, libraryClassName);
-			if (promoteNativeLongToLong && prim == JavaPrim.NativeLong)
+			if (promoteNativeLongToLong && prim == JavaPrim.NativeLong) {
+				prim = JavaPrim.Long;
 				tr = typeRef(Long.TYPE);
+			}
 			Pair<Expression, TypeRef> casted = convertExpressionToJava(((Cast) x).getTarget(), libraryClassName, promoteNativeLongToLong);
 			res = typed(casted.getFirst(), tr);
 			if (prim == JavaPrim.NativeLong)
