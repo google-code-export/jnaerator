@@ -237,6 +237,7 @@ public class JNAeratorParser {
 					super.reportError(arg0);
 			}
 		};
+		parser.setupSymbolsStack();
 		parser.typeConverter = typeConverter;
 		
 		return parser;

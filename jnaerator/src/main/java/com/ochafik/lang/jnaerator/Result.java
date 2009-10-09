@@ -115,6 +115,7 @@ public class Result extends Scanner {
 	Map<String, List<FunctionSignature>> callbacksByLibrary = new HashMap<String, List<FunctionSignature>>();
 	
 	Map<String, List<VariablesDeclaration>> globalsByLibrary = new HashMap<String, List<VariablesDeclaration>>();
+	Map<Identifier, VariablesDeclaration> globalVariablesByName = new HashMap<Identifier, VariablesDeclaration>();
 	
 	Map<Identifier, Struct> structsByName = new HashMap<Identifier, Struct>();
 	Map<Identifier, FunctionSignature> callbacksByName = new HashMap<Identifier, FunctionSignature>();
@@ -271,6 +272,8 @@ public class Result extends Scanner {
 		if (v.findParentOfTypes(Struct.class, Function.class, Enum.class) != null)
 			return;
 
+		for (Declarator d : v.getDeclarators())
+			globalVariablesByName.put(ident(d.resolveName()), v);
 		getList(globalsByLibrary, getLibrary(v)).add(v);
 	}
 	@Override
