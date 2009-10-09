@@ -246,6 +246,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 			if (t == null)
 				b.append("id");
 			else {
+				t = t.clone();
 				t.setCommentAfter(null);
 				t.setCommentBefore(null);
 				b.append(t);

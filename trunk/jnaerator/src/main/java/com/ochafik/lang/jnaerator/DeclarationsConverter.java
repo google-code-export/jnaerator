@@ -59,6 +59,8 @@ import com.sun.jna.*;
 import com.sun.jna.Pointer;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
+import static com.ochafik.lang.jnaerator.TypeConversion.*;
+
 public class DeclarationsConverter {
 	private static final String DEFAULT_VPTR_NAME = "_vptr";
 	private static final Pattern manglingCommentPattern = Pattern.compile("@mangling (.*)$", Pattern.MULTILINE);
@@ -181,13 +183,13 @@ public class DeclarationsConverter {
 					try {
 						
 						//DirectDeclarator dd = (DirectDeclarator)decl;
-						Expression val = result.typeConverter.convertExpressionToJava(decl.getDefaultValue(), libraryClassName);
+						Pair<Expression, TypeRef> val = result.typeConverter.convertExpressionToJava(decl.getDefaultValue(), libraryClassName, true);
 						
 						if (!signatures.variablesSignatures.add(name))
 							continue;
 						
 						TypeRef tr = (prim == JavaPrim.NativeLong ? typeRef("long") : result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName));
-						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, val));
+						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, val.getFirst()));
 						if (!result.config.noComments) {
 							vd.setCommentBefore(v.getCommentBefore());
 							vd.addToCommentBefore(decl.getCommentBefore());
@@ -359,12 +361,13 @@ public class DeclarationsConverter {
 				try {
 					Declaration ct = outputConstant(
 						item.getName(), 
-						result.typeConverter.convertExpressionToJava(resultingExpression, libraryClassName), 
+						result.typeConverter.convertExpressionToJava(resultingExpression, libraryClassName, true),
 						localSignatures, 
 						item, 
 						"enum item", 
 						libraryClassName, 
 						enumInterf == null,
+						true,
 						true,
 						true
 					);
@@ -384,39 +387,42 @@ public class DeclarationsConverter {
 		//	enumInterf.addDeclarations(localOut);
 	}
 
-	@SuppressWarnings("static-access")
 	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment, boolean signalErrors, boolean forceInteger) throws UnsupportedConversionException {
+		return outputConstant(name, pair(x, (TypeRef)null), signatures, element, elementTypeDescription, libraryClassName, addFileComment, signalErrors, forceInteger, false);
+	}
+	@SuppressWarnings("static-access")
+	private Declaration outputConstant(String name, Pair<Expression, TypeRef> x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment, boolean signalErrors, boolean forceInteger, boolean alreadyConverted) throws UnsupportedConversionException {
 		try {
 			if (result.typeConverter.isJavaKeyword(name))
 				throw new UnsupportedConversionException(element, "The name '" + name + "' is invalid for a Java field.");
 			
-			Expression converted = result.typeConverter.convertExpressionToJava(x, libraryClassName);
-			TypeRef tr = result.typeConverter.inferJavaType(converted);
-			JavaPrim prim = result.typeConverter.getPrimitive(tr, libraryClassName);
+			Pair<Expression, TypeRef> converted = alreadyConverted ? x : result.typeConverter.convertExpressionToJava(x.getFirst(), libraryClassName, true);
+			//TypeRef tr = result.typeConverter.inferJavaType(converted);
+			JavaPrim prim = result.typeConverter.getPrimitive(converted.getValue(), libraryClassName);
 			
 			if (forceInteger && prim == JavaPrim.Boolean) {
 				prim = JavaPrim.Int;
-				tr = typeRef("int");
-				converted = expr("true".equals(String.valueOf(converted.toString())) ? 1 : 0);
+				//tr = typeRef("int");
+				converted = pair(expr("true".equals(String.valueOf(converted.toString())) ? 1 : 0), typeRef(Integer.TYPE));
 			}
 			
-			if ((prim == null || tr == null) && signalErrors) {
+			if ((prim == null || converted.getValue() == null) && signalErrors) {
 				if (result.config.limitComments)
 					return null;
 				
 				return new EmptyDeclaration("Failed to infer type of " + converted);
-			} else if (prim != JavaPrim.Void && tr != null) {
+			} else if (prim != JavaPrim.Void && converted.getValue() != null) {
 //				if (prim == JavaPrim.Int)
 //					tr = typeRef("long");
 				
 				if (signatures.variablesSignatures.add(name)) {
 					String t = converted.toString();
 					if (t.contains("sizeof")) {
-						converted = result.typeConverter.convertExpressionToJava(x, libraryClassName);
+						converted = alreadyConverted ? x : result.typeConverter.convertExpressionToJava(x.getFirst(), libraryClassName, false);
 					}
 
 					//TypeRef tr = new TypeRef.SimpleTypeRef(result.typeConverter.typeToJNA(type, vs, TypeConversion.TypeConversionMode.FieldType, callerLibraryClass));
-					Declaration declaration = new VariablesDeclaration(tr, new DirectDeclarator(name, converted));
+					Declaration declaration = new VariablesDeclaration(converted.getValue(), new DirectDeclarator(name, converted.getFirst()));
 					declaration.addModifiers(Modifier.Public, Modifier.Static, Modifier.Final);
 					declaration.importDetails(element, false);
 					declaration.moveAllCommentsBefore();
@@ -512,7 +518,7 @@ public class DeclarationsConverter {
 			case ObjCProtocol:
 				break;
 			case CPPClass:
-				if (!result.config.genCPlusPlus)
+				if (!result.config.genCPlusPlus && !Modifier.Static.isContainedBy(function.getModifiers()))
 					return;
 				ns.add(((Struct)parent).getTag().toString());
 				break;
@@ -584,7 +590,6 @@ public class DeclarationsConverter {
 				needsThis = true;
 			}
 			
-			
 			if (needsThis && !result.config.genCPlusPlus)
 				return;
 			
@@ -605,8 +610,8 @@ public class DeclarationsConverter {
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
 
-			if (modifiedMethodName.toString().equals("cv_Ipl"))
-				modifiedMethodName = ident("cv_Ipl");
+			//if (modifiedMethodName.toString().equals("cv_Ipl"))
+			//	modifiedMethodName = ident("cv_Ipl");
 
 			natFunc.setName(modifiedMethodName);
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, libraryClassName));
@@ -1070,12 +1075,12 @@ public class DeclarationsConverter {
 					javaType = jr = new ArrayRef(typeRef(Pointer.class));
 					break;
 				} else {
-					Expression c = result.typeConverter.convertExpressionToJava(x, callerLibraryName);
-					c.setParenthesis(dims.size() == 1);
+					Pair<Expression, TypeRef> c = result.typeConverter.convertExpressionToJava(x, callerLibraryName, false);
+					c.getFirst().setParenthesis(dims.size() == 1);
 					if (mul == null)
-						mul = c;
+						mul = c.getFirst();
 					else
-						mul = expr(c, BinaryOperator.Multiply, mul);
+						mul = expr(c.getFirst(), BinaryOperator.Multiply, mul);
 				}
 			}
 			initVal = new Expression.NewArray(jr.getTarget(), mul);
@@ -1475,9 +1480,10 @@ public class DeclarationsConverter {
 	}
 	public void computeVariablesDependencies(Element e, final Set<Identifier> names) {
 		e.accept(new Scanner() {
+
 			@Override
-			public void visitSimpleTypeRef(SimpleTypeRef simpleTypeRef) {
-				names.add(simpleTypeRef.getName());
+			public void visitVariableRef(VariableRef variableRef) {
+				names.add(variableRef.getName());
 			}
 		});
 	}

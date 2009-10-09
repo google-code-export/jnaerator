@@ -11,4 +11,10 @@ Current development version (0.9.2-SNAPSHOT)
 - Added static Structure.newArray(Class<? extends Structure>, int length)
 - JNAerating a typed static newArray(int length) for each structure
 - Added "C type" comment to struct fields with non-primitive types
+- Deprecated StringPointer
+- Added basic output customization capabilities with -choicesOut & -choice switches : syntax is one line of the C function declaration, then n lines of corresponding Java declarations, each function block being separated by an empty line. 
+- Fixed issue #39 : Failure to parse define with expression containing a cast
+- Fixed long constants being generated as NativeLong (now long)
+- Fixed regression with function pre-comments
+- Fixed generation of references to constants defined in other libraries
 

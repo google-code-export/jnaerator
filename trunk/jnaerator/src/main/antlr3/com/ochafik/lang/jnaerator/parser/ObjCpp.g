@@ -239,16 +239,14 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 		}
 		return comment;
 	}
-	protected String getCommentAfterOnSameLine() {
-		return getCommentAfterOnSameLine(getTokenStream().index() - 1);
-	}	
-	protected String getCommentAfterOnSameLine(int index) {
+	protected String getCommentAfterOnSameLine(int index, String forbiddenChars) {
 		int size = getTokenStream().size();
 		while (index < size) {
 			Token token = getTokenStream().get(index++);
+			String tt = token.getText();
 			if (token.getType() == COMMENT || token.getType() == LINE_COMMENT)
-				return token.getText();
-			else if (token.getText().indexOf("\n") >= 0)
+				return tt;
+			else if (tt.indexOf("\n") >= 0 || forbiddenChars != null && tt.matches(".*?[" + forbiddenChars + "].*"))
 				break;
 		}
 		return null;
@@ -464,7 +462,7 @@ scope ModContext;
 				//';' */// allow isolated semi-colons
 			)
 			{
-				String commentAfter = getCommentAfterOnSameLine($startTokenIndex);
+				String commentAfter = getCommentAfterOnSameLine($startTokenIndex, null);
 				for (Declaration d  : $declarations) {
 					if (d == null)
 						continue;
@@ -507,7 +505,7 @@ enumItem returns [Enum.EnumItem item]
 	:	n=IDENTIFIER ('=' v=topLevelExpr)? {
 			$item = mark(new Enum.EnumItem($n.text, $v.text == null ? null : $v.expr), getLine($n));
 			$item.setCommentBefore(getCommentBefore($n.getTokenIndex()));
-			$item.setCommentAfter(getCommentAfterOnSameLine($n.getTokenIndex() - 1));
+			$item.setCommentAfter(getCommentAfterOnSameLine($n.getTokenIndex() - 1, "}"));
 		}
 	;
 	
@@ -685,7 +683,7 @@ scope ModContext;
 		)?
 		methodName=(IDENTIFIER | 'class') { 
 			$function.setName(new SimpleIdentifier($methodName.text)); 
-			$function.setCommentAfter(getCommentAfterOnSameLine($methodName.getTokenIndex()));
+			$function.setCommentAfter(getCommentAfterOnSameLine($methodName.getTokenIndex(), null));
 		} 
 		(
 			':' '(' argType1=mutableTypeRef ')' argName1=IDENTIFIER {
@@ -934,7 +932,7 @@ argDef	returns [Arg arg]
 					$arg.setValueType($tr.type); 
 					int i = getTokenStream().index() + 1;
 					$arg.setCommentBefore(getCommentBefore(i));
-					$arg.setCommentAfter(getCommentAfterOnSameLine(i));
+					$arg.setCommentAfter(getCommentAfterOnSameLine(i, ")"));
 				}
 			}
 		)

@@ -55,6 +55,9 @@ public class ElementsHelper {
 	public static Expression varRef(SimpleIdentifier name) {
 		return new Expression.VariableRef(name);
 	}
+	public static Expression varRef(Identifier name) {
+		return memberRef(expr(typeRef(name.resolveAllButLastIdentifier())), MemberRefStyle.Dot, name.resolveLastSimpleIdentifier());
+	}
 	public static Identifier ident(String[] others) {
 		if (others.length > 0)
 			return ident(others[0], Arrays.copyOfRange(others, 1, others.length));

@@ -1191,85 +1191,79 @@ public class TypeConversion {
 
 	Set<String> unknownTypes = new HashSet<String>();
 
-	/*public TypeRef inferJavaType(Expression x) throws UnsupportedTypeConversion {
-		if (x instanceof Assignment)
-			return inferJavaType(((Assignment)x).getTarget());
-		if (x instanceof BinaryOp) {
-			TypeRef i1 = inferJavaType(((BinaryOp) x).getFirstOperand()), i2 = inferJavaType(((BinaryOp) x).getSecondOperand());
-			String s1 = String.valueOf(i1), s2 = String.valueOf(i2);
+	public static <A, B> Pair<A, B> pair(A a, B b) {
+		return new Pair<A, B>(a, b);
+	}
+	public static Pair<Expression, TypeRef> typed(Expression a, TypeRef b) {
+		return new Pair<Expression, TypeRef>(a, b);
+	}
+	public Pair<Expression, TypeRef> convertExpressionToJava(Expression x, Identifier libraryClassName, boolean promoteNativeLongToLong) throws UnsupportedConversionException {
+		Pair<Expression, TypeRef> res = null;
+		if (x instanceof AssignmentOp) {
+			Pair<Expression, TypeRef>
+				convTarget = convertExpressionToJava(((AssignmentOp) x).getTarget(), libraryClassName, promoteNativeLongToLong),
+				convValue = convertExpressionToJava(((AssignmentOp) x).getValue(), libraryClassName, promoteNativeLongToLong);
+
+			res = typed(expr(convTarget.getFirst(), AssignmentOperator.Equal, convValue.getFirst()), convTarget.getSecond());
+		} else if (x instanceof BinaryOp) {
+			BinaryOp bop = (BinaryOp) x;
+			Pair<Expression, TypeRef>
+				conv1 = convertExpressionToJava(bop.getFirstOperand(), libraryClassName, promoteNativeLongToLong),
+				conv2 = convertExpressionToJava(bop.getSecondOperand(), libraryClassName, promoteNativeLongToLong);
+
+			TypeRef t1 = conv1.getSecond(), t2 = conv2.getSecond();
+			Expression x1 = conv1.getFirst(), x2 = conv2.getFirst();
+
+			String s1 = String.valueOf(t1), s2 = String.valueOf(t2);
+			TypeRef tr = null;
 			if (s1.equals(s2))
-				return i1;
-			//TODO implement me ?
-			return null;
-		}
-		if (x instanceof UnaryOp) {
-			return inferJavaType(((UnaryOp) x).getOperand());
-		}
-		if (x instanceof Cast) {
-			return new SimpleTypeRef(typeToJNA(((Cast) x).getType(), TypeConversionMode.ReturnType));
-		}
-		if (x instanceof Constant) {
-			String v = ((Constant) x).getValue();
+				tr = t1;
+			else {
+				JavaPrim p1 = getPrimitive(t1, null), p2 = getPrimitive(t2, null);
+				if (p1 != null && p2 != null) {
+					switch (bop.getOperator()) {
+						case LeftShift:
+						case RightShift:
+						case SignedRightShift:
+							tr = t1;
+							break;
+						default:
+							for (JavaPrim p : new JavaPrim[] {
+								JavaPrim.Double, JavaPrim.Float, JavaPrim.Long, JavaPrim.NativeLong, JavaPrim.Int,
+								JavaPrim.Short, JavaPrim.Byte
+							})
+								if (p1 == p || p2 == p) {
+									if (promoteNativeLongToLong && p == JavaPrim.NativeLong)
+										p = JavaPrim.Long;
+									tr = primRef(p);
+									break;
+								}
+					}
+					
+				}
+			}
+			res = typed(expr(x1, ((BinaryOp) x).getOperator(), x2), tr);
+		} else if (x instanceof UnaryOp) {
+			UnaryOperator op = ((UnaryOp) x).getOperator();
+			if (op == UnaryOperator.Not) {
+				throw new UnsupportedConversionException(x, null); // TODO handle this properly ?
+			}
+			Pair<Expression, TypeRef>
+				conv = convertExpressionToJava(((UnaryOp) x).getOperand(), libraryClassName, promoteNativeLongToLong);
+
+			res = typed(expr(op, conv.getFirst()), conv.getSecond());
+		} else if (x instanceof Cast) {
+			TypeRef tr = convertTypeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType, libraryClassName);
+			JavaPrim prim = getPrimitive(tr, libraryClassName);
+			if (promoteNativeLongToLong && prim == JavaPrim.NativeLong)
+				tr = typeRef(Long.TYPE);
+			Pair<Expression, TypeRef> casted = convertExpressionToJava(((Cast) x).getTarget(), libraryClassName, promoteNativeLongToLong);
+			res = typed(casted.getFirst(), tr);
+			if (prim == JavaPrim.NativeLong)
+				res.setFirst((Expression)new New(typeRef(com.sun.jna.NativeLong.class), casted.getFirst()));
+			
+		} else if (x instanceof Constant) {
 			Class<?> c = null;
-			if (v.startsWith("\""))
-				c = String.class;
-			else if (v.startsWith("'"))
-				c = Character.TYPE;
-			else if (v.contains("."))
-				c = Double.TYPE;
-			else
-				c = Integer.TYPE;
-			
-			return new SimpleTypeRef(c.getName());
-		}
-		if (x instanceof MemberRef) {
-			
-		}
-		if (x instanceof VariableRef) {
-			
-		}
-		return null;
-	}*/
-	
-	public TypeRef inferJavaType(Expression x) throws UnsupportedConversionException {
-		if (x instanceof AssignmentOp)
-			return inferJavaType(((AssignmentOp)x).getTarget());
-		if (x instanceof BinaryOp) {
-			TypeRef i1 = inferJavaType(((BinaryOp) x).getFirstOperand()), i2 = inferJavaType(((BinaryOp) x).getSecondOperand());
-			String s1 = String.valueOf(i1), s2 = String.valueOf(i2);
-			if (s1.equals(s2))
-				return i1;
-			//TODO implement me ?
-			return null;
-		}
-		if (x instanceof New) {
-			return ((New) x).getType();
-		}
-		if (x instanceof UnaryOp) {
-			return inferJavaType(((UnaryOp) x).getOperand());
-		}
-		if (x instanceof Cast) {
-			//TypeRef tr = inferJavaType(((Cast) x).getTarget());
-			return ((Cast) x).getType();
-		}
-		if (x instanceof Constant) {
-			Class<?> c = null;
-			/*Constant ct = (Constant) x;
-			switch (ct.getType()) {
-			case Float:
-				c = Float.TYPE;
-				break;
-			case Char:
-				c = Character.TYPE;
-				break;
-			case Integer:
-			case IntegerString:
-				c = Integer.TYPE;
-				break;
-			case String:
-				c = String.class;
-				break;
-			}*/
 			Constant jc = ((Constant)x).asJava();
 			switch (jc.getType()) {
 			case Byte:
@@ -1301,53 +1295,58 @@ public class TypeConversion {
 				c = String.class;
 				break;
 			}
-			/*String v = ((Constant) x).getValue().toString().toUpperCase();
-			if (v.startsWith("\""))
-				c = String.class;
-			else if (v.startsWith("'"))
-				c = Character.TYPE;
-			else if (v.contains(".")) {
-				if (v.endsWith("L"))
-					c = Float.TYPE;
-				else
-					c = Double.TYPE;
-			} else if (v.endsWith("L"))
-				c = Long.TYPE;
-			else if (v.endsWith("F"))
-				c = Float.TYPE;
-			else if (v.endsWith("D"))
-				c = Double.TYPE;
-			else {
-				//TODO try to parse as long and if it fails as integer, use Long.TYPE
-				c = Integer.TYPE;
-			}*/
 			if (c != null)
-				return new SimpleTypeRef(c.getName());
-		}
-		if (x instanceof VariableRef) {
-			VariableRef vr = (VariableRef)x;
-			Identifier n = vr.getName();
-			if (n != null && (n.equals("true") || n.equals("false")))
-				return primRef(JavaPrim.Boolean);
-		}
-//		if (x instanceof MemberRef) {
-//			return null;
-//			//if (x instanceof FieldRef) {
-//			//	return new SimpleTypeRef(Integer.TYPE.getName());
-//			//}	
-//		} else 
-		if (x instanceof MemberRef) {
-			Identifier name = ((MemberRef)x).getName();
+				res = typed(((Constant)x).asJava(), typeRef(c));
+
+		} else if (x instanceof VariableRef) {
+			VariableRef fr = (VariableRef) x;
+			Identifier name = fr.getName();
 			if (name != null) {
-				String sname = name.toString();
-				if ("True".equals(sname) || "False".equals(sname))
-					return primRef(JavaPrim.Boolean);
+				Define define = result.defines.get(name);
+				if (define != null && define.getValue() != null) {
+					if (x.toString().equals(define.getValue().toString()))
+						res = null; // avoid some nasty loops
+					else {
+						Expression defineValue = define.getValue();
+						if (defineValue instanceof Constant) {
+							Constant constant = (Constant)defineValue;
+							res = typed(findDefine(name), convertToJavaType(constant.getType()));
+						}
+
+						if (res == null)
+							res = convertExpressionToJava(defineValue, libraryClassName, promoteNativeLongToLong);
+					}
+				} else {
+					String sname = name.toString();
+					if (name.equals("True") || name.equals("true"))
+						res = typed(expr(Constant.Type.Bool, true), primRef(JavaPrim.Boolean));
+					else if (name.equals("False") || name.equals("false"))
+						res = typed(expr(Constant.Type.Bool, false), primRef(JavaPrim.Boolean));
+					else {
+						EnumItem enumItem = result.enumItems.get(name);
+						if (enumItem != null) {
+							res = typed(findEnumItem(enumItem), typeRef(Integer.TYPE));
+						} else {
+							VariablesDeclaration constant = result.globalVariablesByName.get(name);
+							if (constant != null) {
+								res = typed(varRef(findRef(name, constant, libraryClassName, true)), null);
+							} else
+								res = typed(new VariableRef(name), null);
+						}
+					}
+				}
 			}
-			EnumItem enumItem = result.enumItems.get(name);
-			if (enumItem != null)
-				return typeRef(Integer.TYPE);
-		}
+		} else if (x instanceof FunctionCall) {
+			FunctionCall fc = (FunctionCall) x;
+			if ("sizeof".equals(String.valueOf(fc.getFunction())) && fc.getArguments().size() == 1) {
+				TypeRefExpression typeEx =  SyntaxUtils.as(fc.getArguments().get(0).getValue(), TypeRefExpression.class);
+				if (typeEx != null) {
+					res = typed(sizeofToJava(typeEx.getType(), libraryClassName), null);
+				}
+			}
+		} 
 		if (x instanceof TypeRefExpression) {
+
 			TypeRefExpression tre = (TypeRefExpression)x;
 			TypeRef tr = tre.getType();
 			if (tr instanceof SimpleTypeRef) {
@@ -1355,112 +1354,44 @@ public class TypeConversion {
 				Identifier ident = str.getName();
 				if (ident != null) {
 					if (result.enumItemsFullName.contains(ident)) {
-						return typeRef(Integer.TYPE);
+						res = typed(tre, typeRef(Integer.TYPE));
 					}
 				}
 			}
-		}
-		return null;
-	}
-	
-	public Expression convertExpressionToJava(Expression x, Identifier libraryClassName) throws UnsupportedConversionException {
-		Expression res = null;
-		if (x instanceof AssignmentOp)
-			res = expr(convertExpressionToJava(((AssignmentOp) x).getTarget(), libraryClassName), AssignmentOperator.Equal, ((AssignmentOp) x).getValue());
-		else if (x instanceof BinaryOp) {
-			res = expr(
-				convertExpressionToJava(((BinaryOp) x).getFirstOperand(), libraryClassName),
-				((BinaryOp) x).getOperator(),
-				convertExpressionToJava(((BinaryOp) x).getSecondOperand(), libraryClassName)
-			);
-		} else if (x instanceof UnaryOp) {
-			UnaryOperator op = ((UnaryOp) x).getOperator();
-			if (op == UnaryOperator.Not) {
-				throw new UnsupportedConversionException(x, null); // TODO handle this properly ?
-			}
-			res = expr(op, 
-				convertExpressionToJava(((UnaryOp) x).getOperand(), libraryClassName)
-			);
-		} else if (x instanceof Cast) {
-			TypeRef tr = convertTypeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType, libraryClassName);
-			JavaPrim prim = getPrimitive(tr, libraryClassName);
-			Expression casted = convertExpressionToJava(((Cast) x).getTarget(), libraryClassName);
-			if (prim == JavaPrim.NativeLong) {
-				/*Element parent = x.getParentElement();
-				if (parent != null && !(parent instanceof Expression)) {
-					/// prevent bug of new com.sun.jna.NativeLong(1 << 16) >> new com.sun.jna.NativeLong(6); by restricting this conversion to top-level (long)casts
-					New n = new New(tr);//NativeLong.class.getName());
-					FunctionCall constuctor = new FunctionCall("");
-					constuctor.addArgument(casted);
-					n.setConstruction(constuctor);
-					res = n;
-				}*/
-			} else {
-				res = new Expression.Cast(tr, casted);
-			}
-		} else if (x instanceof Constant) {
-			res = ((Constant)x).asJava();
-			/*String v  = ((Constant) x).getValue().toString();
-			if (!v.endsWith("U")) {
-				res = new Expression.Constant(((Constant) x).getType(), v);
-			}*/
-		} else if (x instanceof MemberRef) {
-			MemberRef fr = (MemberRef) x;
-			Identifier name = fr.getName();
-			Define define = result.defines.get(name);
-			if (define != null && define.getValue() != null) {
-				if (x.toString().equals(define.getValue().toString()))
-					res = null; // avoid some nasty loops
+			if (res == null) {
+				if (tr.isMarkedAsResolved())
+					res = typed(tre, tr);
 				else {
-					Expression defineValue = define.getValue();
-					if (defineValue instanceof Constant)
-						res = findDefine(name);
-					
-					if (res == null)
-						res = convertExpressionToJava(defineValue, libraryClassName);
-				}
-			} else {
-				
-				EnumItem enumItem = result.enumItems.get(name);
-				if (enumItem != null)
-					res = findEnumItem(enumItem);
-			}
-		} else if (x instanceof FunctionCall) {
-			FunctionCall fc = (FunctionCall) x;
-			if ("sizeof".equals(String.valueOf(fc.getFunction())) && fc.getArguments().size() == 1) {
-				TypeRefExpression typeEx =  SyntaxUtils.as(fc.getArguments().get(0).getValue(), TypeRefExpression.class);
-				if (typeEx != null) {
-					res = sizeofToJava(typeEx.getType(), libraryClassName);
+					TypeRef conv = convertTypeToJNA(tr, TypeConversionMode.ExpressionType, libraryClassName);
+					res = typed(new TypeRefExpression(conv), conv);
 				}
 			}
-		} else if (x instanceof VariableRef) {
-			Identifier name = ((VariableRef) x).getName();
-			if (name != null) {
-				String sname = name.toString();
-				if ("True".equals(sname))
-					res = expr(true);
-				else if ("False".equals(sname))
-					res = expr(false);
-				else {
-					EnumItem enumItem = result.enumItems.get(name);
-					if (enumItem != null)
-						res = findEnumItem(enumItem);
-					else
-						res = new VariableRef(name);
-				}	
-			} else
-				res = new VariableRef(name);
-		}
-		if (x instanceof TypeRefExpression) {
-			if (((TypeRefExpression)x).getType().isMarkedAsResolved())
-				return x;
 		}
 		if (res == null) {
 //			return convertExpressionToJava(x);
 			throw new UnsupportedConversionException(x, null);
 		}
-		res.setParenthesis(x.getParenthesis());
-		return res;
+		res.getFirst().setParenthesis(x.getParenthesis());
+		return (Pair<Expression, TypeRef>)res;
+	}
+
+	private TypeRef convertToJavaType(Constant.Type type) {
+		switch (type) {
+			case Bool: return typeRef(Boolean.TYPE);
+			case IntegerString:
+			case UInt:
+			case Int: return typeRef(Integer.TYPE);
+			case LongString:
+			case ULong:
+			case Long: return typeRef(Long.TYPE);
+			case Short: return typeRef(Short.TYPE);
+			case Byte: return typeRef(Byte.TYPE);
+			case Float: return typeRef(Float.TYPE);
+			case Double: return typeRef(Double.TYPE);
+			case String: return typeRef(String.class);
+			default:
+				return null;
+		}
 	}
 
 	private Expression sizeofToJava(TypeRef type, Identifier libraryClassName) throws UnsupportedConversionException {
@@ -1477,7 +1408,7 @@ public class TypeConversion {
 			
 			ArrayRef ar = (ArrayRef) type;
 			for (Expression x : ar.getDimensions()) {
-				Expression c = convertExpressionToJava(x, libraryClassName);
+				Expression c = convertExpressionToJava(x, libraryClassName, false).getFirst();
 				res = expr(res, Expression.BinaryOperator.Multiply, c);
 			}
 		} else if (type instanceof SimpleTypeRef || type instanceof Primitive) {

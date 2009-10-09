@@ -18,8 +18,10 @@ public class JavaDocCreator extends Scanner {
 	@Override
 	public void visitFunction(Function function) {
 		if (!result.config.noComments)
-			if (!(function.getParentElement() instanceof FunctionSignature) && result.config.features.contains(GenFeatures.OriginalFunctionSignatures))
+			if (!(function.getParentElement() instanceof FunctionSignature) && result.config.features.contains(GenFeatures.OriginalFunctionSignatures)) {
+				function.moveAllCommentsBefore();
 				function.addToCommentBefore("Original signature : <code>" + function.computeSignature(true) + "</code>");
+			}
 //		function.addToCommentBefore("File : " + Element.getFileOfAscendency(function));
 		super.visitFunction(function);
 //		if (function.getValueType() != null && !function.getValueType().toString().equals("void"))
