@@ -257,7 +257,9 @@ public class JNAeratorConfigUtils {
 		}
 		//prevent a jcpp bug to happen when expanding assert(...) :
 		config.preprocessorConfig.macros.put("NDEBUG", null);
-		
+
+		config.preprocessorConfig.macros.put("__STDC__", null);
+
 		config.preprocessorConfig.includes.addAll(getDefaultIncludePath(config.verbose));//JNAeratorConfigUtils.DEFAULT_INCLUDE_PATH);
 		config.preprocessorConfig.frameworksPath.addAll(getDefaultFrameworkPath(config.verbose));//JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 		if (SystemUtils.isWindows()) {
