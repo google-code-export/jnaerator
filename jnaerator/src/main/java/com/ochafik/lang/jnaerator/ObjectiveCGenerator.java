@@ -62,19 +62,43 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
+import java.util.*;
 
 /*
 include com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data
+include com/ochafik/lang/jnaerator/ObjectiveCProtocolsForcedInheritanceList.data
  */
 public class ObjectiveCGenerator {
 	String 
-		classClassName = "_class_", 
+		classClassName = "_class_",
 		classInterfaceNameInCategoriesAndProtocols = "_static_", 
-		classInstanceName = "_CLASS_", 
-		classInstanceGetterName = "_getCLASS_";
+		classInstanceName = "_NSCLASS_",
+		classInstanceGetterName = "getNSClass";
 	boolean AUTO_RELEASE_IN_FACTORIES = false;
 
-	static Map<String, Set<String>> methodsExcludedFromStaticForwarding;
+	static Map<String, Set<String>> protocolsForcedInheritance;
+	public static Set<String> getForcedProtocolParents(String protocolName) {
+		if (protocolsForcedInheritance == null) {
+			protocolsForcedInheritance = new HashMap<String, Set<String>>();
+			try {
+				InputStream in = ObjectiveCGenerator.class.getClassLoader().getResourceAsStream("com/ochafik/lang/jnaerator/ObjectiveCProtocolsForcedInheritanceList.data");
+				List<String> lines = ReadText.readLines(in);
+				for (String line : lines) {
+					line = line.trim();
+					if (line.startsWith("//") || line.startsWith("#") || line.length() == 0)
+						continue;
+					String[] tks = line.split(":");
+					protocolsForcedInheritance.put(tks[0], new TreeSet<String>(Arrays.asList(tks[1].split(","))));
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		Set<String> ret = protocolsForcedInheritance.get(protocolName);
+		return ret == null ? Collections.EMPTY_SET : ret;
+
+	}
+ 	static Map<String, Set<String>> methodsExcludedFromStaticForwarding;
 	public static boolean isMethodExcludedFromStaticForwarding(Function m) {
 		if (methodsExcludedFromStaticForwarding == null) {
 			methodsExcludedFromStaticForwarding = new HashMap<String, Set<String>>();
@@ -163,6 +187,8 @@ public class ObjectiveCGenerator {
 			outputObjectiveCClass(in);
 		}
 		for (Struct protocol : Result.getMap(result.classes, Type.ObjCProtocol).values()) {
+			for (String parent : getForcedProtocolParents(String.valueOf(protocol.getTag())))
+				protocol.addParent(ident(parent));
 			outputObjectiveCClass(protocol);
 		}
 	}
@@ -216,8 +242,13 @@ public class ObjectiveCGenerator {
 		if (!isCategory)
 			for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
 				Identifier catId = getFullClassName(catIn);
-				interfacesForInstance.add(catId);
-				interfacesForClass.add(ident(catId, classInterfaceNameInCategoriesAndProtocols));
+
+				Identifier sim = catId.resolveLastSimpleIdentifier();
+				if (add(instanceStruct, createCastMethod(sim, catId), signatures))
+					classStruct.addDeclaration(createCastMethod(sim, ident(catId, classInterfaceNameInCategoriesAndProtocols)));
+
+				//interfacesForInstance.add(catId);
+				//interfacesForClass.add(ident(catId, classInterfaceNameInCategoriesAndProtocols));
 				outputObjectiveCClass(catIn);
 			}	
 				
@@ -264,7 +295,7 @@ public class ObjectiveCGenerator {
 			classHolder.addModifiers(Modifier.Private, Modifier.Static);
 		
 		classHolder.setValueType(typeRef(classClassName));
-		
+
 		Expression.FunctionCall call = methodCall(expr(typeRef(Rococoa.class)), MemberRefStyle.Dot, "createClass");
 		call.addArgument(expr(in.getTag().toString()));
 		call.addArgument(memberRef(expr(typeRef(classClassName)), MemberRefStyle.Dot, "class"));
@@ -277,7 +308,7 @@ public class ObjectiveCGenerator {
 			classHolder.addDeclarator(new Declarator.DirectDeclarator(classInstanceName));
 			
 			classGetter = new Function(Function.Type.JavaMethod, ident(classInstanceGetterName), typeRef(classClassName));
-			classGetter.addModifiers(Modifier.Private, Modifier.Static);
+			classGetter.addModifiers(Modifier.Public, Modifier.Static);
 			classGetter.setBody(new Block(
 				new Statement.If(
 					expr(
@@ -307,11 +338,46 @@ public class ObjectiveCGenerator {
 		} else
 			structThatReceivesStaticMethods = classStruct;
 		
-		if (!(isProtocol || isCategory))
-			addAllocIfMissing(in);
+		if (!(isProtocol || isCategory)) {
+			addAllocIfMissing(in, "alloc");
+			addAllocIfMissing(in, "new_");
+		}
 		
 		outputMembers(signatures, in, instanceStruct, structThatReceivesStaticMethods, in.getDeclarations(), isProtocol || isCategory);
-		
+		Identifier fullClassName = getFullClassName(in);
+
+		/*
+		if (!isProtocol && !isCategory) {
+			// Output static proxies for static category methods
+			for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
+				for (Declaration d : catIn.getDeclarations()) {
+					if (!(d instanceof Function))
+						continue;
+					Function f = (Function)d;
+					if (!Modifier.Static.isContainedBy(f.getModifiers()))
+						continue;
+
+					List<Declaration> decls = new ArrayList<Declaration>();
+					result.declarationsConverter.convertFunction(f, null, false, new DeclarationsHolder.ListWrapper(decls), fullClassName);
+
+					if (f.getModifiers().contains(Modifier.Static)) {
+						for (Declaration decl : decls) {
+							if (!(decl instanceof Function))
+								continue;
+
+							Function pf = (Function)decl;
+							if (!signatures.methodsSignatures.add(pf.computeSignature(false)))
+								continue;
+
+							//if (!add(classStruct, decl, signatures, objSigs, clasSigs))
+							//	continue;
+							instanceStruct.addDeclaration(createProxyCopy(pf, (Function)decl));
+						}
+					}
+				}
+			}
+		}*/
+
 		instanceStruct.addDeclaration(decl(classInterfaceStruct));
 		if (!isCategory) {// && !structThatReceivesStaticMethods.getDeclarations().isEmpty()) {
 			instanceStruct.addDeclaration(new TaggedTypeRefDeclaration(classStruct));
@@ -321,7 +387,26 @@ public class ObjectiveCGenerator {
 		return instanceStruct;
 	}
 
-	private void addAllocIfMissing(Struct in) {
+	Function createCastMethod(Identifier name, Identifier classId) {
+		Function m = new Function();
+		m.setType(Function.Type.JavaMethod);
+		m.addModifiers(Modifier.Public);
+		m.setName(ident("as" + name));
+		m.setValueType(typeRef(classId.clone()));
+		m.setBody(block(
+			new Statement.Return(
+				methodCall(
+					expr(typeRef(Rococoa.class)),
+					MemberRefStyle.Dot,
+					"cast",
+					varRef("this"),
+					classLiteral(typeRef(classId.clone()))
+				)
+			)
+		));
+		return m;
+	}
+	private void addAllocIfMissing(Struct in, String allocName) {
 		Identifier n = in.getTag();
 		if (n.equals("NSObject") || n.equals("NSClass"))
 			return;
@@ -330,14 +415,14 @@ public class ObjectiveCGenerator {
 		for (Declaration d : in.getDeclarations()) {
 			if (d instanceof Function) {
 				Function f = (Function)d;
-				if (f.getArgs().isEmpty() && "alloc".equals(f.getName())) {
+				if (f.getArgs().isEmpty() && allocName.equals(f.getName())) {
 					hasAlloc = true;
 					break;
 				}
 			}
 		}
 		if (!hasAlloc)
-			in.addDeclaration(new Function(Function.Type.ObjCMethod, ident("alloc"), typeRef(in.getTag())).addModifiers(Modifier.Static));
+			in.addDeclaration(new Function(Function.Type.ObjCMethod, ident(allocName), typeRef(in.getTag())).addModifiers(Modifier.Static));
 		
 	}
 	
@@ -356,7 +441,7 @@ public class ObjectiveCGenerator {
 				List<Declaration> decls = new ArrayList<Declaration>();
 				result.declarationsConverter.convertFunction(f, null, false, new DeclarationsHolder.ListWrapper(decls), fullClassName);
 				
-				if (f.getModifiers().contains(Modifier.Static)) {
+				if (Modifier.Static.isContainedBy(f.getModifiers())) {
 					for (Declaration decl : decls) {
 						if (!add(classStruct, decl, signatures, objSigs, clasSigs))
 							continue;
@@ -366,8 +451,10 @@ public class ObjectiveCGenerator {
 							signatures.methodsSignatures.add(((Function)decl).computeSignature(false));
 						}
 
-						if (classStruct.getType() == Type.JavaClass)
+						if (classStruct.getType() == Type.JavaClass) {
 							decl.addModifiers(Modifier.Public, Modifier.Abstract);
+							decl.reorganizeModifiers();
+						}
 					}
 				} else {
 					for (Declaration decl : decls) {
@@ -380,8 +467,10 @@ public class ObjectiveCGenerator {
 							signatures.methodsSignatures.add(((Function)decl).computeSignature(false));
 							instanceStruct.addDeclaration(addedF);
 							
-							if (instanceStruct.getType() == Type.JavaClass)
+							if (instanceStruct.getType() == Type.JavaClass) {
 								decl.addModifiers(Modifier.Public, Modifier.Abstract);
+								decl.reorganizeModifiers();
+							}
 						}
 					}
 				}
@@ -405,7 +494,6 @@ public class ObjectiveCGenerator {
 			}
 			iChild[0]++;
 		}
-
 	}
 	
 	private boolean add(Struct classStruct, Declaration decl, Signatures signatures, Set<?>... additionalMethodSignatures) {

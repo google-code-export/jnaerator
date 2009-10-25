@@ -215,13 +215,17 @@ public class JNAerator {
 //						"-framework", "CoreGraphics",
 //						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
 //						"-noRuntime",
-						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/tests/callbacks/test.h",
-						"-noComp",
-						"-root", "outpackage",
+//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/tests/callbacks/test.h",
+						//"-noComp",
+						"-framework", "Foundation",
+						"-o", "/Users/ochafik/jnaerator/jnaerator/cocoa",
+						"-studio",
+//						"/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+//						"-root", "outpackage",
 //						"-root", "org.rococoa.cocoa",
 //						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
-						"-o", "/Users/ochafik/Prog/Java/test/opencv",
-						"-scalaOut", "/Users/ochafik/Prog/Java/test/opencv/scala",
+//						"-o", "/Users/ochafik/Prog/Java/test/opencv",
+//						"-scalaOut", "/Users/ochafik/Prog/Java/test/opencv/scala",
 //						"-noComp",	
 //						"-gui",
 //						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
@@ -348,6 +352,9 @@ public class JNAerator {
 						break;
 					case MacrosOut:
 						config.macrosOutFile = a.getFileParam(0);
+						break;
+					case GCCLong:
+						config.gccLong = true;
 						break;
 					case NoAuto:
 						config.autoConf = false;
@@ -766,7 +773,7 @@ public class JNAerator {
 						}
 						String text = "// @mangling " + dllExport.mangling + "\n" + 
 							dem + ";";
-						ObjCppParser parser = JNAeratorParser.newObjCppParser(result.typeConverter, text, config.verbose);
+						ObjCppParser parser = JNAeratorParser.newObjCppParser(result.typeConverter, text, false);//config.verbose);
 						parser.setupSymbolsStack();
 						List<Declaration> decls = parser.declarationEOF();
 						if (decls == null)
@@ -857,9 +864,9 @@ public class JNAerator {
 				if (libraryFile.exists()) {
 					System.out.println("Bundling " + libraryFile);
 					additionalFiles.put(key, libraryFile);
-				} else {
-					System.out.println("File " + libraryFileName + " not found");
-				}
+				}// else {
+					//System.out.println("File " + libraryFileName + " not found");
+				//}
 			}
 		}
 		return additionalFiles;
@@ -1111,9 +1118,8 @@ public class JNAerator {
 			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-			
 			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, nativeLibFieldExpr, fullLibraryClassName, library);
-			
+
 			result.typeConverter.allowFakePointers = false;
 			
 			Set<String> fakePointers = result.fakePointersByLibrary.get(fullLibraryClassName);
@@ -1284,7 +1290,7 @@ public class JNAerator {
 		if (result.feedback != null && !result.config.bridgeSupportFiles.isEmpty())
 			result.feedback.setStatus("Parsing BridgeSupport files...");
 		
-		new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
+		//new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
 		
 		/// Gather Objective-C classes
 		sourceFiles.accept(result);

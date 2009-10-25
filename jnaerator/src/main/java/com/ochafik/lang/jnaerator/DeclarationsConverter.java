@@ -491,9 +491,11 @@ public class DeclarationsConverter {
 		String sig = function.computeSignature(false);
 		Pair<Function, List<Function>> alternativesPair = functionAlternativesByNativeSignature.get(sig);
 		if (alternativesPair != null) {
-			for (Function alt : alternativesPair.getValue())
-				out.addDeclaration(alt.clone());
-			return;
+			if (result.config.choicesInputFile != null) {
+				for (Function alt : alternativesPair.getValue())
+					out.addDeclaration(alt.clone());
+				return;
+			}
 		} else {
 			functionAlternativesByNativeSignature.put(
 				sig,
@@ -534,16 +536,17 @@ public class DeclarationsConverter {
 		//String namespaceArrayStr = "{\"" + StringUtils.implode(ns, "\", \"") + "\"}";
 		//if (!ns.isEmpty())
 		//	natFunc.addAnnotation(new Annotation(Namespace.class, "(value=" + namespaceArrayStr + (isMethod ? ", isClass=true" : "") + ")"));
-		
+		boolean isObjectiveC = function.getType() == Type.ObjCMethod;
+
 		natFunc.setType(Function.Type.JavaMethod);
-		if (result.config.useJNADirectCalls && !isCallback) {
+		if (result.config.useJNADirectCalls && !isCallback && !isObjectiveC) {
 			natFunc.addModifiers(Modifier.Public, Modifier.Static, Modifier.Native);
 		}
+
 		try {
 			//StringBuilder outPrefix = new StringBuilder();
 			TypeRef returnType = null;
 			
-			boolean isObjectiveC = function.getType() == Type.ObjCMethod;
 			if (!isObjectiveC) {
 				returnType = function.getValueType();
 				if (returnType == null)
@@ -565,7 +568,7 @@ public class DeclarationsConverter {
 			//if (ns.isEmpty())
 			
 			if (!result.config.noMangling)
-				if (!isCallback && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
+				if (!isCallback && !isObjectiveC && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
 					addCPlusPlusMangledNames(function, names);
 			
 			if (!modifiedMethodName.equals(functionName) && ns.isEmpty())
@@ -610,8 +613,8 @@ public class DeclarationsConverter {
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
 
-			//if (modifiedMethodName.toString().equals("cv_Ipl"))
-			//	modifiedMethodName = ident("cv_Ipl");
+			//if (modifiedMethodName.toString().equals("NSStringFromSelector"))
+			//	modifiedMethodName = ident("NSStringFromSelector");
 
 			natFunc.setName(modifiedMethodName);
 			natFunc.setValueType(result.typeConverter.convertTypeToJNA(returnType, TypeConversionMode.ReturnType, libraryClassName));

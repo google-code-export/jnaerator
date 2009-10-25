@@ -82,6 +82,8 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
 import com.ochafik.lang.jnaerator.runtime.CharByReference;
+import com.ochafik.lang.jnaerator.runtime.Size;
+import com.ochafik.lang.jnaerator.runtime.SizeByReference;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
@@ -90,6 +92,7 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalCGFloat;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalChar;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalDouble;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalFloat;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalSize;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalLong;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeLong;
@@ -157,8 +160,9 @@ public class TypeConversion {
 		Boolean(java.lang.Boolean.TYPE, ESize.One), 
 		Float(java.lang.Float.TYPE, ESize.Four), 
 		Double(java.lang.Double.TYPE, ESize.Eight), 
-		NativeLong(com.sun.jna.NativeLong.class, ESize.StaticSizeField), 
-		NSInteger(org.rococoa.cocoa.foundation.NSInteger.class, ESize.StaticSizeField), 
+		NativeLong(com.sun.jna.NativeLong.class, ESize.StaticSizeField),
+		Size(Size.class, ESize.StaticSizeField),
+		NSInteger(org.rococoa.cocoa.foundation.NSInteger.class, ESize.StaticSizeField),
 		NSUInteger(org.rococoa.cocoa.foundation.NSUInteger.class, ESize.StaticSizeField), 
 		CGFloat(org.rococoa.cocoa.CGFloat.class, ESize.StaticSizeField);
 		
@@ -257,11 +261,13 @@ public class TypeConversion {
 		prim("NSInteger", JavaPrim.NSInteger);
 		prim("NSUInteger", JavaPrim.NSUInteger);
 		prim("CGFloat", JavaPrim.CGFloat);
-		
-		prim("long", JavaPrim.NativeLong);
-		prim("LONG", JavaPrim.NativeLong);
-		prim("size_t", JavaPrim.NativeLong);
-		prim("ptrdiff_t", JavaPrim.NativeLong);
+
+		JavaPrim longPrim = result.config.gccLong ? JavaPrim.Size : JavaPrim.NativeLong;
+		prim("long", longPrim);
+		prim("LONG", longPrim);
+
+		prim("size_t", JavaPrim.Size);
+		prim("ptrdiff_t", JavaPrim.Size);
 		
 		prim("int16_t", JavaPrim.Short);
 		prim("uint16_t", JavaPrim.Short);
@@ -321,6 +327,7 @@ public class TypeConversion {
 		primToByReference.put(JavaPrim.Float, FloatByReference.class);
 		primToByReference.put(JavaPrim.Double, DoubleByReference.class);
 		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
+		primToByReference.put(JavaPrim.Size, SizeByReference.class);
 		primToByReference.put(JavaPrim.NSInteger, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.NSUInteger, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.CGFloat, CGFloatByReference.class);
@@ -338,6 +345,7 @@ public class TypeConversion {
 		primToGlobal.put(JavaPrim.Float, GlobalFloat.class);
 		primToGlobal.put(JavaPrim.Double, GlobalDouble.class);
 		primToGlobal.put(JavaPrim.NativeLong, GlobalNativeLong.class);
+		primToGlobal.put(JavaPrim.Size, GlobalSize.class);
 		primToGlobal.put(JavaPrim.NSInteger, GlobalNativeLong.class);
 		primToGlobal.put(JavaPrim.NSUInteger, GlobalNativeLong.class);
 		primToGlobal.put(JavaPrim.CGFloat, GlobalCGFloat.class);
@@ -374,7 +382,10 @@ public class TypeConversion {
 
 			if (name.equals("IMP"))
 				return null;
-			
+
+			if (name.equals("Class"))
+				return null;
+
 			if (name.equals("BOOL"))
 				if (rname.equals("byte"))
 					return null;
@@ -465,7 +476,7 @@ public class TypeConversion {
 							String strs = simpleTypeRef.toString();
 							String trs = tr == null ? null : tr.toString();
 							if (trs != null && !strs.equals(trs)) {
-								if (trs.equals("_" + strs) && !strs.startsWith("_")) {
+								if (trs.equals("_" + strs) && !strs.startsWith("_") || trs.equals(strs + "_") && !strs.endsWith("_")) {
 									trs.toString();
 								}
 								TypeRef clo = tr.clone();
@@ -707,22 +718,12 @@ public class TypeConversion {
 		Identifier parentIdent = null;
 		
 		Element parent = functionSignature.getParentElement();
-		//if (parent == null) {
-		//	nameElements.add("Callback");
-		//}
+
 		boolean firstParent = true;
 		while (parent != null) {
 			if (parent instanceof Struct) {
 				parentIdent = findStructRef((Struct)parent, null);
 				break;
-//				Identifier structName = result.declarationsConverter.getActualTaggedTypeName((Struct) parent);
-//				if (structName != null) {
-////					if (firstParent) {
-//						parentIdent = findStructRef(structName, null); 
-//						break;
-////					} else
-////						nameElements.add(0, structName.toString());
-//				}
 			} else if (firstParent) {
 				if (name == null && parent instanceof TypeDef) {
 					Declarator simpleSto = null;
@@ -732,9 +733,8 @@ public class TypeConversion {
 							continue;
 						
 						if (!(sto instanceof ArrayDeclarator)) {
-						//TODO check if properly refactored : if (sto.getDimensions().isEmpty() && sto.getStorageModifiers().isEmpty()) {
-							boolean weirdName = stoName.startsWith("_");
-							if (simpleSto == null || simpleSto.resolveName().startsWith("_") && !weirdName)
+							boolean weirdName = stoName.startsWith("_") || stoName.endsWith("_");
+							if (simpleSto == null || (simpleSto.resolveName().startsWith("_") || simpleSto.resolveName().endsWith("_")) && !weirdName)
 								simpleSto = sto;
 							
 							if (!weirdName)
@@ -1016,7 +1016,7 @@ public class TypeConversion {
 						} else {
 							try {
 								convArgType = convertTypeToJNA(target, conversionMode, libraryClassName);
-								if (convArgType != null && result.callbacksFullNames.contains(ident(convArgType.toString()))) {
+								if (convArgType != null && result.callbacksFullNames.contains(ident(convArgType.toString())) && !(valueType instanceof ArrayRef)) {
 									TypeRef tr = typeRef(com.sun.jna.Pointer.class);
 									if (!result.config.noComments)
 										tr.setCommentBefore("@see " + convArgType);
@@ -1100,29 +1100,11 @@ public class TypeConversion {
 				return valueType;
 			
 			if (name instanceof SimpleIdentifier) {
-				SimpleIdentifier sname = (SimpleIdentifier)name;
-				String n = sname.getName();
-				TypeRef objCClass = null;
-				TypeRef tr = findObjCClass(sname);
+				TypeRef tr = findObjCClass(name);
+				if (tr == null)
+					tr = findObjCClass(new SimpleIdentifier(((SimpleIdentifier)name).getName()));
 				if (tr != null)
 					return tr;
-				
-				if (n.equals("id") && 
-						sname.getTemplateArguments().size() == 1 && 
-						conversionMode != TypeConversionMode.NativeParameter && 
-						conversionMode != TypeConversionMode.NativeParameterWithStructsPtrPtrs) 
-				{
-					Expression x = sname.getTemplateArguments().get(0);
-					TypeRefExpression trx = x instanceof TypeRefExpression ? (TypeRefExpression)x : null;
-					SimpleTypeRef str = trx.getType() instanceof SimpleTypeRef ? (SimpleTypeRef)trx.getType() : null;
-					objCClass = findObjCClass(str.getName());
-				}
-
-				if (objCClass == null)
-					objCClass = findObjCClass(new SimpleIdentifier(n));
-
-				if (objCClass != null)
-					return objCClass;
 			}
 			Identifier structRef = isQualStruct ? name : findStructRef(name, libraryClassName);
 			if (structRef != null) {
@@ -1160,12 +1142,30 @@ public class TypeConversion {
 	static {
 		predefObjCClasses.put("id", org.rococoa.ID.class);
 		predefObjCClasses.put("SEL",org.rococoa.Selector.class);
+		predefObjCClasses.put("IMP",com.sun.jna.Pointer.class);
 		predefObjCClasses.put("Class", NSClass.class);
 		predefObjCClasses.put("Protocol", NSClass.class);
 		predefObjCClasses.put("NSObject", NSObject.class);
 		predefObjCClasses.put("NSClass", NSClass.class);
 	}
 	public Identifier findObjCClassIdent(Identifier name) {
+		if (name instanceof SimpleIdentifier) {
+			SimpleIdentifier sname = (SimpleIdentifier)name;
+			String n = sname.getName();
+			TypeRef objCClass = null;
+			if (n.equals("id") &&
+					sname.getTemplateArguments().size() == 1/* &&
+					conversionMode != TypeConversionMode.NativeParameter &&
+					conversionMode != TypeConversionMode.NativeParameterWithStructsPtrPtrs*/)
+			{
+				Expression x = sname.getTemplateArguments().get(0);
+				TypeRefExpression trx = x instanceof TypeRefExpression ? (TypeRefExpression)x : null;
+				SimpleTypeRef str = trx.getType() instanceof SimpleTypeRef ? (SimpleTypeRef)trx.getType() : null;
+				if (str != null)
+					name = str.getName();
+			}
+		}
+
 		Class<?> class1 = predefObjCClasses.get(name.toString());
 		if (class1 != null)
 			return ident(class1);
@@ -1229,11 +1229,12 @@ public class TypeConversion {
 							break;
 						default:
 							for (JavaPrim p : new JavaPrim[] {
-								JavaPrim.Double, JavaPrim.Float, JavaPrim.Long, JavaPrim.NativeLong, JavaPrim.Int,
+								JavaPrim.Double, JavaPrim.Float,
+								JavaPrim.Long, JavaPrim.Size, JavaPrim.NativeLong, JavaPrim.Int,
 								JavaPrim.Short, JavaPrim.Byte
 							})
 								if (p1 == p || p2 == p) {
-									if (promoteNativeLongToLong && p == JavaPrim.NativeLong)
+									if (promoteNativeLongToLong && (p == JavaPrim.NativeLong || p == JavaPrim.Size))
 										p = JavaPrim.Long;
 									tr = primRef(p);
 									break;
@@ -1255,7 +1256,7 @@ public class TypeConversion {
 		} else if (x instanceof Cast) {
 			TypeRef tr = convertTypeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType, libraryClassName);
 			JavaPrim prim = getPrimitive(tr, libraryClassName);
-			if (promoteNativeLongToLong && prim == JavaPrim.NativeLong) {
+			if (promoteNativeLongToLong && (prim == JavaPrim.NativeLong || prim == JavaPrim.Size)) {
 				prim = JavaPrim.Long;
 				tr = typeRef(Long.TYPE);
 			}
@@ -1263,7 +1264,9 @@ public class TypeConversion {
 			res = typed(casted.getFirst(), tr);
 			if (prim == JavaPrim.NativeLong)
 				res.setFirst((Expression)new New(typeRef(com.sun.jna.NativeLong.class), casted.getFirst()));
-			
+			else if (prim == JavaPrim.Size)
+				res.setFirst((Expression)new New(typeRef(Size.class), casted.getFirst()));
+
 		} else if (x instanceof Constant) {
 			Class<?> c = null;
 			Constant jc = ((Constant)x).asJava();
