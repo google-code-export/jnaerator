@@ -42,6 +42,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	Identifier name;
 	
 	public Function setName(Identifier name) {
+		if (name != null && name.toString().equals("NSStringFromSelector"))
+			name = name;
+		
 		this.name = changeValue(this, this.name, name);
 		return this;
 	}
@@ -169,6 +172,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	public Function addModifiers(Modifier... mds) {
 		return (Function) super.addModifiers(mds);
 	}
+	
 	@Override
 	public String toString(CharSequence indent) {
 		String s = "";

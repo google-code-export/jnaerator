@@ -6,10 +6,10 @@
   <artifactId>jnaerator</artifactId>
   <name>JNAerator</name>
   <url>http://code.google.com/p/jnaerator/</url>
-  <version>0.9.2-SNAPSHOT</version>
+  <version>${jnaerator.version}</version>
   <packaging>jar</packaging>
   <description>
-JNAerator (pronounce ‘generator’) simply parses C &amp; Objective-C headers and generates the corresponding JNA and Rococoa Java interfaces (it also has a very limited support for C++).
+JNAerator (pronounce "generator") simply parses C &amp; Objective-C headers and generates the corresponding JNA and Rococoa Java interfaces (it also has a very limited support for C++).
 
 This lets Java programmers access native libraries transparently, with full IDE support and little to no hand-tweaking.
 
@@ -55,7 +55,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
   	<dependency>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-runtime</artifactId>
-	  <version>0.9.2-SNAPSHOT</version>
+	  <version>${jnaerator.version}</version>
 	  <scope>compile</scope>
 	</dependency>
 	
@@ -65,7 +65,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	  <version>3.2.2</version>
 	  <scope>compile</scope>
 	</dependency>
-	
+
 	<dependency>
 	  <groupId>net.java.dev.rococoa</groupId>
 	  <artifactId>rococoa-jnaerator</artifactId>
@@ -73,6 +73,14 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	  <scope>compile</scope>
 	</dependency>
 	
+	<!--<dependency>
+          <groupId>org.rococoa</groupId>
+          <artifactId>rococoa-core</artifactId>
+          <version>0.5</version>
+          <scope>compile</scope>
+        </dependency>
+	-->
+
 	<!--
 	<dependency>
 	  <groupId>net.java.dev.rococoa</groupId>
@@ -115,8 +123,8 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
   <parent>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
-	  <version>0.9.2-SNAPSHOT</version>
-	  <relativePath>../jnaerator-parent</relativePath>
+	  <version>1</version>
+	  <relativePath>..</relativePath>
   </parent>
   
   <build>

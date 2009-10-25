@@ -105,6 +105,7 @@ public class JNAerationTest {
 		JNAeratorConfig config = new JNAeratorConfig();
 		config.defaultLibrary = test.libraryName;
 		config.compile = true;
+		config.preferJavac = true;
 		config.extraJavaSourceFilesContents.putAll(test.extraJavaSourceFilesContents);
 		config.libraryForElementsInNullFile = test.libraryName;//test.classNameToJavaContent;
 //		config.addFile(getFile(), "");
