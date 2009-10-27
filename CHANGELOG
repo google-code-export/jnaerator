@@ -17,4 +17,11 @@ Current development version (0.9.2-SNAPSHOT)
 - Fixed long constants being generated as NativeLong (now long)
 - Fixed regression with function pre-comments
 - Fixed generation of references to constants defined in other libraries
+- size_t is now mapped to NativeSize. Classes NativeSizeByReference & GlobalNativeSize have also been added, along with a backwards compatibility switch -sizeAsLong (and a switch -gccLong to treat 'long' as 'size_t')
+- Fixed primitive type promotion of constants (NativeLong -> long)
+- Added -ifRegexMatch switch 
+- Define __STDC__ in auto configuration
+- Fixed issue #44: Hypens in header names translate to hyphens in class names
+- Byref & globals mapping of NSInteger now uses NativeSizeByReference and GlobalNativeSize, instead of NativeLong derivates
+
 
