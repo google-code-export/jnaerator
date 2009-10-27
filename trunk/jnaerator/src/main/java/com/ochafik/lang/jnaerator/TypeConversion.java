@@ -245,8 +245,8 @@ public class TypeConversion {
 		prim("uint32", JavaPrim.Int);
 		prim("int32", JavaPrim.Int);
 		prim("int", JavaPrim.Int);
-		prim("NSUInteger", JavaPrim.Int);
-		prim("NSInteger", JavaPrim.Int);
+		//prim("NSUInteger", JavaPrim.NativeSize);
+		//prim("NSInteger", JavaPrim.NativeSize);
 		prim("SInt32", JavaPrim.Int);
 		prim("UInt32", JavaPrim.Int);
 		prim("GLint", JavaPrim.Int);
@@ -329,8 +329,8 @@ public class TypeConversion {
 		primToByReference.put(JavaPrim.Double, DoubleByReference.class);
 		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.NativeSize, NativeSizeByReference.class);
-		primToByReference.put(JavaPrim.NSInteger, NativeLongByReference.class);
-		primToByReference.put(JavaPrim.NSUInteger, NativeLongByReference.class);
+		primToByReference.put(JavaPrim.NSInteger, NativeSizeByReference.class);
+		primToByReference.put(JavaPrim.NSUInteger, NativeSizeByReference.class);
 		primToByReference.put(JavaPrim.CGFloat, CGFloatByReference.class);
 		
 		//primsByReference.put(JavaPrim.Void, PointerByReference.class);
@@ -347,8 +347,8 @@ public class TypeConversion {
 		primToGlobal.put(JavaPrim.Double, GlobalDouble.class);
 		primToGlobal.put(JavaPrim.NativeLong, GlobalNativeLong.class);
 		primToGlobal.put(JavaPrim.NativeSize, GlobalNativeSize.class);
-		primToGlobal.put(JavaPrim.NSInteger, GlobalNativeLong.class);
-		primToGlobal.put(JavaPrim.NSUInteger, GlobalNativeLong.class);
+		primToGlobal.put(JavaPrim.NSInteger, GlobalNativeSize.class);
+		primToGlobal.put(JavaPrim.NSUInteger, GlobalNativeSize.class);
 		primToGlobal.put(JavaPrim.CGFloat, GlobalCGFloat.class);
 		
 		primToBuffer.put(JavaPrim.Int, IntBuffer.class);
@@ -1568,7 +1568,7 @@ public class TypeConversion {
 		if (isJavaKeyword(name.toString()))
 			return ident(name + "_");
 		else {
-			return ident(name.toString().replaceAll("[^\\w]", "\\$"));
+			return ident(name.toString().replace('-', '_').replaceAll("[^\\w]", "\\$"));
 		}
 	}
 

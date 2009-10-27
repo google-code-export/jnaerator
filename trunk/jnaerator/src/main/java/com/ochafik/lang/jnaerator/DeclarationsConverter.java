@@ -188,7 +188,10 @@ public class DeclarationsConverter {
 						if (!signatures.variablesSignatures.add(name))
 							continue;
 						
-						TypeRef tr = (prim == JavaPrim.NativeLong ? typeRef("long") : result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName));
+						TypeRef tr = prim == JavaPrim.NativeLong || prim == JavaPrim.NativeSize ?
+							typeRef("long") :
+							result.typeConverter.convertTypeToJNA(mutatedType, TypeConversion.TypeConversionMode.FieldType, libraryClassName)
+						;
 						VariablesDeclaration vd = new VariablesDeclaration(tr, new DirectDeclarator(name, val.getFirst()));
 						if (!result.config.noComments) {
 							vd.setCommentBefore(v.getCommentBefore());
