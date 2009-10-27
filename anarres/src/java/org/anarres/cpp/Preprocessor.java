@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +123,7 @@ public class Preprocessor implements Closeable {
 	public Preprocessor() {
 		this.inputs = new ArrayList<Source>();
 
-		this.macros = new HashMap<String,Macro>();
+		this.macros = new LinkedHashMap<String,Macro>();
 		macros.put(__LINE__.getName(), __LINE__);
 		macros.put(__FILE__.getName(), __FILE__);
 		macros.put(__COUNTER__.getName(), __COUNTER__);
