@@ -200,7 +200,7 @@ public class JNAeratorConfig {
 	public File outputJar;
 	public File cacheDir;
 	public boolean autoConf = true;
-	public boolean gccLong = false;
+	public boolean gccLong = false, sizeAsLong = false;
 	public boolean compile = true;
 	public boolean bundleSources = true;
 	public boolean noCPlusPlus;

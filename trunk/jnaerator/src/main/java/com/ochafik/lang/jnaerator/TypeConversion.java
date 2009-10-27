@@ -82,8 +82,8 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
 import com.ochafik.lang.jnaerator.runtime.CharByReference;
-import com.ochafik.lang.jnaerator.runtime.Size;
-import com.ochafik.lang.jnaerator.runtime.SizeByReference;
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
+import com.ochafik.lang.jnaerator.runtime.NativeSizeByReference;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.Global;
@@ -92,7 +92,7 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalCGFloat;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalChar;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalDouble;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalFloat;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalSize;
+import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeSize;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalLong;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeLong;
@@ -161,7 +161,7 @@ public class TypeConversion {
 		Float(java.lang.Float.TYPE, ESize.Four), 
 		Double(java.lang.Double.TYPE, ESize.Eight), 
 		NativeLong(com.sun.jna.NativeLong.class, ESize.StaticSizeField),
-		Size(Size.class, ESize.StaticSizeField),
+		NativeSize(NativeSize.class, ESize.StaticSizeField),
 		NSInteger(org.rococoa.cocoa.foundation.NSInteger.class, ESize.StaticSizeField),
 		NSUInteger(org.rococoa.cocoa.foundation.NSUInteger.class, ESize.StaticSizeField), 
 		CGFloat(org.rococoa.cocoa.CGFloat.class, ESize.StaticSizeField);
@@ -262,12 +262,13 @@ public class TypeConversion {
 		prim("NSUInteger", JavaPrim.NSUInteger);
 		prim("CGFloat", JavaPrim.CGFloat);
 
-		JavaPrim longPrim = result.config.gccLong ? JavaPrim.Size : JavaPrim.NativeLong;
+		JavaPrim longPrim = result.config.gccLong ? JavaPrim.NativeSize : JavaPrim.NativeLong;
 		prim("long", longPrim);
 		prim("LONG", longPrim);
 
-		prim("size_t", JavaPrim.Size);
-		prim("ptrdiff_t", JavaPrim.Size);
+		JavaPrim sizePrim = result.config.sizeAsLong ? longPrim : JavaPrim.NativeSize;
+		prim("size_t", sizePrim);
+		prim("ptrdiff_t", sizePrim);
 		
 		prim("int16_t", JavaPrim.Short);
 		prim("uint16_t", JavaPrim.Short);
@@ -327,7 +328,7 @@ public class TypeConversion {
 		primToByReference.put(JavaPrim.Float, FloatByReference.class);
 		primToByReference.put(JavaPrim.Double, DoubleByReference.class);
 		primToByReference.put(JavaPrim.NativeLong, NativeLongByReference.class);
-		primToByReference.put(JavaPrim.Size, SizeByReference.class);
+		primToByReference.put(JavaPrim.NativeSize, NativeSizeByReference.class);
 		primToByReference.put(JavaPrim.NSInteger, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.NSUInteger, NativeLongByReference.class);
 		primToByReference.put(JavaPrim.CGFloat, CGFloatByReference.class);
@@ -345,7 +346,7 @@ public class TypeConversion {
 		primToGlobal.put(JavaPrim.Float, GlobalFloat.class);
 		primToGlobal.put(JavaPrim.Double, GlobalDouble.class);
 		primToGlobal.put(JavaPrim.NativeLong, GlobalNativeLong.class);
-		primToGlobal.put(JavaPrim.Size, GlobalSize.class);
+		primToGlobal.put(JavaPrim.NativeSize, GlobalNativeSize.class);
 		primToGlobal.put(JavaPrim.NSInteger, GlobalNativeLong.class);
 		primToGlobal.put(JavaPrim.NSUInteger, GlobalNativeLong.class);
 		primToGlobal.put(JavaPrim.CGFloat, GlobalCGFloat.class);
@@ -1230,11 +1231,11 @@ public class TypeConversion {
 						default:
 							for (JavaPrim p : new JavaPrim[] {
 								JavaPrim.Double, JavaPrim.Float,
-								JavaPrim.Long, JavaPrim.Size, JavaPrim.NativeLong, JavaPrim.Int,
+								JavaPrim.Long, JavaPrim.NativeSize, JavaPrim.NativeLong, JavaPrim.Int,
 								JavaPrim.Short, JavaPrim.Byte
 							})
 								if (p1 == p || p2 == p) {
-									if (promoteNativeLongToLong && (p == JavaPrim.NativeLong || p == JavaPrim.Size))
+									if (promoteNativeLongToLong && (p == JavaPrim.NativeLong || p == JavaPrim.NativeSize))
 										p = JavaPrim.Long;
 									tr = primRef(p);
 									break;
@@ -1256,7 +1257,7 @@ public class TypeConversion {
 		} else if (x instanceof Cast) {
 			TypeRef tr = convertTypeToJNA(((Cast) x).getType(), TypeConversionMode.ExpressionType, libraryClassName);
 			JavaPrim prim = getPrimitive(tr, libraryClassName);
-			if (promoteNativeLongToLong && (prim == JavaPrim.NativeLong || prim == JavaPrim.Size)) {
+			if (promoteNativeLongToLong && (prim == JavaPrim.NativeLong || prim == JavaPrim.NativeSize)) {
 				prim = JavaPrim.Long;
 				tr = typeRef(Long.TYPE);
 			}
@@ -1264,8 +1265,8 @@ public class TypeConversion {
 			res = typed(casted.getFirst(), tr);
 			if (prim == JavaPrim.NativeLong)
 				res.setFirst((Expression)new New(typeRef(com.sun.jna.NativeLong.class), casted.getFirst()));
-			else if (prim == JavaPrim.Size)
-				res.setFirst((Expression)new New(typeRef(Size.class), casted.getFirst()));
+			else if (prim == JavaPrim.NativeSize)
+				res.setFirst((Expression)new New(typeRef(NativeSize.class), casted.getFirst()));
 
 		} else if (x instanceof Constant) {
 			Class<?> c = null;

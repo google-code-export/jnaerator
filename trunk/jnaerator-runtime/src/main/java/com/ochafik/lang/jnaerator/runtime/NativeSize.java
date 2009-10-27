@@ -10,17 +10,17 @@ import com.sun.jna.Platform;
  * (NativeLong on Windows is only okay with MSVC++ libraries, as 'long' on Windows 64 bits will be 32 bits with MSVC++ and 64 bits with GCC/mingw)
  * @author ochafik
  */
-public class Size extends IntegerType {
+public class NativeSize extends IntegerType {
 	/** Size of a size_t integer, in bytes. */
     public static final int SIZE = Native.SIZE_T_SIZE;//Platform.is64Bit() ? 8 : 4;
 
     /** Create a zero-valued Size. */
-    public Size() {
+    public NativeSize() {
         this(0);
     }
 
     /** Create a Size with the given value. */
-    public Size(long value) {
+    public NativeSize(long value) {
         super(SIZE, value);
     }
 }

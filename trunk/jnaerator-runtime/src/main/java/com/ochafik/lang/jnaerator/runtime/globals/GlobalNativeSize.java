@@ -18,26 +18,26 @@
 */
 package com.ochafik.lang.jnaerator.runtime.globals;
 
-import com.ochafik.lang.jnaerator.runtime.Size;
-import com.ochafik.lang.jnaerator.runtime.SizeByReference;
+import com.ochafik.lang.jnaerator.runtime.NativeSize;
+import com.ochafik.lang.jnaerator.runtime.NativeSizeByReference;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 
-public class GlobalSize extends GlobalPrimitive<SizeByReference> {
-	public GlobalSize(NativeLibrary library, String... symbols) {
-		super(library, SizeByReference.class, symbols);
+public class GlobalNativeSize extends GlobalPrimitive<NativeSizeByReference> {
+	public GlobalNativeSize(NativeLibrary library, String... symbols) {
+		super(library, NativeSizeByReference.class, symbols);
 	}
-	public Size get() {
+	public NativeSize get() {
 		return getValue().getValue();
 	}
 	public void set(int v) {
-		getValue().setValue(new Size(v));
+		getValue().setValue(new NativeSize(v));
 	}
 	public void set(long v) {
-		getValue().setValue(new Size(v));
+		getValue().setValue(new NativeSize(v));
 	}
-	public void set(Size v) {
+	public void set(NativeSize v) {
 		getValue().setValue(v);
 	}
 }
