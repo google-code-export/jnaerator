@@ -356,6 +356,9 @@ public class JNAerator {
 					case GCCLong:
 						config.gccLong = true;
 						break;
+					case SizeAsLong:
+						config.sizeAsLong = true;
+						break;
 					case NoAuto:
 						config.autoConf = false;
 						break;
