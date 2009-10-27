@@ -168,8 +168,8 @@ public class Result extends Scanner {
 	}
 	private Identifier getFakePointerName(Identifier name) {
 
-		String nameStr = name.toString();
-		if (nameStr.startsWith("_")) {
+		String nameStr = name == null ? null : name.toString();
+		if (nameStr != null && nameStr.startsWith("_")) {
 			String nicerName = nameStr.substring(1);
 			Pair<TypeDef, Declarator> pair = typeDefs.get(nicerName);
 			if (pair != null) {
