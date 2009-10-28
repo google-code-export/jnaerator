@@ -67,28 +67,12 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	</dependency>
 
 	<dependency>
-	  <groupId>net.java.dev.rococoa</groupId>
-	  <artifactId>rococoa-jnaerator</artifactId>
-	  <version>1.0-SNAPSHOT</version>
+	  <groupId>org.rococoa</groupId>
+	  <artifactId>rococoa-core</artifactId>
+	  <version>${rococoa.version}</version>
 	  <scope>compile</scope>
 	</dependency>
 	
-	<!--<dependency>
-          <groupId>org.rococoa</groupId>
-          <artifactId>rococoa-core</artifactId>
-          <version>0.5</version>
-          <scope>compile</scope>
-        </dependency>
-	-->
-
-	<!--
-	<dependency>
-	  <groupId>net.java.dev.rococoa</groupId>
-	  <artifactId>rococoa-jnaerator</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <scope>compile</scope>
-	</dependency>
-	-->
 	<dependency>
 		<groupId>org.antlr</groupId>
 		<artifactId>antlr-runtime</artifactId>
@@ -123,8 +107,8 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
   <parent>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
-	  <version>1</version>
-	  <relativePath>..</relativePath>
+	  <version>2</version>
+	  <relativePath>../jnaerator-parent</relativePath>
   </parent>
   
   <build>

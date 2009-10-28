@@ -13,8 +13,8 @@
   <parent>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
-	  <version>1</version>
-	  <relativePath>..</relativePath>
+	  <version>2</version>
+	  <relativePath>../jnaerator-parent</relativePath>
   </parent>
   
   <build>

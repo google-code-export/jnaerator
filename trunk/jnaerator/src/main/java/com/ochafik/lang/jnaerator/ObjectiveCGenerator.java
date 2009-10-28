@@ -31,8 +31,9 @@ import java.util.Set;
 
 import org.rococoa.cocoa.foundation.NSClass;
 import org.rococoa.cocoa.foundation.NSObject;
-import org.rococoa.cocoa.foundation.NSString;
+//import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.Rococoa;
+import org.rococoa.ObjCObject;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
@@ -162,12 +163,12 @@ public class ObjectiveCGenerator {
 		
 		if (struct.getType() == Struct.Type.ObjCClass) {
 			String name = String.valueOf(struct.getTag());
-			if (name.equals("NSObject"))
-				javaPackage = ident(NSObject.class.getPackage().getName().split("\\."));
-			else if (name.equals("NSClass"))
-				javaPackage = ident(NSClass.class.getPackage().getName().split("\\."));
-			else if (name.equals("NSString"))
-				javaPackage = ident(NSString.class.getPackage().getName().split("\\."));
+			//if (name.equals("NSObject"))
+			//	javaPackage = ident(NSObject.class.getPackage().getName().split("\\."));
+			//else if (name.equals("NSClass"))
+			//	javaPackage = ident(NSClass.class.getPackage().getName().split("\\."));
+			//else if (name.equals("NSString"))
+			//	javaPackage = ident(NSString.class.getPackage().getName().split("\\."));
 		}
 		
 		if (struct.getType() == Type.ObjCProtocol)
@@ -206,7 +207,8 @@ public class ObjectiveCGenerator {
 		out.close();
 	}
 	static Identifier 
-		NSObjectIdent = ident(NSObject.class), 
+		NSObjectIdent = ident(NSObject.class),
+		ObjCObjectIdent = ident(ObjCObject.class),
 		NSClassIdent = ident(NSClass.class);
 	public Struct generateObjectiveCClass(Struct in, Signatures signatures) throws IOException {
 		boolean isProtocol = in.getType() == Type.ObjCProtocol, isCategory = in.getCategoryName() != null;
@@ -234,8 +236,12 @@ public class ObjectiveCGenerator {
 			parentsForInstance = new ArrayList<Identifier>(in.getParents()),
 			parentsForClass = new ArrayList<Identifier>();
 
-		if (parentsForInstance.isEmpty() && !(isProtocol || isCategory) && !in.getTag().equals(NSObjectIdent))
-			parentsForInstance.add(NSObjectIdent);
+		if (parentsForInstance.isEmpty()) {
+			if (!(isProtocol || isCategory) && !in.getTag().equals(NSObjectIdent))
+				parentsForInstance.add(NSObjectIdent);
+			else
+				parentsForInstance.add(ObjCObjectIdent);
+		}
 		
 		parentsForClass.add(NSClassIdent);
 		
@@ -432,7 +438,7 @@ public class ObjectiveCGenerator {
 		Identifier fullClassName = getFullClassName(in);
 		
 		Set<String> objSigs = DeclarationsConverter.getMethodsAndTheirSignatures(NSObject.class).getSecond(),
-			clasSigs = DeclarationsConverter.getMethodsAndTheirSignatures(NSClass.class).getSecond();
+			clasSigs = new HashSet<String>();//DeclarationsConverter.getMethodsAndTheirSignatures(NSClass.class).getSecond();
 		
 		int[] iChild = new int[1];
 		for (Declaration d : declarations) {

@@ -19,9 +19,9 @@
 	</dependency>
 	
 	<dependency>
-	  <groupId>net.java.dev.rococoa</groupId>
-	  <artifactId>rococoa-jnaerator</artifactId>
-	  <version>1.0-SNAPSHOT</version>
+	  <groupId>org.rococoa</groupId>
+	  <artifactId>rococoa-core</artifactId>
+	  <version>${rococoa.version}</version>
 	  <scope>compile</scope>
 	</dependency>
 	<!--
@@ -44,8 +44,8 @@
   <parent>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
-	  <version>1</version>
-	  <relativePath>..</relativePath>
+	  <version>2</version>
+	  <relativePath>../jnaerator-parent</relativePath>
   </parent>
   
   
