@@ -35,7 +35,46 @@ import com.ochafik.util.string.RegexUtils;
 import com.ochafik.util.string.StringUtils;
 
 public class CompilerUtils {
-	
+	public static class CompilationError extends IOException {
+		public final String compilerClass;
+		//public final String bootclasspath;
+		public final List<Diagnostic<? extends JavaFileObject>> diagnostics;
+		public final Map<String, MemoryJavaFile> inputs;
+		private CompilationError(String text, List<Diagnostic<? extends JavaFileObject>> diagnostics, Map<String, MemoryJavaFile> inputs, String compilerClass/*, String bootclasspath*/) {
+			super(text);
+			this.diagnostics = diagnostics;
+			this.inputs = inputs;
+			this.compilerClass = compilerClass;
+			//this.bootclasspath = bootclasspath;
+		}
+		public static void throwErrors(List<Diagnostic<? extends JavaFileObject>> diagnostics, Map<String, MemoryJavaFile> inputs, String compilerClass/*, String bootclasspath*/) throws CompilationError, IOException {
+			List<Diagnostic<? extends JavaFileObject>> errors = new ArrayList<Diagnostic<? extends JavaFileObject>>(diagnostics.size());
+			StringBuilder sb = new StringBuilder();
+
+			for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
+				if (diagnostic == null)
+					continue;
+				if (diagnostic.getKind() == Kind.ERROR) {
+					errors.add(diagnostic);
+					sb.append("Error in " + diagnostic.getSource().toUri() + " at line " + diagnostic.getLineNumber() + ", col " + diagnostic.getColumnNumber() + " :\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
+					sb.append(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" +  diagnostic.getSource().getCharContent(true), new Adapter<String[], String>() {
+						int line = 0;
+
+						@Override
+						public String adapt(String[] value) {
+							line++;
+							return "\n" + line + ":" + (diagnostic.getLineNumber() == line ? ">>>" : "") +"\t\t";
+						}
+					}) + "\n");
+				}
+				//System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
+			}
+			if (errors.isEmpty())
+				return;
+
+			throw new CompilationError(sb.toString(), errors, inputs, compilerClass/*, bootclasspath*/);
+		}
+	}
 	public static String getClassPath(Class<?> c, File cacheDirectory) throws MalformedURLException, IOException {
 
 		URL resource = c.getResource(c.getSimpleName() + ".class");
@@ -126,11 +165,11 @@ public class CompilerUtils {
 	}
 	public static void compile(JavaCompiler compiler, MemoryFileManager fileManager, DiagnosticCollector<JavaFileObject> diagnostics, String sourceCompatibility, File cacheDirectory, Class<?>...classpathHints) throws MalformedURLException, IOException {
 		//JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		System.out.println("compiler = " + (compiler == null ? "<none found>" : compiler.getClass().getName()));
+		//System.out.println("compiler = " + (compiler == null ? "<none found>" : compiler.getClass().getName()));
 		Set<String> bootclasspaths = getClassPaths(cacheDirectory, classpathHints);
 		bootclasspaths.addAll(getClassPaths(cacheDirectory, String.class));
 		String bootclasspath = StringUtils.implode(bootclasspaths, File.pathSeparator);
-		System.out.println("bootclasspath = " + bootclasspath);
+		//System.out.println("bootclasspath = " + bootclasspath);
 		Iterable<? extends JavaFileObject> fileObjects = fileManager.getJavaFileObjects();  
 		List<String> options = sourceCompatibility == null ? null : Arrays.asList(
 			"-target", sourceCompatibility, 

@@ -43,6 +43,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ochafik.io.ReadText;
 import com.ochafik.junit.ParameterizedWithDescription;
+import com.ochafik.lang.compiler.CompilerUtils;
+import com.ochafik.lang.compiler.MemoryJavaFile;
 import com.ochafik.lang.jnaerator.JNAerator.Feedback;
 import com.ochafik.lang.jnaerator.studio.JNAeratorStudio.SyntaxException;
 import com.ochafik.net.URLUtils;
@@ -129,9 +131,25 @@ public class JNAerationTest {
 			@Override
 			public void setFinished(Throwable ex) {
 				Collection<Entry<String, String>> cc = test.extraJavaSourceFilesContents.entrySet();//new CompoundCollection<Map.Entry<String, String>>(test.extraJavaSourceFilesContents.entrySet(), Arrays.asList(new Pair<String, String>("?.java", test.cSource)));
+				System.out.println("Finished with an error ! " + ex);
+				if (ex instanceof CompilerUtils.CompilationError) {
+					CompilerUtils.CompilationError cex = (CompilerUtils.CompilationError)ex;
+					for (Map.Entry<String, MemoryJavaFile> e : cex.inputs.entrySet()) {
+						System.out.println("\n" + e.getKey() + ":");
+						System.out.println(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" + e.getValue().getCharContent(true), new Adapter<String[], String>() {
+							int line = 0;
+
+							@Override
+							public String adapt(String[] value) {
+								return "\n" + (++line) + ":\t\t";
+							}
+						}));
+					}
+				}
+				/*
 				for (final Map.Entry<String, String> e : cc) {
-					System.err.println("\n" + e.getKey() + ":");
-					System.err.println(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" + e.getValue(), new Adapter<String[], String>() {
+					System.out.println("\n" + e.getKey() + ":");
+					System.out.println(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" + e.getValue(), new Adapter<String[], String>() {
 						int line = 0;
 
 						@Override
@@ -139,7 +157,7 @@ public class JNAerationTest {
 							return "\n" + (++line) + ":\t\t";
 						}
 					}));
-				}
+				}*/
 				Assert.assertTrue("Error : " + ex, false);
 //				throw new RuntimeException(e);
 			}
