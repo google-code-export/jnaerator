@@ -703,35 +703,8 @@ public class JNAerator {
 				}
 				feedback.setStatus("Compiling JNAerated files...");
 				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, NativeLibrary.class, JNAerator.class, NSClass.class, Mangling.class);
-				if (!diagnostics.getDiagnostics().isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					
-					for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-						if (diagnostic == null)
-							continue;
-						if (diagnostic.getKind() == Kind.ERROR) {
-							sb.append("Error in " + diagnostic.getSource().toUri() + " at line " + diagnostic.getLineNumber() + ", col " + diagnostic.getColumnNumber() + " :\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
-							sb.append(RegexUtils.regexReplace(Pattern.compile("\n"), "\n" +  diagnostic.getSource().getCharContent(true), new Adapter<String[], String>() {
-								int line = 0;
-
-								@Override
-								public String adapt(String[] value) {
-									line++;
-									return "\n" + line + ":" + (diagnostic.getLineNumber() == line ? ">>>" : "") +"\t\t";
-								}
-							}) + "\n");
-						}
-//							System.out.println("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + (diagnostic.getSource() == null ? "<unknown source>" : diagnostic.getSource().getName()) + ": " + diagnostic.getMessage(Locale.getDefault()));
-					}
-//					for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-//						if (diagnostic.getKind() == Kind.ERROR)
-//							sb.append("Error on line " + diagnostic.getLineNumber() + ":" + diagnostic.getColumnNumber() + " in " + diagnostic.getSource().getName() + "\n\t" + diagnostic.getMessage(Locale.getDefault()) + "\n");//.toUri());
-//					}
-					if (sb.length() > 0) {
-						//System.out.println(sb);
-						throw new SyntaxException(sb.toString());
-					}
-				}
+				CompilerUtils.CompilationError.throwErrors(diagnostics.getDiagnostics(), mfm.inputs, c.getClass().getName());
+				
 				if (config.outputJar != null && result.config.bundleRuntime) {
 					feedback.setStatus("Copying runtime classes...");
 					addRuntimeClasses(result, mfm);
@@ -749,6 +722,7 @@ public class JNAerator {
 			feedback.setFinished(th);
 		}
 	}
+	
 	public void parseLibSymbols(SourceFiles sourceFiles, Result result) throws FileNotFoundException {
 		PrintWriter fileOut = null;
 		if (config.extractedSymbolsOut != null) {

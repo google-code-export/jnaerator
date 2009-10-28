@@ -9,6 +9,7 @@ extern CGFloat cgf;
 --
 import test.*;
 import org.rococoa.cocoa.*;
+import com.ochafik.lang.jnaerator.runtime.*;
 import static test.TestLibrary.*;
 
 IntByReference pInt = TestLibrary.pInt.get();
@@ -20,7 +21,7 @@ TestLibrary.pVoid.set(pVoid);
 int i = TestLibrary.i.get();
 TestLibrary.i.set(i);
 
-NativeLong nsi = TestLibrary.nsi.get();
+NativeSize nsi = TestLibrary.nsi.get();
 TestLibrary.nsi.set(nsi);
 
 CGFloat cgf = TestLibrary.cgf.get();

@@ -340,7 +340,8 @@ public class JNAeratorConfigUtils {
 	 */
 	static void autoConfigureArchitecture(JNAeratorConfig config) {
 		String arch = System.getProperty("os.arch").toLowerCase();
-		System.out.println("os.arch = " + arch);
+		if (config.verbose)
+			System.out.println("os.arch = " + arch);
 		
 		//protect us from inline assembly in VC++:
 		//config.preprocessorConfig.macros.put("_M_CEE_PURE", null);
