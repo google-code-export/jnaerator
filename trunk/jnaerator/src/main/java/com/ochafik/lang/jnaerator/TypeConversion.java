@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.rococoa.cocoa.foundation.NSClass;
 import org.rococoa.cocoa.foundation.NSObject;
 import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
@@ -111,6 +110,8 @@ import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.ptr.ShortByReference;
 
+import org.rococoa.ObjCClass;
+import org.rococoa.ObjCObject;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class TypeConversion {
@@ -1141,13 +1142,13 @@ public class TypeConversion {
 	}
 	static Map<String, Class<?>> predefObjCClasses = new HashMap<String, Class<?>>();
 	static {
-		predefObjCClasses.put("id", org.rococoa.ID.class);
+		predefObjCClasses.put("id", ObjCObject.class);//org.rococoa.ID.class);
 		predefObjCClasses.put("SEL",org.rococoa.Selector.class);
 		predefObjCClasses.put("IMP",com.sun.jna.Pointer.class);
-		predefObjCClasses.put("Class", NSClass.class);
-		predefObjCClasses.put("Protocol", NSClass.class);
+		predefObjCClasses.put("Class", ObjCClass.class);
+		predefObjCClasses.put("Protocol", ObjCClass.class);
 		predefObjCClasses.put("NSObject", NSObject.class);
-		predefObjCClasses.put("NSClass", NSClass.class);
+		//predefObjCClasses.put("NSClass", NSClass.class);
 	}
 	public Identifier findObjCClassIdent(Identifier name) {
 		if (name instanceof SimpleIdentifier) {
