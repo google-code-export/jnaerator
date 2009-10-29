@@ -18,9 +18,9 @@ import test.*;
 import test.protocols.*;
 
 Base base = Base.baseWithName();
-base = base.merge(base);
+base = base.asCateg().merge(base);
 base.print();
-base.test((Printing)null);
+base.asCateg().test((Printing)null);
 //base.test((org.rococoa.NSObject)null);
-base.test((org.rococoa.ID)null);
+//base.asCateg().test((org.rococoa.ObjCObject)null);
 

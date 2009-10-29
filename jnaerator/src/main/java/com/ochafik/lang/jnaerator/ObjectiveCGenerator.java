@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.rococoa.cocoa.foundation.NSClass;
 import org.rococoa.cocoa.foundation.NSObject;
 //import org.rococoa.cocoa.foundation.NSString;
 import org.rococoa.Rococoa;
@@ -64,6 +63,7 @@ import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import java.util.*;
+import org.rococoa.ObjCClass;
 
 /*
 include com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data
@@ -127,7 +127,7 @@ public class ObjectiveCGenerator {
 		
 		Struct s = (Struct)m.getParentElement();
 		Identifier n = s.getTag();
-		if (n != null && n.equals("NSObject") || n.equals("NSClass"))
+		if (n != null && n.equals("NSObject"))// || n.equals("NSClass"))
 			return true;
 		
 		String sig = m.computeSignature(false);
@@ -209,7 +209,8 @@ public class ObjectiveCGenerator {
 	static Identifier 
 		NSObjectIdent = ident(NSObject.class),
 		ObjCObjectIdent = ident(ObjCObject.class),
-		NSClassIdent = ident(NSClass.class);
+		ObjCClassIdent = ident(ObjCClass.class);
+		//NSClassIdent = ident(NSClass.class);
 	public Struct generateObjectiveCClass(Struct in, Signatures signatures) throws IOException {
 		boolean isProtocol = in.getType() == Type.ObjCProtocol, isCategory = in.getCategoryName() != null;
 		
@@ -237,13 +238,14 @@ public class ObjectiveCGenerator {
 			parentsForClass = new ArrayList<Identifier>();
 
 		if (parentsForInstance.isEmpty()) {
-			if (!(isProtocol || isCategory) && !in.getTag().equals(NSObjectIdent))
-				parentsForInstance.add(NSObjectIdent);
-			else
+			if (isProtocol || isCategory)
 				parentsForInstance.add(ObjCObjectIdent);
+			else
+			if (!in.getTag().equals(NSObjectIdent))
+				parentsForInstance.add(NSObjectIdent);
 		}
 		
-		parentsForClass.add(NSClassIdent);
+		interfacesForClass.add(ObjCClassIdent);
 		
 		if (!isCategory)
 			for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
@@ -260,16 +262,18 @@ public class ObjectiveCGenerator {
 				
 		for (Identifier p : parentsForInstance) {
 			Identifier id = result.typeConverter.findObjCClassIdent(p);
-			if (id != null)
+			if (id != null || (!p.isPlain() && (id = p) != null))
 				instanceStruct.addParent(id.clone());
 		}
 		for (Identifier p : parentsForClass) {
-			Identifier id = p == NSClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
+			Identifier id = p == ObjCClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
 			if (id != null)
 				classStruct.addParent(id.clone());
 		}
-		for (Identifier id : interfacesForClass) {
-			classStruct.addProtocol(id);
+		for (Identifier p : interfacesForClass) {
+			Identifier id = p == ObjCClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
+			if (id != null)
+				classStruct.addProtocol(p);
 		}
 		
 		for (Identifier p : in.getProtocols()) {
@@ -340,6 +344,7 @@ public class ObjectiveCGenerator {
 			structThatReceivesStaticMethods = classInterfaceStruct = new Struct();
 			classInterfaceStruct.setType(Struct.Type.JavaInterface);
 			classInterfaceStruct.setTag(ident(classInterfaceNameInCategoriesAndProtocols));
+			classInterfaceStruct.addParent(ident(ObjCClass.class));
 			classStruct.addProtocol(ident(classInterfaceNameInCategoriesAndProtocols));
 		} else
 			structThatReceivesStaticMethods = classStruct;
