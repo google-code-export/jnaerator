@@ -161,15 +161,15 @@ public class ObjectiveCGenerator {
 		String library = result.getLibrary(struct);
 		Identifier javaPackage = result.getLibraryPackage(library);
 		
-		if (struct.getType() == Struct.Type.ObjCClass) {
-			String name = String.valueOf(struct.getTag());
+		//if (struct.getType() == Struct.Type.ObjCClass) {
+		//	String name = String.valueOf(struct.getTag());
 			//if (name.equals("NSObject"))
 			//	javaPackage = ident(NSObject.class.getPackage().getName().split("\\."));
 			//else if (name.equals("NSClass"))
 			//	javaPackage = ident(NSClass.class.getPackage().getName().split("\\."));
 			//else if (name.equals("NSString"))
 			//	javaPackage = ident(NSString.class.getPackage().getName().split("\\."));
-		}
+		//}
 		
 		if (struct.getType() == Type.ObjCProtocol)
 			javaPackage = ident(javaPackage, "protocols");
@@ -230,13 +230,13 @@ public class ObjectiveCGenerator {
 		classStruct.addModifiers(Modifier.Public, Modifier.Abstract);
 		
 		List<Identifier> 
-			interfacesForInstance = new ArrayList<Identifier>(), 
-			interfacesForClass = new ArrayList<Identifier>();
+			interfacesForInstance = new ArrayList<Identifier>();
 
-		List<Identifier> 
-			parentsForInstance = new ArrayList<Identifier>(in.getParents()),
-			parentsForClass = new ArrayList<Identifier>();
+		List<Identifier>
+			parentsForInstance = new ArrayList<Identifier>(in.getParents());
 
+		//for (Identifier p : parentsForInstance)
+		//	parentsForClass
 		if (parentsForInstance.isEmpty()) {
 			if (isProtocol || isCategory)
 				parentsForInstance.add(ObjCObjectIdent);
@@ -244,10 +244,9 @@ public class ObjectiveCGenerator {
 			if (!in.getTag().equals(NSObjectIdent))
 				parentsForInstance.add(NSObjectIdent);
 		}
+		//interfacesForClass.add(ObjCClassIdent);
 		
-		interfacesForClass.add(ObjCClassIdent);
-		
-		if (!isCategory)
+		if (!(isCategory || isProtocol))
 			for (Struct catIn : Result.getMap(result.objCCategoriesByTargetType, in.getTag()).values()) {
 				Identifier catId = getFullClassName(catIn);
 
@@ -261,21 +260,25 @@ public class ObjectiveCGenerator {
 			}	
 				
 		for (Identifier p : parentsForInstance) {
-			Identifier id = result.typeConverter.findObjCClassIdent(p);
-			if (id != null || (!p.isPlain() && (id = p) != null))
+			String ps = p.toString();
+			boolean basic = ps.toString().equals(ObjCObject.class.getName()) || ps.equals(NSObject.class.getName());
+			Identifier id = basic ? p : result.typeConverter.findObjCClassIdent(p);
+			//Identifier id = result.typeConverter.findObjCClassIdent(p);
+			if (id != null || (!p.isPlain() && (id = p) != null)) {
 				instanceStruct.addParent(id.clone());
+				if (!basic && !ps.toString().equals("NSObject"))
+					classStruct.addParent(ident(id, classClassName));
+			}
 		}
-		for (Identifier p : parentsForClass) {
-			Identifier id = p == ObjCClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
-			if (id != null)
-				classStruct.addParent(id.clone());
-		}
-		for (Identifier p : interfacesForClass) {
-			Identifier id = p == ObjCClassIdent ? p : result.typeConverter.findObjCClassIdent(p);
+		/*for (Identifier p : interfacesForClass) {
+			boolean basic = p == ObjCClassIdent || p == NSObjectIdent;
+			Identifier id = basic ? p : result.typeConverter.findObjCClassIdent(p);
 			if (id != null)
 				classStruct.addProtocol(p);
-		}
-		
+		}*/
+		if (classStruct.getParents().isEmpty())
+			classStruct.addProtocol(ident(ObjCClassIdent));
+
 		for (Identifier p : in.getProtocols()) {
 			Identifier id = getFullClassName(getStruct(p, Type.ObjCProtocol));
 			if (id != null)
@@ -441,7 +444,7 @@ public class ObjectiveCGenerator {
 			Struct classStruct, List<Declaration> declarations, boolean isProtocol) throws IOException {
 		
 		Identifier fullClassName = getFullClassName(in);
-		
+
 		Set<String> objSigs = DeclarationsConverter.getMethodsAndTheirSignatures(NSObject.class).getSecond(),
 			clasSigs = new HashSet<String>();//DeclarationsConverter.getMethodsAndTheirSignatures(NSClass.class).getSecond();
 		
