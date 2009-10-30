@@ -255,6 +255,9 @@ public class DeclarationsConverter {
 			for (Method m : originalLib.getDeclaredMethods()) {
 				Function f = Function.fromMethod(m);
 				String sig = f.computeSignature(false);
+				//if (m.getDeclaringClass().equals(NSObject.class) && f.getName().equals("as")) {
+				//	Declaration
+				//}
 				pair.getFirst().add(new Pair<Function, String>(f, sig));
 				pair.getSecond().add(sig);
 			}
