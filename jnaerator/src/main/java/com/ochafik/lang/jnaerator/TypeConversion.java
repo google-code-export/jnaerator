@@ -645,7 +645,13 @@ public class TypeConversion {
 		}
 	}
 	public Identifier findStructRef(Struct s, Identifier libraryClassName) {
-		return findStructRef(s, result.declarationsConverter.getActualTaggedTypeName(s), libraryClassName);	
+		switch (s.getType()) {
+			case ObjCClass:
+			case ObjCProtocol:
+				return result.objectiveCGenerator.getFullClassName(s);
+			default:
+				return findStructRef(s, result.declarationsConverter.getActualTaggedTypeName(s), libraryClassName);
+		}
 	}
 //	public String find(String name, Element e, String callerLibraryClass) {
 //		if (e == null)
@@ -711,7 +717,7 @@ public class TypeConversion {
 		return library == null ? null : javaStaticFieldRef(result.getLibraryClassFullName(library), name);
 	}
 	
-	public Identifier inferCallBackName(FunctionSignature functionSignature, boolean prependNamespaces, boolean qualify) {
+	public Identifier inferCallBackName(FunctionSignature functionSignature, boolean prependNamespaces, boolean qualify, Identifier libraryClassName) {
 		List<String> nameElements = new ArrayList<String>();
 		Identifier name = functionSignature.getFunction().getName();
 		if (name != null)
@@ -766,9 +772,13 @@ public class TypeConversion {
 		}
 		
 		if (qualify && parentIdent == null) {
-			String library = result.getLibrary(functionSignature);
-			if (library != null)
-				parentIdent = result.getLibraryClassFullName(library);
+			//if (libraryClassName != null)
+			//	parentIdent = libraryClassName;
+			//else {
+				String library = result.getLibrary(functionSignature);
+				if (library != null)
+					parentIdent = result.getLibraryClassFullName(library);
+			//}
 		}
 		
 		if (prependNamespaces) {
@@ -800,7 +810,7 @@ public class TypeConversion {
 //						);
 //		}
 		return typeRef(//libMember(result.getLibraryClassFullName(library), libraryClassName, 
-				inferCallBackName(s, true, true)//)
+				inferCallBackName(s, true, true, libraryClassName)//)
 				);
 	}
 	
@@ -815,7 +825,7 @@ public class TypeConversion {
 //			return
 //				typeRef(ident(structName, inferCallBackName(s, true, true)));
 //		}
-		return typeRef(inferCallBackName(s, true, true));
+		return typeRef(inferCallBackName(s, true, true, callerLibraryClass));
 //		return typeRef(libMember(result.getLibraryClassFullName(library), callerLibraryClass, inferCallBackName(s, true, true)));
 		//typeRef(ident(result.getLibraryClassFullName(library), inferCallBackName(s, true)));	
 	}
