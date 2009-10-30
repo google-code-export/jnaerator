@@ -64,6 +64,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
 import java.util.*;
 import org.rococoa.ObjCClass;
+import org.rococoa.cocoa.foundation.NSClass;
 
 /*
 include com/ochafik/lang/jnaerator/ObjectiveCStaticForwardsExcludeList.data
@@ -227,7 +228,7 @@ public class ObjectiveCGenerator {
 		Struct classStruct = new Struct();
 		classStruct.setTag(ident(classClassName));
 		classStruct.setType(Struct.Type.JavaClass);
-		classStruct.addModifiers(Modifier.Public, Modifier.Abstract);
+		classStruct.addModifiers(Modifier.Public, Modifier.Static, Modifier.Abstract);
 		
 		List<Identifier> 
 			interfacesForInstance = new ArrayList<Identifier>();
@@ -237,13 +238,14 @@ public class ObjectiveCGenerator {
 
 		//for (Identifier p : parentsForInstance)
 		//	parentsForClass
-		if (parentsForInstance.isEmpty()) {
+		boolean isNSObject = in.getTag().equals(NSObject.class.getSimpleName());
+		/*if (parentsForInstance.isEmpty()) {
 			if (isProtocol || isCategory)
 				parentsForInstance.add(ObjCObjectIdent);
 			else
-			if (!in.getTag().equals(NSObjectIdent))
+			if (!isNSObject)
 				parentsForInstance.add(NSObjectIdent);
-		}
+		}*/
 		//interfacesForClass.add(ObjCClassIdent);
 		
 		if (!(isCategory || isProtocol))
@@ -251,22 +253,25 @@ public class ObjectiveCGenerator {
 				Identifier catId = getFullClassName(catIn);
 
 				Identifier sim = catId.resolveLastSimpleIdentifier();
-				if (add(instanceStruct, createCastMethod(sim, catId), signatures))
-					classStruct.addDeclaration(createCastMethod(sim, ident(catId, classInterfaceNameInCategoriesAndProtocols)));
+				if (add(instanceStruct, createCastMethod(sim, catId, false), signatures))
+					classStruct.addDeclaration(createCastMethod(sim, ident(catId, classInterfaceNameInCategoriesAndProtocols), true));
 
 				//interfacesForInstance.add(catId);
 				//interfacesForClass.add(ident(catId, classInterfaceNameInCategoriesAndProtocols));
 				outputObjectiveCClass(catIn);
 			}	
-				
+
 		for (Identifier p : parentsForInstance) {
 			String ps = p.toString();
 			boolean basic = ps.toString().equals(ObjCObject.class.getName()) || ps.equals(NSObject.class.getName());
 			Identifier id = basic ? p : result.typeConverter.findObjCClassIdent(p);
 			//Identifier id = result.typeConverter.findObjCClassIdent(p);
 			if (id != null || (!p.isPlain() && (id = p) != null)) {
-				instanceStruct.addParent(id.clone());
-				if (!basic && !ps.toString().equals("NSObject"))
+				if (ps.toString().equals("NSObject"))
+					instanceStruct.addProtocol(ident(ObjCObject.class));
+				else
+					instanceStruct.addParent(id.clone());
+				if (!basic)
 					classStruct.addParent(ident(id, classClassName));
 			}
 		}
@@ -276,8 +281,23 @@ public class ObjectiveCGenerator {
 			if (id != null)
 				classStruct.addProtocol(p);
 		}*/
-		if (classStruct.getParents().isEmpty())
-			classStruct.addProtocol(ident(ObjCClassIdent));
+		boolean isInterface = isProtocol || isCategory;
+
+		if (instanceStruct.getParents().isEmpty()) {
+			if (isInterface)
+				instanceStruct.addParent(ident(ObjCObject.class));
+			else if (isNSObject)
+				instanceStruct.addProtocol(ident(ObjCObject.class));
+			else
+				instanceStruct.addParent(ident(NSObject.class));
+		}
+		if (classStruct.getParents().isEmpty()) {
+			if (isNSObject)
+				classStruct.addParent(ident(NSClass.class));
+			else
+				classStruct.addParent(ident(ident(NSObject.class), classClassName));
+				//classStruct.addProtocol(ident(ObjCClass.class));
+		}
 
 		for (Identifier p : in.getProtocols()) {
 			Identifier id = getFullClassName(getStruct(p, Type.ObjCProtocol));
@@ -401,11 +421,11 @@ public class ObjectiveCGenerator {
 		return instanceStruct;
 	}
 
-	Function createCastMethod(Identifier name, Identifier classId) {
+	Function createCastMethod(Identifier name, Identifier classId, boolean isStatic) {
 		Function m = new Function();
 		m.setType(Function.Type.JavaMethod);
 		m.addModifiers(Modifier.Public);
-		m.setName(ident("as" + name));
+		m.setName(ident("as" + (isStatic ? "Static" : "") + name));
 		m.setValueType(typeRef(classId.clone()));
 		m.setBody(block(
 			new Statement.Return(
