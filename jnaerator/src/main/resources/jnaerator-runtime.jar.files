@@ -517,7 +517,7 @@ org/rococoa/cocoa/foundation/NSNotificationCenter$_Class.class
 org/rococoa/cocoa/foundation/NSNotificationCenter.class
 org/rococoa/cocoa/foundation/NSNumber$_Class.class
 org/rococoa/cocoa/foundation/NSNumber.class
-org/rococoa/cocoa/foundation/NSObject$_Class.class
+org/rococoa/cocoa/foundation/NSObject$_class_.class
 org/rococoa/cocoa/foundation/NSObject.class
 org/rococoa/cocoa/foundation/NSPoint.class
 org/rococoa/cocoa/foundation/NSRange.class
