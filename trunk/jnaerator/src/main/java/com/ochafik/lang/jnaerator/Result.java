@@ -148,6 +148,8 @@ public class Result extends Scanner {
 	
 	public Identifier findFakePointer(Identifier name) {
 		name = getFakePointerName(name);
+		if (name == null)
+			return null;
 		String s = name.toString();
 		for (Map.Entry<String, Set<String>> e : fakePointersByLibrary.entrySet()) {
 			if (e.getValue().contains(s))

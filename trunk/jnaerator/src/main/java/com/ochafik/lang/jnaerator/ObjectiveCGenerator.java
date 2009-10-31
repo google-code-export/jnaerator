@@ -182,7 +182,10 @@ public class ObjectiveCGenerator {
 		if (struct == null)
 			return null;
 		Identifier javaPackage = getPackageName(struct);
-		return ident(javaPackage, struct.getCategoryName() == null ? struct.getTag().clone() : ident(struct.getCategoryName()));
+		Identifier tag = struct.getTag();
+		String categ = struct.getCategoryName();
+		String name = categ == null ? tag.toString() : tag + "_" + categ;
+		return ident(name);//javaPackage, struct.getCategoryName() == null ? struct.getTag().clone() : ident(struct.getCategoryName()));
 	}
 	public void generateObjectiveCClasses() throws IOException {
 		for (Struct in : Result.getMap(result.classes, Type.ObjCClass).values()) {
