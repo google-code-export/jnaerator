@@ -963,8 +963,14 @@ argDef	returns [Arg arg]
 
 typeMutator returns [TypeMutator mutator]
 	:	{ next("const", "__const") }?=> IDENTIFIER '*' { $mutator = TypeMutator.CONST_STAR; } |
-		t=('*' | '&') { 
-			$mutator = $t.text.equals("*") ? TypeMutator.STAR : TypeMutator.AMPERSTAND; 
+		'*' { 
+			$mutator = TypeMutator.STAR;
+		} |
+		'&' { 
+			$mutator = TypeMutator.AMPERSTAND; 
+		} |
+		'^' { 
+			$mutator = TypeMutator.HAT; 
 		} |
 		'[' ']'  { $mutator = TypeMutator.BRACKETS; }
 	;
@@ -994,8 +1000,10 @@ templateArgDecl
 	;	
 	
 functionSignatureSuffix returns [FunctionSignature signature]
-	:	tk='(' m1=modifiers '*' m2=modifiers IDENTIFIER? ')' { 
+	:	tk='(' m1=modifiers pt=('*' | '^') m2=modifiers IDENTIFIER? ')' { 
 			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, $IDENTIFIER.text == null ? null : new SimpleIdentifier($IDENTIFIER.text), null)), getLine($tk));
+			if ($pt.text.equals("^"))
+				$signature.setType(FunctionSignature.Type.ObjCBlock);
 			$signature.getFunction().setType(Function.Type.CFunction);
 			$signature.getFunction().addModifiers($m1.modifiers);
 			$signature.getFunction().addModifiers($m2.modifiers);
@@ -1018,8 +1026,10 @@ functionSignatureSuffix returns [FunctionSignature signature]
 	;
 
 functionSignatureSuffixNoName returns [FunctionSignature signature]
-	:	tk='(' modifiers '*' ')' { 
+	:	tk='(' modifiers pt=('*' | '^') ')' { 
 			$signature = mark(new FunctionSignature(new Function(Function.Type.CFunction, null, null)), getLine($tk));
+			if ($pt.text.equals("^"))
+				$signature.setType(FunctionSignature.Type.ObjCBlock);
 			$signature.getFunction().setType(Function.Type.CFunction);
 			$signature.getFunction().addModifiers($modifiers.modifiers);
 		}

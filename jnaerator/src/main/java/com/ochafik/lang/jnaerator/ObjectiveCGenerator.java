@@ -184,8 +184,7 @@ public class ObjectiveCGenerator {
 		Identifier javaPackage = getPackageName(struct);
 		Identifier tag = struct.getTag();
 		String categ = struct.getCategoryName();
-		String name = categ == null ? tag.toString() : tag + "_" + categ;
-		return ident(name);//javaPackage, struct.getCategoryName() == null ? struct.getTag().clone() : ident(struct.getCategoryName()));
+		return ident(javaPackage, categ == null ? tag.clone() : ident(categ));
 	}
 	public void generateObjectiveCClasses() throws IOException {
 		for (Struct in : Result.getMap(result.classes, Type.ObjCClass).values()) {
@@ -256,8 +255,9 @@ public class ObjectiveCGenerator {
 				Identifier catId = getFullClassName(catIn);
 
 				Identifier sim = catId.resolveLastSimpleIdentifier();
-				if (add(instanceStruct, createCastMethod(sim, catId, false), signatures))
-					classStruct.addDeclaration(createCastMethod(sim, ident(catId, classInterfaceNameInCategoriesAndProtocols), true));
+				String categName = catIn.getTag() + "_" + sim;
+				if (add(instanceStruct, createCastMethod(ident(categName), catId, false), signatures))
+					classStruct.addDeclaration(createCastMethod(ident(categName), ident(catId, classInterfaceNameInCategoriesAndProtocols), true));
 
 				//interfacesForInstance.add(catId);
 				//interfacesForClass.add(ident(catId, classInterfaceNameInCategoriesAndProtocols));
@@ -428,7 +428,7 @@ public class ObjectiveCGenerator {
 		Function m = new Function();
 		m.setType(Function.Type.JavaMethod);
 		m.addModifiers(Modifier.Public);
-		m.setName(ident("as" + (isStatic ? "Static" : "") + name));
+		m.setName(ident("as" + (isStatic ? "Static_" : "_") + name));
 		m.setValueType(typeRef(classId.clone()));
 		m.setBody(block(
 			new Statement.Return(

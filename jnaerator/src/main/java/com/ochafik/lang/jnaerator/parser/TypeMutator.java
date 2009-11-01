@@ -30,6 +30,9 @@ public abstract class TypeMutator {
 		STAR = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
 			return new TypeRef.Pointer(type, PointerStyle.Pointer);
 		}},
+		HAT = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
+			return new TypeRef.Pointer(type, PointerStyle.HatPointer);
+		}},
 		AMPERSTAND = new TypeMutator() { @Override public TypeRef mutateType(TypeRef type) {
 			return new TypeRef.Pointer(type, PointerStyle.Reference);
 		}},

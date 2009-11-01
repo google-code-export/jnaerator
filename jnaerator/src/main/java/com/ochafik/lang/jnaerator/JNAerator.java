@@ -219,8 +219,10 @@ public class JNAerator {
 						//"-noComp",
 						//"-framework", "Foundation",
 						//"-o", "/Users/ochafik/jnaerator/jnaerator/cocoa",
-						"-library", "Test",
-						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test/classes.h",
+						//"-library", "Test",
+						"-framework", "AppKit",
+
+						//"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test/classes.h",
 						"-o", "/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test",
 						"-noComp", "-noJar",
 //						"-no"
@@ -1274,7 +1276,7 @@ public class JNAerator {
 		if (result.feedback != null && !result.config.bridgeSupportFiles.isEmpty())
 			result.feedback.setStatus("Parsing BridgeSupport files...");
 		
-		//new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
+		new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
 		
 		/// Gather Objective-C classes
 		sourceFiles.accept(result);
