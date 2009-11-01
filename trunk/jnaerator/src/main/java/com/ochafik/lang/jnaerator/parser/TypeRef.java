@@ -161,9 +161,23 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 	public String getModifiersStringPrefix() {
 		return StringUtils.implode(modifiers, " ") + (modifiers.isEmpty() ? "" : " ");
 	}
+
 	public static class FunctionSignature extends TypeRef {
+		public enum Type {
+			CFunction, ObjCBlock
+		}
+		protected Type type = Type.CFunction;
 		protected Function function;
-		
+
+		public void setType(Type type) {
+			this.type = type;
+		}
+
+		public Type getType() {
+			return type;
+		}
+
+
 		public FunctionSignature(Function function) {
 			this();
 			setFunction(function);
@@ -192,7 +206,11 @@ public abstract class TypeRef extends ModifiableElement implements Declarator.Mu
 			assert function.getBody() == null;
 			String s = 
 				(function.getValueType() == null ? "" : function.getValueType() + " ") +
-				"(" + function.getModifiersStringPrefix() + "*" + (function.getName() == null ? "" : function.getName()) + ")(" +
+				"(" +
+					function.getModifiersStringPrefix() +
+					(Type.ObjCBlock.equals(getType()) ? "^" : "*") +
+					(function.getName() == null ? "" : function.getName()) +
+				")(" +
 				StringUtils.implode(function.getArgs(), ", ") +
 				")" + (getModifiers().isEmpty() ? "" : " ") + StringUtils.implode(getModifiers(), " ");
 			

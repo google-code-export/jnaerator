@@ -51,7 +51,7 @@ public abstract class Declarator extends ModifiableElement {
 	{
 		Pointer { @Override public String toString() { return "*"; } }, 
 		Reference { @Override public String toString() { return "&"; } }, 
-		DotNetPointer { @Override public String toString() { return "^"; } };
+		HatPointer { @Override public String toString() { return "^"; } };
 		
 		static Map<String, PointerStyle> styles = new TreeMap<String, PointerStyle>();
 		static {

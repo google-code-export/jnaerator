@@ -11,6 +11,7 @@ com/ochafik/lang/jnaerator/runtime/MangledFunctionMapper.class
 com/ochafik/lang/jnaerator/runtime/Mangling.class
 com/ochafik/lang/jnaerator/runtime/NativeSize.class
 com/ochafik/lang/jnaerator/runtime/NativeSizeByReference.class
+com/ochafik/lang/jnaerator/runtime/ObjCBlock.class
 com/ochafik/lang/jnaerator/runtime/ScalaRuntime.class
 com/ochafik/lang/jnaerator/runtime/StringPointer$ByReference.class
 com/ochafik/lang/jnaerator/runtime/StringPointer$ByValue.class

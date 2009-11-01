@@ -49,6 +49,7 @@ import com.ochafik.lang.jnaerator.parser.Declarator.*;
 import com.ochafik.lang.jnaerator.runtime.Bits;
 import com.ochafik.lang.jnaerator.runtime.FastCall;
 import com.ochafik.lang.jnaerator.runtime.Mangling;
+import com.ochafik.lang.jnaerator.runtime.ObjCBlock;
 import com.ochafik.lang.jnaerator.runtime.This;
 import com.ochafik.lang.jnaerator.runtime.ThisCall;
 import com.ochafik.lang.jnaerator.runtime.VirtualTablePointer;
@@ -93,7 +94,11 @@ public class DeclarationsConverter {
 		Struct callbackStruct = new Struct();
 		callbackStruct.setType(Struct.Type.JavaInterface);
 		callbackStruct.addModifiers(Modifier.Public);
-		callbackStruct.setParents(Arrays.asList(ident(Callback.class)));
+		callbackStruct.setParents(Arrays.asList(ident(
+			FunctionSignature.Type.ObjCBlock.equals(functionSignature.getType()) ?
+				ObjCBlock.class : 
+				Callback.class
+		)));
 		callbackStruct.setTag(ident(chosenName));
 		if (!result.config.noComments)
 			callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
