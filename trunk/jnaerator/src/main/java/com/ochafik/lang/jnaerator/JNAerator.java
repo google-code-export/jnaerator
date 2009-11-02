@@ -221,6 +221,7 @@ public class JNAerator {
 						//"-o", "/Users/ochafik/jnaerator/jnaerator/cocoa",
 						//"-library", "Test",
 						"-framework", "AppKit",
+						"-framework", "CoreGraphics",
 
 						//"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test/classes.h",
 						"-o", "/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test",
