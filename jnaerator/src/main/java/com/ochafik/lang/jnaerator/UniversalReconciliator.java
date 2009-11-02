@@ -113,15 +113,30 @@ public class UniversalReconciliator {
 		defRecon("unsigned long", "unsigned int", typeRef("int").addModifiers(Modifier.Unsigned));
 		defRecon("signed long", "signed int", typeRef("int").addModifiers(Modifier.Signed));
 		defRecon("long", "int", typeRef("int"));
-		
+		defRecon("int", "unsigned int", typeRef("int"));
+
 		defRecon("signed long", "signed long long", typeRef("long").addModifiers(Modifier.Signed));
 		defRecon("signed int", "signed long long", typeRef("NSInteger"));//int").addModifiers(Modifier.Signed));
 	}
 	static void defRecon(String s32, String s64, TypeRef sRecon) {
 		predefined32_64Reconciliations.put(new Pair<String, String>(s32, s64), sRecon);
 	}
+	/*static TypeRef cleanClone(TypeRef t) {
+		t = t.clone();
+		List<Modifier> mods = new ArrayList<Modifier>(t.getModifiers());
+		mods.remove(Modifier.Signed);
+		mods.remove(Modifier.Unsigned);
+		t.setModifiers(mods);
+		return t;
+	}*/
 	public static TypeRef reconciliateSimple32bitsAnd64bits(TypeRef t32, TypeRef t64) {
 		TypeRef recon = predefined32_64Reconciliations.get(new Pair<String, String>(t32.toString(), t64.toString()));
+		/*if (recon == null) {
+			TypeRef tt32 = cleanClone(t32), tt64 = cleanClone(t64);
+			if (tt32.toString().equals(t64))
+				return tt32;
+			recon = predefined32_64Reconciliations.get(new Pair<String, String>(tt32.toString(), tt64.toString()));
+		}*/
 		
 		return recon == null ? null : recon.clone();
 	}
