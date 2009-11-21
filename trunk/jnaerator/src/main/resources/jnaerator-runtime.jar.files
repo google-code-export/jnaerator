@@ -1,3 +1,17 @@
+Archive:  jnaerator-runtime/target/jnaerator-runtime-0.9.3-SNAPSHOT.jar
+META-INF/MANIFEST.MF
+META-INF/maven/com.jnaerator/
+META-INF/maven/com.jnaerator/jnaerator-runtime/
+META-INF/maven/com.jnaerator/jnaerator-runtime/pom.properties
+META-INF/maven/com.jnaerator/jnaerator-runtime/pom.xml
+META-INF/maven/org.rococoa/
+META-INF/maven/org.rococoa/rococoa-core/
+META-INF/maven/org.rococoa/rococoa-core/pom.properties
+META-INF/maven/org.rococoa/rococoa-core/pom.xml
+META-INF/maven/org.slf4j/
+META-INF/maven/org.slf4j/slf4j-api/
+META-INF/maven/org.slf4j/slf4j-api/pom.properties
+META-INF/maven/org.slf4j/slf4j-api/pom.xml
 com/ochafik/lang/Threads$Runner.class
 com/ochafik/lang/Threads$State.class
 com/ochafik/lang/Threads.class
@@ -597,11 +611,6 @@ org/slf4j/helpers/NOPMakerAdapter.class
 org/slf4j/helpers/NamedLoggerBase.class
 org/slf4j/helpers/SubstituteLoggerFactory.class
 org/slf4j/helpers/Util.class
-org/slf4j/impl/JDK14LoggerAdapter.class
-org/slf4j/impl/JDK14LoggerFactory.class
-org/slf4j/impl/StaticLoggerBinder.class
-org/slf4j/impl/StaticMDCBinder.class
-org/slf4j/impl/StaticMarkerBinder.class
 org/slf4j/spi/LocationAwareLogger.class
 org/slf4j/spi/LoggerFactoryBinder.class
 org/slf4j/spi/MDCAdapter.class
