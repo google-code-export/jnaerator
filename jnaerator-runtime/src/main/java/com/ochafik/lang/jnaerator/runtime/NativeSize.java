@@ -11,8 +11,8 @@ import com.sun.jna.Platform;
  * @author ochafik
  */
 public class NativeSize extends IntegerType {
-	/** Size of a size_t integer, in bytes. */
-    public static final int SIZE = Native.SIZE_T_SIZE;//Platform.is64Bit() ? 8 : 4;
+    /** Size of a size_t integer, in bytes. */
+    public static int SIZE = Native.SIZE_T_SIZE;//Platform.is64Bit() ? 8 : 4;
 
     /** Create a zero-valued Size. */
     public NativeSize() {
