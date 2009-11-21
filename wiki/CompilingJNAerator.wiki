@@ -8,7 +8,7 @@ svn co http://jnaerator.googlecode.com/svn/trunk jnaerator
 cd jnaerator
 }}}
 
-  # Install Maven
+  # [http://maven.apache.org/download.html Install Maven]
   # Run Maven to compile and install JNAerator
 {{{
 mvn install
