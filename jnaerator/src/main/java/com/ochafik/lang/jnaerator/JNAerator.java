@@ -147,111 +147,112 @@ public class JNAerator {
 		return argsPref.split(",");
 	}
 	public static void main(String[] argsArray) {
-		String[] jnAeratorArgsFromPref = getJNAeratorArgsFromPref();
-		if (jnAeratorArgsFromPref != null) {
-			ArrayList<String> list = new ArrayList<String>();
-			list.addAll(Arrays.asList(jnAeratorArgsFromPref));
-			list.addAll(Arrays.asList(argsArray));
-			argsArray = list.toArray(new String[list.size()]);
-		}
-		if (argsArray.length == 0) {
-			if (new File("/Users/ochafik").exists()) {
-				argsArray = new String[] {
-//						"-wikiHelp",
-						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSURL.h",
-						//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers",
-//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
-//						"-library", "gc", 
-//						"/Users/ochafik/src/gc6.8/include/",
-//						"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/event.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/machine/types.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
-						
-//						"-autoConf",
-						//"-library", "c",
-//						"-root", "org.rococoa",
-						
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/types.h", 
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/architecture/i386/math.h",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h",
-//						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGBase.h",
-//						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGShading.h",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
-//						"/Users/ochafik/Prog/Java/testxp/test.h",
-//						"/Users/ochafik/Prog/Java/test/Test2.h",
-//						"-library", "objc",
-//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
-//						"-framework", "Foundation",
-//						"-framework", "AppKit",
-//						"-framework", "CoreFoundation",
-//						"-framework", "IOKit",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
-//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
-//						"-framework", "CoreGraphics", 
-//						"-framework", "CarbonCore", 
-						//"-f", "QTKit", 
-//						"-o", "/Users/ochafik/Prog/Java/test/objc",
-//						"-o", "/Users/ochafik/Prog/Java/testxp",
-//						"/Users/ochafik/Prog/Java/test/Test.h",
-//						"/Users/ochafik/Prog/Java/test/JNATest.h",
-						//"-o", "/Users/ochafik/Prog/Java",
-//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
-//						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
-//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
-						
-//						"/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
-//						"@",
-//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
-//						"-limitComments",
-//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
-//						"-o", "/Users/ochafik/src/opencv-1.1.0",
-//						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
-//						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
-//						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
-//						"-framework", "CoreGraphics",
-//						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
-//						"-noRuntime",
-//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/tests/callbacks/test.h",
-						//"-noComp",
-						//"-framework", "Foundation",
-						//"-o", "/Users/ochafik/jnaerator/jnaerator/cocoa",
-						//"-library", "Test",
-						"-framework", "AppKit",
-						"-framework", "CoreGraphics",
-
-						//"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test/classes.h",
-						"-o", "/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test",
-						"-noComp", "-noJar",
-//						"-no"
-						//"-studio",
-//						"/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
-//						"-root", "outpackage",
-//						"-root", "org.rococoa.cocoa",
-//						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
-//						"-o", "/Users/ochafik/Prog/Java/test/opencv",
-//						"-scalaOut", "/Users/ochafik/Prog/Java/test/opencv/scala",
-//						"-noComp",	
-//						"-gui",
-//						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
-//						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
-//						"-library", "opencl",
-//						"/Users/ochafik/src/opencl/cl.h",
-//						"-o", "/Users/ochafik/src/opencl",
-						"-v"
-				};
-			} else if (new File(DEFAULT_CONFIG_FILE).exists()){
-				argsArray = new String[] { "@", DEFAULT_CONFIG_FILE };
-			} else {
-				JNAeratorCommandLineArgs.displayHelp(false);
-				return;
-			}
-		}
-		
 		try {
+		
+			String[] jnAeratorArgsFromPref = getJNAeratorArgsFromPref();
+			if (jnAeratorArgsFromPref != null) {
+				ArrayList<String> list = new ArrayList<String>();
+				list.addAll(Arrays.asList(jnAeratorArgsFromPref));
+				list.addAll(Arrays.asList(argsArray));
+				argsArray = list.toArray(new String[list.size()]);
+			}
+			if (argsArray.length == 0) {
+				if (new File("/Users/ochafik").exists()) {
+					argsArray = new String[] {
+	//						"-wikiHelp",
+							//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSURL.h",
+							//"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers",
+	//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+	//						"-library", "gc",
+	//						"/Users/ochafik/src/gc6.8/include/",
+	//						"-I/Developer/SDKs/MacOSX10.5.sdk/usr/include",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/event.h",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/machine/types.h",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/cdefs.h",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/_types.h",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdint.h",
+
+	//						"-autoConf",
+							//"-library", "c",
+	//						"-root", "org.rococoa",
+
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/sys/types.h",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/architecture/i386/math.h",
+	//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h",
+	//						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGBase.h",
+	//						"/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/CoreGraphics.framework/Headers/CGShading.h",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/AvailabilityMacros.h",
+	//						"/Users/ochafik/Prog/Java/testxp/test.h",
+	//						"/Users/ochafik/Prog/Java/test/Test2.h",
+	//						"-library", "objc",
+	//						"/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc.h",
+	//						"-framework", "Foundation",
+	//						"-framework", "AppKit",
+	//						"-framework", "CoreFoundation",
+	//						"-framework", "IOKit",
+	//						"/System/Library/Frameworks/Foundation.framework/Headers/NSArray.h",
+	//						"/System/Library/Frameworks/Foundation.framework/Headers/NSString.h",
+	//						"/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h",
+	//						"-framework", "CoreGraphics",
+	//						"-framework", "CarbonCore",
+							//"-f", "QTKit",
+	//						"-o", "/Users/ochafik/Prog/Java/test/objc",
+	//						"-o", "/Users/ochafik/Prog/Java/testxp",
+	//						"/Users/ochafik/Prog/Java/test/Test.h",
+	//						"/Users/ochafik/Prog/Java/test/JNATest.h",
+							//"-o", "/Users/ochafik/Prog/Java",
+	//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+	//						"-library", "CocoaTest", "-o", "/Users/ochafik/Prog/Java/test/cppxcode",
+	//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/XCode/CocoaTest/TestClass.h",
+
+	//						"/Users/ochafik/src/qhull-2003.1/qhull.jnaerator",
+	//						"@",
+	//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/examples/Rococoa/cocoa.jnaerator",
+	//						"-limitComments",
+	//						"@/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+	//						"-o", "/Users/ochafik/src/opencv-1.1.0",
+	//						"/Users/ochafik/Prog/Java/test/cocoa/cocoa.h",
+	//						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreGraphics.bridgesupport"
+	//						"/tmp/BridgeSupportTiger/Release/Library/BridgeSupport/CoreFoundation.bridgesupport"
+	//						"-framework", "CoreGraphics",
+	//						"-o", "/Users/ochafik/Prog/Java/test/foundation2",
+	//						"-noRuntime",
+	//						"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/tests/callbacks/test.h",
+							//"-noComp",
+							//"-framework", "Foundation",
+							//"-o", "/Users/ochafik/jnaerator/jnaerator/cocoa",
+							//"-library", "Test",
+							"-framework", "AppKit",
+							"-framework", "CoreGraphics",
+
+							//"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test/classes.h",
+							"-o", "/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test",
+							"-noComp", "-noJar",
+	//						"-no"
+							//"-studio",
+	//						"/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
+	//						"-root", "outpackage",
+	//						"-root", "org.rococoa.cocoa",
+	//						"/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport",
+	//						"-o", "/Users/ochafik/Prog/Java/test/opencv",
+	//						"-scalaOut", "/Users/ochafik/Prog/Java/test/opencv/scala",
+	//						"-noComp",
+	//						"-gui",
+	//						"-jar", "/Users/ochafik/Prog/Java/test/foundation2/test.jar",
+	//						"@/Users/ochafik/Prog/Java/versionedSources/nativelibs4java/trunk/libraries/MacOSXFrameworks/config.jnaerator"
+	//						"-library", "opencl",
+	//						"/Users/ochafik/src/opencl/cl.h",
+	//						"-o", "/Users/ochafik/src/opencl",
+							"-v"
+					};
+				} else if (new File(DEFAULT_CONFIG_FILE).exists()){
+					argsArray = new String[] { "@", DEFAULT_CONFIG_FILE };
+				} else {
+					JNAeratorCommandLineArgs.displayHelp(false);
+					return;
+				}
+			}
+		
 			List<String> args = new ArrayList<String>(Arrays.asList(argsArray));
 			
 			final JNAeratorConfig config = new JNAeratorConfig();
@@ -619,9 +620,10 @@ public class JNAerator {
 			}.parse(args);
 			
 		} catch (ExitException e) {
-			if (e.errorCode != 1)
+			if (e.errorCode != 0)
 				System.err.println("Finished with errors.");
 		} catch (Exception e) {
+			System.err.println("Finished with errors.");
 			e.printStackTrace();
 		}
 	}
@@ -734,6 +736,8 @@ public class JNAerator {
 //			if (true)
 //				throw new RuntimeException("no luck !");
 			feedback.setFinished(config.outputJar != null ? config.outputJar : config.outputDir);
+		} catch (ExitException ex) {
+			throw ex;
 		} catch (Throwable th) {
 			feedback.setFinished(th);
 		}
