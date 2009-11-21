@@ -465,9 +465,9 @@ public class JNAeratorConfigUtils {
 		
 		File naturalDir = new File(file, "Resources/BridgeSupport");
 		File f;
-		f = new File(naturalDir, framework + "Full.bridgesupport");
+		f = new File(naturalDir, framework + ".bridgesupport");
 		if (!f.exists())
-			f = new File(naturalDir, framework + ".bridgesupport");
+			f = new File(naturalDir, framework + "Full.bridgesupport");
 		
 		if (f.exists())
 			config.bridgeSupportFiles.add(f);
