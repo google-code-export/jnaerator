@@ -9,21 +9,7 @@ cd jnaerator
 }}}
 
   # Install Maven
-  # Install jnaerator-parent project
+  # Run Maven to compile and install JNAerator
 {{{
 mvn install
 }}}
-  # Run Maven on jnaerator-runtime
-{{{
-cd jnaerator-runtime
-mvn clean install
-cd ..
-}}}
-  # Run Maven on jnaerator
-{{{
-cd jnaerator
-mvn clean install
-cd ..
-}}}
-
-TODO use modules so that only one mvn command is needed.
