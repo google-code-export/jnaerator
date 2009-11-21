@@ -10,6 +10,7 @@
 	
 	<properties>
 		<rococoa.version>0.5</rococoa.version>
+		<maven.jar.sign.skip>true</maven.jar.sign.skip>
 	</properties>
 
 	<developers>

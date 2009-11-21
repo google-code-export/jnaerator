@@ -341,8 +341,7 @@ public class JNAerator {
 					case Help:
 					case WikiDoc:
 						JNAeratorCommandLineArgs.displayHelp(a.def == OptionDef.WikiDoc);
-						System.exit(0);
-						break;
+						throw new ExitException(0);
 					case WCharAsShort:
 						config.wcharAsShort = true;
 						break;
@@ -416,9 +415,8 @@ public class JNAerator {
 							return null;
 						} catch (Exception ex) {
 							ex.printStackTrace();
-							System.exit(1);
+							throw new ExitException(1);
 						}
-						break;
 //					case Test:
 //						try {
 //							JUnitCore.main(JNAeratorTests.class.getName());
@@ -589,14 +587,14 @@ public class JNAerator {
 							public void setFinished(Throwable e) {
 								System.out.println("JNAeration failed !");
 								e.printStackTrace();
-								System.exit(1);
+								throw new ExitException(1);
 							}
 							
 							@Override
 							public void setFinished(File toOpen) {
 								System.out.println("JNAeration completed !");
 								System.out.println(toOpen.getAbsolutePath());
-								System.exit(0);
+								throw new ExitException(0);
 							}
 
 							@Override
@@ -615,16 +613,26 @@ public class JNAerator {
 					
 					new JNAerator(config).jnaerate(feedback);
 					if (!simpleGUI)
-						System.exit(0);
+						throw new ExitException(0);
 				}
 				
 			}.parse(args);
 			
+		} catch (ExitException e) {
+			if (e.errorCode != 1)
+				System.err.println("Finished with errors.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
 	}
+	private static class ExitException extends RuntimeException {
+		int errorCode;
+		public ExitException(int errorCode) {
+			super();
+			this.errorCode = errorCode;
+		}
+	}
+
 	public PrintWriter getClassSourceWriter(ClassOutputter outputter, String className) throws IOException {
 		return outputter.getClassSourceWriter(className);
 	}
