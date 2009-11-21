@@ -1358,7 +1358,7 @@ public class TypeConversion {
 			if ("sizeof".equals(String.valueOf(fc.getFunction())) && fc.getArguments().size() == 1) {
 				TypeRefExpression typeEx =  SyntaxUtils.as(fc.getArguments().get(0).getValue(), TypeRefExpression.class);
 				if (typeEx != null) {
-					res = typed(sizeofToJava(typeEx.getType(), libraryClassName), null);
+					res = typed(sizeofToJava(typeEx.getType(), libraryClassName), typeRef(Integer.TYPE));
 				}
 			}
 		} 
@@ -1388,6 +1388,8 @@ public class TypeConversion {
 //			return convertExpressionToJava(x);
 			throw new UnsupportedConversionException(x, null);
 		}
+        if (res.getFirst() == null)
+            return null;
 		res.getFirst().setParenthesis(x.getParenthesis());
 		return (Pair<Expression, TypeRef>)res;
 	}
@@ -1434,6 +1436,8 @@ public class TypeConversion {
 				res = sizeof(prim);
 			} else {
 				Identifier structRef = findStructRef(((SimpleTypeRef) type).getName(), libraryClassName);
+                if (structRef == null)
+                    structRef = findStructRef(((SimpleTypeRef) type).getName().resolveLastSimpleIdentifier(), libraryClassName);
 				if (structRef != null)
 					return methodCall(new New(typeRef(structRef)), MemberRefStyle.Dot, "size");
 			}
