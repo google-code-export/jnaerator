@@ -261,7 +261,6 @@ public class JNAerator {
 
 				Feedback feedback = null;
 				
-				List<String> frameworks = new ArrayList<String>();
 				boolean simpleGUI = false;
 				String arch = LibraryExtractor.getCurrentOSAndArchString();
 				String currentLibrary = null;
@@ -299,6 +298,9 @@ public class JNAerator {
 						break;
 					case NoStringReturns:
 						config.stringifyConstCStringReturnValues = false;
+						break;
+					case SkipIncludedFrameworks:
+						config.skipIncludedFrameworks = true;
 						break;
 					case CPlusPlusGen:
 						config.genCPlusPlus = true;
@@ -431,7 +433,7 @@ public class JNAerator {
 						config.verbose = true;
 						break;
 					case Framework:
-						frameworks.add(a.getStringParam(0));
+						config.frameworks.add(a.getStringParam(0));
 						break;
 					case IncludeArgs:
 						return parsedArgsInclude(a);
@@ -448,7 +450,7 @@ public class JNAerator {
 					if (file != null) {
 						String fn = file.getName();
 						if (file.isDirectory() && fn.matches(".*\\.framework"))
-							frameworks.add(file.toString());
+							config.frameworks.add(file.toString());
 						else if (file.isFile() && fn.matches(".*\\.jnaerator"))
 							return parsedArgsInclude(a);
 						else if (fn.matches(".*\\.bridgesupport"))
@@ -530,7 +532,7 @@ public class JNAerator {
 
 				@Override
 				void finished() throws IOException {
-					for (String framework : frameworks)
+					for (String framework : config.frameworks)
 						JNAeratorConfigUtils.addFramework(config, framework);
 					
 					config.addRootDir(new File("."));

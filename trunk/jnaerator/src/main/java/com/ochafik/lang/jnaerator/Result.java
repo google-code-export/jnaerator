@@ -410,6 +410,14 @@ public class Result extends Scanner {
 				if (struct.isForwardDeclaration())
 					break;
 				
+				if (config.skipIncludedFrameworks) {
+					String lib = getLibrary(struct);
+					if (lib != null) {
+						if (!config.frameworks.contains(lib))
+							break;
+					}
+				}
+				
 				if (struct.getCategoryName() != null) {
 					getMap(objCCategoriesByTargetType, struct.getTag()).put(struct.getCategoryName(), struct);
 					objCCategoriesByName.put(struct.getCategoryName(), struct);

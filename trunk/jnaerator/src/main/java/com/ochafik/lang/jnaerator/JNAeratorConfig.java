@@ -38,6 +38,7 @@ import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
+import java.util.HashSet;
 
 public class JNAeratorConfig {
 	
@@ -94,7 +95,8 @@ public class JNAeratorConfig {
 	public int maxConstructedFields = 10;
 	
 	public Map<String, String> extraJavaSourceFilesContents = new LinkedHashMap<String, String>();
-	
+	public Set<String> frameworks = new LinkedHashSet<String>();
+	boolean skipIncludedFrameworks = false;
 	public FileFilter fileFilter = new FileExtensionFilter(DEFAULT_HEADER_EXTENSIONS.split("[:;]"));
 	
 	public Map<String, List<File>> libraryFilesByArch = new LinkedHashMap<String, List<File>>();
