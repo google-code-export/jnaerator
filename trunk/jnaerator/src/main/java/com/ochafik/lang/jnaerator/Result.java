@@ -373,6 +373,7 @@ public class Result extends Scanner {
 		} else
 			return typeConverter.libMember(getLibraryClassFullName(library), null, name);
 	}
+
 	@Override
 	public void visitStruct(Struct struct) {
 		super.visitStruct(struct);
@@ -388,6 +389,13 @@ public class Result extends Scanner {
 				if (struct.isForwardDeclaration())
 					break;
 				
+				if (config.skipIncludedFrameworks) {
+					String lib = getLibrary(struct);
+					if (lib != null) {
+						if (!config.frameworks.contains(lib))
+							break;
+					}
+				}
 				Struct oldStruct = structsByName.get(name);
 				
 				if (oldStruct == null || oldStruct.isForwardDeclaration() || (!(oldStruct.getParentElement() instanceof TypeDef) && struct.getParentElement() instanceof TypeDef))
@@ -409,14 +417,6 @@ public class Result extends Scanner {
 				
 				if (struct.isForwardDeclaration())
 					break;
-				
-				if (config.skipIncludedFrameworks) {
-					String lib = getLibrary(struct);
-					if (lib != null) {
-						if (!config.frameworks.contains(lib))
-							break;
-					}
-				}
 				
 				if (struct.getCategoryName() != null) {
 					getMap(objCCategoriesByTargetType, struct.getTag()).put(struct.getCategoryName(), struct);
