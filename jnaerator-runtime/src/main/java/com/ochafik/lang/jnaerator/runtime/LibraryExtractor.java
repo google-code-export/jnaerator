@@ -107,7 +107,19 @@ public class LibraryExtractor {
 				for (URL url : otherURLs)
 					files.add(extract(url));
 			}
-			
+
+			if (Platform.isWindows()) {
+				File ff;
+				File dir = new File("c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64" : "System32"));
+				if ((ff = new File(dir, libraryName)).exists() ||
+						(ff = new File(dir, libraryName + ".dll")).exists()) {
+					System.out.println("LibraryExtractor found " + ff);
+					return ff.getCanonicalPath();
+				}
+
+			}
+
+
 			if (sourceURL == null)
 				return libraryName;
 			else {

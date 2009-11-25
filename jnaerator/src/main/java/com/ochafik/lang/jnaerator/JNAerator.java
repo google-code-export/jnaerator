@@ -228,6 +228,7 @@ public class JNAerator {
 							//"/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test/classes.h",
 							"-o", "/Users/ochafik/Prog/Java/versionedSources/jnaerator/trunk/test",
 							"-noComp", "-noJar",
+							"-skipIncludedFrameworks",
 	//						"-no"
 							//"-studio",
 	//						"/Users/ochafik/src/opencv-1.1.0/config.jnaerator",
