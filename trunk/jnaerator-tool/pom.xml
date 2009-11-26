@@ -3,7 +3,7 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
   <groupId>com.jnaerator</groupId>
-  <artifactId>jnaerator</artifactId>
+  <artifactId>jnaerator-tool</artifactId>
   <name>JNAerator</name>
   <url>http://code.google.com/p/jnaerator/</url>
   <version>${jnaerator.version}</version>
@@ -37,28 +37,17 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
       <name>LGPL 2.1</name>
       <url>http://www.gnu.org/copyleft/lesser.html</url>
       <distribution>repo</distribution>
-      <comments>Covers everything under packages com.ochafik.*</comments>
+      <comments>Covers JNA, Rococoa and everything under packages com.ochafik.*</comments>
 	</license>
-	<!--
-    <license>
-      <name>LGPL 2.1</name>
-      <url>http://www.gnu.org/copyleft/lesser.html</url>
-      <distribution>repo</distribution>
-      <comments>JNA and Rococoa</comments>
-	</license>
-	
-	
     <license>
       <name>Apache 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
       <distribution>repo</distribution>
       <comments>Anarres JCPP</comments>
 	</license>
-	-->
   </licenses>
   
   <dependencies>
-  
     
   	<dependency>
 	  <groupId>com.jnaerator</groupId>
@@ -114,18 +103,6 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
   </dependencies>
   <build>
 		<plugins>
-		   <plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-jar-plugin</artifactId>
-			  <configuration>
-				<archive>
-				  <manifest>
-					<mainClass>com.ochafik.lang.jnaerator.JNAerator</mainClass>
-					<packageName>com.ochafik.lang.jnaerator</packageName>
-				  </manifest>
-				</archive>
-			  </configuration>
-		  </plugin>
 		  
 		  <plugin>
 		    <groupId>org.antlr</groupId>
@@ -151,20 +128,6 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 		  </plugin>
 		  
 		  <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>1.2.1</version>
-			<executions>
-			  <execution>
-				<phase>package</phase>
-				<goals>
-				  <goal>shade</goal>
-				</goals>
-			  </execution>
-			</executions>
-		  </plugin>
-		  
-		  <plugin>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>cobertura-maven-plugin</artifactId>
 			<configuration>
@@ -187,30 +150,6 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 				</goals>
 			  </execution>
 			</executions>
-		  </plugin>
-		  
-		  <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-jar-plugin</artifactId>
-			<executions>
-			  <execution>
-				<phase>verify</phase>
-				<goals>
-				  <goal>sign</goal>
-				</goals>
-			  </execution>
-			</executions>
-			
-			<configuration>
-			  <keystore>/Users/ochafik/security/ochafik.keystore</keystore>
-			  <!--keystore>/Users/Olivier/security/ochafik.keystore</keystore-->
-			  <alias>ochafik2009</alias>
-			  <!--   
-				  mvn "-Dstorepass=$KEYSTORE_PASS" -Dmaven.test.skip=true package  
-				  <storepass>yourstorepassword</storepass>
-			  -->
-			  <verify>true</verify>
-			</configuration>
 		  </plugin>
 		  
 		</plugins>

@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jnaerator</groupId>
+  <artifactId>jnaerator</artifactId>
+  <name>JNAerator (with all dependencies)</name>
+  <url>http://code.google.com/p/jnaerator/</url>
+  <version>${jnaerator.version}</version>
+  <packaging>jar</packaging>
+  
+  <parent>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-parent</artifactId>
+	  <version>0.9.3-SNAPSHOT</version>
+	  <relativePath>../jnaerator-parent</relativePath>
+  </parent>
+  
+  <dependencies>
+    
+  	<dependency>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-tool</artifactId>
+	  <version>${jnaerator.version}</version>
+	  <scope>compile</scope>
+	</dependency>
+	
+  </dependencies>
+  <build>
+		<plugins>
+		
+		   <plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-jar-plugin</artifactId>
+			  <configuration>
+				<archive>
+				  <manifest>
+					<mainClass>com.ochafik.lang.jnaerator.JNAerator</mainClass>
+					<packageName>com.ochafik.lang.jnaerator</packageName>
+				  </manifest>
+				</archive>
+			  </configuration>
+		  </plugin>
+		  
+		  <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-shade-plugin</artifactId>
+			<version>1.2.1</version>
+			<executions>
+			  <execution>
+				<phase>package</phase>
+				<goals>
+				  <goal>shade</goal>
+				</goals>
+			  </execution>
+			</executions>
+		  </plugin>
+		
+		</plugins>
+	</build>
+</project>
+
+
