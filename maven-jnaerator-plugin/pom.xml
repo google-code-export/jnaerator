@@ -14,7 +14,7 @@
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
 	  <version>0.9.3-SNAPSHOT</version>
-	  <relativePath>../jnaerator-parent</relativePath>
+	  <relativePath>../parent</relativePath>
   </parent>
   
   <build>

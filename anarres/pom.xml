@@ -33,7 +33,7 @@
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
 	  <version>1.0-SNAPSHOT</version>
-	  <relativePath>../jnaerator-parent</relativePath>
+	  <relativePath>../parent</relativePath>
   </parent>
   
   <build>
