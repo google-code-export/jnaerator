@@ -238,7 +238,7 @@ public class JNAeratorParser {
 			}
 		};
 		parser.setupSymbolsStack();
-		parser.typeConverter = typeConverter;
+		parser.objCParserHelper = typeConverter;
 		
 		return parser;
 	}
