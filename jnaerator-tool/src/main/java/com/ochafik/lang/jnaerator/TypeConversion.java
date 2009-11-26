@@ -110,11 +110,13 @@ import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.ptr.ShortByReference;
 
+import com.ochafik.lang.jnaerator.parser.ObjCppParser;
+
 import org.rococoa.ObjCClass;
 import org.rococoa.ObjCObject;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
-public class TypeConversion {
+public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 	Result result;
 
 	public boolean allowUnknownPointers = true, allowFakePointers = false;

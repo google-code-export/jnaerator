@@ -56,6 +56,13 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	  <scope>compile</scope>
 	</dependency>
 	
+  	<dependency>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-parser</artifactId>
+	  <version>${jnaerator.version}</version>
+	  <scope>compile</scope>
+	</dependency>
+	
 	<dependency>
 	  <groupId>net.java.dev.jna</groupId>
 	  <artifactId>jna</artifactId>
@@ -71,14 +78,6 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	</dependency>
 	
 	<dependency>
-		<groupId>org.antlr</groupId>
-		<artifactId>antlr-runtime</artifactId>
-		<version>3.1.3</version>
-		<scope>compile</scope>
-	</dependency>
-	
-	
-	<dependency>
 		<groupId>org.eclipse.jdt</groupId>
 		<artifactId>core</artifactId>
 		<version>3.5</version>
@@ -92,31 +91,11 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 		<scope>compile</scope>
 	</dependency>
 	
-	<dependency>
-      <groupId>junit</groupId>
-	  <artifactId>junit</artifactId>
-      <version>4.7</version>
-      <scope>test</scope>
-    </dependency>
-	
 	
   </dependencies>
   <build>
 		<plugins>
 		  
-		  <plugin>
-		    <groupId>org.antlr</groupId>
-		    <artifactId>antlr3-maven-plugin</artifactId>
-		    <version>3.1.3-1</version>
-		    <executions>
-			<execution>
-			    <goals>
-				<goal>antlr</goal>
-			    </goals>
-			</execution>
-		    </executions>
-		  </plugin>
-		
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-compiler-plugin</artifactId>

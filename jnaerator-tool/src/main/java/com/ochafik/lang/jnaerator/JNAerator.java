@@ -1191,7 +1191,7 @@ public class JNAerator {
 				new ANTLRReaderStream(new StringReader(s))))
 		// , new DummyDebugEventListener()
 		);
-		parser.typeConverter = result.typeConverter;
+		parser.objCParserHelper = result.typeConverter;
 		return parser;
 	}
 	protected void readChoices(Result result) throws IOException, RecognitionException {

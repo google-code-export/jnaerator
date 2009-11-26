@@ -55,8 +55,6 @@ import com.ochafik.lang.jnaerator.Result;
 public class ObjCppParsingTest {
 	static final String TEST_FILE = "com/ochafik/lang/jnaerator/parser/ObjCppTest.mm";
 
-	Class<?> elementsTests = ObjCppElementsTest.class;
-
 	enum TestOption {
 		ParseAndPrettyPrint, ParseOnly, ParseMustFail
 	};
@@ -192,7 +190,7 @@ public class ObjCppParsingTest {
 				new ANTLRReaderStream(new StringReader(s))))
 		// , new DummyDebugEventListener()
 		);
-		parser.typeConverter = result.typeConverter;
+		parser.objCParserHelper = result.typeConverter;
 		return parser;
 	}
 }
