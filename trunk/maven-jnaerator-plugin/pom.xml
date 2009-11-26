@@ -5,7 +5,7 @@
 
   <groupId>com.jnaerator</groupId>
   <artifactId>maven-jnaerator-plugin</artifactId>
-  <version>${parent.version}</version>
+  <version>${jnaerator.version}</version>
   <packaging>maven-plugin</packaging>
   <name>Maven JNAerator Plugin</name>
   <url>http://jnaerator.googlecode.com</url>
@@ -35,7 +35,7 @@
 	<dependency>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator</artifactId>
-	  <version>${parent.version}</version>
+	  <version>${jnaerator.version}</version>
 	  <scope>compile</scope>
 	</dependency>
     <dependency>

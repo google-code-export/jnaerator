@@ -3,13 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jnaerator</groupId>
     <artifactId>jnaerator-parent</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>$(jnaerator.version)</version>
     <packaging>pom</packaging>
     <inceptionYear>2009</inceptionYear>
     <name>JNAerator Abstract Parent Project</name>
 	
 	<properties>
 		<rococoa.version>0.5</rococoa.version>
+		<jnaerator.version>0.9.3-SNAPSHOT</jnaerator.version>
 		<maven.jar.sign.skip>true</maven.jar.sign.skip>
 	</properties>
 

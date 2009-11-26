@@ -6,7 +6,7 @@
   <artifactId>jnaerator-runtime</artifactId>
   <name>JNAerator Runtime</name>
   <url>http://code.google.com/p/jnaerator/</url>
-  <version>${parent.version}</version>
+  <version>${jnaerator.version}</version>
   <packaging>jar</packaging>
   
   <dependencies>
