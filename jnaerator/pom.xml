@@ -6,8 +6,16 @@
   <artifactId>jnaerator</artifactId>
   <name>JNAerator</name>
   <url>http://code.google.com/p/jnaerator/</url>
-  <version>${parent.version}</version>
+  <version>${jnaerator.version}</version>
   <packaging>jar</packaging>
+  
+  <parent>
+	  <groupId>com.jnaerator</groupId>
+	  <artifactId>jnaerator-parent</artifactId>
+	  <version>0.9.3-SNAPSHOT</version>
+	  <relativePath>../jnaerator-parent</relativePath>
+  </parent>
+  
   <description>
 JNAerator (pronounce "generator") simply parses C &amp; Objective-C headers and generates the corresponding JNA and Rococoa Java interfaces (it also has a very limited support for C++).
 
@@ -55,7 +63,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
   	<dependency>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-runtime</artifactId>
-	  <version>${parent.version}</version>
+	  <version>${jnaerator.version}</version>
 	  <scope>compile</scope>
 	</dependency>
 	
@@ -104,13 +112,6 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	
 	
   </dependencies>
-  <parent>
-	  <groupId>com.jnaerator</groupId>
-	  <artifactId>jnaerator-parent</artifactId>
-	  <version>0.9.3-SNAPSHOT</version>
-	  <relativePath>../jnaerator-parent</relativePath>
-  </parent>
-  
   <build>
 		<plugins>
 		   <plugin>

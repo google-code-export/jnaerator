@@ -111,10 +111,9 @@ public class LibraryExtractor {
 			if (Platform.isWindows()) {
 				File ff;
 				File dir = new File("c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64" : "System32"));
-				if ((ff = new File(dir, libraryName)).exists() ||
-						(ff = new File(dir, libraryName + ".dll")).exists()) {
+				if ((ff = new File(dir, libraryName + ".dll")).exists()) {
 					System.out.println("LibraryExtractor found " + ff);
-					return ff.getCanonicalPath();
+					return new File(dir, libraryName).toString();
 				}
 
 			}
