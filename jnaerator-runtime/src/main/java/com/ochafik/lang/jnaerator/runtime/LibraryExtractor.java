@@ -39,6 +39,18 @@ import com.sun.jna.Platform;
  *
  */
 public class LibraryExtractor {
+	static {
+		if (Platform.isWindows()) {
+			File ff;
+			String path = System.getProperty("java.library.path");
+			String winPath = "c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64" : "System32");
+			if (path == null)
+				path = winPath;
+			else
+				path = path + ";" + winPath;
+			System.setProperty("java.library.path", path);
+		}
+	}
 	public static String getCurrentOSAndArchString() {
 		String os = System.getProperty("os.name"), arch = System.getProperty("os.arch");
 
@@ -108,15 +120,15 @@ public class LibraryExtractor {
 					files.add(extract(url));
 			}
 
-			/*if (Platform.isWindows()) {
-				File ff;
-				File dir = new File("c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64" : "System32"));
-				if ((ff = new File(dir, libraryName + ".dll")).exists()) {
-					System.out.println("LibraryExtractor found " + ff);
-					return ff.toString();
-				}
-
-			}*/
+			if (Platform.isWindows()) {
+				File f = new File("c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64\\" : "System32\\") + libraryName + ".dll");
+				if (f.exists())
+					return f.toString();
+			} else if (Platform.isMac()) {
+				File f = new File("/System/Library/Frameworks/" + libraryName + ".framework/" + libraryName);
+				if (f.exists())
+					return f.toString();
+			}
 
 
 			if (sourceURL == null)

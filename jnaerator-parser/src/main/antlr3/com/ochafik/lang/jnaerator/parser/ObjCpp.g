@@ -94,9 +94,12 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	//String pack;
 	
 	public Set<String> topLevelTypeIdentifiers;// = new HashSet<String>();//java.util.Arrays.asList("CHAR"));
-	public com.ochafik.lang.jnaerator.TypeConversion typeConverter;
+	public interface ObjCParserHelper {
+		boolean isObjCppPrimitive(String identifier);
+	}
+	public ObjCParserHelper objCParserHelper;
 	boolean isPrimitiveType(String identifier) {
-		return typeConverter.isObjCppPrimitive(identifier);
+		return objCParserHelper.isObjCppPrimitive(identifier);
 	}
 	public EnumSet<ModifierKind> newKinds(ModifierKind first, ModifierKind... rest) {
 		return EnumSet.of(first, rest);
