@@ -4,7 +4,7 @@
  <modelVersion>4.0.0</modelVersion>
   <groupId>com.jnaerator</groupId>
   <artifactId>jnaerator</artifactId>
-  <name>JNAerator (with all dependencies)</name>
+  <name>JNAerator CLI &amp; Studio Tools (with all dependencies)</name>
   <url>http://code.google.com/p/jnaerator/</url>
   <version>${jnaerator.version}</version>
   <packaging>jar</packaging>

@@ -10,6 +10,13 @@
   <packaging>jar</packaging>
   
   <dependencies>
+  
+	<dependency>
+      <groupId>com.ochafik</groupId>
+      <artifactId>ochafik-util</artifactId>
+      <version>${jnaerator.version}</version>
+      <scope>compile</scope>
+    </dependency>
 	
   	<dependency>
 	  <groupId>net.java.dev.jna</groupId>

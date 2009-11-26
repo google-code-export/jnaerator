@@ -7,7 +7,7 @@
   <artifactId>maven-jnaerator-plugin</artifactId>
   <version>${jnaerator.version}</version>
   <packaging>maven-plugin</packaging>
-  <name>Maven JNAerator Plugin</name>
+  <name>JNAerator Maven Plugin</name>
   <url>http://jnaerator.googlecode.com</url>
     
   <parent>
