@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.rococoa.ReturnType;
+//import org.rococoa.ReturnType;
 
 import com.ochafik.lang.jnaerator.parser.Expression.FunctionCall;
 import com.ochafik.util.string.StringUtils;
@@ -332,10 +332,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		if (java.lang.reflect.Modifier.isSynchronized(modifiers))
 			f.addModifiers(Modifier.Synchronized);
 		
-		ReturnType returnType = m.getAnnotation(ReturnType.class);
+		/*TODO org.rococoa.ReturnType returnType = m.getAnnotation(ReturnType.class);
 		if (returnType != null && returnType.value() != null) {
 			f.addAnnotation(new Annotation(ReturnType.class, classLiteral(returnType.value())));
-		}
+		}*/
 		return f;
 	}
 
