@@ -144,43 +144,31 @@
 			  </executions>  
 			</plugin>  
 			
-		  <!--
-		  <plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>exec-maven-plugin</artifactId>
-			<version>1.1.1</version>
-			<configuration>
-				<executable>javaws</executable>
-				<arguments>
-					<argument>-Djnaerator.args=${staging.dir}/jnaerator/*.jnaerator</argument>
-					<argument>http://ochafik.free.fr/Java/JNAeratorStudio.jnlp</argument>
-				</arguments>
-			</configuration>
-			<executions>
-				<execution>
-					<goals>
-						<goal>jnaerate</goal>
-					</goals>
-				</execution>
-			</executions>
-		  </plugin>
-		  -->
-		  
-		  <!--Put this in each project's pom.xml :
+			
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>1.2.1</version>
+			<artifactId>maven-jar-plugin</artifactId>
 			<executions>
 			  <execution>
-				<phase>package</phase>
+				<phase>verify</phase>
 				<goals>
-				  <goal>shade</goal>
+				  <goal>sign</goal>
 				</goals>
 			  </execution>
 			</executions>
+			
+			<configuration>
+			  <keystore>/Users/ochafik/security/ochafik.keystore</keystore>
+			  <!--keystore>/Users/Olivier/security/ochafik.keystore</keystore-->
+			  <alias>ochafik2009</alias>
+			  <!--   
+				  mvn "-Dstorepass=$KEYSTORE_PASS" -Dmaven.test.skip=true package  
+				  <storepass>yourstorepassword</storepass>
+			  -->
+			  <verify>true</verify>
+			</configuration>
 		  </plugin>
-		  -->
+		  
 		</plugins>
 	</build>
 	
