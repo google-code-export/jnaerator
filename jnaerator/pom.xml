@@ -201,7 +201,8 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 			</executions>
 			
 			<configuration>
-			  <keystore>/Users/ochafik/Prog/Java/security/ochafik.keystore</keystore>
+			  <keystore>/Users/ochafik/security/ochafik.keystore</keystore>
+			  <!--keystore>/Users/Olivier/security/ochafik.keystore</keystore-->
 			  <alias>ochafik2009</alias>
 			  <!--   
 				  mvn "-Dstorepass=$KEYSTORE_PASS" -Dmaven.test.skip=true package  
