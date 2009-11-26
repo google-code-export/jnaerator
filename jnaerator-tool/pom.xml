@@ -58,7 +58,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	
   	<dependency>
 	  <groupId>com.jnaerator</groupId>
-	  <artifactId>jnaerator-cocoa-runtime</artifactId>
+	  <artifactId>jnaerator-rococoa-runtime</artifactId>
 	  <version>${jnaerator.version}</version>
 	  <scope>compile</scope>
 	</dependency>
@@ -67,13 +67,6 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parser</artifactId>
 	  <version>${jnaerator.version}</version>
-	  <scope>compile</scope>
-	</dependency>
-	
-	<dependency>
-	  <groupId>net.java.dev.jna</groupId>
-	  <artifactId>jna</artifactId>
-	  <version>3.2.2</version>
 	  <scope>compile</scope>
 	</dependency>
 
