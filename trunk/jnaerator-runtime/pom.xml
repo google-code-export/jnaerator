@@ -21,14 +21,7 @@
   	<dependency>
 	  <groupId>net.java.dev.jna</groupId>
 	  <artifactId>jna</artifactId>
-	  <version>3.2.2</version>
-	  <scope>compile</scope>
-	</dependency>
-	
-	<dependency>
-	  <groupId>org.rococoa</groupId>
-	  <artifactId>rococoa-core</artifactId>
-	  <version>${rococoa.version}</version>
+	  <version>3.2.4</version>
 	  <scope>compile</scope>
 	</dependency>
 	
@@ -73,9 +66,9 @@
 				  <goal>shade</goal>
 				</goals>
 				<configuration>
-					<!--shadedArtifactAttached>true</shadedArtifactAttached-->
+					<shadedArtifactAttached>true</shadedArtifactAttached>
 					<!--shadedArtifactId>${project.artifactId}-standalone</shadedArtifactId-->
-					<finalName>${project.artifactId}-standalone-${project.version}</finalName>
+					<!--finalName>${project.artifactId}-standalone-${project.version}</finalName-->
 					<artifactSet>
 						<excludes>
 						  <exclude>org.scala-lang:scala-library</exclude>
