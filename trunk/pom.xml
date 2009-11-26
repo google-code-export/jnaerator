@@ -19,6 +19,7 @@
 		<module>jnaerator-parent</module>
 		<module>maven-jnaerator-plugin</module>
 		<module>jnaerator-runtime</module>
+		<module>jnaerator-tool</module>
 		<module>jnaerator</module>
 	</modules>
 	
