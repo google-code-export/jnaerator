@@ -21,6 +21,7 @@
 		<module>ochafik-util</module>
 		<module>ochafik-swing</module>
 		<module>jnaerator-runtime</module>
+		<module>jnaerator-rococoa-runtime</module>
 		
 		<module>jnaerator-parser</module>
 		<module>jnaerator-tool</module>

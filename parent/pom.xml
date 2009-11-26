@@ -93,7 +93,11 @@
 	
 	<repositories>
 	
-		
+		<repository>
+		  <id>jnaerator</id>
+		  <url>http://jnaerator.sourceforge.net/maven</url>
+		</repository>
+			
 		<repository>
 		  <id>maven2-repository.dev.java.net</id>
 		  <name>Java.net Repository for Maven</name>
@@ -108,11 +112,6 @@
 			
 	<!-- TODO JNLP: http://mojo.codehaus.org/webstart/webstart-maven-plugin/jnlp-mojos-overview.html -->
 	
-		<repository>
-		  <id>jnaerator</id>
-		  <url>http://jnaerator.sourceforge.net/maven</url>
-		</repository>
-		
     </repositories>
 	
 	<build>

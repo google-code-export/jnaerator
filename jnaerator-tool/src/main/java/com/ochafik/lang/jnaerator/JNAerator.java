@@ -48,6 +48,7 @@ import org.anarres.cpp.LexerException;
 import org.antlr.runtime.RecognitionException;
 //import org.junit.runner.JUnitCore;
 import org.rococoa.cocoa.foundation.NSClass;
+import org.rococoa.Rococoa;
 
 import com.ochafik.io.FileListUtils;
 import com.ochafik.io.ReadText;
@@ -723,7 +724,7 @@ public class JNAerator {
 					mfm.addSourceInput(cnAndSrc.getKey(), cnAndSrc.getValue());
 				}
 				feedback.setStatus("Compiling JNAerated files...");
-				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, NativeLibrary.class, JNAerator.class, NSClass.class, Mangling.class);
+				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, NativeLibrary.class, JNAerator.class, NSClass.class, Rococoa.class, Mangling.class);
 				CompilerUtils.CompilationError.throwErrors(diagnostics.getDiagnostics(), mfm.inputs, c.getClass().getName());
 				
 				if (config.outputJar != null && result.config.bundleRuntime) {
