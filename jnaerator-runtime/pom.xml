@@ -21,7 +21,7 @@
 	<dependency>
 	  <groupId>org.rococoa</groupId>
 	  <artifactId>rococoa-core</artifactId>
-	  <version>0.5</version>
+	  <version>${rococoa.version}</version>
 	  <scope>compile</scope>
 	</dependency>
 	
