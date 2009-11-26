@@ -99,7 +99,7 @@ import static com.ochafik.lang.jnaerator.parser.StoredDeclarations.*;
 	}
 	public ObjCParserHelper objCParserHelper;
 	boolean isPrimitiveType(String identifier) {
-		return objCParserHelper.isObjCppPrimitive(identifier);
+		return objCParserHelper != null && objCParserHelper.isObjCppPrimitive(identifier);
 	}
 	public EnumSet<ModifierKind> newKinds(ModifierKind first, ModifierKind... rest) {
 		return EnumSet.of(first, rest);
