@@ -120,14 +120,17 @@ public class LibraryExtractor {
 					files.add(extract(url));
 			}
 
-			if (Platform.isWindows()) {
-				File f = new File("c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64\\" : "System32\\") + libraryName + ".dll");
-				if (f.exists())
-					return f.toString();
-			} else if (Platform.isMac()) {
-				File f = new File("/System/Library/Frameworks/" + libraryName + ".framework/" + libraryName);
-				if (f.exists())
-					return f.toString();
+			if (System.getPreference("javawebstart.version") != null) {
+				if (Platform.isWindows()) {
+					//File f = new File("c:\\Windows\\" + (Platform.is64Bit() ? "SysWOW64\\" : "System32\\") + libraryName + ".dll");
+					File f = new File("c:\\Windows\\" + "System32\\" + libraryName + ".dll");
+					if (f.exists())
+						return f.toString();
+				} else if (Platform.isMac()) {
+					File f = new File("/System/Library/Frameworks/" + libraryName + ".framework/" + libraryName);
+					if (f.exists())
+						return f.toString();
+				}
 			}
 
 
