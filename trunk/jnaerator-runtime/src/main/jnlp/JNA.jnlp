@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"
+  codebase="http://jnaerator.sourceforge.net/webstart/JNAerator"
+  href="JNA.jnlp"
+>
+	<information>
+	  <title>JNA</title>
+	  <vendor>JNA</vendor>
+	  <homepage href="http://jna.dev.java.net/" />
+	  <description>Java Native Access Library</description>
+	</information>
+	<security>
+	  <all-permissions/>
+	</security>
+	<resources>
+		<j2se version="1.5+"/>
+		<jar href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/jna.jar"/>
+	</resources>
+	
+	<resources os="Windows" arch="x86">
+		<property name="jna.library.path" value="C:\Windows\System32"/>
+    <nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/win32-x86.jar"/>
+	</resources>
+	<resources os="Windows" arch="amd64">
+		<property name="jna.library.path" value="C:\Windows\SysWOW64"/>
+    <nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/win32-amd64.jar"/>
+	</resources>
+	
+	<resources os="FreeBSD" arch="i386">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/freebsd-i386.jar"/>
+	</resources>
+	<resources os="FreeBSD" arch="amd64">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/freebsd-amd64.jar"/>
+	</resources>
+	
+	<resources os="Linux" arch="i386">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/linux-i386.jar"/>
+	</resources>
+	<resources os="Linux" arch="amd64">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/linux-amd64.jar"/>
+	</resources>
+	<resources os="Linux" arch="ia64">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/linux-ia64.jar"/>
+	</resources>
+	
+	<resources os="SunOS" arch="x86">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/sunos-x86.jar"/>
+	</resources>
+	<resources os="SunOS" arch="amd64">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/sunos-amd64.jar"/>
+	</resources>
+	<resources os="SunOS" arch="sparc">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/sunos-sparc.jar"/>
+	</resources>
+	<resources os="SunOS" arch="sparcv9">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/sunos-sparcv9.jar"/>
+	</resources>
+	
+	<resources os="Mac">
+		<nativelib href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/darwin.jar"/>
+	</resources>
+	
+	<component-desc/>
+</jnlp>
