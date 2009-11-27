@@ -53,7 +53,7 @@
 				  <goal>shade</goal>
 				</goals>
 				<configuration>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
+					<!--shadedArtifactAttached>true</shadedArtifactAttached-->
 					<!--shadedArtifactId>${project.artifactId}-standalone</shadedArtifactId-->
 					<!--finalName>${project.artifactId}-standalone-${project.version}</finalName-->
 					<artifactSet>
