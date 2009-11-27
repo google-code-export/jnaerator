@@ -3,7 +3,7 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
   <groupId>com.jnaerator</groupId>
-  <artifactId>jnaerator-tool</artifactId>
+  <artifactId>jnaerator</artifactId>
   <name>JNAerator CLI &amp; Studio Tools</name>
   <url>http://code.google.com/p/jnaerator/</url>
   <version>${jnaerator.version}</version>
