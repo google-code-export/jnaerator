@@ -3,36 +3,24 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
   <groupId>com.jnaerator</groupId>
-  <artifactId>jnaerator-runtime</artifactId>
-  <name>JNAerator Runtime</name>
+  <artifactId>jna-jnaerator</artifactId>
+  <name>JNAerator's Patched JNA Library</name>
   <url>http://code.google.com/p/jnaerator/</url>
-  <version>${jnaerator.version}</version>
+  <version>${jna.version}</version>
   <packaging>jar</packaging>
   
   <dependencies>
   
-	<dependency>
-      <groupId>com.ochafik</groupId>
-      <artifactId>ochafik-util</artifactId>
-      <version>${jnaerator.version}</version>
-      <scope>compile</scope>
-    </dependency>
 	
   	<dependency>
-	  <groupId>com.jnaerator</groupId>
-	  <artifactId>jna-jnaerator</artifactId>
-	  <version>3.2.4</version>
+	  <groupId>net.java.dev.jna</groupId>
+	  <artifactId>jna</artifactId>
+	  <version>${jna.version}</version>
 	  <scope>compile</scope>
 	</dependency>
 	
-	<dependency>
-      <groupId>junit</groupId>
-	  <artifactId>junit</artifactId>
-      <version>4.7</version>
-      <scope>test</scope>
-    </dependency>
-	
   </dependencies>
+  
   <parent>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jnaerator-parent</artifactId>
@@ -40,9 +28,9 @@
 	  <relativePath>../parent</relativePath>
   </parent>
   
-  
   <build>
 		<plugins>
+		
 		
 		  <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -53,7 +41,6 @@
 			  <target>1.5</target>
 			</configuration>
 		  </plugin>
-		  
 		  
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -80,7 +67,7 @@
 			  </execution>
 			</executions>
 		</plugin>
-		
+		  
 		</plugins>
 	</build>
 </project>

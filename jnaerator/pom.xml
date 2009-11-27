@@ -71,23 +71,9 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 	</dependency>
 
 	<dependency>
-	  <groupId>org.rococoa</groupId>
-	  <artifactId>rococoa-core</artifactId>
-	  <version>0.5<!--${rococoa.version}--></version>
-	  <scope>compile</scope>
-	</dependency>
-	
-	<dependency>
 		<groupId>org.eclipse.jdt</groupId>
 		<artifactId>core</artifactId>
 		<version>3.5</version>
-		<scope>compile</scope>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.anarres.cpp</groupId>
-		<artifactId>anarres-cpp-jnaerator</artifactId>
-		<version>1.2.5-JNAerator.2</version>
 		<scope>compile</scope>
 	</dependency>
 	
