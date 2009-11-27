@@ -11,7 +11,8 @@
 	<properties>
 		<rococoa.version>0.5</rococoa.version>
 		<jnaerator.version>0.9.3-SNAPSHOT</jnaerator.version>
-		<maven.jar.sign.skip>true</maven.jar.sign.skip>
+		<jarsigner.skip>true</jarsigner.skip>
+		<jna.version>3.2.4</jna.version>
 	</properties>
 
 	<developers>
@@ -167,7 +168,6 @@
 				  </execution>
 				</executions>
 				<configuration>
-				<skip>${maven.jar.sign.skip}</skip>
 				<removeExistingSignatures>true</removeExistingSignatures>
 				  <keystore>/Users/ochafik/security/ochafik.keystore</keystore>
 			  <!--keystore>/Users/Olivier/security/ochafik.keystore</keystore-->

@@ -25,6 +25,13 @@
 		<scope>compile</scope>
 	</dependency>
 	
+	<dependency>
+		<groupId>org.anarres.cpp</groupId>
+		<artifactId>anarres-cpp-jnaerator</artifactId>
+		<version>1.2.5-JNAerator.2</version>
+		<scope>compile</scope>
+	</dependency>
+	
   </dependencies>
   
   <parent>
