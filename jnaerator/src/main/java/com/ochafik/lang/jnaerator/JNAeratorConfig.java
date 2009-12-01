@@ -202,6 +202,7 @@ public class JNAeratorConfig {
 	public File outputJar;
 	public File cacheDir;
 	public boolean autoConf = true;
+    public Set<String> undefines = new HashSet<String>();
 	public boolean gccLong = false, sizeAsLong = false;
 	public boolean compile = true;
 	public boolean bundleSources = true;

@@ -371,6 +371,9 @@ public class JNAerator {
 					case SizeAsLong:
 						config.sizeAsLong = true;
 						break;
+                    case Undefine:
+						config.undefines.add(a.getStringParam(0));
+						break;
 					case NoAuto:
 						config.autoConf = false;
 						break;
@@ -657,6 +660,7 @@ public class JNAerator {
 				feedback.setStatus("Auto-configuring parser...");
 				JNAeratorConfigUtils.autoConfigure(config);
 			}
+            config.preprocessorConfig.macros.keySet().removeAll(config.undefines);
 			
 			if (config.verbose)
 				JNAeratorConfigUtils.logger.log(Level.INFO, "Include path : \n\t" + StringUtils.implode(config.preprocessorConfig.includes, "\n\t"));
