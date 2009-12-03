@@ -59,7 +59,31 @@
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-shade-plugin</artifactId>
 			<executions>
+			  
+			  <execution>
+			  	<id>normal-package</id>
+				<phase>package</phase>
+				<goals>
+				  <goal>shade</goal>
+				</goals>
+				<configuration>
+					<shadedArtifactAttached>true</shadedArtifactAttached>
+					<!--shadedClassifierName>webstart</shadedClassifierName-->
+					<filters>
+					  	<filter>
 			
+							<artifact>com.jnaerator:jna-jnaerator</artifact>
+			
+							<excludes>
+			
+								<exclude>META-INF/**</exclude>
+								
+								</excludes>
+								
+						</filter>
+					</filters>
+				</configuration>
+			  </execution>
 			  
 			  <execution>
 			  	<id>webstart-package</id>
@@ -77,9 +101,11 @@
 			
 							<excludes>
 			
+								<!--exclude>META-INF/**</exclude-->
+								
 								<exclude>**/*.so</exclude>
-								<exclude>com/sun/jna/*/*.jnilib</exclude>
-								<exclude>com/sun/jna/*/*.dll</exclude>
+								<exclude>**/*.jnilib</exclude>
+								<exclude>**/*.dll</exclude>
 								
 								</excludes>
 								
@@ -88,21 +114,6 @@
 				</configuration>
 			  </execution>
 			  
-			  
-			  <execution>
-			  	<id>normal-package</id>
-				<phase>package</phase>
-				<goals>
-				  <goal>shade</goal>
-				</goals>
-				<configuration>
-					<!--shadedArtifactAttached>true</shadedArtifactAttached-->
-					<!--shadedClassifierName>webstart</shadedClassifierName-->
-				</configuration>
-			  </execution>
-			  
-						  
-
 			</executions>
 		</plugin>
 		

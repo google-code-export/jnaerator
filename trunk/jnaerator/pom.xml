@@ -141,7 +141,7 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 				  <goal>shade</goal>
 				</goals>
 				<configuration>
-					<!--shadedArtifactAttached>true</shadedArtifactAttached-->
+					<shadedArtifactAttached>true</shadedArtifactAttached>
 					<!--finalName>${project.artifactId}-standalone-${project.version}</finalName-->
 					<artifactSet>
 						<excludes>
