@@ -15,9 +15,8 @@
 	</security>
 	<resources>
 		<j2se version="1.5+"/>
-		<extension name="JNA" href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/JNA.jnlp"/>
-		<jar href="http://jnaerator.sourceforge.net/maven/com/jnaerator/jnaerator-runtime/0.9.3-SNAPSHOT/jnaerator-runtime-0.9.3-SNAPSHOT.jar"/>
-		<jar href="http://jnaerator.sourceforge.net/maven/com/ochafik/ochafik-util/0.9.3-SNAPSHOT/ochafik-util-0.9.3-SNAPSHOT.jar"/>
+		<extension name="jnidispatch" href="http://jnaerator.sourceforge.net/webstart/jna/3.2.4/jnidispatch.jnlp"/>
+		<jar href="http://jnaerator.sourceforge.net/maven/com/jnaerator/jnaerator-runtime/0.9.3-SNAPSHOT/jnaerator-runtime-0.9.3-SNAPSHOT-webstart.jar"/>
 	</resources>
 	
 	<component-desc/>
