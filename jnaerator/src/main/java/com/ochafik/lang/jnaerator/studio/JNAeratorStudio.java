@@ -242,6 +242,12 @@ public class JNAeratorStudio extends JPanel {
 				switchOrientation();
 			}
 		},
+		donateAction = new AbstractAction("Donate to the author") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SystemUtils.runSystemOpenURL("http://sourceforge.net/donate/index.php?group_id=266856");
+			}
+		},
 		generateAction = new AbstractAction("JNAerate !") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -300,6 +306,7 @@ public class JNAeratorStudio extends JPanel {
 		
 		JToolBar tb = new JToolBar();
 		generateButton = tb.add(generateAction);
+		tb.add(donateAction);
 		tb.add(showExampleAction);
 		tb.add(switchOrientationAction);
 		tb.add(aboutJNAeratorAction);
