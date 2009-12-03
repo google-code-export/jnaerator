@@ -58,26 +58,51 @@
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-shade-plugin</artifactId>
-			<version>1.2.2</version>
 			<executions>
+			
+			  
 			  <execution>
+			  	<id>webstart-package</id>
+				<phase>package</phase>
+				<goals>
+				  <goal>shade</goal>
+				</goals>
+				<configuration>
+					<shadedArtifactAttached>true</shadedArtifactAttached>
+					<shadedClassifierName>webstart</shadedClassifierName>
+					<filters>
+					  	<filter>
+			
+							<artifact>com.jnaerator:jna-jnaerator</artifact>
+			
+							<excludes>
+			
+								<exclude>**/*.so</exclude>
+								<exclude>com/sun/jna/*/*.jnilib</exclude>
+								<exclude>com/sun/jna/*/*.dll</exclude>
+								
+								</excludes>
+								
+						</filter>
+					</filters>
+				</configuration>
+			  </execution>
+			  
+			  
+			  <execution>
+			  	<id>normal-package</id>
 				<phase>package</phase>
 				<goals>
 				  <goal>shade</goal>
 				</goals>
 				<configuration>
 					<!--shadedArtifactAttached>true</shadedArtifactAttached-->
-					<!--shadedArtifactId>${project.artifactId}-standalone</shadedArtifactId-->
-					<!--finalName>${project.artifactId}-standalone-${project.version}</finalName-->
-					<artifactSet>
-						<excludes>
-						  <exclude>org.scala-lang:scala-library</exclude>
-						  <exclude>org.slf4j:slf4j-jdk14</exclude>
-						  <exclude>junit:junit</exclude>
-						</excludes>
-					  </artifactSet>
+					<!--shadedClassifierName>webstart</shadedClassifierName-->
 				</configuration>
 			  </execution>
+			  
+						  
+
 			</executions>
 		</plugin>
 		
