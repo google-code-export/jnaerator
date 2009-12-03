@@ -93,6 +93,18 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 		  </plugin>
 		  
 		  <plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-jar-plugin</artifactId>
+			  <configuration>
+			<archive>
+			  <manifest>
+				<mainClass>com.ochafik.lang.jnaerator.JNAerator</mainClass>
+			  </manifest>
+			</archive>
+			  </configuration>
+		  </plugin>
+		  
+		  <plugin>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>cobertura-maven-plugin</artifactId>
 			<configuration>
@@ -117,6 +129,34 @@ Users who are looking for ready-to-use libraries should check the NativeLibs4Jav
 			</executions>
 		  </plugin>
 		  
+		  <plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-shade-plugin</artifactId>
+			<version>1.2.1</version>
+			<executions>
+			 
+			  <execution>
+				<phase>package</phase>
+				<goals>
+				  <goal>shade</goal>
+				</goals>
+				<configuration>
+					<!--shadedArtifactAttached>true</shadedArtifactAttached-->
+					<!--finalName>${project.artifactId}-standalone-${project.version}</finalName-->
+					<artifactSet>
+						<excludes>
+						  <exclude>org.scala-lang:scala-library</exclude>
+						  <exclude>org.slf4j:slf4j-jdk14</exclude>
+						  <exclude>junit:junit</exclude>
+						</excludes>
+					  </artifactSet>
+					  
+				</configuration>
+			  </execution>
+			  
+			</executions>
+		</plugin>
+
 		</plugins>
 	</build>
 </project>

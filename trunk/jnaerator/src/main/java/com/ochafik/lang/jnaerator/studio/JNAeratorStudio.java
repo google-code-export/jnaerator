@@ -245,7 +245,11 @@ public class JNAeratorStudio extends JPanel {
 		donateAction = new AbstractAction("Donate to the author") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SystemUtils.runSystemOpenURL("http://sourceforge.net/donate/index.php?group_id=266856");
+				try {
+					SystemUtils.runSystemOpenURL(new URL("http://sourceforge.net/donate/index.php?group_id=266856"));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		},
 		generateAction = new AbstractAction("JNAerate !") {

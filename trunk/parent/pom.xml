@@ -156,6 +156,32 @@
 			</plugin>  
 			
 			<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                          <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                  <goal>sign</goal>
+                                </goals>
+                          </execution>
+                        </executions>
+                        
+                        <configuration>
+							<skip>${jarsigner.skip}</skip>
+							<removeExistingSignatures>true</removeExistingSignatures>
+                          <keystore>/Users/ochafik/security/ochafik.keystore</keystore>
+                          <!--keystore>/Users/Olivier/security/ochafik.keystore</keystore-->
+                          <alias>ochafik2009</alias>
+                          <!--   
+                                  mvn "-Dstorepass=$KEYSTORE_PASS" -Dmaven.test.skip=true package  
+                                  <storepass>yourstorepassword</storepass>
+                          -->
+                          <verify>false</verify>
+                        </configuration>
+                  </plugin>
+				  
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jarsigner-plugin</artifactId>
 				<version>1.2</version>
@@ -169,6 +195,7 @@
 				  </execution>
 				</executions>
 				<configuration>
+							<skip>true</skip>
 				<removeExistingSignatures>true</removeExistingSignatures>
 				  <keystore>/Users/ochafik/security/ochafik.keystore</keystore>
 			  <!--keystore>/Users/Olivier/security/ochafik.keystore</keystore-->
