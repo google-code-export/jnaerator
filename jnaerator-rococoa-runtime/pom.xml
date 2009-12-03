@@ -66,9 +66,24 @@
 						<excludes>
 						  <exclude>org.scala-lang:scala-library</exclude>
 						  <exclude>org.slf4j:slf4j-jdk14</exclude>
+						  <exclude>com.sun.jna:jna</exclude>
 						  <exclude>junit:junit</exclude>
 						</excludes>
 					  </artifactSet>
+					  
+					  <filters>
+					  	<filter>
+			
+							<artifact>com.sun.jna:jna</artifact>
+			
+							<excludes>
+			
+								<exclude>META-INF/**</exclude>
+								
+								</excludes>
+								
+						</filter>
+					</filters>
 				</configuration>
 			  </execution>
 			</executions>
