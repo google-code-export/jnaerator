@@ -3,6 +3,7 @@ package com.ochafik.lang.jnaerator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +34,9 @@ public class JNAeratorCommandLineArgs {
 			public String getStringParam(int pos) {
 				return (String)params[pos];
 			}
+            public MessageFormat getMessageFormatParam(int pos) {
+				return (MessageFormat)params[pos];
+			}
 			public int getIntParam(int pos) {
 				return (Integer)params[pos];
 			}
@@ -52,6 +56,8 @@ public class JNAeratorCommandLineArgs {
 				return new File(arg);
 			case Int:
 				return Integer.parseInt(arg);
+            case MessageFormat:
+                return new MessageFormat(arg);
 			case String:
 				return arg;
 			case ExistingDir:
@@ -161,6 +167,7 @@ public class JNAeratorCommandLineArgs {
 		Direct(				"-direct",		 		"JNAerate libraries that use JNA's faster direct call convention"),
 		PreferJavac(		"-preferJavac",		 	"Use Sun's Javac compiler instead of Eclipse's ecj, if possible"),
 		StructsInLibrary(	"-structsInLibrary",	"Force structs to be JNAerated as inner classes of their declaring libraries (otherwise, each top-level structure is defined as a top-level class in its library's package)"),
+        OnlineDocURLFormat( "-onlineDoc",           "Define a format for online documentation URLs (uses MessageFormat syntax, with arg 0 being the name of the function / structure).", new ArgDef(Type.MessageFormat, "linkDisplayFormat"), new ArgDef(Type.MessageFormat, "urlMessageFormat")),
 		CurrentPackage(		"-package",				"Set the Java package in which all the output will reside (by default, set to the library name).", new ArgDef(Type.String, "forcedPackageName")),
 		RecursedExtensions(	"-allowedFileExts", 	"Colon-separated list of file extensions used to restrict files used when recursing on directories, or \"*\" to parse all files (by default = " + JNAeratorConfig.DEFAULT_HEADER_EXTENSIONS + ")", new ArgDef(Type.String, "extensions")),
 		SkipIncludedFrameworks(		"-skipIncludedFrameworks",		"Skip Included Frameworks"),
@@ -213,7 +220,7 @@ public class JNAeratorCommandLineArgs {
 		public final String description;
 		
 		public enum Type {
-			ExistingFile, ExistingDir, File, String, Int, ExistingFileOrDir, OutputDir, OutputFile, OptionalFile
+			ExistingFile, ExistingDir, File, MessageFormat, String, Int, ExistingFileOrDir, OutputDir, OutputFile, OptionalFile
 		}
 		public static class ArgDef {
 			public final Type type;

@@ -38,6 +38,8 @@ import com.ochafik.lang.jnaerator.parser.Function;
 import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
+import com.ochafik.util.listenable.Pair;
+import java.text.MessageFormat;
 import java.util.HashSet;
 
 public class JNAeratorConfig {
@@ -91,6 +93,7 @@ public class JNAeratorConfig {
 	public boolean putTopStructsInSeparateFiles = true;
 	public boolean bundleRuntime = true;
 	public boolean extractLibSymbols = false;
+    public List<Pair<MessageFormat, MessageFormat>> onlineDocumentationURLFormats = new ArrayList<Pair<MessageFormat, MessageFormat>>();
 	public String entryName;
 	public int maxConstructedFields = 10;
 	
