@@ -59,6 +59,9 @@ import com.ochafik.util.string.StringUtils;
 import com.sun.jna.*;
 import com.sun.jna.Pointer;
 
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.MessageFormat;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 import static com.ochafik.lang.jnaerator.TypeConversion.*;
 
@@ -635,6 +638,23 @@ public class DeclarationsConverter {
 				if (!isCallback)
 					natFunc.addToCommentBefore(getFileCommentContent(function));
 			}
+
+            if (function.getName() != null) {
+                Object[] name = new Object[] {function.getName().toString()};
+                for (Pair<MessageFormat, MessageFormat> mf : result.config.onlineDocumentationURLFormats) {
+                    try {
+                        MessageFormat urlFormat = mf.getSecond();
+                        URL url = new URL(urlFormat.format(name));
+                        URLConnection con = url.openConnection();
+                        con.getInputStream().close();
+                        MessageFormat displayFormat = mf.getFirst();
+                        natFunc.addToCommentBefore("@see <a href=\"" + url + "\">" + displayFormat.format(name) + "</a>");
+                        break;
+                    } catch (Exception ex) {
+                        //ex.printStackTrace();
+                    }
+                }
+            }
 			
 			boolean alternativeOutputs = !isCallback;
 			

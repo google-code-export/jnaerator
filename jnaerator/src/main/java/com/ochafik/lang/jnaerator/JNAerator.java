@@ -100,6 +100,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
@@ -313,6 +314,9 @@ public class JNAerator {
 					case CurrentPackage:
 						config.packageName = a.getStringParam(0);
 						break;
+                    case OnlineDocURLFormat:
+                        config.onlineDocumentationURLFormats.add(new Pair<MessageFormat, MessageFormat>(a.getMessageFormatParam(0), a.getMessageFormatParam(1)));
+                        break;
 					case NoLibBundle:
 						config.bundleLibraries = false;
 						break;
@@ -505,7 +509,9 @@ public class JNAerator {
 					};
 					
 					// Strip comments out
+                    argsFileContent = argsFileContent.replaceAll("http://", "http:\\\\");
 					argsFileContent = argsFileContent.replaceAll("(?m)//[^\n]*(\n|$)", "\n");
+					argsFileContent = argsFileContent.replaceAll("http:\\\\", "http://");
 					argsFileContent = argsFileContent.replaceAll("(?m)/\\*([^*]|\\*[^/])*\\*/", "");
 					
 					// Replace variables
