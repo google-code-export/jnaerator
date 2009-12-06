@@ -40,6 +40,14 @@ public class JNAeratorMojo
      */
     private File config;
 
+
+    /**
+     * Whether JNAerator should output helper Scala classes (experimental)
+     * @parameter expression="false"
+     * @required
+     */
+    private boolean generateScala;
+
     /**
      * Output directory for JNAerated Java sources.
      * @parameter expression="${project.build.directory}/generated-sources/java"
@@ -69,9 +77,11 @@ public class JNAeratorMojo
             args.add("-noComp");
             args.add("-o");
             args.add(canonizeDir(javaOutputDirectory).toString());
-            
-            args.add("-scalaOut");
-            args.add(canonizeDir(scalaOutputDirectory).toString());
+
+            if (generateScala) {
+                args.add("-scalaOut");
+                args.add(canonizeDir(scalaOutputDirectory).toString());
+            }
 
             args.add(config.getAbsolutePath());
 
