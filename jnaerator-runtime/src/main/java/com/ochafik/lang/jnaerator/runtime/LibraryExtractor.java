@@ -32,6 +32,10 @@ import java.util.List;
 
 import com.ochafik.net.URLUtils;
 import com.sun.jna.Platform;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 /**
  * @see http://landonf.bikemonkey.org/static/soylatte/
@@ -197,4 +201,53 @@ public class LibraryExtractor {
 	public static void loadLibrary(String libraryName, boolean extractAllLibraries, Class<?> cl) {
 		System.loadLibrary(getLibraryPath(libraryName, extractAllLibraries, cl));
 	}
+
+    public static boolean shouldTraceCalls(String libraryName) {
+        return  "true".equals(System.getProperty("jna.traceCalls")) || "true".equals(System.getProperty(libraryName.toLowerCase() + ".traceCalls"));
+    }
+    public static final Object getTracingLibrary(final Object original, Class libraryClass) {
+        try {
+            final String pref = "[" + libraryClass.getSimpleName() + "]";
+            InvocationHandler handler = new InvocationHandler() {
+
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    StringBuilder b = new StringBuilder(pref);
+                    b.append(method.getDeclaringClass().getName() + "." + method.getName() + "(");
+
+                    for (int i = 0; i < args.length; i++) {
+                        Object arg = args[i];
+                        if (i != 0)
+                            b.append(", ");
+                        b.append(toString(arg));
+                    }
+                    b.append(")");
+                    System.err.print(b);
+                    Object ret = method.invoke(original, args);
+                    if (method.getReturnType().equals(Void.class))
+                        return null;
+
+                    System.err.println(" => " + toString(ret));
+                    return ret;
+                }
+
+                String toString(Object arg) {
+                    if (arg instanceof Object[])
+                        return Arrays.toString((Object[])arg);
+                    else
+                        return String.valueOf(arg);
+                }
+
+            };
+            Class proxyClass = Proxy.getProxyClass(libraryClass.getClassLoader(), libraryClass);
+            return proxyClass.getConstructor(InvocationHandler.class).newInstance(handler);
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to create trace library");
+        }
+    }
+    public static final Object getLibrary(String name, String path, final Class libraryClass) {
+        Object original = com.sun.jna.Native.loadLibrary(path, libraryClass, MangledFunctionMapper.DEFAULT_OPTIONS);
+        return shouldTraceCalls(name) ?
+            LibraryExtractor.getTracingLibrary(original, libraryClass) : original;
+    }
 }
