@@ -189,7 +189,15 @@ public enum Modifier {
 	Warn_unused_result(of(Attribute)),
 	Weak(of(Attribute)), 
 	
-	Synchronized(of(Java)),
+	__kernel(of(OpenCL)),
+    __global(of(OpenCL)),
+    __read_only(of(OpenCL)),
+    __write_only(of(OpenCL)),
+    __local(of(OpenCL)),
+    __constant(of(OpenCL)),
+    __private(of(OpenCL)),
+
+    Synchronized(of(Java)),
 	Native(of(Java));
 	
 	EnumSet<ModifierKind> kinds;

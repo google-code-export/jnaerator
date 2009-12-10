@@ -1618,7 +1618,12 @@ statement	returns [Statement stat]
 		'if' '(' topLevelExpr ')' statement ('else' statement)? | // TODO
 		'while' '(' topLevelExpr ')' statement | // TODO
 		'do' statement 'while' '(' topLevelExpr ')' ';' | // TODO
-		'for' '(' expression? ';' expression? ';' expression? ')' statement | // TODO
+		'for' '('
+            (
+                (varDecl | expression) ? ';' expression? ';' expression?  |
+                varDecl ':' expression // Java foreach
+            )
+        ')' statement | // TODO
 		'switch' '(' expression ')' '{' // TODO
 			(	
 				'case' topLevelExpr ':' |
@@ -1626,7 +1631,7 @@ statement	returns [Statement stat]
 			)*
 		'}' |
 		';' |
-		{ next("foreach") }? IDENTIFIER '(' varDecl ':' expression ')' statement // TODO
+		{ next("foreach") }? IDENTIFIER '(' varDecl { next("in") }? IDENTIFIER expression ')' statement // TODO
 	;
 	
 constant returns [Constant constant]
