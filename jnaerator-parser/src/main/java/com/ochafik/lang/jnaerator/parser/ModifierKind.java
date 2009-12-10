@@ -15,6 +15,7 @@ public enum ModifierKind {
 	OnlyInArgDef,
 			
 	C,
+    OpenCL,
 	CPlusPlus,
 	ObjectiveC,
 	Java,
