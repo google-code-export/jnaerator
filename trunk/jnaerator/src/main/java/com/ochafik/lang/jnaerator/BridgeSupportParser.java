@@ -65,7 +65,7 @@ public class BridgeSupportParser {
 		try {
 			JNAeratorConfig config = new JNAeratorConfig();
 			config.verbose = true;
-			Result result = new Result(config, null);
+			Result result = new Result(config, null, null);
 			SourceFiles sourceFiles = new SourceFiles();
 			File file = new File("/System/Library/Frameworks/Foundation.framework/Resources/BridgeSupport/FoundationFull.bridgesupport");
 			new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFile(file);

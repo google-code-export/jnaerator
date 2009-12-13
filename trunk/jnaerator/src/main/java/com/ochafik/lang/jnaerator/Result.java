@@ -66,34 +66,38 @@ import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 public class Result extends Scanner {
 
 	public final JNAeratorConfig config;
-	public ClassOutputter classOutputter;
-	public final TypeConversion typeConverter;
-	public final DeclarationsConverter declarationsConverter;
-	public final GlobalsGenerator globalsGenerator;
-	public final ObjectiveCGenerator objectiveCGenerator;
-	public final UniversalReconciliator universalReconciliator;
-		
+	public final Feedback feedback;
+    public final ClassOutputter classOutputter;
+    
+	public TypeConversion typeConverter;
+	public DeclarationsConverter declarationsConverter;
+	public GlobalsGenerator globalsGenerator;
+	public ObjectiveCGenerator objectiveCGenerator;
+	public UniversalReconciliator universalReconciliator;
+	
 	public final Set<Identifier> 
 		structsFullNames = new HashSet<Identifier>(),
 		unionsFullNames = new HashSet<Identifier>(),
 		callbacksFullNames = new HashSet<Identifier>();
-	
+
 	/**
 	 * @param aerator
 	 */
-	public Result(JNAeratorConfig config, ClassOutputter classOutputter) {
+	public Result(JNAeratorConfig config, ClassOutputter classOutputter, Feedback feedback) {
 		if (config == null)
 			throw new IllegalArgumentException("No config in result !");
 		this.config = config;
 		this.classOutputter = classOutputter;
-		
+        this.feedback = feedback;
+
+        init();
+    }
+    public void init() {
 		typeConverter = new TypeConversion(this);
 		declarationsConverter = new DeclarationsConverter(this);
 		globalsGenerator = new GlobalsGenerator(this);
 		objectiveCGenerator = new ObjectiveCGenerator(this);
 		universalReconciliator = new UniversalReconciliator();
-			
-		
 	}
 
 	Set<Identifier> javaPackages = new TreeSet<Identifier>();
@@ -110,28 +114,28 @@ public class Result extends Scanner {
 		//cStructNames = new HashSet<String>(), 
 		//enumNames = new HashSet<String>();
 	
-	Map<String, List<String>> missingPointersByUsingLibrary = new HashMap<String, List<String>>();
- 	Map<String, List<Struct>> structsByLibrary = new HashMap<String, List<Struct>>();
-	Map<String, List<FunctionSignature>> callbacksByLibrary = new HashMap<String, List<FunctionSignature>>();
+	public Map<String, List<String>> missingPointersByUsingLibrary = new HashMap<String, List<String>>();
+ 	public Map<String, List<Struct>> structsByLibrary = new HashMap<String, List<Struct>>();
+	public Map<String, List<FunctionSignature>> callbacksByLibrary = new HashMap<String, List<FunctionSignature>>();
 	
-	Map<String, List<VariablesDeclaration>> globalsByLibrary = new HashMap<String, List<VariablesDeclaration>>();
-	Map<Identifier, VariablesDeclaration> globalVariablesByName = new HashMap<Identifier, VariablesDeclaration>();
+	public Map<String, List<VariablesDeclaration>> globalsByLibrary = new HashMap<String, List<VariablesDeclaration>>();
+	public Map<Identifier, VariablesDeclaration> globalVariablesByName = new HashMap<Identifier, VariablesDeclaration>();
 	
-	Map<Identifier, Struct> structsByName = new HashMap<Identifier, Struct>();
-	Map<Identifier, FunctionSignature> callbacksByName = new HashMap<Identifier, FunctionSignature>();
+	public Map<Identifier, Struct> structsByName = new HashMap<Identifier, Struct>();
+	public Map<Identifier, FunctionSignature> callbacksByName = new HashMap<Identifier, FunctionSignature>();
 	
-	Map<String, List<Enum>> enumsByLibrary = new HashMap<String, List<Enum>>();
-	Map<Identifier, Enum> enumsByName = new HashMap<Identifier, Enum>();
-	Map<String, EnumItem> enumItems = new HashMap<String, EnumItem>();
-	Map<String, Define> defines = new HashMap<String, Define>();
-	Map<String, List<Define>> definesByLibrary = new HashMap<String, List<Define>>();
-	Map<String, Set<String>> fakePointersByLibrary = new HashMap<String, Set<String>>();
+	public Map<String, List<Enum>> enumsByLibrary = new HashMap<String, List<Enum>>();
+	public Map<Identifier, Enum> enumsByName = new HashMap<Identifier, Enum>();
+	public Map<String, EnumItem> enumItems = new HashMap<String, EnumItem>();
+	public Map<String, Define> defines = new HashMap<String, Define>();
+	public Map<String, List<Define>> definesByLibrary = new HashMap<String, List<Define>>();
+	public Map<String, Set<String>> fakePointersByLibrary = new HashMap<String, Set<String>>();
 	
-	Map<String, List<Function>> functionsByLibrary = new HashMap<String, List<Function>>();
+	public Map<String, List<Function>> functionsByLibrary = new HashMap<String, List<Function>>();
 	//Map<String, Expression> defines = new LinkedHashMap<String, Expression>();
-	Map<Identifier, Signatures> signaturesByOutputClass = new HashMap<Identifier, Signatures>();
+	public Map<Identifier, Signatures> signaturesByOutputClass = new HashMap<Identifier, Signatures>();
 	
-	Map<String, Pair<TypeDef, Declarator>> typeDefs = new HashMap<String, Pair<TypeDef, Declarator>>();
+	public Map<String, Pair<TypeDef, Declarator>> typeDefs = new HashMap<String, Pair<TypeDef, Declarator>>();
 	
 	static <T> List<T> getList(Map<String, List<T>> m, String key) {
 		List<T> list = m.get(key);
@@ -596,7 +600,6 @@ public class Result extends Scanner {
 		return false;
 	}
 	public final Map<String, TypeRef> weakTypeDefs = new HashMap<String, TypeRef>();
-	public Feedback feedback;
 	public void addWeakTypeDef(TypeRef clone, String sn) {
 		weakTypeDefs.put(sn, clone);
 	}

@@ -129,7 +129,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 	
 	//public Set<Identifier> fakePointersSink;
 
-	enum TypeConversionMode {
+	public enum TypeConversionMode {
 		PrimitiveOrBufferParameter, 
 		NativeParameter, 
 		NativeParameterWithStructsPtrPtrs,
@@ -146,7 +146,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 	static final Set<String> byReferenceClassesNames = new HashSet<String>();
 	
 	Map<String, JavaPrim> javaPrims = new TreeMap<String, JavaPrim>();
-	void prim(String from, JavaPrim to) {
+	protected void prim(String from, JavaPrim to) {
 		javaPrims.put(from, to);
 	}
 	
@@ -844,7 +844,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 		return (i instanceof Identifier.QualifiedIdentifier) && 
 			Identifier.QualificationSeparator.Dot.equals(((Identifier.QualifiedIdentifier)i).getSeparator());
 	}
-	TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
+	public TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
 //		if (String.valueOf(valueType).contains("MonoImageOpenStatus"))
 //			valueType.toString();
@@ -1396,7 +1396,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 		return (Pair<Expression, TypeRef>)res;
 	}
 
-	private TypeRef convertToJavaType(Constant.Type type) {
+	public TypeRef convertToJavaType(Constant.Type type) {
 		switch (type) {
 			case Bool: return typeRef(Boolean.TYPE);
 			case IntegerString:

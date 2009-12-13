@@ -43,12 +43,14 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
 import com.ochafik.io.WriteText;
+import com.ochafik.lang.jnaerator.PreprocessorUtils.MacroUseCallback;
 import com.ochafik.lang.jnaerator.parser.ObjCppLexer;
 import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import com.ochafik.lang.jnaerator.parser.SourceFile;
 import com.ochafik.lang.reflect.DebugUtils;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.RegexUtils;
+import java.util.Collection;
 
 public class JNAeratorParser {
 
@@ -184,9 +186,9 @@ public class JNAeratorParser {
 			}
 		}
 
-	public static SourceFiles parse(JNAeratorConfig config, TypeConversion typeConverter) throws IOException, LexerException {
+	public static SourceFiles parse(JNAeratorConfig config, TypeConversion typeConverter, MacroUseCallback macrosDependenciesOut) throws IOException, LexerException {
 		SourceFiles sourceFiles = new SourceFiles();
-		String sourceContent = PreprocessorUtils.preprocessSources(config, sourceFiles.defines, config.verbose, typeConverter);
+		String sourceContent = PreprocessorUtils.preprocessSources(config, sourceFiles.defines, config.verbose, typeConverter, macrosDependenciesOut);
 		
 		PrintStream originalOut = System.out, originalErr = System.err;
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
