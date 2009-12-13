@@ -120,10 +120,14 @@ public class Preprocessor implements Closeable {
 	private boolean				properStringTokensInLinePragmas = false; 
 	private boolean 			inIncludeNext = false; // whether current include should ignore current file's directory in include paths
 	
+	protected Map<String, Macro> createMacro() {
+		return new LinkedHashMap<String,Macro>();
+	}
+	
 	public Preprocessor() {
 		this.inputs = new ArrayList<Source>();
 
-		this.macros = new LinkedHashMap<String,Macro>();
+		this.macros = createMacro();
 		macros.put(__LINE__.getName(), __LINE__);
 		macros.put(__FILE__.getName(), __FILE__);
 		macros.put(__COUNTER__.getName(), __COUNTER__);

@@ -140,10 +140,10 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 		StaticallySizedArrayField, 
 		PrimitiveReturnType, PointedValue
 	}
-	static Map<JavaPrim, Class<? extends ByReference>> primToByReference = new HashMap<JavaPrim, Class<? extends ByReference>>();
-	static Map<JavaPrim, Class<? extends Global>> primToGlobal = new HashMap<JavaPrim, Class<? extends Global>>();
-	static Map<JavaPrim, Class<? extends Buffer>> primToBuffer = new HashMap<JavaPrim, Class<? extends Buffer>>();
-	static final Set<String> byReferenceClassesNames = new HashSet<String>();
+	public Map<JavaPrim, Class<? extends ByReference>> primToByReference = new HashMap<JavaPrim, Class<? extends ByReference>>();
+	public Map<JavaPrim, Class<? extends Global>> primToGlobal = new HashMap<JavaPrim, Class<? extends Global>>();
+	public Map<JavaPrim, Class<? extends Buffer>> primToBuffer = new HashMap<JavaPrim, Class<? extends Buffer>>();
+	public final Set<String> byReferenceClassesNames = new HashSet<String>();
 	
 	Map<String, JavaPrim> javaPrims = new TreeMap<String, JavaPrim>();
 	protected void prim(String from, JavaPrim to) {
@@ -153,7 +153,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 	public boolean isObjCppPrimitive(String s) {
 		return javaPrims.containsKey(s);
 	}
-	enum JavaPrim {
+	public enum JavaPrim {
 		Void(null, ESize.Zero), 
 		Char(Character.TYPE, ESize.CharSize), 
 		Long(java.lang.Long.TYPE, ESize.Eight), 
@@ -575,7 +575,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 	}
 	
 	
-	JavaPrim getPrimitive(TypeRef valueType, Identifier libraryClassName) {
+	public JavaPrim getPrimitive(TypeRef valueType, Identifier libraryClassName) {
 		
 		valueType = resolveTypeDef(valueType, libraryClassName, true);
 		if (valueType == null)

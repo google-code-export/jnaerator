@@ -148,7 +148,12 @@ public class JNAerator {
 			return null;
 		return argsPref.split(",");
 	}
+
 	public static void main(String[] argsArray) {
+		main(new JNAerator(new JNAeratorConfig()), argsArray);
+    }
+
+	public static void main(final JNAerator jnaerator, String[] argsArray) {
 		try {
 		
 			String[] jnAeratorArgsFromPref = getJNAeratorArgsFromPref();
@@ -258,7 +263,7 @@ public class JNAerator {
 		
 			List<String> args = new ArrayList<String>(Arrays.asList(argsArray));
 			
-			final JNAeratorConfig config = new JNAeratorConfig();
+			final JNAeratorConfig config = jnaerator.config;//new JNAeratorConfig();
 			config.preprocessorConfig.frameworksPath.addAll(JNAeratorConfigUtils.DEFAULT_FRAMEWORKS_PATH);
 			new JNAeratorCommandLineArgs.ArgsParser() {
 
@@ -296,7 +301,10 @@ public class JNAerator {
 						if (propValue == null)
 							propValue = "";
 						return Arrays.asList(propValue.matches(regex) ? thenCmd : elseCmd);
-					case NoCompile:
+                    case AddRootDir:
+                        config.addRootDir(a.getFileParam("dir"));
+                        break;
+                    case NoCompile:
 						config.compile = false;
 						break;
 					case NoStringReturns:
@@ -624,8 +632,8 @@ public class JNAerator {
 							}
 						}; 
 					}
-					
-					new JNAerator(config).jnaerate(feedback);
+
+                    jnaerator.jnaerate(feedback);
 					if (!simpleGUI)
 						throw new ExitException(0);
 				}
@@ -1296,11 +1304,13 @@ public class JNAerator {
 		//##################################################################
 		//##### BEGINNING HERE, sourceFiles NO LONGER GETS MODIFIED ! ######
 		//##################################################################
-		
-		if (result.feedback != null && !result.config.bridgeSupportFiles.isEmpty())
-			result.feedback.setStatus("Parsing BridgeSupport files...");
-		
-		new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
+
+        if (!result.config.bridgeSupportFiles.isEmpty()) {
+            if (result.feedback != null)
+                result.feedback.setStatus("Parsing BridgeSupport files...");
+
+            new BridgeSupportParser(result, sourceFiles).parseBridgeSupportFiles();
+        }
 		
 		/// Gather Objective-C classes
 		sourceFiles.accept(result);

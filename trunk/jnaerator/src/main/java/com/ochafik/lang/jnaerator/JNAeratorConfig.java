@@ -125,6 +125,8 @@ public class JNAeratorConfig {
 		if (file.isFile()) {
 			if (fileFilter == null || !applyFilters || fileFilter.accept(file)) {
 				file = file.getCanonicalFile();
+                if (library == null && fileToLibrary != null)
+                    library = fileToLibrary.adapt(file);
 				libraryByFile.put(file, library);
 				sourceFiles.add(file);
 			}

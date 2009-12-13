@@ -119,7 +119,7 @@ public class GlobalsGenerator {
 							globalType = typeRef(ident(GlobalCallback.class, expr(type.clone())));
 							extraArg = memberRef(expr(type.clone()), MemberRefStyle.Dot, "class");
 						} else if (isPointer) {
-							Class<? extends ByReference> brt = TypeConversion.primToByReference.get(prim);
+							Class<? extends ByReference> brt = result.typeConverter.primToByReference.get(prim);
 							if (brt != null) {
 								globalType = typeRef(ident(GlobalPointerType.class, expr(typeRef(ident(brt)))));
 								extraArg = classLiteral(brt);
@@ -127,7 +127,7 @@ public class GlobalsGenerator {
 								globalType = typeRef(GlobalPointer.class);
 							}
 						} else {
-							Class<?> globalClass = TypeConversion.primToGlobal.get(prim);
+							Class<?> globalClass = result.typeConverter.primToGlobal.get(prim);
 							if (globalClass != null)
 								globalType = typeRef(globalClass);
 						}
@@ -179,7 +179,7 @@ public class GlobalsGenerator {
 					isPtr = true;
 					instType = convPointerType;
 					hasOffset = false;
-				} else if (TypeConversion.byReferenceClassesNames.contains(convPointerTypeStr)) {
+				} else if (result.typeConverter.byReferenceClassesNames.contains(convPointerTypeStr)) {
 					isByRef = true;
 					instType = convPointerType;
 					hasOffset = false;

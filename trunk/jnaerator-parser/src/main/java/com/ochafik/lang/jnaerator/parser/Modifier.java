@@ -189,7 +189,8 @@ public enum Modifier {
 	Warn_unused_result(of(Attribute)),
 	Weak(of(Attribute)), 
 	
-	__kernel(of(OpenCL)),
+    //Complex(of(OpenCL)),
+    __kernel(of(OpenCL)),
     __global(of(OpenCL)),
     __read_only(of(OpenCL)),
     __write_only(of(OpenCL)),
