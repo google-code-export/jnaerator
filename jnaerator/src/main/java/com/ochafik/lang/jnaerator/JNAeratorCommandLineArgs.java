@@ -64,7 +64,7 @@ public class JNAeratorCommandLineArgs {
 				f = new File(arg);
 				if (!f.isDirectory())
 					throw new FileNotFoundException(f.toString());
-				break;
+				return f;
 			case ExistingFile:
 				f = new File(arg);
 				if (!f.isFile())
@@ -150,7 +150,8 @@ public class JNAeratorCommandLineArgs {
 		LimitComments(		"-limitComments", 		"Avoid useless comments (source file + line, skipped items...)"),
 		NoComments(			"-noComments", 			"Don't output any member comment."),
 		NoMangling(			"-noMangling", 			"Don't output any C++ name mangling information (may cause C++-decorated symbols not to be found at execution time)."),
-		NoCPP(				"-nocpp",		 		"Do not define the __cplusplus symbol"),
+		AddRootDir(         "-addRootDir",          "Remove this directory from the path of descendant source files in the generated documentation.", new ArgDef(Type.ExistingDir, "dir")), 
+        NoCPP(				"-nocpp",		 		"Do not define the __cplusplus symbol"),
 		Undefine(           "-U(.+)",               "Undefine a preprocessor symbol after the autoconfiguration phase.", new ArgDef(Type.String, "symbolName")),
         GUI(				"-gui",		 			"Show minimalist progression GUI"),
 		NoRuntime(			"-noRuntime",		 	"Don't copy runtime classes to JAR output"),

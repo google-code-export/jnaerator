@@ -44,6 +44,7 @@ import com.ochafik.lang.jnaerator.parser.Expression;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class PreprocessorUtils {
 
@@ -104,11 +105,43 @@ public class PreprocessorUtils {
 				super.pop_source();
 			}
 
-            @Override
-            public Macro getMacro(String name) {
+            //@Override
+            protected Map<String, Macro> createMacros() {
+                return new HashMap<String, Macro>() {
+
+                    @Override
+                    public boolean containsKey(Object key) {
+                        if (key instanceof String)
+                            used((String)key);
+                        return super.containsKey(key);
+                    }
+
+                    @Override
+                    public Macro get(Object key) {
+                        if (key instanceof String)
+                            used((String)key);
+                        return super.get(key);
+                    }
+
+                    @Override
+                    public void clear() {
+                        super.clear();
+                    }
+
+                    @Override
+                    public Macro put(String key, Macro value) {
+                        if (key != null)
+                            used(key);
+                        return super.put(key, value);
+                    }
+
+
+                };
+            }
+
+            void used(String name) {
                 if (macrosDependenciesOut != null)
                     macrosDependenciesOut.macroUsed(getSource().getPath(), name);
-                return super.getMacro(name);
             }
 
 		};

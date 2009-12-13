@@ -185,7 +185,7 @@ public class ObjCppParsingTest {
 	}
 
 	public static ObjCppParser newParser(String s) throws IOException {
-		Result result = new Result(new JNAeratorConfig(), null);
+		Result result = new Result(new JNAeratorConfig(), null, null);
 		ObjCppParser parser = new ObjCppParser(new CommonTokenStream(new ObjCppLexer(
 				new ANTLRReaderStream(new StringReader(s))))
 		// , new DummyDebugEventListener()
