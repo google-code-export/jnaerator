@@ -41,13 +41,18 @@ import com.ochafik.io.ReadText;
 import com.ochafik.io.WriteText;
 import com.ochafik.lang.jnaerator.parser.Define;
 import com.ochafik.lang.jnaerator.parser.Expression;
+import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
+import java.util.Collection;
 
 public class PreprocessorUtils {
-	
-	public static String preprocessSources(JNAeratorConfig config, List<Define> defines, boolean verbose, TypeConversion typeConverter) throws IOException, LexerException {
 
-		Preprocessor preProcessor = PreprocessorUtils.createPreProcessor(config.preprocessorConfig);
+    public static interface MacroUseCallback {
+        void macroUsed(String path, String macroName);
+    }
+	public static String preprocessSources(JNAeratorConfig config, List<Define> defines, boolean verbose, TypeConversion typeConverter, MacroUseCallback macrosDependenciesOut) throws IOException, LexerException {
+
+		Preprocessor preProcessor = PreprocessorUtils.createPreProcessor(config.preprocessorConfig, macrosDependenciesOut);
 		for (File file : config.getFiles())
 			preProcessor.addInput(file);
 		
@@ -79,7 +84,7 @@ public class PreprocessorUtils {
 		return sourceContent;
 	}
 
-	public static Preprocessor createPreProcessor(JNAeratorConfig.PreprocessorConfig config) throws IOException, LexerException {
+	public static Preprocessor createPreProcessor(JNAeratorConfig.PreprocessorConfig config, final MacroUseCallback macrosDependenciesOut) throws IOException, LexerException {
 		Preprocessor preprocessor = new Preprocessor() {
 			Set<String> pragmaOnces = new HashSet<String>();
 			@Override
@@ -98,6 +103,14 @@ public class PreprocessorUtils {
 				}
 				super.pop_source();
 			}
+
+            @Override
+            public Macro getMacro(String name) {
+                if (macrosDependenciesOut != null)
+                    macrosDependenciesOut.macroUsed(getSource().getPath(), name);
+                return super.getMacro(name);
+            }
+
 		};
 		preprocessor.setProperStringTokensInLinePragmas(true);
 		//preprocessor.addFeatures(EnumSet.allOf(Feature.class));

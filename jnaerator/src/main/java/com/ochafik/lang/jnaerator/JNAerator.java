@@ -126,7 +126,7 @@ public class JNAerator {
 	}
 	private static Pattern argTokenPattern = Pattern.compile("(?m)\"[^\"]*\"|[^\\s]+");
 	private static Pattern argVariablePattern = Pattern.compile("\\$\\(([^)]+)\\)");
-	final JNAeratorConfig config;
+	protected final JNAeratorConfig config;
 	
 	public JNAerator(JNAeratorConfig config) {
 		this.config = config;
@@ -660,11 +660,14 @@ public class JNAerator {
 			arg.endsWith(".so") || 
 			arg.endsWith(".jnilib");
 	}
+    protected void autoConfigure() {
+        JNAeratorConfigUtils.autoConfigure(config);
+    }
 	public void jnaerate(final Feedback feedback) {
 		try {
 			if (config.autoConf) {
 				feedback.setStatus("Auto-configuring parser...");
-				JNAeratorConfigUtils.autoConfigure(config);
+				autoConfigure();
 			}
             config.preprocessorConfig.macros.keySet().removeAll(config.undefines);
 			
@@ -706,13 +709,21 @@ public class JNAerator {
 				};
 			}
 			
-			Result result = createResult(new ClassOutputter() {
-				
-				@Override
-				public PrintWriter getClassSourceWriter(String className) throws IOException {
-					return JNAerator.this.getClassSourceWriter(classOutputter[0], className);
-				}
-			}, feedback);
+            Result result = createResult(new ClassOutputter() {
+                @Override
+                public PrintWriter getClassSourceWriter(String className)
+                        throws IOException {
+                    PrintWriter w = JNAerator.this.getClassSourceWriter(classOutputter[0], className);
+                    return new PrintWriter(w) {
+                        StringBuilder bout = new StringBuilder();
+                        @Override
+                        public void print(String s) {
+                            escapeUnicode(s, bout);
+                            super.print(bout.toString());
+                        }
+                    };
+                }
+            }, feedback);
 			
 			SourceFiles sourceFiles = parseSources(feedback, result.typeConverter);
 			if (config.extractLibSymbols)
@@ -995,7 +1006,7 @@ public class JNAerator {
 			
 	public SourceFiles parseSources(Feedback feedback, TypeConversion typeConverter) throws IOException, LexerException {
 		feedback.setStatus("Parsing native headers...");
-		return JNAeratorParser.parse(config, typeConverter);
+		return JNAeratorParser.parse(config, typeConverter, null);
 	}
 	public void addFile(File file, List<File> out) throws IOException {
 		if (file.isFile()) {
@@ -1010,7 +1021,7 @@ public class JNAerator {
 		}
 	}
 	
-	private static void generateLibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
+	protected void generateLibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
 		
 		Struct librariesHub = null;
 		PrintWriter hubOut = null;
@@ -1131,7 +1142,9 @@ public class JNAerator {
 			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
 			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-			result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, nativeLibFieldExpr, fullLibraryClassName, library);
+
+            if (result.globalsGenerator != null)
+                result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, nativeLibFieldExpr, fullLibraryClassName, library);
 
 			result.typeConverter.allowFakePointers = false;
 			
@@ -1177,27 +1190,11 @@ public class JNAerator {
 	}
 	/// To be overridden
 	public Result createResult(final ClassOutputter outputter, Feedback feedback) {
-		Result r = new Result(config, new ClassOutputter() {
-			@Override
-			public PrintWriter getClassSourceWriter(String className)
-					throws IOException {
-				PrintWriter w = outputter.getClassSourceWriter(className);
-				return new PrintWriter(w) {
-					StringBuilder bout = new StringBuilder();
-					@Override
-					public void print(String s) {
-						escapeUnicode(s, bout);
-						super.print(bout.toString());
-					}
-				};
-			}
-		});
-		r.feedback = feedback;
-		return r;
+		return new Result(config, outputter, feedback);
 	}
 
 	public static ObjCppParser newParser(String s) throws IOException {
-		Result result = new Result(new JNAeratorConfig(), null);
+		Result result = new Result(new JNAeratorConfig(), null, null);
 		ObjCppParser parser = new ObjCppParser(new CommonTokenStream(new ObjCppLexer(
 				new ANTLRReaderStream(new StringReader(s))))
 		// , new DummyDebugEventListener()
@@ -1333,7 +1330,7 @@ public class JNAerator {
 		
 		
 		/// Spit Objective-C classes out
-		if (!result.classes.isEmpty()) {
+		if (!result.classes.isEmpty() && result.objectiveCGenerator != null) {
 			result.feedback.setStatus("Generating Objective-C classes...");
 			result.objectiveCGenerator.generateObjectiveCClasses();
 		}

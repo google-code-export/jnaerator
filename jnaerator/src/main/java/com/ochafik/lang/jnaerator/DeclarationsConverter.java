@@ -73,10 +73,10 @@ public class DeclarationsConverter {
 		this.result = result;
 	}
 
-	final Result result;
+	protected final Result result;
 	
 	
-	void convertCallback(FunctionSignature functionSignature, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName) {
+	public void convertCallback(FunctionSignature functionSignature, Signatures signatures, DeclarationsHolder out, Identifier callerLibraryName) {
 		Identifier name = result.typeConverter.inferCallBackName(functionSignature, true, false, callerLibraryName);
 		if (name == null)
 			return;
@@ -116,7 +116,7 @@ public class DeclarationsConverter {
 		out.addDeclaration(new TaggedTypeRefDeclaration(callbackStruct));
 	}
 
-	void convertCallbacks(List<FunctionSignature> functionSignatures, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
+	public void convertCallbacks(List<FunctionSignature> functionSignatures, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
 		if (functionSignatures != null) {
 			for (FunctionSignature functionSignature : functionSignatures) {
 				if (functionSignature.findParentOfType(Struct.class) != null)
@@ -141,7 +141,7 @@ public class DeclarationsConverter {
 			
 		}
 	}
-	void convertConstants(String library, List<Define> defines, Element sourcesRoot, final Signatures signatures, final DeclarationsHolder out, final Identifier libraryClassName) {
+	public void convertConstants(String library, List<Define> defines, Element sourcesRoot, final Signatures signatures, final DeclarationsHolder out, final Identifier libraryClassName) {
 		//final List<Define> defines = new ArrayList<Define>();
 		final Map<String, String> constants = Result.getMap(result.stringConstants, library);
 //		
@@ -290,7 +290,7 @@ public class DeclarationsConverter {
 		return new EmptyDeclaration(mess.toArray(new String[0]));
 	}
 	
-	void convertEnum(Enum e, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
+	public void convertEnum(Enum e, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
 		if (e.isForwardDeclaration())
 			return;
 		
@@ -453,7 +453,7 @@ public class DeclarationsConverter {
 		
 	} 
 
-	void convertEnums(List<Enum> enums, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
+	public void convertEnums(List<Enum> enums, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
 		if (enums != null) {
 			//out.println("public static class ENUMS {");
 			for (com.ochafik.lang.jnaerator.parser.Enum e : enums) {
@@ -479,7 +479,7 @@ public class DeclarationsConverter {
 		return c;
 	}
 	
-	void convertFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName) {
+	public void convertFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
 		
@@ -794,7 +794,7 @@ public class DeclarationsConverter {
 		}
 	}
 
-	void convertFunctions(List<Function> functions, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
+	public void convertFunctions(List<Function> functions, Signatures signatures, DeclarationsHolder out, Identifier libraryClassName) {
 		if (functions != null) {
 			//System.err.println("FUNCTIONS " + functions);
 			for (Function function : functions) {
@@ -831,7 +831,7 @@ public class DeclarationsConverter {
 			structName = tag;
 		return structName == null ? null : structName.clone();
 	}
-	Struct convertStruct(Struct struct, Signatures signatures, Identifier callerLibraryClass, boolean onlyFields) throws IOException {
+	public Struct convertStruct(Struct struct, Signatures signatures, Identifier callerLibraryClass, boolean onlyFields) throws IOException {
 		Identifier structName = getActualTaggedTypeName(struct);
 		if (structName == null)
 			return null;
