@@ -35,6 +35,7 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	//private Struct owner;
 
 	final List<Arg> args = new ArrayList<Arg>();
+    final List<TypeRef> thrown = new ArrayList<TypeRef>();
 	final List<FunctionCall> initializers = new ArrayList<FunctionCall>();
 	Statement.Block body;
 	Type type;
@@ -83,6 +84,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		e = getNextSibling(initializers, child);
 		if (e != null)
 			return e;
+		e = getNextSibling(thrown, child);
+		if (e != null)
+			return e;
 		return getNextSibling(args, child);
 	}
 	
@@ -97,6 +101,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		if (e != null)
 			return e;
 		e = getPreviousSibling(initializers, child);
+		if (e != null)
+			return e;
+		e = getPreviousSibling(thrown, child);
 		if (e != null)
 			return e;
 		return getPreviousSibling(args, child);
@@ -114,7 +121,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		}
 		if (replaceChild(args, Arg.class, this, child, by))
 			return true;
-		
+
+		if (replaceChild(thrown, TypeRef.class, this, child, by))
+			return true;
+
 		if (replaceChild(initializers, FunctionCall.class, this, child, by))
 			return true;
 		
@@ -142,7 +152,21 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 	public void setArgs(List<Arg> args) {
 		changeValue(this, this.args, args);
 	}
-	
+
+	public TypeRef addThrown(TypeRef a) {
+		if (a != null) {
+			thrown.add(a);
+			a.setParentElement(this);
+		}
+		return a;
+	}
+	public List<TypeRef> getThrown() {
+		return unmodifiableList(thrown);
+	}
+	public void setThrown(List<TypeRef> thrown) {
+		changeValue(this, this.thrown, thrown);
+	}
+
 	public Function setBody(Statement.Block body) {
 		this.body = changeValue(this, this.body, body);
 		return this;
@@ -205,6 +229,9 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 				name + "(" +
 				StringUtils.implode(args, ", ") +
 				")";
+
+            if (!thrown.isEmpty())
+                s += " throws " + implode(thrown, ", ", indent);
 
 			return pre + s + (body == null ? ";" : " " + body.toString(indent)) + post;
 		case ObjCMethod:
