@@ -90,7 +90,10 @@ public class Scanner implements Visitor {
 		visitDeclaration(function);
 		for (Arg arg : copy(function.getArgs()))
 			visit(arg);
-		
+
+		for (TypeRef arg : copy(function.getThrown()))
+			visit(arg);
+
 		for (FunctionCall fc : function.getInitializers())
 			visit(fc);
 		
