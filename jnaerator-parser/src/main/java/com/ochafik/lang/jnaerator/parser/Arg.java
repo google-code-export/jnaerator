@@ -139,7 +139,8 @@ public class Arg extends Declaration {
 	public boolean isVarArg() {
 		return varArg;
 	}
-	public void setVarArg(boolean v) {
+	public Arg setVarArg(boolean v) {
 		varArg = v;
+        return this;
 	}
 }

@@ -1512,8 +1512,10 @@ compareExpr returns [Expression expr]
 	;
 
 castExpr returns [Expression expr]
-	:	'(' tr=mutableTypeRef ')' inner=castExpr { $expr = new Cast($tr.type, $inner.expr); } |
-		'(' expression ( ',' expression ) * ')' | // OpenCL tuple cast
+	:	'(' tr=mutableTypeRef ')' (
+			inner=castExpr { $expr = new Cast($tr.type, $inner.expr); } |
+			'(' expression ( ',' expression ) + ')' // OpenCL tuple cast 
+		) | 
 		e=unaryExpr { $expr = $e.expr; }
 	;
 

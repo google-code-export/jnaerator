@@ -105,8 +105,9 @@ public class PreprocessorUtils {
 				super.pop_source();
 			}
 
-            //@Override
-            protected Map<String, Macro> createMacros() {
+
+            @Override
+            protected Map<String, Macro> createMacro() {
                 return new HashMap<String, Macro>() {
 
                     @Override
@@ -140,8 +141,10 @@ public class PreprocessorUtils {
             }
 
             void used(String name) {
-                if (macrosDependenciesOut != null)
-                    macrosDependenciesOut.macroUsed(getSource().getPath(), name);
+                if (macrosDependenciesOut != null) {
+                    Source src = getSource();
+                    macrosDependenciesOut.macroUsed(src == null ? null : src.getPath(), name);
+                }
             }
 
 		};
