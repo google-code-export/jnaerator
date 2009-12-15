@@ -27,6 +27,7 @@ public class Enum extends TaggedTypeRef {
 	public static class EnumItem extends Element {
 		String name;
 		Expression value;
+        Struct body;
 		
 		public EnumItem() {
 			super();
@@ -35,6 +36,16 @@ public class Enum extends TaggedTypeRef {
 			setName(name);
 			setValue(value);
 		}
+
+        public Struct getBody() {
+            return body;
+        }
+
+        public void setBody(Struct body) {
+            this.body = changeValue(this, this.body, body);
+        }
+
+
 		public String getName() {
 			return name;
 		}
@@ -54,7 +65,9 @@ public class Enum extends TaggedTypeRef {
 			return
 				formatComments(indent, false, true, true) +
 				getName() + 
-				(getValue() == null ? "" : " = " + getValue()) + (getCommentAfter() == null ? "" : " " + getCommentAfter());
+				(getValue() == null ? "" : " = " + getValue()) +
+                (getBody() == null ? "" : " {\n\t" + indent + getBody().bodyToString(indent + "\t") + "\n" + indent + "}") +
+                (getCommentAfter() == null ? "" : " " + getCommentAfter());
 		}
 		@Override
 		public void accept(Visitor visitor) {
@@ -76,12 +89,17 @@ public class Enum extends TaggedTypeRef {
 			if (child == getValue()) {
 				setValue((Expression) by);
 				return true;
-			}	
+			}
+			if (child == getBody()) {
+				setBody((Struct) by);
+				return true;
+			}
 			return false;
 		}
 		
 	}
 	final List<EnumItem> items = new ArrayList<EnumItem>();
+    Struct body;
 	//private LinkedHashMap<String, Expression> values = new LinkedHashMap<String, Expression>();
 	//Integer lastValue = 0;
 	
@@ -125,6 +143,15 @@ public class Enum extends TaggedTypeRef {
 		return super.getPreviousChild(child);
 	}
 
+    public Struct getBody() {
+        return body;
+    }
+
+    public void setBody(Struct body) {
+        this.body = changeValue(this, this.body, body);
+    }
+
+
 	@Override
 	public boolean replaceChild(Element child, Element by) {
 		if (super.replaceChild(child, by))
@@ -133,18 +160,26 @@ public class Enum extends TaggedTypeRef {
 		if (replaceChild(items, EnumItem.class, this, child, by))
 			return true;
 		
-		return super.replaceChild(child, by);
+
+        if (child == getBody()) {
+            setBody((Struct) by);
+            return true;
+        }
+        return super.replaceChild(child, by);
 	}
 	
 	@Override
 	public String toString(CharSequence indent) {
 		String nindent = indent + "\t";
 		String indentt = "\n" + nindent;
-		return 
-			"enum " +
-			(getTag() != null ? getTag().toString(indentt) + " " : "")+ 
-			"{" + 
-			indentt + implode(items, ",\n" + nindent, nindent) + "\n" + indent + "}";
+        StringBuilder sb = new StringBuilder();
+        sb.append("enum ");
+        sb.append(getTag() != null ? getTag().toString(indentt) + " " : "");
+        sb.append("{" + indentt + implode(items, ",\n" + nindent, nindent) + "\n");
+        if (getBody() != null)
+            sb.append(indent + getBody().bodyToString(nindent) + "\n");
+        sb.append(indent + "}");
+		return sb.toString();
 	}
 
 }

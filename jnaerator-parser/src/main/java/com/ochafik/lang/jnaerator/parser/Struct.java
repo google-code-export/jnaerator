@@ -177,16 +177,18 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 	public MemberVisibility getNextMemberVisibility() {
 		return nextMemberVisibility;
 	}
-	
-	public String toString(CharSequence indent) {
-		String lnind = "\n" + indent + "\t";
-		String body = isForwardDeclaration() ? "" :
-			" {" +
-			(declarations.isEmpty() ? 
+
+    public String bodyToString(CharSequence indent) {
+        String lnind = "\n" + indent + "\t";
+		return isForwardDeclaration() ? "" :
+			(declarations.isEmpty() ?
 				"" :
-				lnind + implode(declarations, lnind, indent + "\t") + "\n" + indent  
-			) + "}"
+				lnind + implode(declarations, lnind, indent + "\t") + "\n" + indent
+			)
 		;
+    }
+	public String toString(CharSequence indent) {
+		String body = isForwardDeclaration() ? "" : " {" + bodyToString(indent) + "}";
 		
 		String pre = formatComments(indent, false, true, true) + 
 			getModifiersStringPrefix();
