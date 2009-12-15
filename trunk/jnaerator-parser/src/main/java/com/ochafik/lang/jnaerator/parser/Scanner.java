@@ -84,6 +84,7 @@ public class Scanner implements Visitor {
 		visitTaggedTypeRef(enum1);
 		for (EnumItem item : copy(enum1.getItems()))
 			visit(item);
+        visit(enum1.getBody());
 	}
 
 	public void visitFunction(Function function) {
@@ -237,6 +238,7 @@ public class Scanner implements Visitor {
 	public void visitEnumItem(EnumItem enumItem) {
 		visitElement(enumItem);
 		visit(enumItem.getValue());
+        visit(enumItem.getBody());
 	}
 
 	public void visitUnaryOp(UnaryOp unaryOp) {
