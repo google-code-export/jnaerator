@@ -1377,6 +1377,7 @@ baseExpression returns [Expression expr]
 				$expr.setParenthesis(true);
 		} |
 		objCMethodCall { $expr = $objCMethodCall.expr; } |
+        '{' ( expression ( ',' expression ) * ) ? '}' |
 		selectorExpr |
 		protocolExpr |
 		encodingExpr//|
