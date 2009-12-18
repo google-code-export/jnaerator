@@ -1614,7 +1614,7 @@ statement	returns [Statement stat]
 		b=statementsBlock { $stat = $b.stat; } |
 		declaration | // TODO
 		es=expression ';' { $stat = new ExpressionStatement($es.expr); } |
-		rt='return' rex=expression ';' { 
+		rt='return' rex=expression? ';' { 
 			$stat = mark(new Return($rex.expr), getLine($rt));
 		} |
 		IDENTIFIER ':' | // label
