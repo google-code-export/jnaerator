@@ -795,7 +795,7 @@ public abstract class Structure {
         }
 
 		if (cumulativeBitOffset > 0)
-			calculatedSize += calculateAlignedSize(calculatedSize + 1);
+			calculatedSize = calculateAlignedSize(calculatedSize + 1);
 		
         if (calculatedSize > 0) {
             int size = calculateAlignedSize(calculatedSize);
