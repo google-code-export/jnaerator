@@ -903,7 +903,7 @@ public class DeclarationsConverter {
 		//List<Declaration> children = new ArrayList<Declaration>();
 		for (Declaration d : struct.getDeclarations()) {
 			if (d instanceof VariablesDeclaration) {
-				convertVariablesDeclaration((VariablesDeclaration)d, structJavaClass, iChild, callerLibraryClass);
+				convertVariablesDeclaration((VariablesDeclaration)d, structJavaClass, iChild, structName, callerLibraryClass);
 			} else if (!onlyFields) {
 				if (d instanceof TaggedTypeRefDeclaration) {
 					TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
@@ -1013,7 +1013,7 @@ public class DeclarationsConverter {
 				}
 			}
 			if (baseClass == null) {
-				baseClass = ident(com.nativelibs4java.runtime.structs.Struct.class);
+				baseClass = ident(com.nativelibs4java.runtime.structs.Struct.class, expr(typeRef(structName)));
 			}
 		}
 		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
@@ -1037,7 +1037,7 @@ public class DeclarationsConverter {
         ioDecl.addModifiers(Modifier.Private, Modifier.Static, Modifier.Final);
         structJavaClass.addDeclaration(ioDecl);
 
-        structJavaClass.addDeclaration(new Function(Type.JavaMethod, ident(structName), null).setBody(block(stat(methodCall("super", varRef(ioStaticVarName))))));
+        structJavaClass.addDeclaration(new Function(Type.JavaMethod, ident(structName), null).setBody(block(stat(methodCall("super", varRef(ioStaticVarName))))).addModifiers(Modifier.Public));
 
         int iVirtual = 0;
 		//List<Declaration> children = new ArrayList<Declaration>();
@@ -1046,7 +1046,7 @@ public class DeclarationsConverter {
                 iChild[0] = 0;
 
 			if (d instanceof VariablesDeclaration) {
-				convertVariablesDeclaration((VariablesDeclaration)d, structJavaClass, iChild, callerLibraryClass);
+				convertVariablesDeclaration((VariablesDeclaration)d, structJavaClass, iChild, structName, callerLibraryClass);
 			} else if (!onlyFields) {
 				if (d instanceof TaggedTypeRefDeclaration) {
 					TaggedTypeRef tr = ((TaggedTypeRefDeclaration) d).getTaggedTypeRef();
@@ -1256,95 +1256,83 @@ public class DeclarationsConverter {
 		}
 	}
     protected String ioVarName = "io", ioStaticVarName = "IO";
-	public List<Declaration> convertVariablesDeclarationToNL4J(String name, TypeRef mutatedType, int[] iChild, Identifier callerLibraryName, Element... toImportDetailsFrom) throws UnsupportedConversionException {
+	public List<Declaration> convertVariablesDeclarationToNL4J(String name, TypeRef mutatedType, int[] iChild, Identifier holderName, Identifier callerLibraryName, Element... toImportDetailsFrom) throws UnsupportedConversionException {
 		name = result.typeConverter.getValidJavaArgumentName(ident(name)).toString();
 		//convertVariablesDeclaration(name, mutatedType, out, iChild, callerLibraryName);
 
 		//Expression initVal = null;
-		TypeRef  javaType = result.typeConverter.convertTypeToJNA(
-			mutatedType, 
-			TypeConversion.TypeConversionMode.FieldType,
-			callerLibraryName
-		);
-		mutatedType = result.typeConverter.resolveTypeDef(mutatedType, callerLibraryName, true);
-		
-		//VariablesDeclaration convDecl = new VariablesDeclaration();
+        TypeConversion.NL4JConversion conv = result.typeConverter.convertTypeToNL4J(mutatedType, TypeConversion.TypeConversionMode.FieldType, callerLibraryName);
+
+        if (conv == null) {
+			throw new UnsupportedConversionException(mutatedType, "failed to convert type to Java");
+		} else if ("void".equals(String.valueOf(conv.typeRef))) {
+			throw new UnsupportedConversionException(mutatedType, "void type !");
+			//out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
+		}
+
         Function convDecl = new Function();
         convDecl.setType(Type.JavaMethod);
 		convDecl.addModifiers(Modifier.Public);
-		
-		if (javaType instanceof ArrayRef && mutatedType instanceof ArrayRef) {
-			ArrayRef mr = (ArrayRef)mutatedType;
-			ArrayRef jr = (ArrayRef)javaType;
-			Expression mul = null;
-			List<Expression> dims = mr.flattenDimensions();
-			for (int i = dims.size(); i-- != 0;) {
-				Expression x = dims.get(i);
-			
-				if (x == null || x instanceof EmptyArraySize) {
-					javaType = jr = new ArrayRef(typeRef(Pointer.class));
-					break;
-				} else {
-					Pair<Expression, TypeRef> c = result.typeConverter.convertExpressionToJava(x, callerLibraryName, false);
-					c.getFirst().setParenthesis(dims.size() == 1);
-					if (mul == null)
-						mul = c.getFirst();
-					else
-						mul = expr(c.getFirst(), BinaryOperator.Multiply, mul);
-				}
-			}
-            convDecl.addAnnotation(new Annotation(Length.class, mul));
-			//initVal = new Expression.NewArray(jr.getTarget(), mul);
-		}
-		if (javaType == null) {
-			throw new UnsupportedConversionException(mutatedType, "failed to convert type to Java");
-		} else if (javaType.toString().equals("void")) {
-			throw new UnsupportedConversionException(mutatedType, "void type !");
-			//out.add(new EmptyDeclaration("SKIPPED:", v.formatComments("", true, true, false), v.toString()));
-		} else {
-			for (Element e : toImportDetailsFrom)
-				convDecl.importDetails(e, false);
-			convDecl.importDetails(mutatedType, true);
-			convDecl.importDetails(javaType, true);
-			
+
+		if (conv.arrayLength != null)
+            convDecl.addAnnotation(new Annotation(Length.class, conv.arrayLength));
+        if (conv.bits != null)
+            convDecl.addAnnotation(new Annotation(Bits.class, conv.bits));
+        if (conv.byValue)
+            convDecl.addAnnotation(new Annotation(ByValue.class));
+
+        for (Element e : toImportDetailsFrom)
+            convDecl.importDetails(e, false);
+        convDecl.importDetails(mutatedType, true);
+        //convDecl.importDetails(javaType, true);
+
 //			convDecl.importDetails(v, false);
 //			convDecl.importDetails(vs, false);
 //			convDecl.importDetails(valueType, false);
 //			valueType.stripDetails();
-			convDecl.moveAllCommentsBefore();
-			
-            convDecl.setName(ident(name));
-            convDecl.addAnnotation(new Annotation(Field.class, expr(iChild[0])));
-            Function getter = convDecl;
+        convDecl.moveAllCommentsBefore();
+
+        convDecl.setName(ident(name));
+        convDecl.addAnnotation(new Annotation(Field.class, expr(iChild[0])));
+        Function getter = convDecl;
+
+        if (conv.structIOFieldGetterNameRadix == null)
+            getter.addModifiers(Modifier.Native);
+        else
             getter.setBody(block(
-                new Statement.Return(methodCall(varRef(ioVarName), MemberRefStyle.Dot, "getIntField", expr(iChild[0]), varRef("this")))
+                new Statement.Return(methodCall(varRef(ioVarName), MemberRefStyle.Dot, "get" + conv.structIOFieldGetterNameRadix + "Field", expr(iChild[0]), varRef("this")))
             ));
-            convDecl.setValueType(javaType);
 
-            List<Declaration> out = new ArrayList<Declaration>();
-            out.add(getter);
+        convDecl.setValueType(conv.typeRef);
 
-            if (true) {
-                Function setter = getter.clone();
-                setter.setValueType(typeRef(Void.TYPE));
-                setter.addArg(new Arg(name, javaType.clone()));
+        List<Declaration> out = new ArrayList<Declaration>();
+        out.add(getter);
+
+        if (!conv.readOnly) {
+            Function setter = getter.clone();
+            TypeRef javaType = setter.getValueType();
+            setter.setValueType(typeRef(holderName.clone()));//Void.TYPE));
+            setter.addArg(new Arg(name, javaType));
+            if (conv.structIOFieldGetterNameRadix == null)
+                setter.addModifiers(Modifier.Native);
+            else
                 setter.setBody(block(
-                        stat(methodCall(varRef(ioVarName), MemberRefStyle.Dot, "setIntField", expr(iChild[0]), varRef("this"), varRef(name))),
+                    stat(methodCall(varRef(ioVarName), MemberRefStyle.Dot, "set" + conv.structIOFieldGetterNameRadix + "Field", expr(iChild[0]), varRef("this"), varRef(name))),
                     new Statement.Return(varRef("this"))
                 ));
-            }
-            //nvDecl.addDeclarator(new DirectDeclarator(name, initVal));
-			
-			return out;//out.addDeclaration(convDecl);
-		}
-	}
-	public void convertVariablesDeclaration(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, Identifier callerLibraryClass) {
+            out.add(setter);
+        }
+        //nvDecl.addDeclarator(new DirectDeclarator(name, initVal));
+
+        return out;//out.addDeclaration(convDecl);
+    }
+	public void convertVariablesDeclaration(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, Identifier holderName, Identifier callerLibraryClass) {
         if (result.config.fastStructs)
-            convertVariablesDeclarationToNL4J(v, out, iChild, callerLibraryClass);
+            convertVariablesDeclarationToNL4J(v, out, iChild, holderName, callerLibraryClass);
         else
             convertVariablesDeclarationToJNA(v, out, iChild, callerLibraryClass);
     }
-	public void convertVariablesDeclarationToNL4J(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, Identifier callerLibraryClass) {
+	public void convertVariablesDeclarationToNL4J(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, Identifier holderName, Identifier callerLibraryClass) {
         try { 
 			TypeRef valueType = v.getValueType();
 			for (Declarator vs : v.getDeclarators()) {
@@ -1358,7 +1346,7 @@ public class DeclarationsConverter {
 					mutatedType = (TypeRef)vs.mutateType(valueType);
 					vs = new DirectDeclarator(vs.resolveName());
 				}
-				List<Declaration> vds = convertVariablesDeclarationToNL4J(name, mutatedType, iChild, callerLibraryClass, v, vs);
+				List<Declaration> vds = convertVariablesDeclarationToNL4J(name, mutatedType, iChild, holderName, callerLibraryClass, v, vs);
                 Declarator d = v.getDeclarators().get(0);
                 if (d.getBits() > 0)
 					for (Declaration vd : vds)
