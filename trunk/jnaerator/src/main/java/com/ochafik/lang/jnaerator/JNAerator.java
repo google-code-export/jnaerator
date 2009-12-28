@@ -346,6 +346,9 @@ public class JNAerator {
 					case ExtractSymbols:
 						config.extractLibSymbols = true;
 						break;
+                    case FastStructs:
+                        config.fastStructs = true;
+                        break;
 					case File:
 						return parsedFile(a);
 					case FrameworksPath:

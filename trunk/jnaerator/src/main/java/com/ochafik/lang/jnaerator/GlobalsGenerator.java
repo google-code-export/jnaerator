@@ -190,7 +190,7 @@ public class GlobalsGenerator {
 					Identifier instTypeName = ident(name + "_holder");
 					Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, ident(Structure.class), Struct.Type.JavaClass, null);
 					holderStruct.addModifiers(Modifier.Final);
-					VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclaration("value", type, new int[1], callerLibraryName);
+					VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclarationToJNA("value", type, new int[1], callerLibraryName);
 					if (vd.getValueType().toString().equals(Pointer.class.getName())) {
 						isByRef = true;
 						instType = convPointerType;

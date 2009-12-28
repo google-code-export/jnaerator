@@ -18,6 +18,13 @@
       <scope>compile</scope>
     </dependency>
 	
+	<dependency>
+	  <groupId>com.nativelibs4java</groupId>
+	  <artifactId>nl4j-runtime-structs</artifactId>
+      <version>${nl4j-runtime.version}</version>
+      <scope>compile</scope>
+    </dependency>
+	
   	<dependency>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jna-jnaerator</artifactId>
