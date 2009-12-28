@@ -109,6 +109,7 @@ public class JNAeratorStudio extends JPanel {
 	JComboBox resultsListCombo = new JComboBox();
 	JCheckBox directCallingCb = new JCheckBox("Direct Calling (experimental)", false),
 		structsAsTopLevelClassesCb = new JCheckBox("Structs as Top-Level classes", true),
+		experimentalStructsCb = new JCheckBox("Experimental faster structs", false),
 		noCommentNoManglingCb = new JCheckBox("No comment & no mangling", false);
 		
 	JTextArea errorsArea = new JTextArea();
@@ -373,6 +374,7 @@ public class JNAeratorStudio extends JPanel {
 		optPanel.add(directCallingCb);
 		optPanel.add(noCommentNoManglingCb);
 		optPanel.add(structsAsTopLevelClassesCb);
+        optPanel.add(experimentalStructsCb);
 		
 		optBox.add(optPanel);
 		for (Component c : optBox.getComponents())
@@ -471,6 +473,7 @@ public class JNAeratorStudio extends JPanel {
 				config.compile = true;
 				config.useJNADirectCalls = directCallingCb.isSelected();
 				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
+                config.fastStructs = experimentalStructsCb.isSelected();
 				config.noComments = config.noMangling = noCommentNoManglingCb.isSelected();
 				config.defaultLibrary = libraryName.getText();
 				config.libraryForElementsInNullFile = libraryName.getText();
@@ -674,6 +677,7 @@ public class JNAeratorStudio extends JPanel {
 			js.libraryName.setText(getPref("options.libraryName", "test"));
 			js.directCallingCb.setSelected(getPref("options.direct", false));
 			js.structsAsTopLevelClassesCb.setSelected(getPref("options.topLevelStructs", true));
+            js.experimentalStructsCb.setSelected(getPref("options.experimentalStructs", false));
 			js.noCommentNoManglingCb.setSelected(getPref("options.noCommentNoMangling", false));
 			
 			js.sp.setOrientation(getPref("splitPane.orientation", JSplitPane.HORIZONTAL_SPLIT));
@@ -696,6 +700,7 @@ public class JNAeratorStudio extends JPanel {
 					setPref("options.libraryName", js.libraryName.getText());
 					setPref("options.direct", js.directCallingCb.isSelected());
 					setPref("options.topLevelStructs", js.structsAsTopLevelClassesCb.isSelected());
+                    setPref("options.experimentalStructs", js.experimentalStructsCb.isSelected());
 					setPref("options.noCommentNoMangling", js.noCommentNoManglingCb.isSelected());
 					setPref("splitPane.orientation", js.sp.getOrientation());
 					setPref("splitPane.dividedLocation", getProportionalDividerLocation(js.sp));

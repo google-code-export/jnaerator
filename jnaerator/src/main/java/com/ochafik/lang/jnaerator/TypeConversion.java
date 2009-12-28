@@ -838,6 +838,8 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 		//typeRef(ident(result.getLibraryClassFullName(library), inferCallBackName(s, true)));	
 	}
 	static TypeRef primRef(JavaPrim p) {
+        if (p == null)
+            return null;
 		return new JavaPrimitive(p);
 //		return new SimpleTypeRef(toString(p));
 	}
@@ -851,40 +853,44 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 			Identifier.QualificationSeparator.Dot.equals(((Identifier.QualifiedIdentifier)i).getSeparator());
 	}
     public static class NL4JConversion {
-        TypeRef typeRef;
-        Expression arrayLength;
-        Expression bits;
-        boolean wideString, readOnly, isPtr, byValue;
-        Charset charset;
+        public TypeRef typeRef;
+        public Expression arrayLength;
+        public Expression bits;
+        public boolean wideString, readOnly, isPtr, byValue, nativeSize, cLong;
+        public Charset charset;
+        public String structIOFieldGetterNameRadix;
     }
     static Map<String, Pair<Integer, Class<?>>> buffersAndArityByType = new HashMap<String, Pair<Integer, Class<?>>>();
     static Map<String, Pair<Integer, Class<?>>> arraysAndArityByType = new HashMap<String, Pair<Integer, Class<?>>>();
+    static Map<String, String> structIOFieldGetterNameRadixByType = new HashMap<String, String>();
     static {
         Object[] data = new Object[] {
-            "char", Byte.TYPE, byte[].class, ByteBuffer.class,
-            "long", Long.TYPE, long[].class, LongBuffer.class,
-            "int", Integer.TYPE, int[].class, IntBuffer.class,
-            "short", Short.TYPE, short[].class, ShortBuffer.class,
-            "wchar_t", Character.TYPE, char[].class, CharBuffer.class,
-            "double", Double.TYPE, double[].class, DoubleBuffer.class,
-            "float", Float.TYPE, float[].class, FloatBuffer.class,
-            "bool", Boolean.TYPE, boolean[].class, null
+            "char", Byte.TYPE, byte[].class, ByteBuffer.class, "Char",
+            "long", Long.TYPE, long[].class, LongBuffer.class, "Long",
+            "int", Integer.TYPE, int[].class, IntBuffer.class, "Int",
+            "short", Short.TYPE, short[].class, ShortBuffer.class, "Short",
+            "wchar_t", Character.TYPE, char[].class, CharBuffer.class, "WChar",
+            "double", Double.TYPE, double[].class, DoubleBuffer.class, "Double",
+            "float", Float.TYPE, float[].class, FloatBuffer.class, "Float",
+            "bool", Boolean.TYPE, boolean[].class, null, "Bool"
         };
         for (int arity : new int[] { 1, 2, 4, 8, 16 }) {
             String suffix = arity == 1 ? "" : arity +"";
-            for (int i = 0; i < data.length; i += 4) {
+            for (int i = 0; i < data.length; i += 5) {
                 String rawType = (String)data[i];
                 Class<?> scalClass = (Class<?>)data[i + 1];
                 Class<?> arrClass = (Class<?>)data[i + 2];
                 Class<?> buffClass = (Class<?>)data[i + 3];
+                String radix = (String)data[i + 4];
 
                 Pair<Integer, Class<?>>
-                    buffPair = new Pair<Integer, Class<?>>(arity, buffClass),
+                    buffPair = new Pair<Integer, Class<?>>(arity, arity == 1 ? scalClass : buffClass),
                     arrPair = new Pair<Integer, Class<?>>(arity, arity == 1 ? scalClass : arrClass);
 
                 for (String type : new String[] { rawType + suffix, "u" + rawType + suffix}) {
                     buffersAndArityByType.put(type, buffPair);
                     arraysAndArityByType.put(type, arrPair);
+                    structIOFieldGetterNameRadixByType.put(type, radix);
                 }
             }
         }
@@ -909,7 +915,12 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                         Pair<Integer, Class<?>> p = buffersAndArityByType.get(targetName.toString());
                         if (p != null) {
                             conv.typeRef = typeRef(p.getSecond());
-                            conv.arrayLength = expr(conv.arrayLength, BinaryOperator.Multiply, expr(p.getFirst()));
+                            if (p.getFirst().intValue() != 1)
+                                conv.arrayLength = conv.arrayLength == null ?
+                                    expr(p.getFirst()) : 
+                                    expr(conv.arrayLength, BinaryOperator.Multiply, expr(p.getFirst()));
+                            
+                            conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(targetName.toString()) + "Array";
                             return conv;
                         } else {
                             TypeRef targetConvRef = typeRef(findStructRef(targetName, libraryClassName));
@@ -917,31 +928,61 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                                 targetConvRef = findEnum(targetName, libraryClassName);
                             if (targetConvRef != null) {
                                 conv.typeRef = typeRef(ident(Array.class, expr(targetConvRef)));
+                                conv.structIOFieldGetterNameRadix = "StructArray";
                                 return conv;
                             }
                         }
-                    } else {
-                        throw new UnsupportedConversionException(original, "Unsupported array type");
                     }
-                } else {
-                    throw new UnsupportedConversionException(original, "Unsupported array type");
                 }
-            } else
-                throw new UnsupportedConversionException(original, "Unsupported pointer type");
+            } else {
+                if (targetRef instanceof SimpleTypeRef) {
+                    Identifier targetName = ((SimpleTypeRef)targetRef).getName();
+
+                    TypeRef targetConvRef = typeRef(findStructRef(targetName, libraryClassName));
+                    if (targetConvRef != null) {
+                        conv.structIOFieldGetterNameRadix = "Struct";
+                    } else {
+                        targetConvRef = findEnum(targetName, libraryClassName);
+                        if (targetConvRef != null) {
+                            conv.structIOFieldGetterNameRadix = "Enum";
+                        }
+                    }
+                }
+            }
+            conv.typeRef = typeRef(Pointer.class);
+            if (conv.structIOFieldGetterNameRadix == null)
+                conv.structIOFieldGetterNameRadix = "Pointer";
+            return conv;
         } else if (valueType instanceof SimpleTypeRef) {
+            
             Identifier valueName = ((SimpleTypeRef)valueType).getName();
             TypeRef valueConvRef = typeRef(findStructRef(valueName, libraryClassName));
             if (valueConvRef == null)
                 valueConvRef = findEnum(valueName, libraryClassName);
+
+            if (valueConvRef == null) {
+                // TODO limit to OpenCL
+                Pair<Integer, Class<?>> p = buffersAndArityByType.get(valueName.toString());
+                if (p != null) {
+                    conv.typeRef = typeRef(p.getSecond());
+                    if (p.getFirst().intValue() != 1) {
+                        conv.arrayLength = expr(p.getFirst());
+                        conv.byValue = true;
+                    }
+                    conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(valueName.toString()) + "Array";
+                    return conv;
+                }
+
+                valueConvRef = primRef(getPrimitive(valueType, libraryClassName));
+            }
+            
             if (valueConvRef != null) {
-                conv.byValue = true;
                 conv.typeRef = valueConvRef;
                 return conv;
             }
-        } else
-            throw new UnsupportedConversionException(original, "Unsupported type");
+        }
 
-        return conv;
+        throw new UnsupportedConversionException(original, "Unsupported type");
     }
 
     public Expression getFlatArraySizeExpression(Pointer.ArrayRef arrayRef, Identifier callerLibraryName) throws UnsupportedConversionException {
