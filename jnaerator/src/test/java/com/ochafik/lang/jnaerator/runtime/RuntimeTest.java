@@ -11,7 +11,7 @@ import com.sun.jna.WString;
 
 public class RuntimeTest {
 	public static class BitFieldStruct extends com.sun.jna.Structure {
-		@Override
+		//@Override
 		protected Integer getBitsAnnotation(Field field) {
 			Bits bits = field.getAnnotation(Bits.class);
 			return bits == null ? null : bits.value();

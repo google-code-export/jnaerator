@@ -179,7 +179,7 @@ public abstract class Structure<S extends Structure<S, V, R>, V extends S, R ext
 	}
 
 
-	@Override
+	//@Override
 	protected Integer getBitsAnnotation(Field field) {
 		Bits bits = field.getAnnotation(Bits.class);
 		return bits == null ? null : bits.value();

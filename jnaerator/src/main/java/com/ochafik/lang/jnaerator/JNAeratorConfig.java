@@ -93,6 +93,7 @@ public class JNAeratorConfig {
 	public boolean putTopStructsInSeparateFiles = true;
 	public boolean bundleRuntime = true;
 	public boolean extractLibSymbols = false;
+    public boolean fastStructs = false;
     public List<Pair<MessageFormat, MessageFormat>> onlineDocumentationURLFormats = new ArrayList<Pair<MessageFormat, MessageFormat>>();
 	public String entryName;
 	public int maxConstructedFields = 10;
