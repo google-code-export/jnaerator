@@ -18,6 +18,7 @@
 */
 package com.ochafik.lang.jnaerator.studio;
 
+import com.ochafik.lang.jnaerator.JNAeratorConfig.Runtime;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -109,9 +110,13 @@ public class JNAeratorStudio extends JPanel {
 	JComboBox resultsListCombo = new JComboBox();
 	JCheckBox directCallingCb = new JCheckBox("Direct Calling (experimental)", false),
 		structsAsTopLevelClassesCb = new JCheckBox("Structs as Top-Level classes", true),
-		experimentalStructsCb = new JCheckBox("Experimental faster structs", false),
 		noCommentNoManglingCb = new JCheckBox("No comment & no mangling", false);
-		
+	
+    JComboBox runtimeCombo = new JComboBox(JNAeratorConfig.Runtime.values()) {{
+        setToolTipText("Target runtime library");
+        setSelectedItem(JNAeratorConfig.Runtime.JNAerator);
+    }};
+
 	JTextArea errorsArea = new JTextArea();
 	JSplitPane sp;
 	ListenableList<ResultContent> results = ListenableCollections.listenableList(new ArrayList<ResultContent>());
@@ -374,7 +379,11 @@ public class JNAeratorStudio extends JPanel {
 		optPanel.add(directCallingCb);
 		optPanel.add(noCommentNoManglingCb);
 		optPanel.add(structsAsTopLevelClassesCb);
-        optPanel.add(experimentalStructsCb);
+
+        Box targetRTBox = Box.createHorizontalBox();
+        targetRTBox.add(new JLabel("Runtime"));
+        targetRTBox.add(runtimeCombo);
+        optPanel.add(targetRTBox);
 		
 		optBox.add(optPanel);
 		for (Component c : optBox.getComponents())
@@ -473,7 +482,7 @@ public class JNAeratorStudio extends JPanel {
 				config.compile = true;
 				config.useJNADirectCalls = directCallingCb.isSelected();
 				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
-                config.fastStructs = experimentalStructsCb.isSelected();
+                config.runtime = (Runtime) runtimeCombo.getSelectedItem();
 				config.noComments = config.noMangling = noCommentNoManglingCb.isSelected();
 				config.defaultLibrary = libraryName.getText();
 				config.libraryForElementsInNullFile = libraryName.getText();
@@ -677,21 +686,21 @@ public class JNAeratorStudio extends JPanel {
 			js.libraryName.setText(getPref("options.libraryName", "test"));
 			js.directCallingCb.setSelected(getPref("options.direct", false));
 			js.structsAsTopLevelClassesCb.setSelected(getPref("options.topLevelStructs", true));
-            js.experimentalStructsCb.setSelected(getPref("options.experimentalStructs", false));
-			js.noCommentNoManglingCb.setSelected(getPref("options.noCommentNoMangling", false));
+            js.noCommentNoManglingCb.setSelected(getPref("options.noCommentNoMangling", false));
 			
 			js.sp.setOrientation(getPref("splitPane.orientation", JSplitPane.HORIZONTAL_SPLIT));
 			js.sp.setDividerLocation(getPref("splitPane.dividedLocation", 0.5));
 			f.setSize(getPref("window.width", 800), getPref("height", 600));
 			f.setExtendedState(getPref("window.extendedState", JFrame.NORMAL));
-			
+			js.runtimeCombo.setSelectedItem(Runtime.valueOf(getPref("options.targetRuntime", Runtime.JNAerator.toString())));
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			f.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			f.setSize(800, 800);
 		}
 		
-		Runtime.getRuntime().addShutdownHook(new Thread() {
+		java.lang.Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				try {
 					setPref("window.width", f.getWidth());
@@ -700,7 +709,7 @@ public class JNAeratorStudio extends JPanel {
 					setPref("options.libraryName", js.libraryName.getText());
 					setPref("options.direct", js.directCallingCb.isSelected());
 					setPref("options.topLevelStructs", js.structsAsTopLevelClassesCb.isSelected());
-                    setPref("options.experimentalStructs", js.experimentalStructsCb.isSelected());
+                    setPref("options.targetRuntime", js.runtimeCombo.getSelectedItem().toString());
 					setPref("options.noCommentNoMangling", js.noCommentNoManglingCb.isSelected());
 					setPref("splitPane.orientation", js.sp.getOrientation());
 					setPref("splitPane.dividedLocation", getProportionalDividerLocation(js.sp));
@@ -716,7 +725,7 @@ public class JNAeratorStudio extends JPanel {
 				System.exit(0);
 			}
 		});
-		Runtime.getRuntime().addShutdownHook(new Thread() { public void run() {
+		java.lang.Runtime.getRuntime().addShutdownHook(new Thread() { public void run() {
 			js.close();	
 		}});
 		

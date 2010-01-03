@@ -42,8 +42,6 @@ import com.ochafik.lang.jnaerator.runtime.globals.GlobalCallback;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointer;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalPointerType;
 import com.ochafik.lang.jnaerator.runtime.globals.GlobalStruct;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
 import com.sun.jna.ptr.ByReference;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
@@ -175,7 +173,7 @@ public class GlobalsGenerator {
 				TypeRef instType;
 				boolean hasOffset, isPtr = false, isByRef = false;
 				String convPointerTypeStr = convPointerType.toString();
-				if (convPointerTypeStr.equals(Pointer.class.getName())) {
+				if (convPointerTypeStr.equals(result.config.runtime.pointerClass.getName())) {
 					isPtr = true;
 					instType = convPointerType;
 					hasOffset = false;
@@ -188,17 +186,17 @@ public class GlobalsGenerator {
 					hasOffset = true;
 				} else {
 					Identifier instTypeName = ident(name + "_holder");
-					Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, ident(Structure.class), Struct.Type.JavaClass, null);
+					Struct holderStruct = result.declarationsConverter.publicStaticClass(instTypeName, ident(result.config.runtime.structClass), Struct.Type.JavaClass, null);
 					holderStruct.addModifiers(Modifier.Final);
 					VariablesDeclaration vd = result.declarationsConverter.convertVariablesDeclarationToJNA("value", type, new int[1], callerLibraryName);
-					if (vd.getValueType().toString().equals(Pointer.class.getName())) {
+					if (vd.getValueType().toString().equals(result.config.runtime.pointerClass.getName())) {
 						isByRef = true;
 						instType = convPointerType;
 						hasOffset = false;	
 					} else {
 						holderStruct.addDeclaration(vd);
 						Function pointerConstructor = new Function(Function.Type.JavaMethod, instTypeName, null, 
-							new Arg("pointer", new TypeRef.SimpleTypeRef(Pointer.class.getName()))
+							new Arg("pointer", new TypeRef.SimpleTypeRef(result.config.runtime.pointerClass.getName()))
 						);
 						hasOffset = false;
 						pointerConstructor.setBody(new Statement.Block(

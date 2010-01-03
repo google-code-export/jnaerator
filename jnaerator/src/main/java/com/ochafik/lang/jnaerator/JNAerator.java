@@ -346,8 +346,8 @@ public class JNAerator {
 					case ExtractSymbols:
 						config.extractLibSymbols = true;
 						break;
-                    case FastStructs:
-                        config.fastStructs = true;
+                    case Runtime:
+                        config.runtime = a.getEnumParam(0, JNAeratorConfig.Runtime.class);
                         break;
 					case File:
 						return parsedFile(a);

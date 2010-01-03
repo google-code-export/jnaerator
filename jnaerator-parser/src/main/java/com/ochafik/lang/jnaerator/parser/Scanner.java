@@ -326,6 +326,7 @@ public class Scanner implements Visitor {
 
 	public void visitAnnotation(Annotation annotation) {
 		visitElement(annotation);
+        visit(annotation.getAnnotationClass());
 		for (Expression x : annotation.getArguments())
 			visit(x);
 	}
