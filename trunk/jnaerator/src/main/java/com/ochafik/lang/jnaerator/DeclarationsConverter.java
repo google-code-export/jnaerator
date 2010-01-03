@@ -19,9 +19,8 @@
 package com.ochafik.lang.jnaerator;
 
 import static com.ochafik.lang.SyntaxUtils.as;
-import com.nativelibs4java.runtime.ann.*;
-import com.nativelibs4java.runtime.structs.StructIO;
-import com.nativelibs4java.runtime.structs.Array;
+//import com.nativelibs4java.runtime.structs.StructIO;
+//import com.nativelibs4java.runtime.structs.Array;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +33,6 @@ import org.rococoa.AlreadyRetained;
 import org.rococoa.cocoa.foundation.NSObject;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
-import com.ochafik.lang.jnaerator.TypeConversion.JavaPrim;
-import com.ochafik.lang.jnaerator.TypeConversion.TypeConversionMode;
 import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.*;
 import com.ochafik.lang.jnaerator.parser.Enum;
@@ -48,18 +45,10 @@ import com.ochafik.lang.jnaerator.parser.Expression.*;
 import com.ochafik.lang.jnaerator.parser.Function.Type;
 import com.ochafik.lang.jnaerator.parser.DeclarationsHolder.ListWrapper;
 import com.ochafik.lang.jnaerator.parser.Declarator.*;
-import com.ochafik.lang.jnaerator.runtime.Bits;
-import com.ochafik.lang.jnaerator.runtime.FastCall;
-import com.ochafik.lang.jnaerator.runtime.Mangling;
-import com.ochafik.lang.jnaerator.runtime.ObjCBlock;
-import com.ochafik.lang.jnaerator.runtime.This;
-import com.ochafik.lang.jnaerator.runtime.ThisCall;
 import com.ochafik.lang.jnaerator.runtime.VirtualTablePointer;
 import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
-import com.sun.jna.*;
-import com.sun.jna.Pointer;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -99,11 +88,11 @@ public class DeclarationsConverter {
 		Struct callbackStruct = new Struct();
 		callbackStruct.setType(Struct.Type.JavaInterface);
 		callbackStruct.addModifiers(Modifier.Public);
-		callbackStruct.setParents(Arrays.asList(ident(
+		callbackStruct.setParents(Arrays.asList(
 			FunctionSignature.Type.ObjCBlock.equals(functionSignature.getType()) ?
-				ObjCBlock.class : 
-				Callback.class
-		)));
+				result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.ObjCBlock) :
+				ident(result.config.runtime.callbackClass)
+		));
 		callbackStruct.setTag(ident(chosenName));
 		if (!result.config.noComments)
 			callbackStruct.addToCommentBefore(comel.getCommentBefore(), comel.getCommentAfter(), getFileCommentContent(comel));
@@ -593,15 +582,15 @@ public class DeclarationsConverter {
 				names.add(function.getAsmName());
 			
 			if (!isCallback && !names.isEmpty())
-				natFunc.addAnnotation(new Annotation(Mangling.class, "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
+				natFunc.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Mangling), "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
 
 			boolean needsThis = false, needsThisAnnotation = false;
 			if (Modifier.__fastcall.isContainedBy(function.getModifiers())) {
-				natFunc.addAnnotation(new Annotation(FastCall.class));
+				natFunc.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.FastCall)));
 				needsThis = true;
 			}
 			if (Modifier.__thiscall.isContainedBy(function.getModifiers())) {
-				natFunc.addAnnotation(new Annotation(ThisCall.class));
+				natFunc.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.ThisCall)));
 				needsThis = true;
 			}
 			if (function.getType() == Type.CppMethod && !function.getModifiers().contains(Modifier.Static)) {
@@ -611,7 +600,8 @@ public class DeclarationsConverter {
 			
 			if (needsThis && !result.config.genCPlusPlus)
 				return;
-			
+
+            /*
 			if (needsThis) {
 				natFunc.addAnnotation(new Annotation(Deprecated.class));
 				
@@ -624,7 +614,7 @@ public class DeclarationsConverter {
 				if (classRef != null) {
 					natFunc.addArg((Arg)new Arg("__this__", classRef)).addAnnotation(needsThisAnnotation ? new Annotation(This.class) : null);
 				}
-			}
+			}*/
 				
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
@@ -834,7 +824,7 @@ public class DeclarationsConverter {
 		return structName == null ? null : structName.clone();
 	}
 	public Struct convertStruct(Struct struct, Signatures signatures, Identifier callerLibraryClass, boolean onlyFields) throws IOException {
-        if (result.config.fastStructs)
+        if (result.config.runtime.hasFastStructs)
             return convertStructToNL4J(struct, signatures, callerLibraryClass, onlyFields);
         else
             return convertStructToJNA(struct, signatures, callerLibraryClass, onlyFields);
@@ -872,8 +862,8 @@ public class DeclarationsConverter {
 				}
 			}
 			if (baseClass == null) {
-				if (result.config.useJNAeratorUnionAndStructClasses) {
-					Class<?> c = isUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class;
+				Class<?> c = isUnion ? result.config.runtime.unionClass : result.config.runtime.structClass;
+                if (result.config.useJNAeratorUnionAndStructClasses) {
 					baseClass = ident(
 						c, 
 						expr(typeRef(structName.clone())), 
@@ -881,7 +871,7 @@ public class DeclarationsConverter {
 						expr(typeRef(ident(structName.clone(), "ByReference")))
 					);
 				} else
-					baseClass = ident(struct.getType() == Struct.Type.CUnion ? Union.class : Structure.class);
+					baseClass = ident(c);
 			}
 		}
 		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
@@ -894,6 +884,7 @@ public class DeclarationsConverter {
 		if (isVirtual(struct) && !onlyFields) {
 			String vptrName = DEFAULT_VPTR_NAME;
 			VariablesDeclaration vptr = new VariablesDeclaration(typeRef(VirtualTablePointer.class), new Declarator.DirectDeclarator(vptrName));
+            //VariablesDeclaration vptr = new VariablesDeclaration(typeRef(result.config.runtime.pointerClass), new Declarator.DirectDeclarator(vptrName));
 			vptr.addModifiers(Modifier.Public);
 			structJavaClass.addDeclaration(vptr);
 			childSignatures.variablesSignatures.add(vptrName);
@@ -963,8 +954,8 @@ public class DeclarationsConverter {
 			if (result.config.features.contains(GenFeatures.StructConstructors))
 				addStructConstructors(structName, structJavaClass/*, byRef, byVal*/, struct);
 			
-			Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByReference"));
-			Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(Structure.class), "ByValue"));
+			Struct byRef = publicStaticClass(ident("ByReference"), structName, Struct.Type.JavaClass, null, ident(ident(result.config.runtime.structClass), "ByReference"));
+			Struct byVal = publicStaticClass(ident("ByValue"), structName, Struct.Type.JavaClass, null, ident(ident(result.config.runtime.structClass), "ByValue"));
 			
 			if (!inheritsFromStruct) {
 				structJavaClass.addDeclaration(createNewStructMethod("newByReference", byRef));
@@ -1023,17 +1014,35 @@ public class DeclarationsConverter {
 		//cl.addDeclaration(new EmptyDeclaration())
 		Signatures childSignatures = new Signatures();
 
-		if (isVirtual(struct) && !onlyFields) {
+		/*if (isVirtual(struct) && !onlyFields) {
 			String vptrName = DEFAULT_VPTR_NAME;
 			VariablesDeclaration vptr = new VariablesDeclaration(typeRef(VirtualTablePointer.class), new Declarator.DirectDeclarator(vptrName));
 			vptr.addModifiers(Modifier.Public);
 			structJavaClass.addDeclaration(vptr);
 			childSignatures.variablesSignatures.add(vptrName);
 			// TODO add vptr grabber to constructor !
-		}
+		}*/
 
         //    private static StructIO<MyStruct> io = StructIO.getInstance(MyStruct.class);
-        VariablesDeclaration ioDecl = new VariablesDeclaration(typeRef(ident(StructIO.class, expr(typeRef(structName)))), new DirectDeclarator(ioStaticVarName, methodCall(expr(typeRef(StructIO.class)), MemberRefStyle.Dot, "getInstance", classLiteral(typeRef(structName)))));
+        VariablesDeclaration ioDecl = new VariablesDeclaration(
+            typeRef(
+                ident(
+                    result.config.runtime.structIOClass,
+                    expr(typeRef(structName))
+                )
+            ),
+            new DirectDeclarator(
+                ioStaticVarName,
+                methodCall(
+                    expr(
+                        typeRef(result.config.runtime.structIOClass)
+                    ),
+                    MemberRefStyle.Dot,
+                    "getInstance",
+                    classLiteral(typeRef(structName))
+                )
+            )
+        );
         ioDecl.addModifiers(Modifier.Private, Modifier.Static, Modifier.Final);
         structJavaClass.addDeclaration(ioDecl);
 
@@ -1076,7 +1085,7 @@ public class DeclarationsConverter {
 							continue;
 						Function method = (Function) md;
 						method.addModifiers(Modifier.Public, isStatic ? Modifier.Static : null, Modifier.Native);
-                        method.addAnnotation(new Annotation(Virtual.class, expr(iVirtual)));
+                        method.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Virtual), expr(iVirtual)));
 						structJavaClass.addDeclaration(method);
 					}
 				}
@@ -1174,7 +1183,7 @@ public class DeclarationsConverter {
 		f.setBody(block(
 			new Statement.Return(
 				methodCall(
-					expr(typeRef(isUnion ? com.ochafik.lang.jnaerator.runtime.Union.class : com.ochafik.lang.jnaerator.runtime.Structure.class)),
+					expr(typeRef(isUnion ? result.config.runtime.unionClass : result.config.runtime.structClass)),
 					MemberRefStyle.Dot,
 					"newArray",
 					classLiteral(tr),
@@ -1275,11 +1284,11 @@ public class DeclarationsConverter {
 		convDecl.addModifiers(Modifier.Public);
 
 		if (conv.arrayLength != null)
-            convDecl.addAnnotation(new Annotation(Length.class, conv.arrayLength));
+            convDecl.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Length), conv.arrayLength));
         if (conv.bits != null)
-            convDecl.addAnnotation(new Annotation(Bits.class, conv.bits));
+            convDecl.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Bits), conv.bits));
         if (conv.byValue)
-            convDecl.addAnnotation(new Annotation(ByValue.class));
+            convDecl.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.ByValue)));
 
         for (Element e : toImportDetailsFrom)
             convDecl.importDetails(e, false);
@@ -1293,7 +1302,7 @@ public class DeclarationsConverter {
         convDecl.moveAllCommentsBefore();
 
         convDecl.setName(ident(name));
-        convDecl.addAnnotation(new Annotation(Field.class, expr(iChild[0])));
+        convDecl.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Field), expr(iChild[0])));
         Function getter = convDecl;
 
         if (conv.structIOFieldGetterNameRadix == null)
@@ -1327,7 +1336,7 @@ public class DeclarationsConverter {
         return out;//out.addDeclaration(convDecl);
     }
 	public void convertVariablesDeclaration(VariablesDeclaration v, DeclarationsHolder out, int[] iChild, Identifier holderName, Identifier callerLibraryClass) {
-        if (result.config.fastStructs)
+        if (result.config.runtime.hasFastStructs)
             convertVariablesDeclarationToNL4J(v, out, iChild, holderName, callerLibraryClass);
         else
             convertVariablesDeclarationToJNA(v, out, iChild, callerLibraryClass);
@@ -1350,7 +1359,7 @@ public class DeclarationsConverter {
                 Declarator d = v.getDeclarators().get(0);
                 if (d.getBits() > 0)
 					for (Declaration vd : vds)
-                        vd.addAnnotation(new Annotation(Bits.class, expr(d.getBits())));
+                        vd.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Bits), expr(d.getBits())));
 				/*if (vd != null && vd.size() > 0) {
 					Declarator d = v.getDeclarators().get(0);
 					if (d.getBits() > 0) {
@@ -1403,7 +1412,7 @@ public class DeclarationsConverter {
 					Declarator d = v.getDeclarators().get(0);
 					if (d.getBits() > 0) {
 						int bits = d.getBits();
-						vd.addAnnotation(new Annotation(Bits.class, "(" + bits + ")"));
+						vd.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Bits), expr(bits)));
 						String st = vd.getValueType().toString(), mst = st;
 						if (st.equals("int") || st.equals("long") || st.equals("short") || st.equals("long")) {
 							if (bits <= 8)

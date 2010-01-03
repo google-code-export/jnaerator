@@ -18,15 +18,7 @@
 */
 package com.ochafik.lang.jnaerator;
 
-import java.nio.Buffer;
-
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import com.nativelibs4java.runtime.structs.StructIO;
-import com.nativelibs4java.runtime.structs.Array;
-import com.nativelibs4java.runtime.ann.*;
 
 import org.rococoa.cocoa.foundation.NSObject;
 import com.ochafik.lang.SyntaxUtils;
@@ -90,17 +79,7 @@ import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.ochafik.lang.jnaerator.runtime.NativeSizeByReference;
 import com.ochafik.lang.jnaerator.runtime.StringPointer;
 import com.ochafik.lang.jnaerator.runtime.WStringPointer;
-import com.ochafik.lang.jnaerator.runtime.globals.Global;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalByte;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalCGFloat;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalChar;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalDouble;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalFloat;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeSize;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalInt;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalLong;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalNativeLong;
-import com.ochafik.lang.jnaerator.runtime.globals.GlobalShort;
+import com.ochafik.lang.jnaerator.runtime.globals.*;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
 import com.sun.jna.Native;
@@ -920,7 +899,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                             conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(targetName.toString());
                             if (p != null && p.getFirst().intValue() != 1) {
                                 conv.arrayLength = expr(conv.arrayLength, BinaryOperator.Multiply, expr(p.getFirst()));
-                                conv.structIOFieldGetterNameRadix += "Array";
+                                conv.structIOFieldGetterNameRadix += "Buffer";
                             }
 
                             return conv;
@@ -929,7 +908,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                             if (targetConvRef == null)
                                 targetConvRef = findEnum(targetName, libraryClassName);
                             if (targetConvRef != null) {
-                                conv.typeRef = typeRef(ident(Array.class, expr(targetConvRef)));
+                                conv.typeRef = typeRef(ident(result.config.runtime.arrayClass, expr(targetConvRef)));
                                 conv.structIOFieldGetterNameRadix = "StructArray";
                                 return conv;
                             }
@@ -965,9 +944,9 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 
             if (valueConvRef == null) {
                 // TODO limit to OpenCL
-                Pair<Integer, Class<?>> p = buffersAndArityByType.get(valueName.toString());
+                Pair<Integer, Class<?>> p = arraysAndArityByType.get(valueName.toString());
                 if (p != null) {
-                    conv.typeRef = typeRef(p.getSecond());
+                    conv.typeRef = arrayRef(typeRef(p.getSecond()));
                     conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(valueName.toString());
                     if (p.getFirst().intValue() != 1) {
                         conv.arrayLength = expr(p.getFirst());

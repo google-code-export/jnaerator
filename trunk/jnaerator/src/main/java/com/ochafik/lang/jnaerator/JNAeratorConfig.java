@@ -34,13 +34,18 @@ import java.util.Set;
 import com.ochafik.lang.jnaerator.JNAeratorConfigUtils.FileExtensionFilter;
 import com.ochafik.lang.jnaerator.cplusplus.CPlusPlusMangler;
 import com.ochafik.lang.jnaerator.parser.Element;
+import com.ochafik.lang.jnaerator.parser.ElementsHelper;
 import com.ochafik.lang.jnaerator.parser.Function;
+import com.ochafik.lang.jnaerator.parser.Identifier;
 import com.ochafik.util.CompoundCollection;
 import com.ochafik.util.listenable.Adapter;
 import com.ochafik.util.listenable.Filter;
 import com.ochafik.util.listenable.Pair;
+import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
 import java.util.HashSet;
+
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class JNAeratorConfig {
 	
@@ -53,6 +58,67 @@ public class JNAeratorConfig {
 	public enum Platform {
 		Windows, Linux, MacOSX
 	}
+    public enum Runtime {
+        JNA(false, true,
+            com.sun.jna.Callback.class,
+            com.sun.jna.Pointer.class,
+            com.sun.jna.Memory.class,
+            com.sun.jna.Structure.class,
+            com.sun.jna.Union.class,
+            null,
+            null,
+            null),
+        JNAerator(false, true,
+            com.sun.jna.Callback.class,
+            com.sun.jna.Pointer.class,
+            com.sun.jna.Memory.class,
+            com.ochafik.lang.jnaerator.runtime.Structure.class,
+            com.ochafik.lang.jnaerator.runtime.Union.class,
+            null,
+            null,
+            com.ochafik.lang.jnaerator.runtime.Bits.class),
+        JNAeratorNL4JStructs(true, true,
+            com.sun.jna.Callback.class,
+            com.sun.jna.Pointer.class,
+            com.sun.jna.Memory.class,
+            com.nativelibs4java.runtime.structs.jna.Struct.class,
+            com.nativelibs4java.runtime.structs.jna.Struct.class,
+            com.nativelibs4java.runtime.structs.jna.StructIO.class,
+            com.nativelibs4java.runtime.structs.jna.Array.class,
+            com.nativelibs4java.runtime.ann.jna.Bits.class),
+        NL4J(true, false,
+            com.nativelibs4java.runtime.Callback.class,
+            com.nativelibs4java.runtime.Pointer.class,
+            com.nativelibs4java.runtime.Memory.class,
+            com.nativelibs4java.runtime.structs.Struct.class,
+            com.nativelibs4java.runtime.structs.Struct.class,
+            com.nativelibs4java.runtime.structs.StructIO.class,
+            com.nativelibs4java.runtime.structs.Array.class,
+            com.nativelibs4java.runtime.ann.Bits.class);
+
+        public enum Ann {
+            Bits, FastCall, Mangling, ObjCBlock, This, ThisCall, Length, ByValue, Field, Virtual
+        }
+        Runtime(boolean hasFastStructs, boolean hasJNA, Class<?> callbackClass, Class<?> pointerClass, Class<?> memoryClass, Class<?> structClass, Class<?> unionClass, Class<?> structIOClass, Class<?> arrayClass, Class<? extends Annotation> someAnnotationClass) {
+            this.hasFastStructs = hasFastStructs;
+            this.hasJNA = hasJNA;
+            this.callbackClass = callbackClass;
+            this.pointerClass = pointerClass;
+            this.memoryClass = memoryClass;
+            this.structClass = structClass;
+            this.unionClass = unionClass;
+            this.structIOClass = structIOClass;
+            this.arrayClass = arrayClass;
+            annotationPackage = someAnnotationClass == null ? null : someAnnotationClass.getPackage().getName();
+        }
+        private String annotationPackage;
+        public Identifier ident(Ann ann) {
+            return annotationPackage == null ? null : ElementsHelper.ident(annotationPackage, ann.toString());
+        }
+        public final Class<?> callbackClass, pointerClass, memoryClass, structClass, unionClass, structIOClass, arrayClass;
+        public final boolean hasFastStructs;
+        public final boolean hasJNA;
+    }
 	public enum GenFeatures {
 		Compile,
 		FileComments,
@@ -70,7 +136,9 @@ public class JNAeratorConfig {
 	
 	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
 	public final List<CPlusPlusMangler> cPlusPlusManglers = new ArrayList<CPlusPlusMangler>();
-	
+
+    public Runtime runtime = Runtime.JNA;
+    
 	public static class PreprocessorConfig {
 
 		public boolean WORKAROUND_PP_BUGS = true;
@@ -93,7 +161,7 @@ public class JNAeratorConfig {
 	public boolean putTopStructsInSeparateFiles = true;
 	public boolean bundleRuntime = true;
 	public boolean extractLibSymbols = false;
-    public boolean fastStructs = false;
+    //public boolean fastStructs = false;
     public List<Pair<MessageFormat, MessageFormat>> onlineDocumentationURLFormats = new ArrayList<Pair<MessageFormat, MessageFormat>>();
 	public String entryName;
 	public int maxConstructedFields = 10;

@@ -57,9 +57,9 @@ import com.ochafik.lang.jnaerator.parser.StoredDeclarations.TypeDef;
 import com.ochafik.lang.jnaerator.parser.Struct.Type;
 import com.ochafik.lang.jnaerator.parser.TypeRef.FunctionSignature;
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
+import com.ochafik.util.SystemUtils;
 import com.ochafik.util.listenable.Pair;
 import com.ochafik.util.string.StringUtils;
-import com.sun.jna.Platform;
 
 import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
@@ -459,8 +459,9 @@ public class Result extends Scanner {
 		return ident(getLibraryPackage(library), getLibraryClassSimpleName(library));
 	}
 	public String getLibraryFileExpression(String library) {
+        Class<?> platformClass = config.runtime.hasJNA ? com.sun.jna.Platform.class : SystemUtils.class;
 		if (library.equals("c"))
-			return "(" + Platform.class.getName() + ".isWindows() ? \"msvcrt\" : \"c\")";
+			return "(" + platformClass.getName() + ".isWindows() ? \"msvcrt\" : \"c\")";
 		
 		return "\"" + library + "\"";
 	}

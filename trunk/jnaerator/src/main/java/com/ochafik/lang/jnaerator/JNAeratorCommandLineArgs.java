@@ -1,5 +1,6 @@
 package com.ochafik.lang.jnaerator;
 
+import com.ochafik.lang.jnaerator.JNAeratorConfig.Runtime;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,56 +41,12 @@ public class JNAeratorCommandLineArgs {
 			public int getIntParam(int pos) {
 				return (Integer)params[pos];
 			}
+
+            public <E extends Enum<E>> E getEnumParam(int pos, Class<E> ec) {
+                return ec.cast(params[pos]);
+            }
 		}
-		Object convertArg(String arg, OptionDef.Type type) throws FileNotFoundException {
-			switch (type) {
-			case OptionalFile:
-				boolean opt = arg.endsWith("?");
-				File f = new File(opt ? arg.substring(0, arg.length() - 1 ) : arg);
-				if (!f.exists()) {
-					if (opt)
-						return null;
-					throw new FileNotFoundException(f.toString());
-				}
-				return f;
-			case File:
-				return new File(arg);
-			case Int:
-				return Integer.parseInt(arg);
-            case MessageFormat:
-                return new MessageFormat(arg);
-			case String:
-				return arg;
-			case ExistingDir:
-				f = new File(arg);
-				if (!f.isDirectory())
-					throw new FileNotFoundException(f.toString());
-				return f;
-			case ExistingFile:
-				f = new File(arg);
-				if (!f.isFile())
-					throw new FileNotFoundException(f.toString());
-				return f;
-			case ExistingFileOrDir:
-				f = new File(arg);
-				if (!f.exists())
-					throw new FileNotFoundException(f.toString());
-				return f;
-			case OutputDir:
-				f = new File(arg);
-				if (f.isFile())
-					throw new FileNotFoundException("Expected directory, found file : " + f.toString());
-				f.getAbsoluteFile().getParentFile().mkdirs();
-				return f;
-			case OutputFile:
-				f = new File(arg);
-				if (f.isDirectory())
-					throw new FileNotFoundException("Expected file, found directory : " + f.toString());
-				f.getAbsoluteFile().getParentFile().mkdirs();
-				return f;
-			}
-			throw new UnsupportedOperationException();
-		}
+		
 		public void parse(List<String> args) throws Exception {
 			for (int i = 0; i < args.size(); i++) {
 				String arg = args.get(i);
@@ -109,11 +66,11 @@ public class JNAeratorCommandLineArgs {
 							String gp = m.group(iGroup + 1);
 							if (gp == null)
 								continue;
-							pa.params[iArg] = convertArg(gp, opt.args[iArg].type);
+							pa.params[iArg] = opt.args[iArg].convertArg(gp);
 							iArg++;
 						}
 						for (; iArg < opt.args.length; iArg++)
-							pa.params[iArg] = convertArg(args.get(++i), opt.args[iArg].type);
+							pa.params[iArg] = opt.args[iArg].convertArg(args.get(++i));
 						
 						List<String> parsed = parsed(pa);
 						if (parsed == null)
@@ -126,7 +83,7 @@ public class JNAeratorCommandLineArgs {
 				if (defaultOpt != null) {
 					ParsedArg pa = new ParsedArg();
 					pa.def = defaultOpt;
-					pa.params = new Object[] { convertArg(arg, defaultOpt.args[0].type) };
+					pa.params = new Object[] { defaultOpt.args[0].convertArg(arg) };
 					args.addAll(i + 1, parsed(pa));
 				}
 			}
@@ -172,7 +129,7 @@ public class JNAeratorCommandLineArgs {
 		CurrentPackage(		"-package",				"Set the Java package in which all the output will reside (by default, set to the library name).", new ArgDef(Type.String, "forcedPackageName")),
 		RecursedExtensions(	"-allowedFileExts", 	"Colon-separated list of file extensions used to restrict files used when recursing on directories, or \"*\" to parse all files (by default = " + JNAeratorConfig.DEFAULT_HEADER_EXTENSIONS + ")", new ArgDef(Type.String, "extensions")),
 		SkipIncludedFrameworks(		"-skipIncludedFrameworks",		"Skip Included Frameworks"),
-		FastStructs(        "-fastStructs",          "Generate fast and lightweight structs instead of JNA structures."),
+		Runtime(            "-runtime",             "Choose target runtime library.", new ArgDef(Type.Enum, "enum", JNAeratorConfig.Runtime.class)),
         IfRegexMatch(		"-ifRegexMatch",		"Conditional evaluation of an argument if a java system property matches a regular expression", new ArgDef(Type.String, "javaProperty"), new ArgDef(Type.String, "regex"), new ArgDef(Type.String, "thenArg"), new ArgDef(Type.String, "elseArg")),
 		DefineMacro(		"-D([^=]*)(?:=(.*))?", 	"Define a macro symbol", new ArgDef(Type.String, "name"), new ArgDef(Type.String, "value")),
 		RootPackage(		"-root(?:Package)?", 	"Define the root package for all output classes", new ArgDef(Type.String, "package")),
@@ -222,16 +179,73 @@ public class JNAeratorCommandLineArgs {
 		public final String description;
 		
 		public enum Type {
-			ExistingFile, ExistingDir, File, MessageFormat, String, Int, ExistingFileOrDir, OutputDir, OutputFile, OptionalFile
+			ExistingFile, ExistingDir, File, MessageFormat, String, Int, ExistingFileOrDir, OutputDir, OutputFile, OptionalFile, Enum
 		}
 		public static class ArgDef {
 			public final Type type;
 			public final String name;
 			public int position;
-			public ArgDef(Type type, String name) {
+            public final Class<?> additionalClass;
+			public ArgDef(Type type, String name, Class<?> additionalClass) {
 				this.type = type;
 				this.name = name;
+                this.additionalClass = additionalClass;
 			}
+            public ArgDef(Type type, String name) {
+				this(type, name, null);
+			}
+
+            Object convertArg(String arg) throws FileNotFoundException {
+                switch (type) {
+                case OptionalFile:
+                    boolean opt = arg.endsWith("?");
+                    File f = new File(opt ? arg.substring(0, arg.length() - 1 ) : arg);
+                    if (!f.exists()) {
+                        if (opt)
+                            return null;
+                        throw new FileNotFoundException(f.toString());
+                    }
+                    return f;
+                case File:
+                    return new File(arg);
+                case Int:
+                    return Integer.parseInt(arg);
+                case MessageFormat:
+                    return new MessageFormat(arg);
+                case String:
+                    return arg;
+                case ExistingDir:
+                    f = new File(arg);
+                    if (!f.isDirectory())
+                        throw new FileNotFoundException(f.toString());
+                    return f;
+                case ExistingFile:
+                    f = new File(arg);
+                    if (!f.isFile())
+                        throw new FileNotFoundException(f.toString());
+                    return f;
+                case ExistingFileOrDir:
+                    f = new File(arg);
+                    if (!f.exists())
+                        throw new FileNotFoundException(f.toString());
+                    return f;
+                case Enum:
+                    return Enum.valueOf((Class<? extends Enum>)additionalClass, arg);
+                case OutputDir:
+                    f = new File(arg);
+                    if (f.isFile())
+                        throw new FileNotFoundException("Expected directory, found file : " + f.toString());
+                    f.getAbsoluteFile().getParentFile().mkdirs();
+                    return f;
+                case OutputFile:
+                    f = new File(arg);
+                    if (f.isDirectory())
+                        throw new FileNotFoundException("Expected file, found directory : " + f.toString());
+                    f.getAbsoluteFile().getParentFile().mkdirs();
+                    return f;
+                }
+                throw new UnsupportedOperationException();
+            }
 		}
 		public ArgDef getParam(String name) {
 			for (ArgDef ad : args)

@@ -21,10 +21,12 @@ package com.ochafik.lang.jnaerator.parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static com.ochafik.lang.jnaerator.parser.ElementsHelper.*;
 
 public class Annotation extends Element {
 
-	Class<? extends java.lang.annotation.Annotation> annotationClass;
+    Identifier annotationClass;
+	//Class<? extends java.lang.annotation.Annotation> annotationClass;
 	final List<Expression> arguments = new ArrayList<Expression>();
 	String argument;
 	
@@ -33,17 +35,17 @@ public class Annotation extends Element {
 	}
 	
 	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass, Expression... arguments) {
+		this(ident(annotationClass), arguments);
+	}
+	public Annotation(Identifier annotationClass, Expression... arguments) {
 		setAnnotationClass(annotationClass);
 		setArguments(Arrays.asList(arguments));
 	}
-	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass, String argument) {
+	public Annotation(Identifier annotationClass, String argument) {
 		setAnnotationClass(annotationClass);
 		setArgument(argument);
 	}
-	public Annotation(Class<? extends java.lang.annotation.Annotation> annotationClass) {
-		setAnnotationClass(annotationClass);
-	}
-	
+
 	public void setArgument(String argument) {
 		this.argument = argument;
 	}
@@ -57,17 +59,16 @@ public class Annotation extends Element {
 		return unmodifiableList(arguments);
 	}
 	
-	public Class<? extends java.lang.annotation.Annotation> getAnnotationClass() {
+	public Identifier getAnnotationClass() {
 		return annotationClass;
 	}
-	public void setAnnotationClass(
-			Class<? extends java.lang.annotation.Annotation> annotationClass) {
-		this.annotationClass = annotationClass;
+	public void setAnnotationClass(Identifier annotationClass) {
+		this.annotationClass = changeValue(this, this.annotationClass, annotationClass);
 	}
 	
 	@Override
 	public String toString(CharSequence indent) {
-		return indent + "@" + getAnnotationClass().getName() + 
+		return indent + "@" + getAnnotationClass() + 
 			(getArgument() != null ? getArgument() : getArguments().isEmpty() ? "" : "(" + implode(getArguments(), ", ", indent) + ")");
 	}
 	
@@ -88,6 +89,10 @@ public class Annotation extends Element {
 
 	@Override
 	public boolean replaceChild(Element child, Element by) {
+        if (child == getAnnotationClass()) {
+            setAnnotationClass((Identifier)by);
+            return true;
+        }
 		return replaceChild(arguments, Expression.class, this, child, by);
 	}
 
