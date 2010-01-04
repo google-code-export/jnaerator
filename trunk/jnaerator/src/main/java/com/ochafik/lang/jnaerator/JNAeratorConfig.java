@@ -137,7 +137,7 @@ public class JNAeratorConfig {
 	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
 	public final List<CPlusPlusMangler> cPlusPlusManglers = new ArrayList<CPlusPlusMangler>();
 
-    public Runtime runtime = Runtime.JNA;
+    public Runtime runtime = Runtime.JNAerator;
     
 	public static class PreprocessorConfig {
 
