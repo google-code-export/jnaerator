@@ -270,7 +270,6 @@ public class JNAeratorConfig {
 	
 	public String libraryForElementsInNullFile;
 	public String cPlusPlusNameSpaceSeparator = "_";
-	public boolean useJNAeratorUnionAndStructClasses = true;
 	public boolean preferJavac = false;
 	public Set<File> bridgeSupportFiles = new LinkedHashSet<File>();
 	public File outputJar;

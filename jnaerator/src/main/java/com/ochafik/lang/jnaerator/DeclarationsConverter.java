@@ -863,7 +863,7 @@ public class DeclarationsConverter {
 			}
 			if (baseClass == null) {
 				Class<?> c = isUnion ? result.config.runtime.unionClass : result.config.runtime.structClass;
-                if (result.config.useJNAeratorUnionAndStructClasses) {
+                if (result.config.runtime != JNAeratorConfig.Runtime.JNA) {
 					baseClass = ident(
 						c, 
 						expr(typeRef(structName.clone())), 
@@ -1154,7 +1154,7 @@ public class DeclarationsConverter {
 		String varName = "s";
 
 		f.addModifiers(Modifier.Protected);
-		if (result.config.useJNAeratorUnionAndStructClasses) {
+		if (result.config.runtime != JNAeratorConfig.Runtime.JNA) {
 			f.setBody(block(
 				//new Statement.Return(methodCall("setupClone", new Expression.New(tr.clone(), methodCall(null))))
 					new Statement.Return(new Expression.New(tr.clone(), methodCall(null)))
@@ -1171,7 +1171,7 @@ public class DeclarationsConverter {
 		return f;
 	}
 	private Function createNewStructArrayMethod(Struct struct, boolean isUnion) {
-		if (!result.config.useJNAeratorUnionAndStructClasses)
+		if (result.config.runtime == JNAeratorConfig.Runtime.JNA)
 			return null;
 
 		TypeRef tr = typeRef(struct.getTag().clone());
