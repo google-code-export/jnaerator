@@ -946,12 +946,15 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                 // TODO limit to OpenCL
                 Pair<Integer, Class<?>> p = arraysAndArityByType.get(valueName.toString());
                 if (p != null) {
-                    conv.typeRef = arrayRef(typeRef(p.getSecond()));
+                    conv.typeRef = typeRef(p.getSecond());
                     conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(valueName.toString());
                     if (p.getFirst().intValue() != 1) {
+                        conv.typeRef = arrayRef(conv.typeRef);
                         conv.arrayLength = expr(p.getFirst());
                         conv.byValue = true;
                         conv.structIOFieldGetterNameRadix += "Array";
+                    } else {
+
                     }
                     return conv;
                 }
