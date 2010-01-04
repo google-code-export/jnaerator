@@ -49,7 +49,7 @@ public class SyntaxUtils {
 			return b == null;
 		if (b == null)
 			return false;
-		return a.equals(b);
+        return a == b || a.equals(b);
 	}
 
 	public static <T> T as(Object value, Class<T> c) {
