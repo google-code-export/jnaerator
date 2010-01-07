@@ -909,7 +909,10 @@ public class JNAerator {
 	protected void addRuntimeClasses(Result result, MemoryFileManager mfm) throws IOException {
 		
 		ClassLoader classLoader = JNAerator.class.getClassLoader();
-		String listingFile = "jnaerator-runtime.jar.files";
+		String listingFile = result.config.runtime.runtimeFilesListFileName;
+        if (listingFile == null)
+            return;
+
 		List<String> files = ReadText.readLines(classLoader.getResourceAsStream(listingFile ));
 		
 		try {

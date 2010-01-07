@@ -1004,7 +1004,7 @@ public class DeclarationsConverter {
 				}
 			}
 			if (baseClass == null) {
-				baseClass = ident(com.nativelibs4java.runtime.structs.Struct.class, expr(typeRef(structName)));
+				baseClass = ident(result.config.runtime.structClass, expr(typeRef(structName)));
 			}
 		}
 		Struct structJavaClass = publicStaticClass(structName, baseClass, Struct.Type.JavaClass, struct);
