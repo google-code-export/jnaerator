@@ -26,13 +26,6 @@
     </dependency>
 	
   	<dependency>
-	  <groupId>com.nativelibs4java</groupId>
-	  <artifactId>nl4j-runtime-interop</artifactId>
-      <version>${nl4j-runtime.version}</version>
-      <scope>compile</scope>
-    </dependency>
-	
-  	<dependency>
 	  <groupId>com.jnaerator</groupId>
 	  <artifactId>jna-jnaerator</artifactId>
 	  <version>3.2.4</version>

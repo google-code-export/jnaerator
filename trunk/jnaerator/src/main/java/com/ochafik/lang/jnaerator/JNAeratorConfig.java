@@ -67,7 +67,8 @@ public class JNAeratorConfig {
             com.sun.jna.Union.class,
             null,
             null,
-            null),
+            null,
+            "jna-runtime.jar.files"),
         JNAerator(false, true,
             com.sun.jna.Callback.class,
             com.sun.jna.Pointer.class,
@@ -76,30 +77,44 @@ public class JNAeratorConfig {
             com.ochafik.lang.jnaerator.runtime.Union.class,
             null,
             null,
-            com.ochafik.lang.jnaerator.runtime.Bits.class),
+            com.ochafik.lang.jnaerator.runtime.Bits.class,
+            "jnaerator-runtime.jar.files"),
         JNAeratorNL4JStructs(true, true,
             com.sun.jna.Callback.class,
             com.sun.jna.Pointer.class,
             com.sun.jna.Memory.class,
-            com.nativelibs4java.runtime.structs.jna.Struct.class,
-            com.nativelibs4java.runtime.structs.jna.Struct.class,
-            com.nativelibs4java.runtime.structs.jna.StructIO.class,
-            com.nativelibs4java.runtime.structs.jna.Array.class,
-            com.nativelibs4java.runtime.ann.jna.Bits.class),
+            com.nativelibs4java.runtime.jna.Struct.class,
+            com.nativelibs4java.runtime.jna.Struct.class,
+            com.nativelibs4java.runtime.jna.StructIO.class,
+            com.nativelibs4java.runtime.jna.Array.class,
+            com.nativelibs4java.runtime.ann.jna.Bits.class,
+            "jnaerator-runtime.jar.files"),
         NL4J(true, false,
             com.nativelibs4java.runtime.Callback.class,
             com.nativelibs4java.runtime.Pointer.class,
             com.nativelibs4java.runtime.Memory.class,
-            com.nativelibs4java.runtime.structs.Struct.class,
-            com.nativelibs4java.runtime.structs.Struct.class,
-            com.nativelibs4java.runtime.structs.StructIO.class,
-            com.nativelibs4java.runtime.structs.Array.class,
-            com.nativelibs4java.runtime.ann.Bits.class);
+            com.nativelibs4java.runtime.Struct.class,
+            com.nativelibs4java.runtime.Struct.class,
+            com.nativelibs4java.runtime.StructIO.class,
+            com.nativelibs4java.runtime.Array.class,
+            com.nativelibs4java.runtime.ann.Bits.class,
+            "nl4j-runtime.jar.files");
 
         public enum Ann {
             Bits, FastCall, Mangling, ObjCBlock, This, ThisCall, Length, ByValue, Field, Virtual
         }
-        Runtime(boolean hasFastStructs, boolean hasJNA, Class<?> callbackClass, Class<?> pointerClass, Class<?> memoryClass, Class<?> structClass, Class<?> unionClass, Class<?> structIOClass, Class<?> arrayClass, Class<? extends Annotation> someAnnotationClass) {
+        Runtime(boolean hasFastStructs, 
+                boolean hasJNA,
+                Class<?> callbackClass,
+                Class<?> pointerClass,
+                Class<?> memoryClass,
+                Class<?> structClass,
+                Class<?> unionClass,
+                Class<?> structIOClass,
+                Class<?> arrayClass,
+                Class<? extends Annotation> someAnnotationClass,
+                String runtimeFilesListFileName)
+        {
             this.hasFastStructs = hasFastStructs;
             this.hasJNA = hasJNA;
             this.callbackClass = callbackClass;
@@ -109,8 +124,10 @@ public class JNAeratorConfig {
             this.unionClass = unionClass;
             this.structIOClass = structIOClass;
             this.arrayClass = arrayClass;
+            this.runtimeFilesListFileName = runtimeFilesListFileName;
             annotationPackage = someAnnotationClass == null ? null : someAnnotationClass.getPackage().getName();
         }
+        public final String runtimeFilesListFileName;
         private String annotationPackage;
         public Identifier ident(Ann ann) {
             return annotationPackage == null ? null : ElementsHelper.ident(annotationPackage, ann.toString());
