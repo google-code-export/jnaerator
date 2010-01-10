@@ -1,5 +1,7 @@
 Archive:  /Users/ochafik/nativelibs4java/Runtime/JDyncall/target/nl4j-runtime-0.1-SNAPSHOT.jar
 META-INF/MANIFEST.MF
+META-INF/OCHAFIK2.DSA
+META-INF/OCHAFIK2.SF
 META-INF/maven/com.nativelibs4java/
 META-INF/maven/com.nativelibs4java/nl4j-runtime/
 META-INF/maven/com.nativelibs4java/nl4j-runtime/pom.properties
@@ -25,14 +27,6 @@ com/nativelibs4java/runtime/Callback.class
 com/nativelibs4java/runtime/DefaultPointer.class
 com/nativelibs4java/runtime/DynCall.class
 com/nativelibs4java/runtime/DyncallSignatures.class
-com/nativelibs4java/runtime/FlagSet$1.class
-com/nativelibs4java/runtime/FlagSet$2.class
-com/nativelibs4java/runtime/FlagSet$3.class
-com/nativelibs4java/runtime/FlagSet$4$1.class
-com/nativelibs4java/runtime/FlagSet$4.class
-com/nativelibs4java/runtime/FlagSet$5$1.class
-com/nativelibs4java/runtime/FlagSet$5.class
-com/nativelibs4java/runtime/FlagSet$UniqueIterator.class
 com/nativelibs4java/runtime/FlagSet.class
 com/nativelibs4java/runtime/IndirectBufferPointer.class
 com/nativelibs4java/runtime/JDyncallLibrary$Options.class
@@ -70,6 +64,7 @@ com/nativelibs4java/runtime/StructWithNIO.class
 com/nativelibs4java/runtime/TempPointers.class
 com/nativelibs4java/runtime/UnmappableTypeException.class
 com/nativelibs4java/runtime/ValuedEnum$EnumWrapper.class
+com/nativelibs4java/runtime/ValuedEnum$MyEnum.class
 com/nativelibs4java/runtime/ValuedEnum.class
 com/nativelibs4java/runtime/ann/Alignment.class
 com/nativelibs4java/runtime/ann/Bits.class
@@ -78,6 +73,7 @@ com/nativelibs4java/runtime/ann/CLong.class
 com/nativelibs4java/runtime/ann/CallingConvention$Style.class
 com/nativelibs4java/runtime/ann/CallingConvention.class
 com/nativelibs4java/runtime/ann/Const.class
+com/nativelibs4java/runtime/ann/Encoding.class
 com/nativelibs4java/runtime/ann/Field.class
 com/nativelibs4java/runtime/ann/Function.class
 com/nativelibs4java/runtime/ann/Length.class
