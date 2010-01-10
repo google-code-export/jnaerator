@@ -517,6 +517,7 @@ scope ModContext;
 	:
 		{ 
 			$e = new Enum();
+            $e.setType(Enum.Type.C);
 			$e.setForwardDeclaration(false); 
 		}
 		'{' 
@@ -556,6 +557,7 @@ enumCore returns [Enum e]
 						$e.setForwardDeclaration(false);
 					} | {
 						$e = new Enum();
+                        $e.setType(Enum.Type.C);
 						$e.setForwardDeclaration(true);
 					}
 				) {

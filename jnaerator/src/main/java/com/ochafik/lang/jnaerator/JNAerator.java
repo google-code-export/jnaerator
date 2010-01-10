@@ -756,7 +756,7 @@ public class JNAerator {
 					mfm.addSourceInput(cnAndSrc.getKey(), cnAndSrc.getValue());
 				}
 				feedback.setStatus("Compiling JNAerated files...");
-				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, NativeLibrary.class, JNAerator.class, NSClass.class, Rococoa.class, Mangling.class);
+				CompilerUtils.compile(c, mfm, diagnostics, "1.5", config.cacheDir, config.runtime.libraryClass, JNAerator.class, NSClass.class, Rococoa.class, Mangling.class);
 				CompilerUtils.CompilationError.throwErrors(diagnostics.getDiagnostics(), mfm.inputs, c.getClass().getName());
 				
 				if (config.outputJar != null && result.config.bundleRuntime) {
@@ -990,6 +990,8 @@ public class JNAerator {
 			Character.isDigit(c);
 	}
 	static void escapeUnicode(String s, StringBuilder bout) {
+        if (s == null)
+            return;
 		bout.setLength(0);
 		char[] chars = s.toCharArray();
 		for (int iChar = 0, nChars = chars.length; iChar < nChars; iChar++) {
@@ -1034,8 +1036,65 @@ public class JNAerator {
 			}
 		}
 	}
-	
-	protected void generateLibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
+	class LibraryMapping {
+        public Struct interf;
+    }
+    class JNALibraryMapping extends LibraryMapping {
+
+    }
+    protected void generateLibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
+        switch (result.config.runtime) {
+            case JNA:
+            case JNAerator:
+            case JNAeratorNL4JStructs:
+                generateJNALibraryFiles(sourceFiles, result);
+                break;
+            case NL4J:
+                generateNL4JLibraryFiles(sourceFiles, result);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unexpected runtime : " + result.config.runtime);
+
+        }
+    }
+    protected void generateNL4JLibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
+        for (String library : result.libraries) {
+			if (library == null)
+				continue; // to handle code defined in macro-expanded expressions
+//				library = "";
+
+			Identifier javaPackage = result.javaPackageByLibrary.get(library);
+			Identifier simpleLibraryClassName = result.getLibraryClassSimpleName(library);
+
+			Identifier fullLibraryClassName = result.getLibraryClassFullName(library);//ident(javaPackage, libraryClassName);
+			//if (!result.objCClasses.isEmpty())
+			//	out.println("import org.rococoa.ID;");
+
+
+			Struct interf = new Struct();
+            interf.setType(Type.JavaClass);
+			interf.addToCommentBefore("Wrapper for library <b>" + library + "</b>",
+					result.declarationsConverter.getFileCommentContent(result.config.libraryProjectSources.get(library), null)
+			);
+			interf.addModifiers(Modifier.Public);
+			interf.setTag(simpleLibraryClassName);
+			Identifier libSuperInter = ident(config.runtime.libraryClass);
+
+            String libFileOrDirArgName = "libraryFileOrDirectory";
+            Function constr = new Function(Function.Type.JavaMethod, fullLibraryClassName.resolveLastSimpleIdentifier().clone(), null, new Arg(libFileOrDirArgName, typeRef(File.class)));
+            constr.addModifiers(Modifier.Public);
+            constr.setBody(block(stat(methodCall("super", varRef(libFileOrDirArgName)))));
+            interf.addDeclaration(constr);
+
+            constr = new Function(Function.Type.JavaMethod, fullLibraryClassName.resolveLastSimpleIdentifier().clone(), null);
+            constr.addModifiers(Modifier.Public);
+            constr.setBody(block(stat(methodCall("super", classLiteral(typeRef(fullLibraryClassName.clone()))))));
+            interf.addDeclaration(constr);
+
+            fillLibraryMapping(result, sourceFiles, interf, library, javaPackage, fullLibraryClassName, varRef("this"));
+        }
+    }
+	protected void generateJNALibraryFiles(SourceFiles sourceFiles, Result result) throws IOException {
 		
 		Struct librariesHub = null;
 		PrintWriter hubOut = null;
@@ -1074,7 +1133,7 @@ public class JNAerator {
 			
 			interf.addModifiers(Modifier.Public);
 			interf.setTag(simpleLibraryClassName);
-			Identifier libSuperInter = ident(Library.class);
+			Identifier libSuperInter = ident(config.runtime.libraryClass);
 			if (result.config.useJNADirectCalls) {
 				interf.addProtocols(libSuperInter);
 				interf.setType(Type.JavaClass);
@@ -1146,62 +1205,65 @@ public class JNAerator {
 				} else
 					interf.addDeclaration(instanceDecl);
 			}
-			
-			//out.println("\tpublic " + libraryClassName + " INSTANCE = (" + libraryClassName + ")" + Native.class.getName() + ".loadLibrary(" + libraryNameExpression  + ", " + libraryClassName + ".class);");
-			
-			Signatures signatures = result.getSignaturesForOutputClass(fullLibraryClassName);
-			result.typeConverter.allowFakePointers = true;
-			result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-			result.declarationsConverter.convertConstants(library, result.definesByLibrary.get(library), sourceFiles, signatures, interf, fullLibraryClassName);
-			result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-			result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
-			result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
-
-            if (result.globalsGenerator != null)
-                result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, nativeLibFieldExpr, fullLibraryClassName, library);
-
-			result.typeConverter.allowFakePointers = false;
-			
-			Set<String> fakePointers = result.fakePointersByLibrary.get(fullLibraryClassName);
-			if (fakePointers != null)
-			for (String fakePointerName : fakePointers) {
-				if (fakePointerName.contains("::"))
-					continue;
-				
-				Identifier fakePointer = ident(fakePointerName);
-				if (!signatures.classSignatures.add(fakePointer))
-					continue;
-				
-				Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
-				ptClass.addToCommentBefore("Pointer to unknown (opaque) type");
-				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
-					new Arg("pointer", typeRef(Pointer.class))
-				).addModifiers(Modifier.Public).setBody(
-					block(stat(methodCall("super", varRef("pointer")))))
-				);
-				ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null)
-				.addModifiers(Modifier.Public)
-				.setBody(
-					block(stat(methodCall("super")))
-				));
-				interf.addDeclaration(decl(ptClass));
-			}
-			
-			interf = result.notifyBeforeWritingClass(fullLibraryClassName, interf, signatures, library);
-			if (interf != null) {
-				final PrintWriter out = result.classOutputter.getClassSourceWriter(fullLibraryClassName.toString());
-				
-				//out.println("///\n/// This file was autogenerated by JNAerator (http://jnaerator.googlecode.com/), \n/// a tool written by Olivier Chafik (http://ochafik.free.fr/).\n///");
-				result.printJavaHeader(javaPackage, out);
-				out.println(interf);
-				out.close();
-			}
+			fillLibraryMapping(result, sourceFiles, interf, library, javaPackage, fullLibraryClassName, nativeLibFieldExpr);
 		}
 		if (hubOut != null) {
 			hubOut.println(librariesHub.toString());
 			hubOut.close();
 		}
 	}
+
+    protected void fillLibraryMapping(Result result, SourceFiles sourceFiles, Struct interf, String library, Identifier javaPackage, Identifier fullLibraryClassName, Expression nativeLibFieldExpr) throws IOException {
+
+        Signatures signatures = result.getSignaturesForOutputClass(fullLibraryClassName);
+        result.typeConverter.allowFakePointers = true;
+        result.declarationsConverter.convertEnums(result.enumsByLibrary.get(library), signatures, interf, fullLibraryClassName);
+        result.declarationsConverter.convertConstants(library, result.definesByLibrary.get(library), sourceFiles, signatures, interf, fullLibraryClassName);
+        result.declarationsConverter.convertStructs(result.structsByLibrary.get(library), signatures, interf, fullLibraryClassName);
+        result.declarationsConverter.convertCallbacks(result.callbacksByLibrary.get(library), signatures, interf, fullLibraryClassName);
+        result.declarationsConverter.convertFunctions(result.functionsByLibrary.get(library), signatures, interf, fullLibraryClassName);
+
+        if (result.globalsGenerator != null)
+            result.globalsGenerator.convertGlobals(result.globalsByLibrary.get(library), signatures, interf, nativeLibFieldExpr, fullLibraryClassName, library);
+
+        result.typeConverter.allowFakePointers = false;
+
+        Set<String> fakePointers = result.fakePointersByLibrary.get(fullLibraryClassName);
+        if (fakePointers != null)
+        for (String fakePointerName : fakePointers) {
+            if (fakePointerName.contains("::"))
+                continue;
+
+            Identifier fakePointer = ident(fakePointerName);
+            if (!signatures.classSignatures.add(fakePointer))
+                continue;
+
+            Struct ptClass = result.declarationsConverter.publicStaticClass(fakePointer, ident(PointerType.class), Struct.Type.JavaClass, null);
+            ptClass.addToCommentBefore("Pointer to unknown (opaque) type");
+            ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null,
+                new Arg("pointer", typeRef(Pointer.class))
+            ).addModifiers(Modifier.Public).setBody(
+                block(stat(methodCall("super", varRef("pointer")))))
+            );
+            ptClass.addDeclaration(new Function(Function.Type.JavaMethod, fakePointer, null)
+            .addModifiers(Modifier.Public)
+            .setBody(
+                block(stat(methodCall("super")))
+            ));
+            interf.addDeclaration(decl(ptClass));
+        }
+
+        interf = result.notifyBeforeWritingClass(fullLibraryClassName, interf, signatures, library);
+        if (interf != null) {
+            final PrintWriter out = result.classOutputter.getClassSourceWriter(fullLibraryClassName.toString());
+
+            //out.println("///\n/// This file was autogenerated by JNAerator (http://jnaerator.googlecode.com/), \n/// a tool written by Olivier Chafik (http://ochafik.free.fr/).\n///");
+            result.printJavaHeader(javaPackage, out);
+            out.println(interf);
+            out.close();
+        }
+    }
+
 	/// To be overridden
 	public Result createResult(final ClassOutputter outputter, Feedback feedback) {
 		return new Result(config, outputter, feedback);

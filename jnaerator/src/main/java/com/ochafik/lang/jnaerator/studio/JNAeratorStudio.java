@@ -110,6 +110,7 @@ public class JNAeratorStudio extends JPanel {
 	JComboBox resultsListCombo = new JComboBox();
 	JCheckBox directCallingCb = new JCheckBox("Direct Calling (experimental)", false),
 		structsAsTopLevelClassesCb = new JCheckBox("Structs as Top-Level classes", true),
+		charPtrAsString = new JCheckBox("char*/wchar_t* as (W)String", false),
 		noCommentNoManglingCb = new JCheckBox("No comment & no mangling", false);
 	
     JComboBox runtimeCombo = new JComboBox(JNAeratorConfig.Runtime.values()) {{
@@ -375,10 +376,11 @@ public class JNAeratorStudio extends JPanel {
 		Box optBox = Box.createVerticalBox();
 		optBox.add(libBox);
 		
-		JPanel optPanel = new JPanel(new GridLayout(2, 2));
+		JPanel optPanel = new JPanel(new GridLayout(2, 3));
 		optPanel.add(directCallingCb);
 		optPanel.add(noCommentNoManglingCb);
 		optPanel.add(structsAsTopLevelClassesCb);
+        optPanel.add(charPtrAsString);
 
         Box targetRTBox = Box.createHorizontalBox();
         targetRTBox.add(new JLabel("Runtime"));
@@ -482,6 +484,7 @@ public class JNAeratorStudio extends JPanel {
 				config.compile = true;
 				config.useJNADirectCalls = directCallingCb.isSelected();
 				config.putTopStructsInSeparateFiles = structsAsTopLevelClassesCb.isSelected();
+                config.stringifyConstCStringReturnValues = config.charPtrAsString = charPtrAsString.isSelected();
                 config.runtime = (Runtime) runtimeCombo.getSelectedItem();
 				config.noComments = config.noMangling = noCommentNoManglingCb.isSelected();
 				config.defaultLibrary = libraryName.getText();
@@ -686,13 +689,14 @@ public class JNAeratorStudio extends JPanel {
 			js.libraryName.setText(getPref("options.libraryName", "test"));
 			js.directCallingCb.setSelected(getPref("options.direct", false));
 			js.structsAsTopLevelClassesCb.setSelected(getPref("options.topLevelStructs", true));
+            js.charPtrAsString.setSelected(getPref("options.charPtrAsString", false));
             js.noCommentNoManglingCb.setSelected(getPref("options.noCommentNoMangling", false));
 			
 			js.sp.setOrientation(getPref("splitPane.orientation", JSplitPane.HORIZONTAL_SPLIT));
 			js.sp.setDividerLocation(getPref("splitPane.dividedLocation", 0.5));
 			f.setSize(getPref("window.width", 800), getPref("height", 600));
 			f.setExtendedState(getPref("window.extendedState", JFrame.NORMAL));
-			js.runtimeCombo.setSelectedItem(Runtime.valueOf(getPref("options.targetRuntime", Runtime.JNAerator.toString())));
+			js.runtimeCombo.setSelectedItem(Runtime.valueOf(getPref("options.targetRuntime", Runtime.JNAerator.name())));
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -709,7 +713,7 @@ public class JNAeratorStudio extends JPanel {
 					setPref("options.libraryName", js.libraryName.getText());
 					setPref("options.direct", js.directCallingCb.isSelected());
 					setPref("options.topLevelStructs", js.structsAsTopLevelClassesCb.isSelected());
-                    setPref("options.targetRuntime", js.runtimeCombo.getSelectedItem().toString());
+                    setPref("options.targetRuntime", ((JNAeratorConfig.Runtime)js.runtimeCombo.getSelectedItem()).name());
 					setPref("options.noCommentNoMangling", js.noCommentNoManglingCb.isSelected());
 					setPref("splitPane.orientation", js.sp.getOrientation());
 					setPref("splitPane.dividedLocation", getProportionalDividerLocation(js.sp));
