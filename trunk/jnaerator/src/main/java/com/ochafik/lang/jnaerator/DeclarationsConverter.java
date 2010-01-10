@@ -18,6 +18,8 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import com.nativelibs4java.runtime.FlagSet;
+import com.nativelibs4java.runtime.ValuedEnum;
 import static com.ochafik.lang.SyntaxUtils.as;
 //import com.nativelibs4java.runtime.structs.StructIO;
 //import com.nativelibs4java.runtime.structs.Array;
@@ -122,6 +124,76 @@ public class DeclarationsConverter {
 		}
 		
 	}
+
+    static class EnumItemResult {
+        public Enum.EnumItem originalItem;
+        public Expression value;
+        public String comments;
+        public String exceptionMessage;
+        public Declaration errorElement;
+    }
+    private List<EnumItemResult> getEnumValuesAndCommentsByName(Enum e, Signatures signatures, Identifier libraryClassName) {
+        List<EnumItemResult> ret = new ArrayList<EnumItemResult>();
+        Integer lastAdditiveValue = null;
+		Expression lastRefValue = null;
+		boolean failedOnceForThisEnum = false;
+		for (com.ochafik.lang.jnaerator.parser.Enum.EnumItem item : e.getItems()) {
+            EnumItemResult res = new EnumItemResult();
+            res.originalItem = item;
+			try {
+				if (item.getArguments().isEmpty()) {
+					// no explicit value
+					if (lastRefValue == null) {
+						if (lastAdditiveValue != null) {
+							lastAdditiveValue++;
+							res.value = expr(lastAdditiveValue);
+						} else {
+							if (item == e.getItems().get(0)) {
+								lastAdditiveValue = 0;
+								res.value = expr(lastAdditiveValue);
+							} else
+								res.value = null;
+						}
+					} else {
+						// has a last reference value
+						if (lastAdditiveValue != null)
+							lastAdditiveValue++;
+						else
+							lastAdditiveValue = 1;
+
+						res.value = //result.typeConverter.convertExpressionToJava(
+							expr(
+								lastRefValue.clone(),
+								Expression.BinaryOperator.Plus,
+								expr(lastAdditiveValue)
+							//)
+						);
+					}
+				} else {
+					// has an explicit value
+					failedOnceForThisEnum = false;// reset skipping
+					lastAdditiveValue = null;
+					lastRefValue = item.getArguments().get(0);
+					res.value = lastRefValue;
+					if (lastRefValue instanceof Expression.Constant) {
+						try {
+							lastAdditiveValue = ((Expression.Constant)lastRefValue).asInteger();
+							lastRefValue = null;
+						} catch (Exception ex) {}
+					}
+				}
+			} catch (Exception ex) {
+                failedOnceForThisEnum = true;
+                res.exceptionMessage = ex.toString();
+			}
+			failedOnceForThisEnum = failedOnceForThisEnum || res.errorElement != null;
+			if (failedOnceForThisEnum)
+				res.errorElement = skipDeclaration(item);
+
+            ret.add(res);
+		}
+        return ret;
+    }
 
 	public static class DeclarationsOutput {
 		Map<String, DeclarationsHolder> holders = new HashMap<String, DeclarationsHolder>();
@@ -285,111 +357,118 @@ public class DeclarationsConverter {
 		if (e.isForwardDeclaration())
 			return;
 		
-		DeclarationsHolder localOut = out;
-		Signatures localSignatures = signatures;
-		
-		Struct enumInterf = null;
 		Identifier enumName = getActualTaggedTypeName(e);
-		boolean repeatFullEnumComment;
-		if (enumName != null && enumName.resolveLastSimpleIdentifier().getName() != null) {
-			if (!signatures.classSignatures.add(enumName))
-				return;
-			
-			repeatFullEnumComment = false;
-			
-			enumInterf = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
-			if (!result.config.noComments)
-				if (result.config.features.contains(JNAeratorConfig.GenFeatures.EnumTypeLocationComments))
-					enumInterf.addToCommentBefore("enum values");
-			out.addDeclaration(new TaggedTypeRefDeclaration(enumInterf));
-			
-			localSignatures = new Signatures();
-			localOut = enumInterf;
-		} else {
-			repeatFullEnumComment = true;
-		}
-		Integer lastAdditiveValue = null;
-		Expression lastRefValue = null;
-		boolean failedOnceForThisEnum = false;
-		for (com.ochafik.lang.jnaerator.parser.Enum.EnumItem item : e.getItems()) {
-			Expression resultingExpression;
-			try {
-				if (item.getValue() == null) {
-					// no explicit value
-					if (lastRefValue == null) {
-						if (lastAdditiveValue != null) {
-							lastAdditiveValue++;
-							resultingExpression = expr(lastAdditiveValue);
-						} else {
-							if (item == e.getItems().get(0)) {
-								lastAdditiveValue = 0;
-								resultingExpression = expr(lastAdditiveValue);
-							} else
-								resultingExpression = null;
-						}
-					} else {
-						// has a last reference value
-						if (lastAdditiveValue != null)
-							lastAdditiveValue++;
-						else
-							lastAdditiveValue = 1;
-						
-						resultingExpression = //result.typeConverter.convertExpressionToJava(
-							expr(
-								lastRefValue.clone(), 
-								Expression.BinaryOperator.Plus, 
-								expr(lastAdditiveValue)
-							//)
-						);
-					}
-				} else {
-					// has an explicit value
-					failedOnceForThisEnum = false;// reset skipping
-					lastAdditiveValue = null;
-					lastRefValue = item.getValue();
-					resultingExpression = lastRefValue;
-					if (lastRefValue instanceof Expression.Constant) {
-						try {
-							lastAdditiveValue = ((Expression.Constant)lastRefValue).asInteger();
-							lastRefValue = null;
-						} catch (Exception ex) {}
-					}	
-				}
-			} catch (Exception ex) {
-				//ex.printStackTrace();
-				resultingExpression = null;
-			}
-			failedOnceForThisEnum = failedOnceForThisEnum || resultingExpression == null;
-			if (failedOnceForThisEnum)
-				out.addDeclaration(skipDeclaration(item));
-			else {
-				try {
-					Declaration ct = outputConstant(
-						item.getName(), 
-						result.typeConverter.convertExpressionToJava(resultingExpression, libraryClassName, true),
-						localSignatures, 
-						item, 
-						"enum item", 
-						libraryClassName, 
-						enumInterf == null,
-						true,
-						true,
-						true
-					);
-					if (!result.config.noComments)
-						if (ct != null && repeatFullEnumComment) {
-							String c = ct.getCommentBefore();
-							ct.setCommentBefore(e.getCommentBefore());
-							ct.addToCommentBefore(c);
-						}
-					localOut.addDeclaration(ct);
-				} catch (Exception ex) {
-					out.addDeclaration(skipDeclaration(item, ex.toString()));
-				}
-			}
-		}
-		//if (enumInterf != null)
-		//	enumInterf.addDeclarations(localOut);
+        List<EnumItemResult> results = getEnumValuesAndCommentsByName(e, signatures, libraryClassName);
+
+        switch (result.config.runtime) {
+            case JNA:
+            case JNAerator:
+            case JNAeratorNL4JStructs:
+                boolean hasEnumClass = false;
+                if (enumName != null && enumName.resolveLastSimpleIdentifier().getName() != null) {
+                    if (!signatures.classSignatures.add(enumName))
+                        return;
+
+                    hasEnumClass = true;
+
+                    Struct struct = publicStaticClass(enumName, null, Struct.Type.JavaInterface, e);
+                    out.addDeclaration(new TaggedTypeRefDeclaration(struct));
+                    if (!result.config.noComments)
+                        struct.addToCommentBefore("enum values");
+
+                    out = struct;
+                    signatures = new Signatures();
+                }
+
+                for (EnumItemResult er : results) {
+                    try {
+                        if (er.errorElement != null) {
+                            out.addDeclaration(er.errorElement);
+                            continue;
+                        }
+                        Declaration ct = outputConstant(
+                            er.originalItem.getName(),
+                            result.typeConverter.convertExpressionToJava(er.value, libraryClassName, true),
+                            signatures,
+                            er.originalItem,
+                            "enum item",
+                            libraryClassName,
+                            hasEnumClass,
+                            true,
+                            true,
+                            true
+                        );
+                        if (!result.config.noComments)
+                            if (ct != null && hasEnumClass) {
+                                String c = ct.getCommentBefore();
+                                ct.setCommentBefore(er.originalItem.getCommentBefore());
+                                ct.addToCommentBefore(c);
+                            }
+                        out.addDeclaration(ct);
+                    } catch (Exception ex) {
+                        out.addDeclaration(skipDeclaration(er.originalItem, ex.toString()));
+                    }
+                }
+                break;
+            case NL4J:
+                if (!signatures.classSignatures.add(enumName))
+                        return;
+
+                Enum en = new Enum();
+                en.setType(Enum.Type.Java);
+                en.setTag(enumName.clone());
+                en.addModifiers(Modifier.Public);
+                out.addDeclaration(new TaggedTypeRefDeclaration(en));
+                Struct body = new Struct();
+                en.setBody(body);
+                for (EnumItemResult er : results) {
+                    if (er.errorElement != null) {
+                        out.addDeclaration(er.errorElement);
+                        continue;
+                    }
+                    en.addItem(new Enum.EnumItem(er.originalItem.getName(), er.value));
+                }
+                en.setInterfaces(Arrays.asList(ident(ValuedEnum.class, expr(typeRef(enumName.clone())))));
+                String valueArgName = "value";
+                body.addDeclaration(new Function(Type.JavaMethod, enumName.clone(), null, new Arg(valueArgName, typeRef(Long.TYPE))).setBody(block(
+                    stat(expr(memberRef(varRef("this"), MemberRefStyle.Dot, valueArgName), AssignmentOperator.Equal, varRef(valueArgName)))
+                )));
+                body.addDeclaration(new VariablesDeclaration(typeRef(Long.TYPE), new DirectDeclarator(valueArgName)));
+                body.addDeclaration(new Function(Type.JavaMethod, ident(valueArgName), typeRef(Long.TYPE)).setBody(block(
+                    new Statement.Return(memberRef(varRef("this"), MemberRefStyle.Dot, valueArgName))
+                )).addAnnotation(new Annotation(Override.class)).addModifiers(Modifier.Public));
+
+                body.addDeclaration(new Function(Type.JavaMethod, ident("iterator"), typeRef(ident(Iterator.class, expr(typeRef(enumName.clone()))))).setBody(block(
+                    new Statement.Return(
+                        methodCall(
+                            methodCall(
+                                expr(typeRef(Collections.class)),
+                                MemberRefStyle.Dot,
+                                "singleton",
+                                varRef("this")
+                            ),
+                            MemberRefStyle.Dot,
+                            "iterator"
+                        )
+                    )
+                )).addAnnotation(new Annotation(Override.class)).addModifiers(Modifier.Public));
+
+                body.addDeclaration(new Function(Type.JavaMethod, ident("fromValue"), typeRef(ident(ValuedEnum.class, expr(typeRef(enumName.clone())))), new Arg(valueArgName, typeRef(Long.TYPE))).setBody(block(
+                    new Statement.Return(
+                        methodCall(
+                            expr(typeRef(FlagSet.class)),
+                            MemberRefStyle.Dot,
+                            "fromValue",
+                            varRef(valueArgName),
+                            methodCall(
+                                "values"
+                            )
+                        )
+                    )
+                )).addAnnotation(new Annotation(Override.class)).addModifiers(Modifier.Public, Modifier.Static));
+
+                break;
+        }
 	}
 
 	private Declaration outputConstant(String name, Expression x, Signatures signatures, Element element, String elementTypeDescription, Identifier libraryClassName, boolean addFileComment, boolean signalErrors, boolean forceInteger) throws UnsupportedConversionException {

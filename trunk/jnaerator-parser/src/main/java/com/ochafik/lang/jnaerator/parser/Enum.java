@@ -22,19 +22,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ochafik.lang.jnaerator.parser.TypeRef.TaggedTypeRef;
+import com.ochafik.util.string.StringUtils;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Enum extends TaggedTypeRef {
-	public static class EnumItem extends Element {
+	Type type = Type.C;
+
+    public static enum Type {
+        C, Java
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public static class EnumItem extends Element {
 		String name;
-		Expression value;
+		List<Expression> arguments = new ArrayList<Expression>();
         Struct body;
-		
-		public EnumItem() {
+
+        public EnumItem() {
 			super();
 		}
-		public EnumItem(String name, Expression value) {
+		public EnumItem(String name, Expression... arguments) {
 			setName(name);
-			setValue(value);
+			setArguments(Arrays.asList(arguments));
 		}
 
         public Struct getBody() {
@@ -53,19 +70,23 @@ public class Enum extends TaggedTypeRef {
 			this.name = name;
 		}
 		
-		public Expression getValue() {
-			return value;
+		public List<Expression> getArguments() {
+			return Collections.unmodifiableList(arguments);
 		}
-		public void setValue(Expression value) {
-			this.value = changeValue(this, this.value, value);
+		public void setArguments(List<Expression> arguments) {
+			changeValue(this, this.arguments, arguments);
 		}
-		
-		@Override
+
+        @Override
 		public String toString(CharSequence indent) {
+            return toString(indent, Enum.Type.C);
+        }
+        
+		public String toString(CharSequence indent, Enum.Type type) {
 			return
 				formatComments(indent, false, true, true) +
 				getName() + 
-				(getValue() == null ? "" : " = " + getValue()) +
+				(getArguments().isEmpty() ? "" : type == Type.C ? " = " + getArguments().get(0) : "(" + StringUtils.implode(arguments) + ")") +
                 (getBody() == null ? "" : " {\n\t" + indent + getBody().bodyToString(indent + "\t") + "\n" + indent + "}") +
                 (getCommentAfter() == null ? "" : " " + getCommentAfter());
 		}
@@ -76,21 +97,26 @@ public class Enum extends TaggedTypeRef {
 
 		@Override
 		public Element getNextChild(Element child) {
+            Element e = getNextSibling(arguments, child);
+            if (e != null)
+                return e;
 			return null;
 		}
 
 		@Override
 		public Element getPreviousChild(Element child) {
+			Element e = getPreviousSibling(arguments, child);
+            if (e != null)
+                return e;
 			return null;
 		}
 
 		@Override
 		public boolean replaceChild(Element child, Element by) {
-			if (child == getValue()) {
-				setValue((Expression) by);
-				return true;
-			}
-			if (child == getBody()) {
+			if (replaceChild(arguments, Expression.class, this, child, by))
+                return true;
+            
+            if (child == getBody()) {
 				setBody((Struct) by);
 				return true;
 			}
@@ -99,6 +125,8 @@ public class Enum extends TaggedTypeRef {
 		
 	}
 	final List<EnumItem> items = new ArrayList<EnumItem>();
+    final List<Identifier> interfaces = new ArrayList<Identifier>();
+
     Struct body;
 	//private LinkedHashMap<String, Expression> values = new LinkedHashMap<String, Expression>();
 	//Integer lastValue = 0;
@@ -129,6 +157,10 @@ public class Enum extends TaggedTypeRef {
 		e = getNextSibling(items, child);
 		if (e != null)
 			return e;
+        e = getNextSibling(interfaces, child);
+		if (e != null)
+			return e;
+
 		return super.getNextChild(child);
 	}
 
@@ -140,6 +172,10 @@ public class Enum extends TaggedTypeRef {
 		e = getPreviousSibling(items, child);
 		if (e != null)
 			return e;
+        e = getPreviousSibling(interfaces, child);
+		if (e != null)
+			return e;
+
 		return super.getPreviousChild(child);
 	}
 
@@ -151,6 +187,13 @@ public class Enum extends TaggedTypeRef {
         this.body = changeValue(this, this.body, body);
     }
 
+    public List<Identifier> getInterfaces() {
+        return Collections.unmodifiableList(interfaces);
+    }
+
+    public void setInterfaces(List<Identifier> interfaces) {
+        changeValue(this, this.interfaces, interfaces);
+    }
 
 	@Override
 	public boolean replaceChild(Element child, Element by) {
@@ -159,7 +202,8 @@ public class Enum extends TaggedTypeRef {
 		
 		if (replaceChild(items, EnumItem.class, this, child, by))
 			return true;
-		
+		if (replaceChild(interfaces, Identifier.class, this, child, by))
+			return true;
 
         if (child == getBody()) {
             setBody((Struct) by);
@@ -172,12 +216,17 @@ public class Enum extends TaggedTypeRef {
 	public String toString(CharSequence indent) {
 		String nindent = indent + "\t";
 		String indentt = "\n" + nindent;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(getModifiersStringPrefix());
         sb.append("enum ");
         sb.append(getTag() != null ? getTag().toString(indentt) + " " : "");
-        sb.append("{" + indentt + implode(items, ",\n" + nindent, nindent) + "\n");
+        if (!interfaces.isEmpty())
+            sb.append("implements " + StringUtils.implode(interfaces, ", ") + " ");
+        List<String> ts = new ArrayList<String>();
+        for (EnumItem item : items)
+            ts.add(item.toString(nindent, type));
+        sb.append("{" + indentt + StringUtils.implode(ts, ",\n" + nindent) + "\n");
         if (getBody() != null)
-            sb.append(indent + getBody().bodyToString(nindent) + "\n");
+            sb.append(indent + getBody().bodyToString(indent) + "\n");
         sb.append(indent + "}");
 		return sb.toString();
 	}

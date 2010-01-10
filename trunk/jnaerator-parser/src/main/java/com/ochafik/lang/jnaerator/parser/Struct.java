@@ -38,7 +38,13 @@ public class Struct extends TypeRef.TaggedTypeRef implements DeclarationsHolder 
 		Public, Private, Protected
 	}
 	public enum Type {
-		CStruct, CPPClass, ObjCClass, ObjCProtocol, CUnion, JavaClass, JavaInterface
+		CStruct,
+        CPPClass,
+        ObjCClass,
+        ObjCProtocol,
+        CUnion,
+        JavaClass,
+        JavaInterface
 	}
 
 	@Override

@@ -67,6 +67,7 @@ public class JNAeratorConfig {
             com.sun.jna.Union.class,
             null,
             null,
+            com.sun.jna.Library.class,
             null,
             "jna-runtime.jar.files"),
         JNAerator(false, true,
@@ -77,8 +78,16 @@ public class JNAeratorConfig {
             com.ochafik.lang.jnaerator.runtime.Union.class,
             null,
             null,
+            com.sun.jna.Library.class,
             com.ochafik.lang.jnaerator.runtime.Bits.class,
-            "jnaerator-runtime.jar.files"),
+            "jnaerator-runtime.jar.files") {
+
+            @Override
+            public String toString() {
+                return "JNAerator (based on JNA)";
+            }
+
+        },
         JNAeratorNL4JStructs(true, true,
             com.sun.jna.Callback.class,
             com.sun.jna.Pointer.class,
@@ -87,8 +96,16 @@ public class JNAeratorConfig {
             com.nativelibs4java.runtime.jna.Struct.class,
             com.nativelibs4java.runtime.jna.StructIO.class,
             com.nativelibs4java.runtime.jna.Array.class,
+            com.sun.jna.Library.class,
             com.nativelibs4java.runtime.ann.jna.Bits.class,
-            "jnaerator-runtime.jar.files"),
+            "jnaerator-runtime.jar.files") {
+
+            @Override
+            public String toString() {
+                return "JNAerator + experimental structs";
+            }
+
+        },
         NL4J(true, false,
             com.nativelibs4java.runtime.Callback.class,
             com.nativelibs4java.runtime.Pointer.class,
@@ -97,9 +114,18 @@ public class JNAeratorConfig {
             com.nativelibs4java.runtime.Struct.class,
             com.nativelibs4java.runtime.StructIO.class,
             com.nativelibs4java.runtime.Array.class,
+            com.nativelibs4java.runtime.NativeLib.class,
             com.nativelibs4java.runtime.ann.Bits.class,
-            "nl4j-runtime.jar.files");
+            "nl4j-runtime.jar.files") {
 
+            @Override
+            public String toString() {
+                return "Experimental dyncall-based runtime";
+            }
+
+        };
+
+        public static final Runtime DEFAULT = JNAerator;
         public enum Ann {
             Bits, FastCall, Mangling, ObjCBlock, This, ThisCall, Length, ByValue, Field, Virtual
         }
@@ -112,6 +138,7 @@ public class JNAeratorConfig {
                 Class<?> unionClass,
                 Class<?> structIOClass,
                 Class<?> arrayClass,
+                Class<?> libraryClass,
                 Class<? extends Annotation> someAnnotationClass,
                 String runtimeFilesListFileName)
         {
@@ -121,6 +148,7 @@ public class JNAeratorConfig {
             this.pointerClass = pointerClass;
             this.memoryClass = memoryClass;
             this.structClass = structClass;
+            this.libraryClass = libraryClass;
             this.unionClass = unionClass;
             this.structIOClass = structIOClass;
             this.arrayClass = arrayClass;
@@ -132,7 +160,7 @@ public class JNAeratorConfig {
         public Identifier ident(Ann ann) {
             return annotationPackage == null ? null : ElementsHelper.ident(annotationPackage, ann.toString());
         }
-        public final Class<?> callbackClass, pointerClass, memoryClass, structClass, unionClass, structIOClass, arrayClass;
+        public final Class<?> callbackClass, pointerClass, memoryClass, structClass, unionClass, structIOClass, arrayClass, libraryClass;
         public final boolean hasFastStructs;
         public final boolean hasJNA;
     }
@@ -154,7 +182,7 @@ public class JNAeratorConfig {
 	public final EnumSet<GenFeatures> features = EnumSet.allOf(GenFeatures.class);
 	public final List<CPlusPlusMangler> cPlusPlusManglers = new ArrayList<CPlusPlusMangler>();
 
-    public Runtime runtime = Runtime.JNAerator;
+    public Runtime runtime = Runtime.DEFAULT;
     
 	public static class PreprocessorConfig {
 
@@ -310,6 +338,7 @@ public class JNAeratorConfig {
 	Set<File> sourceFiles = new LinkedHashSet<File>();
 	public boolean bundleLibraries = true;
 	public boolean wcharAsShort = false;
+    public boolean charPtrAsString = false;
 	public boolean genCPlusPlus = false;
 	public File extractedSymbolsOut;
 	public boolean stringifyConstCStringReturnValues = true;

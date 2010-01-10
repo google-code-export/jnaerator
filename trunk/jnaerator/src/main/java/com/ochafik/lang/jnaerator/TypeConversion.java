@@ -96,6 +96,7 @@ import com.sun.jna.ptr.ShortByReference;
 
 import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 
 import org.rococoa.ObjCClass;
 import org.rococoa.ObjCObject;
@@ -876,6 +877,127 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
     }
 
     public NL4JConversion convertTypeToNL4J(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
+        switch (conversionMode) {
+            case FieldType:
+                return convertFieldTypeToNL4J(valueType, libraryClassName);
+            default:
+                return convertArgTypeToNL4J(valueType, libraryClassName);
+        }
+    }
+    public NL4JConversion convertFieldTypeToNL4J(TypeRef valueType, Identifier libraryClassName) throws UnsupportedConversionException {
+		TypeRef original = valueType;
+		valueType =  resolveTypeDef(valueType, libraryClassName, false);
+        String valueTypeStr = valueType.toString();
+        
+        NL4JConversion conv = new NL4JConversion();
+
+        boolean wide = false, ptr = false;
+        if (isString(valueTypeStr, false) || (wide = isString(valueTypeStr, true))) {
+            conv.wideString = wide;
+            conv.typeRef = typeRef(String.class);
+            conv.structIOFieldGetterNameRadix = "String";
+            return conv;
+        } else if (isStringPtrPtr(valueTypeStr, false) || (wide = isStringPtrPtr(valueTypeStr, true))) {
+            conv.wideString = wide;
+            conv.typeRef = arrayRef(typeRef(String.class));
+            conv.structIOFieldGetterNameRadix = "StringArray";
+            return conv;
+        }
+
+        if (valueType instanceof TargettedTypeRef) {
+            TypeRef targetRef = ((TargettedTypeRef)valueType).getTarget();
+            if (valueType instanceof Pointer.ArrayRef) {
+                Pointer.ArrayRef arrayRef = (Pointer.ArrayRef)valueType;
+                Expression x = getFlatArraySizeExpression(arrayRef, libraryClassName);
+                if (x != null) {
+                    conv.arrayLength = x;
+                    //conv.typeRef = targetRef;
+
+                    if (targetRef instanceof SimpleTypeRef) {
+                        Identifier targetName = ((SimpleTypeRef)targetRef).getName();
+                        JavaPrim prim = getPrimitive(targetRef, libraryClassName);
+                        Pair<Integer, Class<?>> p = buffersAndArityByType.get(targetName.toString());
+                        if (prim != null) {
+                            Class<? extends Buffer> bufClass = primToBuffer.get(prim);
+                            conv.typeRef = typeRef(bufClass);
+                            conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(targetName.toString());
+                            if (p != null && p.getFirst().intValue() != 1) {
+                                conv.arrayLength = expr(conv.arrayLength, BinaryOperator.Multiply, expr(p.getFirst()));
+                                conv.structIOFieldGetterNameRadix += "Buffer";
+                            }
+
+                            return conv;
+                        } else {
+                            TypeRef targetConvRef = typeRef(findStructRef(targetName, libraryClassName));
+                            if (targetConvRef == null)
+                                targetConvRef = findEnum(targetName, libraryClassName);
+                            if (targetConvRef != null) {
+                                conv.typeRef = typeRef(ident(result.config.runtime.arrayClass, expr(targetConvRef)));
+                                conv.structIOFieldGetterNameRadix = "StructArray";
+                                return conv;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (targetRef instanceof SimpleTypeRef) {
+                Identifier targetName = ((SimpleTypeRef)targetRef).getName();
+
+                TypeRef targetConvRef = typeRef(findStructRef(targetName, libraryClassName));
+                if (targetConvRef != null) {
+                    conv.structIOFieldGetterNameRadix = "Struct";
+                } else {
+                    targetConvRef = findEnum(targetName, libraryClassName);
+                    if (targetConvRef != null) {
+                        conv.structIOFieldGetterNameRadix = "Enum";
+                    }
+                }
+                if (targetConvRef != null) {
+                    conv.typeRef = targetConvRef.clone();
+                    return conv;
+                }
+            }
+            conv.typeRef = typeRef(Pointer.class);
+            conv.structIOFieldGetterNameRadix = "Pointer";
+            return conv;
+        } else if (valueType instanceof SimpleTypeRef) {
+            
+            Identifier valueName = ((SimpleTypeRef)valueType).getName();
+            TypeRef valueConvRef = typeRef(findStructRef(valueName, libraryClassName));
+            if (valueConvRef == null)
+                valueConvRef = findEnum(valueName, libraryClassName);
+
+            if (valueConvRef == null) {
+                // TODO limit to OpenCL
+                Pair<Integer, Class<?>> p = arraysAndArityByType.get(valueName.toString());
+                if (p != null) {
+                    conv.typeRef = typeRef(p.getSecond());
+                    conv.structIOFieldGetterNameRadix = structIOFieldGetterNameRadixByType.get(valueName.toString());
+                    if (p.getFirst().intValue() != 1) {
+                        conv.typeRef = arrayRef(conv.typeRef);
+                        conv.arrayLength = expr(p.getFirst());
+                        conv.byValue = true;
+                        conv.structIOFieldGetterNameRadix += "Array";
+                    } else {
+
+                    }
+                    return conv;
+                }
+
+                valueConvRef = primRef(getPrimitive(valueType, libraryClassName));
+            }
+            
+            if (valueConvRef != null) {
+                conv.typeRef = valueConvRef;
+                return conv;
+            }
+        }
+
+        throw new UnsupportedConversionException(original, "Unsupported type");
+    }
+
+    public NL4JConversion convertArgTypeToNL4J(TypeRef valueType, Identifier libraryClassName) throws UnsupportedConversionException {
 		TypeRef original = valueType;
 		valueType =  resolveTypeDef(valueType, libraryClassName, false);
 
@@ -936,7 +1058,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
             conv.structIOFieldGetterNameRadix = "Pointer";
             return conv;
         } else if (valueType instanceof SimpleTypeRef) {
-            
+
             Identifier valueName = ((SimpleTypeRef)valueType).getName();
             TypeRef valueConvRef = typeRef(findStructRef(valueName, libraryClassName));
             if (valueConvRef == null)
@@ -961,7 +1083,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 
                 valueConvRef = primRef(getPrimitive(valueType, libraryClassName));
             }
-            
+
             if (valueConvRef != null) {
                 conv.typeRef = valueConvRef;
                 return conv;
@@ -991,6 +1113,26 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
             }
         }
         return mul;
+    }
+    Pattern wstringPat = Pattern.compile("(__)?const wchar_t\\*"),
+            stringPat = Pattern.compile("(__)?const char\\*"),
+            wstringPtrPtrPat = Pattern.compile("(__)?const wchar_t\\*\\*"),
+            stringPtrPtrPat = Pattern.compile("(__)?const char\\*\\*");
+    protected boolean isString(String typeRefAsString, boolean wide) {
+        if (wide)
+            return wstringPat.matcher(typeRefAsString).matches() ||
+                result.config.charPtrAsString && typeRefAsString.equals("wchar_t*");
+        else
+            return stringPat.matcher(typeRefAsString).matches() ||
+                result.config.charPtrAsString && typeRefAsString.equals("char*");
+    }
+    protected boolean isStringPtrPtr(String typeRefAsString, boolean wide) {
+        if (wide)
+            return wstringPtrPtrPat.matcher(typeRefAsString).matches() ||
+                result.config.charPtrAsString && typeRefAsString.equals("wchar_t**");
+        else
+            return stringPtrPtrPat.matcher(typeRefAsString).matches() ||
+                result.config.charPtrAsString && typeRefAsString.equals("char**");
     }
 	public TypeRef convertTypeToJNA(TypeRef valueType, TypeConversionMode conversionMode, Identifier libraryClassName) throws UnsupportedConversionException {
 		
@@ -1024,20 +1166,20 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 			}
 		} else {
 			if (conversionMode == TypeConversionMode.ReturnType && result.config.stringifyConstCStringReturnValues) {
-				if (valueTypeString.matches("(__)?const char\\*"))
+				if (isString(valueTypeString, false))
 					return typeRef(String.class);
-				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
+				else if (isString(valueTypeString, true))
 					return typeRef(WString.class);
 				
 			} else if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter) 
 			{
-				if (valueTypeString.matches("(__)?const char\\*"))
+				if (isString(valueTypeString, false))
 					return typeRef(String.class);
-				else if (valueTypeString.matches("(__)?const wchar_t\\*"))
+				else if (isString(valueTypeString, true))
 					return typeRef(WString.class);
-				else if (valueTypeString.matches("((__)?const )?char\\*\\*"))
+				else if (isStringPtrPtr(valueTypeString, false))
 					return arrayRef(typeRef(String.class));
-				else if (valueTypeString.matches("((__)?const )?wchar_t\\*\\*"))
+				else if (isStringPtrPtr(valueTypeString, true))
 					return arrayRef(typeRef(WString.class));
 				/*else if (conversionMode == TypeConversionMode.PrimitiveOrBufferParameter) {
 					if (valueTypeString.matches("char\\*"))

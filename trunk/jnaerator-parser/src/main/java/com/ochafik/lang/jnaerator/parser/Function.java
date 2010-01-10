@@ -191,6 +191,10 @@ public class Function extends Declaration implements Declarator.MutableByDeclara
 		setArgs(args);
 	}
 
+    @Override
+    public Function addAnnotation(Annotation a) {
+        return (Function)super.addAnnotation(a);
+    }
 
 	@Override
 	public Function addModifiers(Modifier... mds) {
