@@ -369,10 +369,12 @@ public class JNAeratorStudio extends JPanel {
 					generateAction.actionPerformed(null);
 			}
 		});
-		libBox.add(new JLabel("Library Name :", JLabel.RIGHT));
+		libBox.add(new JLabel("Runtime"));
+        libBox.add(runtimeCombo);
+
+        libBox.add(new JLabel("Library Name :", JLabel.RIGHT));
 		libBox.add(libraryName);
-		
-		
+
 		Box optBox = Box.createVerticalBox();
 		optBox.add(libBox);
 		
@@ -381,13 +383,7 @@ public class JNAeratorStudio extends JPanel {
 		optPanel.add(noCommentNoManglingCb);
 		optPanel.add(structsAsTopLevelClassesCb);
         optPanel.add(charPtrAsString);
-
-        Box targetRTBox = Box.createHorizontalBox();
-        targetRTBox.add(new JLabel("Runtime"));
-        targetRTBox.add(runtimeCombo);
-        optPanel.add(targetRTBox);
-		
-		optBox.add(optPanel);
+        optBox.add(optPanel);
 		for (Component c : optBox.getComponents())
 			((JComponent)c).setAlignmentX(0);
 		
