@@ -1078,7 +1078,7 @@ public class JNAerator {
 			);
 			interf.addModifiers(Modifier.Public);
 			interf.setTag(simpleLibraryClassName);
-			Identifier libSuperInter = ident(config.runtime.libraryClass);
+            interf.addParent(ident(config.runtime.libraryClass));
 
             String libFileOrDirArgName = "libraryFileOrDirectory";
             Function constr = new Function(Function.Type.JavaMethod, fullLibraryClassName.resolveLastSimpleIdentifier().clone(), null, new Arg(libFileOrDirArgName, typeRef(File.class)));

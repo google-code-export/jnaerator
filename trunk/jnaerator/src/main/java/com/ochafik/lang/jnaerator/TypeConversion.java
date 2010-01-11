@@ -18,6 +18,9 @@
 */
 package com.ochafik.lang.jnaerator;
 
+import com.nativelibs4java.runtime.ValuedEnum;
+import com.nativelibs4java.runtime.ann.CLong;
+import com.nativelibs4java.runtime.ann.PointerSized;
 import java.nio.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +36,7 @@ import com.ochafik.lang.SyntaxUtils;
 import static com.ochafik.lang.SyntaxUtils.*;
 
 import com.ochafik.lang.jnaerator.JNAeratorConfig.GenFeatures;
+import com.ochafik.lang.jnaerator.parser.Annotation;
 import com.ochafik.lang.jnaerator.parser.Arg;
 import com.ochafik.lang.jnaerator.parser.Declaration;
 import com.ochafik.lang.jnaerator.parser.Define;
@@ -73,6 +77,7 @@ import com.ochafik.lang.jnaerator.parser.TypeRef.TargettedTypeRef;
 import com.ochafik.lang.jnaerator.parser.Declarator.ArrayDeclarator;
 import com.ochafik.lang.jnaerator.parser.Expression.BinaryOperator;
 import com.ochafik.lang.jnaerator.parser.Expression.EmptyArraySize;
+import com.ochafik.lang.jnaerator.parser.ModifiableElement;
 import com.ochafik.lang.jnaerator.runtime.CGFloatByReference;
 import com.ochafik.lang.jnaerator.runtime.CharByReference;
 import com.ochafik.lang.jnaerator.runtime.NativeSize;
@@ -96,6 +101,8 @@ import com.sun.jna.ptr.ShortByReference;
 
 import com.ochafik.lang.jnaerator.parser.ObjCppParser;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import org.rococoa.ObjCClass;
@@ -140,7 +147,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 		return javaPrims.containsKey(s);
 	}
 	public enum JavaPrim {
-		Void(null, ESize.Zero), 
+		Void(null, ESize.Zero),
 		Char(Character.TYPE, ESize.CharSize), 
 		Long(java.lang.Long.TYPE, ESize.Eight), 
 		Int(Integer.TYPE, ESize.Four), 
@@ -958,7 +965,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                     return conv;
                 }
             }
-            conv.typeRef = typeRef(Pointer.class);
+            conv.typeRef = typeRef(result.config.runtime.pointerClass);
             conv.structIOFieldGetterNameRadix = "Pointer";
             return conv;
         } else if (valueType instanceof SimpleTypeRef) {
@@ -1054,7 +1061,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
                 conv.typeRef = targetConvRef.clone();
                 return conv;
             }
-            conv.typeRef = typeRef(Pointer.class);
+            conv.typeRef = typeRef(result.config.runtime.pointerClass);
             conv.structIOFieldGetterNameRadix = "Pointer";
             return conv;
         } else if (valueType instanceof SimpleTypeRef) {
@@ -1091,6 +1098,187 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
         }
 
         throw new UnsupportedConversionException(original, "Unsupported type");
+    }
+
+    Pair<TypeRef, List<Annotation>> toRawNL4JType(TypeRef nl4jType) throws UnsupportedConversionException {
+        if (!(nl4jType instanceof SimpleTypeRef))
+            throw new UnsupportedConversionException(nl4jType, "Not a known type : " + nl4jType);
+
+        Pair<TypeRef, List<Annotation>> ret = new Pair<TypeRef, List<Annotation>>(nl4jType.clone(), Collections.EMPTY_LIST);
+        if (nl4jType instanceof TypeRef.Primitive)
+            return ret;
+
+        SimpleTypeRef str = (SimpleTypeRef)nl4jType;
+        Identifier strn = str.getName();
+        if (strn.equals(result.config.runtime.pointerClass.getName())) {
+            ret.setSecond(Arrays.asList(new Annotation(PointerSized.class)));
+            ret.setFirst(typeRef(JavaPrim.Long.type));
+        } else if (strn.equals(ValuedEnum.class.getName())) {
+            ret.setFirst(typeRef(JavaPrim.Int.type));
+        } else
+            throw new UnsupportedConversionException(nl4jType, "No raw conversion available yet for type " + nl4jType);
+
+        return ret;
+    }
+    public static class NL4JTypeConversion {
+        public enum Type {
+            Enum, Pointer, Primitive, Struct, NativeLong, NativeSize, Void, Callback
+        }
+        public NL4JTypeConversion(TypeRef typedTypeRef, Type type) {
+            this.typedTypeRef = typedTypeRef;
+            this.type = type;
+        }
+        public final TypeRef typedTypeRef;//, rawTypeRef;
+        public final Type type;
+
+        public <M extends ModifiableElement> M annotateRawType(M element) throws UnsupportedConversionException {
+            switch (type) {
+                case Enum:
+                case Primitive:
+                case Void:
+                    break;
+                case NativeLong:
+                    element.addAnnotation(new Annotation(CLong.class));
+                    break;
+                case NativeSize:
+                    element.addAnnotation(new Annotation(PointerSized.class));
+                    break;
+                case Pointer:
+                    element.addAnnotation(new Annotation(PointerSized.class));
+                    break;
+                case Struct:
+                    throw new UnsupportedConversionException(typedTypeRef, "Struct by value not supported yet");
+                default:
+                    throw new UnsupportedConversionException(typedTypeRef, "Not supported");
+            }
+            return element;
+        }
+        public TypeRef getRawType() throws UnsupportedConversionException {
+            switch (type) {
+                case Enum:
+                    return typeRef(Integer.TYPE);
+                case Pointer:
+                    return typeRef(Long.TYPE);
+                case Void:
+                case Primitive:
+                case NativeLong:
+                case NativeSize:
+                    return typedTypeRef.clone();
+                case Struct:
+                    throw new UnsupportedConversionException(typedTypeRef, "Struct by value not supported yet");
+                default:
+                    throw new UnsupportedConversionException(typedTypeRef, "Not supported");
+            }
+        }
+    }
+    NL4JTypeConversion toNL4JType(TypeRef valueType, java.util.Stack<String> namesStack) throws UnsupportedConversionException {
+        if (valueType instanceof TargettedTypeRef) {
+            TargettedTypeRef ttr = (TargettedTypeRef)valueType;
+            return new NL4JTypeConversion(
+                typeRef(ident(result.config.runtime.pointerClass, expr(toNL4JType(ttr.getTarget(), namesStack).typedTypeRef))),
+                NL4JTypeConversion.Type.Pointer
+            );
+        }
+        if (valueType instanceof SimpleTypeRef) {
+            JavaPrim prim = getPrimitive(valueType, null);
+            if (prim != null) {
+                switch (prim) {
+                    case NativeLong:
+                        return new NL4JTypeConversion(typeRef(Long.TYPE), NL4JTypeConversion.Type.NativeLong);
+                    case NativeSize:
+                        return new NL4JTypeConversion(typeRef(Long.TYPE), NL4JTypeConversion.Type.NativeSize);
+                    case Void:
+                        return new NL4JTypeConversion(typeRef("void"), NL4JTypeConversion.Type.Void);
+                    default:
+                        return new NL4JTypeConversion(typeRef(prim.type), NL4JTypeConversion.Type.Primitive);
+                }
+            }
+
+            Identifier name = ((SimpleTypeRef)valueType).getName();
+            if (name == null)
+                return null;
+
+            String nameStr = name.toString();
+            if (nameStr == null || namesStack.contains(nameStr))
+                return null;
+
+            if (namesStack == null)
+                namesStack = new Stack<String>();
+            namesStack.push(nameStr);
+            try {
+
+                Pair<TypeDef,Declarator> p = getTypeDef(name);
+                if (p != null) {
+                    TypeRef tr = p.getFirst().getValueType();//as(p.getSecond().mutateType(p.getFirst().getValueType()), TypeRef.class);
+
+                    if (tr instanceof TaggedTypeRef) {
+                        TaggedTypeRef ttr = (TaggedTypeRef)tr;
+                        Identifier name2 = result.declarationsConverter.getActualTaggedTypeName(ttr);
+                        if (name2 != null) {
+                            name = name2;
+                            nameStr = name.toString();
+                        }
+                        //if (ttr.isForwardDeclaration())
+                        //    return;
+
+                        TypeRef javaRef = typeRef(result.getTaggedTypeIdentifierInJava(ttr));
+                        if (tr instanceof Enum) {
+                            return new NL4JTypeConversion(toNL4JEnum(javaRef), NL4JTypeConversion.Type.Enum);
+                        } else if (tr instanceof Struct) {
+                            return new NL4JTypeConversion(javaRef, NL4JTypeConversion.Type.Struct);
+                        }
+
+                        
+                    } else if (tr instanceof FunctionSignature) {
+                        return new NL4JTypeConversion(findCallbackRef((FunctionSignature)tr, null), NL4JTypeConversion.Type.Callback);
+                    } else {
+                        String strs = valueType.toString();
+                        String trs = tr == null ? null : tr.toString();
+                        if (trs != null && !strs.equals(trs)) {
+                            if (trs.equals("_" + strs) && !strs.startsWith("_") || trs.equals(strs + "_") && !strs.endsWith("_")) {
+                                trs.toString();
+                            }
+                            TypeRef clo = tr.clone();
+                            return toNL4JType(clo, namesStack);
+                        }
+                    }
+                }
+
+                TypeRef manualTypeRef = manualTypeDefs.get(nameStr);
+                if (manualTypeRef != null)
+                    return toNL4JType(manualTypeRef, namesStack);
+                
+                TypeRef structRef = typeRef(findStructRef(name, null));
+                if (structRef != null) {
+                    return new NL4JTypeConversion(structRef.clone(), NL4JTypeConversion.Type.Struct);
+                }
+
+                TypeRef enumRef = findEnum(name, null);
+                if (enumRef != null) {
+                    return new NL4JTypeConversion(toNL4JEnum(enumRef), NL4JTypeConversion.Type.Enum);
+                }
+
+                Define define = result.defines.get(nameStr);
+                Expression expression = define == null ? null : define.getValue();
+                if (expression != null) {
+                    Identifier fieldName = null;
+                    if (expression instanceof Expression.VariableRef)
+                        fieldName = ((Expression.VariableRef) expression).getName();
+                    else if (expression instanceof MemberRef)
+                        fieldName = ((MemberRef) expression).getName();
+
+                    if (fieldName != null && !fieldName.equals(name))
+                        return toNL4JType(new TypeRef.SimpleTypeRef(fieldName), namesStack);
+                }
+            } finally {
+                namesStack.pop();
+            }
+        }
+        throw new UnsupportedConversionException(valueType, "Unsupported type");
+    }
+
+    TypeRef toNL4JEnum(TypeRef enumResolvedJavaRef) {
+        return typeRef(ident(ValuedEnum.class, expr(enumResolvedJavaRef.clone())));
     }
 
     public Expression getFlatArraySizeExpression(Pointer.ArrayRef arrayRef, Identifier callerLibraryName) throws UnsupportedConversionException {
@@ -1247,7 +1435,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 			JavaPrim prim = getPrimitive(target, libraryClassName);
 			if (prim != null) {
 				if (prim == JavaPrim.Void)
-					return typeRef(com.sun.jna.Pointer.class);
+					return typeRef(result.config.runtime.pointerClass);
 				else
 					convArgType = primRef(prim);
 			} else {
@@ -1321,14 +1509,14 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 							try {
 								convArgType = convertTypeToJNA(target, conversionMode, libraryClassName);
 								if (convArgType != null && result.callbacksFullNames.contains(ident(convArgType.toString())) && !(valueType instanceof ArrayRef)) {
-									TypeRef tr = typeRef(com.sun.jna.Pointer.class);
+									TypeRef tr = typeRef(result.config.runtime.pointerClass);
 									if (!result.config.noComments)
 										tr.setCommentBefore("@see " + convArgType);
 									return tr;
 								}
 								prim = getPrimitive(convArgType, libraryClassName);
 							} catch (UnsupportedConversionException ex) {
-								//convArgType = null;//return typeRef(com.sun.jna.Pointer.class);
+								//convArgType = null;//return typeRef(result.config.runtime.pointerClass);
 								if (valueType instanceof TypeRef.Pointer && 
 										target instanceof TypeRef.SimpleTypeRef &&
 										result.config.features.contains(JNAeratorConfig.GenFeatures.TypedPointersForForwardDeclarations) &&
@@ -1343,7 +1531,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 //									}
 									return typeRef(result.getFakePointer(libraryClassName, name));
 								} else {
-									return typeRef(com.sun.jna.Pointer.class);
+									return typeRef(result.config.runtime.pointerClass);
 								}
 							}
 						}
@@ -1354,7 +1542,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 						prim = getPrimitive(convArgType, libraryClassName);
 					} catch (UnsupportedConversionException ex) {
 						//convArgType = null;//
-						return typeRef(com.sun.jna.Pointer.class);
+						return typeRef(result.config.runtime.pointerClass);
 					}
 				}
 			}	
@@ -1376,13 +1564,13 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 				default:
 					if (prim != null) {
 						if (prim == JavaPrim.Byte)
-							return typeRef(com.sun.jna.Pointer.class).importDetails(convArgType, false);
+							return typeRef(result.config.runtime.pointerClass).importDetails(convArgType, false);
 						
 						Class<? extends ByReference> byRefClass = primToByReference.get(prim);
 						if (byRefClass != null)
 							return typeRef(byRefClass).importDetails(convArgType, false);
 					}
-					if (convArgType != null && !convArgType.toString().equals(com.sun.jna.Pointer.class.getName()) && valueType instanceof TypeRef.Pointer && target instanceof TypeRef.SimpleTypeRef)
+					if (convArgType != null && !convArgType.toString().equals(result.config.runtime.pointerClass.getName()) && valueType instanceof TypeRef.Pointer && target instanceof TypeRef.SimpleTypeRef)
 						return convArgType;
 					
 			}
@@ -1391,7 +1579,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 			}
 			
 			if (allowUnknownPointers)
-				return typeRef(com.sun.jna.Pointer.class);
+				return typeRef(result.config.runtime.pointerClass);
 		}
 		if (valueType instanceof SimpleTypeRef) {
 			Identifier name = ((SimpleTypeRef) valueType).getName();
@@ -1711,7 +1899,7 @@ public class TypeConversion implements ObjCppParser.ObjCParserHelper {
 		
 		Expression res = null;
 		if (type instanceof Pointer) 
-			res = memberRef(expr(typeRef(com.sun.jna.Pointer.class)), MemberRefStyle.Dot, "SIZE");
+			res = memberRef(expr(typeRef(result.config.runtime.pointerClass)), MemberRefStyle.Dot, "SIZE");
 		else if (type instanceof ArrayRef) {
 			res = sizeofToJava(((ArrayRef) type).getTarget(), libraryClassName);
 			if (res == null)

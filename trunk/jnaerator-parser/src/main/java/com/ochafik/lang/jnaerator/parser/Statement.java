@@ -20,6 +20,7 @@ package com.ochafik.lang.jnaerator.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Statement extends Element {
@@ -372,4 +373,149 @@ public abstract class Statement extends Element {
 		}
 
 	}
+
+    public static class Catch extends Statement {
+        VariablesDeclaration declaration;
+        Statement body;
+
+        public Catch() {}
+        public Catch(VariablesDeclaration declaration, Statement body) {
+            setDeclaration(declaration);
+            setBody(body);
+        }
+
+        public VariablesDeclaration getDeclaration() {
+            return declaration;
+        }
+
+        public void setDeclaration(VariablesDeclaration declaration) {
+            this.declaration = changeValue(this, this.declaration, declaration);
+        }
+
+        public Statement getBody() {
+            return body;
+        }
+
+        public void setBody(Statement body) {
+            this.body = changeValue(this, this.body, body);
+        }
+
+        @Override
+        public boolean replaceChild(Element child, Element by) {
+            if (child == getDeclaration()) {
+                setDeclaration((VariablesDeclaration)by);
+                return true;
+            }
+            if (child == getBody()) {
+                setBody((Statement)by);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Element getNextChild(Element child) {
+            return null;
+        }
+
+        @Override
+        public Element getPreviousChild(Element child) {
+            return null;
+        }
+
+        @Override
+        public String toString(CharSequence indent) {
+            return "catch (" + getDeclaration().toString(indent) + ") {\n\t" + indent + (getBody() == null ? "" : getBody().toString("\t" + indent)) + "\n" + indent + "}";
+        }
+
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visitCatch(this);
+        }
+
+
+    }
+    public static class Try extends Statement {
+        Statement tryStatement, finallyStatement;
+        final List<Catch> catches = new ArrayList<Catch>();
+
+        public Try() {}
+        public Try(Statement tryStatement, Statement finallyStatement, Catch... catches) {
+            setTryStatement(tryStatement);
+            setFinallyStatement(finallyStatement);
+            setCatches(Arrays.asList(catches));
+        }
+
+        public void setTryStatement(Statement tryStatement) {
+            this.tryStatement = changeValue(this, this.tryStatement, tryStatement);
+        }
+
+        public Statement getTryStatement() {
+            return tryStatement;
+        }
+
+        public void setFinallyStatement(Statement finallyStatement) {
+            this.finallyStatement = changeValue(this, this.finallyStatement, finallyStatement);
+        }
+
+        public Statement getFinallyStatement() {
+            return finallyStatement;
+        }
+
+        public List<Catch> getCatches() {
+            return Collections.unmodifiableList(catches);
+        }
+
+        public void setCatches(List<Catch> catches) {
+            changeValue(this, this.catches, catches);
+        }
+
+        @Override
+        public boolean replaceChild(Element child, Element by) {
+            if (child == getTryStatement()) {
+				setTryStatement((Statement)by);
+				return true;
+			}
+			if (child == getFinallyStatement()) {
+				setFinallyStatement((Statement)by);
+				return true;
+			}
+            return replaceChild(catches, Catch.class, this, child, by);
+        }
+
+        @Override
+        public Element getNextChild(Element child) {
+            return getNextSibling(catches, child);
+        }
+
+        @Override
+        public Element getPreviousChild(Element child) {
+            return getPreviousSibling(catches, child);
+        }
+
+        @Override
+        public String toString(CharSequence indent) {
+            StringBuilder b = new StringBuilder();
+            String nindent = "\t" + indent;
+            b.append("try {\n" + nindent);
+            if (getTryStatement() != null)
+                b.append(getTryStatement().toString(nindent));
+            b.append("\n" + indent + "}");
+            b.append(implode(catches, " ", indent));
+            if (getFinallyStatement() != null) {
+                b.append(" finally {\n" + indent);
+                b.append(getFinallyStatement().toString(nindent));
+                b.append("\n" + indent + "}");
+            }
+            return b.toString();
+        }
+
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visitTry(this);
+        }
+
+        
+
+    }
 }
