@@ -133,6 +133,8 @@ public class ElementsHelper {
 	public static TypeRef typeRef(Class<?> cl) {
 		if (cl.isArray())
 			return new TypeRef.ArrayRef(typeRef(cl.getComponentType()));
+        if (cl.isPrimitive() || cl == Void.class)
+            return new TypeRef.Primitive(cl.getSimpleName());
 		return new SimpleTypeRef(cl.getName().replace('$', '.'));
 	}
 
@@ -142,6 +144,9 @@ public class ElementsHelper {
 	public static TypeRef typeRef(Identifier name) {
 		return name == null ? null : new SimpleTypeRef(name);
 	}
+    public static Statement stat(Declaration d) {
+        return new Statement.DeclarationStatement(d);
+    }
 	public static Statement stat(Expression x) {
 		return new ExpressionStatement(x);
 	}

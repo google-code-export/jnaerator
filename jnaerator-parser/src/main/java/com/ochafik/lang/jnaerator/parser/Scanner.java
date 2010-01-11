@@ -18,6 +18,8 @@
 */
 package com.ochafik.lang.jnaerator.parser;
 
+import com.ochafik.lang.jnaerator.parser.Statement.Catch;
+import com.ochafik.lang.jnaerator.parser.Statement.Try;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -475,5 +477,18 @@ public class Scanner implements Visitor {
 		visitDeclaration(friendDeclaration);
 		visit(friendDeclaration.getFriend());
 	}
+
+    public void visitTry(Try tr) {
+        visitStatement(tr);
+		visit(tr.getTryStatement());
+        visit(tr.getFinallyStatement());
+        visit(tr.getCatches());
+    }
+
+    public void visitCatch(Catch ca) {
+        visitStatement(ca);
+		visit(ca.getDeclaration());
+        visit(ca.getBody());
+    }
 
 }

@@ -19,6 +19,7 @@
 package com.ochafik.lang.jnaerator;
 
 import com.nativelibs4java.runtime.FlagSet;
+import com.nativelibs4java.runtime.TempPointers;
 import com.nativelibs4java.runtime.ValuedEnum;
 import static com.ochafik.lang.SyntaxUtils.as;
 //import com.nativelibs4java.runtime.structs.StructIO;
@@ -548,7 +549,9 @@ public class DeclarationsConverter {
 		}
 		return c;
 	}
-	
+	void throwBadRuntime() {
+        throw new RuntimeException("Unhandled runtime : " + result.config.runtime.name());
+    }
 	public void convertFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName) {
 		if (result.config.functionsAccepter != null && !result.config.functionsAccepter.adapt(function))
 			return;
@@ -573,7 +576,29 @@ public class DeclarationsConverter {
 			return;
 
 		String sig = function.computeSignature(false);
-		Pair<Function, List<Function>> alternativesPair = functionAlternativesByNativeSignature.get(sig);
+
+        try {
+            switch (result.config.runtime) {
+                case JNA:
+                case JNAerator:
+                case JNAeratorNL4JStructs:
+                    convertJNAFunction(function, signatures, isCallback, out, libraryClassName, sig, functionName, library);
+                    break;
+                case NL4J:
+                    convertNL4JFunction(function, signatures, isCallback, out, libraryClassName, sig, functionName, library);
+                    break;
+                default:
+                    throwBadRuntime();
+            }
+        } catch (UnsupportedConversionException ex) {
+            out.addDeclaration(skipDeclaration(function));
+        }
+	}
+
+
+
+    private void convertJNAFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName, String sig, Identifier functionName, String library) {
+        Pair<Function, List<Function>> alternativesPair = functionAlternativesByNativeSignature.get(sig);
 		if (alternativesPair != null) {
 			if (result.config.choicesInputFile != null) {
 				for (Function alt : alternativesPair.getValue())
@@ -592,7 +617,7 @@ public class DeclarationsConverter {
 		List<Function> alternatives = alternativesPair.getValue();
 
 		Function natFunc = new Function();
-		
+
 		Element parent = function.getParentElement();
 		List<String> ns = new ArrayList<String>(function.getNameSpace());
 		boolean isMethod = parent instanceof Struct;
@@ -610,7 +635,7 @@ public class DeclarationsConverter {
 				break;
 			}
 		}
-		
+
 		if (!isMethod && library != null) {
 			Boolean alreadyRetained = Result.getMap(result.retainedRetValFunctions, library).get(functionName.toString());
 			if (alreadyRetained != null && alreadyRetained) {
@@ -630,7 +655,7 @@ public class DeclarationsConverter {
 		try {
 			//StringBuilder outPrefix = new StringBuilder();
 			TypeRef returnType = null;
-			
+
 			if (!isObjectiveC) {
 				returnType = function.getValueType();
 				if (returnType == null)
@@ -641,7 +666,7 @@ public class DeclarationsConverter {
 				returnType = RococoaUtils.fixReturnType(function);
 				functionName = ident(RococoaUtils.getMethodName(function));
 			}
-			
+
 			Identifier modifiedMethodName;
 			if (isCallback) {
 				modifiedMethodName = ident("invoke");
@@ -650,16 +675,16 @@ public class DeclarationsConverter {
 			}
 			Set<String> names = new LinkedHashSet<String>();
 			//if (ns.isEmpty())
-			
+
 			if (!result.config.noMangling)
 				if (!isCallback && !isObjectiveC && result.config.features.contains(JNAeratorConfig.GenFeatures.CPlusPlusMangling))
 					addCPlusPlusMangledNames(function, names);
-			
+
 			if (!modifiedMethodName.equals(functionName) && ns.isEmpty())
 				names.add(function.getName().toString());
 			if (function.getAsmName() != null)
 				names.add(function.getAsmName());
-			
+
 			if (!isCallback && !names.isEmpty())
 				natFunc.addAnnotation(new Annotation(result.config.runtime.ident(JNAeratorConfig.Runtime.Ann.Mangling), "({\"" + StringUtils.implode(names, "\", \"") + "\"})"));
 
@@ -676,14 +701,14 @@ public class DeclarationsConverter {
 				needsThisAnnotation = true;
 				needsThis = true;
 			}
-			
+
 			if (needsThis && !result.config.genCPlusPlus)
 				return;
 
             /*
 			if (needsThis) {
 				natFunc.addAnnotation(new Annotation(Deprecated.class));
-				
+
 				TypeRef classRef;
 				if (parent instanceof Struct) {
 					classRef = typeRef(((Struct)function.getParentElement()).getTag().clone());
@@ -694,7 +719,7 @@ public class DeclarationsConverter {
 					natFunc.addArg((Arg)new Arg("__this__", classRef)).addAnnotation(needsThisAnnotation ? new Annotation(This.class) : null);
 				}
 			}*/
-				
+
 			//if (isCallback || !modifiedMethodName.equals(functionName))
 			//	natFunc.addAnnotation(new Annotation(Name.class, "(value=\"" + functionName + "\"" + (ns.isEmpty() ? "" : ", namespace=" + namespaceArrayStr)  + (isMethod ? ", classMember=true" : "") + ")"));
 
@@ -726,17 +751,17 @@ public class DeclarationsConverter {
                     }
                 }
             }
-			
+
 			boolean alternativeOutputs = !isCallback;
-			
+
 			Function primOrBufFunc = alternativeOutputs ? natFunc.clone() : null;
 			Function natStructFunc = alternativeOutputs ? natFunc.clone() : null;
-			
+
 			Set<String> argNames = new TreeSet<String>();
 //			for (Arg arg : function.getArgs())
-//				if (arg.getName() != null) 
+//				if (arg.getName() != null)
 //					argNames.add(arg.getName());
-				
+
 			int iArg = 1;
 			for (Arg arg : function.getArgs()) {
 				if (arg.isVarArg() && arg.getValueType() == null) {
@@ -750,11 +775,11 @@ public class DeclarationsConverter {
 					}
 				} else {
 					String argName = chooseJavaArgName(arg.getName(), iArg, argNames);
-					
+
 					TypeRef mutType = arg.createMutatedType();
 					if (mutType == null)
 						throw new UnsupportedConversionException(function, "Argument " + arg.getName() + " cannot be converted");
-					
+
 					if (mutType.toString().contains("NSOpenGLContextParameter")) {
 						argName = argName.toString();
 					}
@@ -766,11 +791,11 @@ public class DeclarationsConverter {
 				}
 				iArg++;
 			}
-			
+
 			String natSign = natFunc.computeSignature(false),
 				primOrBufSign = alternativeOutputs ? primOrBufFunc.computeSignature(false) : null,
 				bufSign = alternativeOutputs ? natStructFunc.computeSignature(false) : null;
-				
+
 			if (signatures == null || signatures.methodsSignatures.add(natSign)) {
 				if (alternativeOutputs && !primOrBufSign.equals(natSign)) {
 					if (!result.config.noComments) {
@@ -785,7 +810,7 @@ public class DeclarationsConverter {
 				out.addDeclaration(natFunc);
 				alternatives.add(cleanClone(natFunc));
 			}
-			
+
 			if (alternativeOutputs) {
 				if (signatures == null || signatures.methodsSignatures.add(primOrBufSign)) {
 					collectParamComments(primOrBufFunc);
@@ -802,7 +827,114 @@ public class DeclarationsConverter {
 			if (!result.config.limitComments)
 				out.addDeclaration(new EmptyDeclaration(getFileCommentContent(function), ex.toString()));
 		}
-	}
+    }
+
+    private void convertNL4JFunction(Function function, Signatures signatures, boolean isCallback, DeclarationsHolder out, Identifier libraryClassName, String sig, Identifier functionName, String library) throws UnsupportedConversionException {
+        Function typedMethod = new Function(Type.JavaMethod, ident(functionName), null);
+        typedMethod.addModifiers(Modifier.Public);
+        
+        Function nativeMethod = new Function(Type.JavaMethod, ident(functionName), null);
+        nativeMethod.addModifiers(Modifier.Public, Modifier.Native);
+        nativeMethod.addAnnotation(new Annotation(Deprecated.class));
+
+        TypeConversion.NL4JTypeConversion retType = result.typeConverter.toNL4JType(function.getValueType(), null);
+        typedMethod.setValueType(retType.typedTypeRef);
+        retType.annotateRawType(nativeMethod).setValueType(retType.getRawType());
+
+        Map<String, TypeConversion.NL4JTypeConversion> argTypes = new LinkedHashMap<String, TypeConversion.NL4JTypeConversion>();
+        for (Arg arg : function.getArgs()) {
+            String argName = arg.getName();
+
+            TypeConversion.NL4JTypeConversion argType = result.typeConverter.toNL4JType(function.getValueType(), null);
+            argTypes.put(argName, argType);
+            typedMethod.addArg(new Arg(argName, argType.typedTypeRef));
+            nativeMethod.addArg(argType.annotateRawType(new Arg(argName, argType.getRawType())));
+        }
+
+        String natSig = nativeMethod.computeSignature(false), typSig = typedMethod.computeSignature(false);
+        if (!signatures.methodsSignatures.add(natSig))
+            return;
+
+        if (!natSig.equals(typSig)) {
+            if (!signatures.methodsSignatures.add(typSig))
+                return;
+
+            /**
+                TempPointers temp = new TempPointers(pointerTo(arg1), errOut);
+                try {
+                    return someFunction_native(temp.get(0), temp.get(1));
+                } finally {
+                    temp.release();
+                }
+             */
+            String tempPeerVarName = "tempPeers";
+            List<Expression> tempPeerExprs = new ArrayList<Expression>();
+            List<Expression> argExprs = new ArrayList<Expression>();
+
+            for (Map.Entry<String, TypeConversion.NL4JTypeConversion> e : argTypes.entrySet()) {
+                TypeConversion.NL4JTypeConversion argType = e.getValue();
+                String argName = e.getKey();
+
+                switch (argType.type) {
+                    case Pointer:
+                        argExprs.add(methodCall(varRef(tempPeerVarName), MemberRefStyle.Dot, "get", expr(tempPeerExprs.size())));
+                        tempPeerExprs.add(varRef(argName));
+                        break;
+                    case NativeLong:
+                    case NativeSize:
+                    case Primitive:
+                        argExprs.add(varRef(argName));
+                        break;
+                    case Enum:
+                        argExprs.add(new Expression.Cast(typeRef(Integer.TYPE), methodCall(varRef(argName), MemberRefStyle.Dot, "value")));
+                        break;
+                    default:
+                        throw new UnsupportedConversionException(function, "Cannot convert argument " + argName + " of type " + argType.typedTypeRef);
+                }
+            }
+            Expression call = methodCall(nativeMethod.getName().toString(), argExprs.toArray(new Expression[argExprs.size()]));
+            Statement callStat;
+            switch (retType.type) {
+                case Pointer:
+                    callStat = new Statement.Return(methodCall(expr(typeRef(result.config.runtime.pointerClass)), MemberRefStyle.Dot, "fromAddress", call));
+                    break;
+                case NativeLong:
+                case NativeSize:
+                case Primitive:
+                    callStat = new Statement.Return(call);
+                    break;
+                case Enum:
+                    callStat = new Statement.Return(methodCall(expr(retType.typedTypeRef.clone()), MemberRefStyle.Dot, "fromValue", call));
+                    break;
+                case Void:
+                    callStat = stat(call);
+                    break;
+                default:
+                    throw new UnsupportedConversionException(function, "Cannot convert return argument of type " + retType.typedTypeRef);
+            }
+            if (tempPeerExprs.isEmpty())
+                typedMethod.setBody(block(
+                    callStat
+                ));
+            else
+                typedMethod.setBody(block(
+                    stat(
+                        typeRef(TempPointers.class),
+                        tempPeerVarName,
+                        new Expression.New(
+                            typeRef(TempPointers.class),
+                            tempPeerExprs.toArray(new Expression[tempPeerExprs.size()])
+                        )
+                    ),
+                    new Statement.Try(
+                        callStat,
+                        stat(methodCall(varRef(tempPeerVarName), MemberRefStyle.Dot, "release"))
+                    )
+                ));
+            out.addDeclaration(typedMethod);
+        }
+        out.addDeclaration(nativeMethod);
+    }
 
 	protected boolean isCPlusPlusFileName(String file) {
 		if (file == null)
