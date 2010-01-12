@@ -14,7 +14,7 @@ JNAerator ships with the following libraries :
  * [http://jedit.org/ jEdit] 2.2.1 syntax highlighting package ([http://www.arachnoid.com/arachnophilia/Documentation/README.txt released to the public domain], Copyright 1998-1999 Slava Pestov, Artur Biesiadowski, Clancy Malcolm, Jonathan Revusky, Juha Lindfors and Mike Dillon)
  * [http://jalico.googlecode.com/ JaLiCo], also written by Olivier Chafik (Apache 2.0 license).
  * [http://www.junit.org JUnit 4.4] ([http://junit.sourceforge.net/cpl-v10.html CPL license]), Copyright Kent Beck, Erich Gamma, and David Saff 
- * [http://download.eclipse.org/eclipse/downloads/drops/S-3.5RC4-200906051444/index.php#JDTCORE Eclipse standalone compiler 3.5RC4]. It is released under the [http://www.eclipse.org/legal/epl-v10.html Eclipse Public License 1.0] and its source is available on Eclipse's website.
+ * [http://download.eclipse.org/eclipse/downloads/drops/S-3.5RC4-200906051444/index.php#JDTCORE Eclipse standalone compiler 3.5]. It is released under the [http://www.eclipse.org/legal/epl-v10.html Eclipse Public License 1.0] and its source is available on Eclipse's website.
 
 Please read the following sections for licensing details related to the aforementioned libraries.
 
@@ -58,7 +58,5 @@ Neither the name of the author nor the names of its contributors may be used to 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 = JUnit 4.4 =
-
-As JNAerator is still under heavy development, it ships with JUnit 4.4 and has a command line argument test switch.
 
 [http://www.junit.org JUnit 4.4] is written by Kent Beck, Erich Gamma, and David Saff and released under the [http://junit.sourceforge.net/cpl-v10.html Common Public License].
