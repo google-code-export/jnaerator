@@ -1,0 +1,5 @@
+#summary JNAerator's source code and build instructions
+
+JNAerator's sources are now hosted on [http://code.google.com/p/nativelibs4java/source/browse/ NativeLibs4Java's SVN repository].
+
+Build instructions can be found [http://code.google.com/p/javacl/wiki/Build here].
