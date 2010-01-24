@@ -29,6 +29,19 @@ will produce {{{ MySolution.jar }}}
 
 This is already done by default, provided that you add the paths to all needed libraries binaries to JNAerator's command line.
 
+= Where are libraries looked for at run-time ? =
+
+If you've opted for library bundling within the JNAerated JAR (see previous question), your libraries are shipped with your JAR and need not be pre-installed on the system. JNAerator will extract them in the directory `.jnaerator/extractedLibraries` under the user's home directory and will use them directly from there.
+
+For a library with name 'foo' (which shared library files are named 'foo.dll', 'libfoo.so', 'libfoo.dylib'...), JNAerator's runtime will try the following PATH values, in order :
+  * Java preference 'library.foo' (modifiable with `System.setPreference("library.foo", somePath)`)
+  * Environment variable 'FOO_LIBRARY' (`set FOO_LIBRARY=c:\somewhere`on windows, `export FOO_LIBRARY=...` on Unix)
+  * Java preference 'jna.library.path'
+  * Java preference 'java.library.path'
+  * Default system's shared library path environment variable : `PATH` on Windows, `LD_LIBRARY_PATH` on Linux, and `DYLD_LIBRARY_PATH` on OSX.
+
+For  more information please see [https://jna.dev.java.net/#getting_started JNA's documentation] and [CommandLineOptionsAndEnvironmentVariables].
+
 = How to use MacOS X frameworks from Java ? = 
 
 For most commonly used public frameworks, you should simply download Rococoa and use it alone.
