@@ -6,7 +6,7 @@
 
 Here are a few links to useful pieces of documentation for JNAerator :
 
-  * Simple example of use of JNAerator : [SimpleMeaningfulExample].
+  * Simple example : [SimpleMeaningfulExample].
   * [JNAeratorFAQ JNAerator's FAQ]
   * [CToJavaTransformation How JNAerator maps C/ObjectiveC to Java/JNA]
   * [CommandLineOptionsAndEnvironmentVariables JNAerator's supported command line options and environment variables] 
