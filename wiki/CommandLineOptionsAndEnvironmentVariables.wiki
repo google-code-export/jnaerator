@@ -21,6 +21,10 @@
   Add a directory to the frameworks path. See doc of JNAERATOR_FRAMEWORKS_PATH
  * *-I(.+)?* <dir: File>
   Add a directory to the include path. See doc of JNAERATOR_INCLUDE_PATH
+ * *-U(.+)* <symbolName: String>
+  Undefine a preprocessor symbol after the autoconfiguration phase.
+ * *-addRootDir* <dir: ExistingDir>
+  Remove this directory from the path of descendant source files in the generated documentation.
  * *-allowedFileExts* <extensions: String>
   Colon-separated list of file extensions used to restrict files used when recursing on directories, or "`*`" to parse all files (by default = h:hpp:hxx)
  * *-arch* <archName: String>
@@ -71,6 +75,8 @@
   Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.
  * *-noAuto*
   No auto-configuration of preprocessor symbols and paths
+ * *-noAutoImport*
+  Don't add import statements automatically to output java source files
  * *-noComments*
   Don't output any member comment.
  * *-noMangling*
@@ -85,6 +91,8 @@
   Do not define the __cplusplus symbol
  * *-o* <outDir: OutputDir>
   Output directory for all artifacts
+ * *-onlineDoc* <linkDisplayFormat: MessageFormat> <urlMessageFormat: MessageFormat>
+  Define a format for online documentation URLs (uses MessageFormat syntax, with arg 0 being the name of the function / structure).
  * *-package* <forcedPackageName: String>
   Set the Java package in which all the output will reside (by default, set to the library name).
  * *-preferJavac*
@@ -95,12 +103,16 @@
   Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. "Release|Win32").
  * *-root(?:Package)?* <package: String>
   Define the root package for all output classes
+ * *-runtime* <enum: Enum>
+  Choose target runtime library between JNA, JNAerator (based on JNA), JNAerator + experimental structs, Experimental dyncall-based runtime (default: JNAerator (based on JNA)).
  * *-scalaOut* <outDir: OutputDir>
   [Experimental] Output Scala wrappers (callbacks implicits...)
  * *-scanSymbols*
   Extract, unmangle and parse the symbols all listed shared libraries
  * *-sizeAsLong*
   Treat size_t and ptrdiff_t values as 'long' values. ONLY HERE FOR COMPATIBILITY WITH PREVIOUS VERSIONS, WILL EVENTUALLY BE REMOVED.
+ * *-skipIncludedFrameworks*
+  Skip Included Frameworks
  * *-structsInLibrary*
   Force structs to be JNAerated as inner classes of their declaring libraries (otherwise, each top-level structure is defined as a top-level class in its library's package)
  * *-studio*
