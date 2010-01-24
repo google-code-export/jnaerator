@@ -4,10 +4,9 @@
 
 <wiki:toc max_depth="3" />
 
-To see a simple example of use of JNAerator, please visit [SimpleMeaningfulExample].
+Here are a few links to useful pieces of documentation for JNAerator :
 
-A list of frequent questions and answers is available here : [JNAeratorFAQ JNAerator's FAQ].
-
-Then you may want to learn more about how [CToJavaTransformation JNAerator maps C/ObjectiveC to Java/JNA].
-
-Finally, you may also want to have a look at the various [CommandLineOptionsAndEnvironmentVariables  command line options and environment variables] supported by JNAerator.
+  * Simple example of use of JNAerator : [SimpleMeaningfulExample].
+  * [JNAeratorFAQ JNAerator's FAQ]
+  * [CToJavaTransformation How JNAerator maps C/ObjectiveC to Java/JNA]
+  * [CommandLineOptionsAndEnvironmentVariables JNAerator's supported command line options and environment variables] 
