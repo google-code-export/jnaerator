@@ -4,7 +4,7 @@
 
 = Overview =
 
-JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2009 (everything that lies in the `com.ochafik.*`, `com.bridj.*` and `com.nativelibs4java.*` packages]).
+JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2010 (everything that lies in the `com.ochafik.*`, `com.bridj.*` and `com.nativelibs4java.*` packages]).
 
 JNAerator ships with the following libraries :
  * [http://bridj.googlecode.com/ BridJ] (BSD license, Copyright (c) 2009, Olivier Chafik) : A new C/C++ interop library akin to JNA
