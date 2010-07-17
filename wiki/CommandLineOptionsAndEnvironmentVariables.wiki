@@ -29,6 +29,8 @@
   Colon-separated list of file extensions used to restrict files used when recursing on directories, or "`*`" to parse all files (by default = h:hpp:hxx)
  * *-arch* <archName: String>
   Define the current architecture for libraries (state variable)
+ * *-beanStructs*
+  Generate getters and setters for struct fields
  * *-bridgeSupportOut* <outFile: OutputFile>
   Write the definitions extracted from bridgesupport files in a file (automatically set when ${Verbose} is used).
  * *-choices* <choicesFile: ExistingFile>
@@ -53,6 +55,8 @@
   Use GCC convention for size of 'long' (4 bytes on 32 bits platforms, 8 bytes on 64 bits platforms).
  * *-genCPlusPlus*
   [Experimental, Not working at all] Generate C++ classes.
+ * *-genPrivateMembers*
+  Generate wrappers for private fields and methods (will be protected and deprecated).
  * *-gui*
   Show minimalist progression GUI
  * *-h(?:elp)?*
@@ -61,6 +65,8 @@
   Conditional evaluation of an argument if a java system property matches a regular expression
  * *-jar* <outFile: OutputFile>
   Jar file where all generated sources and the compiled classes go
+ * *-libFile* <resourceFile: ExistingFile>
+  Bundle the provided file with the JNAerated JAR so that it is extracted with the library when it is first used.
  * *-library* <libName: String>
   Define the name of the output library. This is a state parameter, it will affect all files listed after it, until another -library switch is provided. It does not affect sources included from a project file (Visual Studio...).
   C functions exported in library "test" will end up in class "TestLibrary", for instance. 
@@ -104,15 +110,19 @@
  * *-root(?:Package)?* <package: String>
   Define the root package for all output classes
  * *-runtime* <enum: Enum>
-  Choose target runtime library between JNA, JNAerator (based on JNA), JNAerator + experimental structs, Experimental dyncall-based runtime (default: JNAerator (based on JNA)).
+  Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: JNAerator (based on JNA)).
  * *-scalaOut* <outDir: OutputDir>
   [Experimental] Output Scala wrappers (callbacks implicits...)
+ * *-scalaStructSetters*
+  Generate Scala-style setters for BridJ structs (with a name like fieldName_$eq)
  * *-scanSymbols*
   Extract, unmangle and parse the symbols all listed shared libraries
  * *-sizeAsLong*
   Treat size_t and ptrdiff_t values as 'long' values. ONLY HERE FOR COMPATIBILITY WITH PREVIOUS VERSIONS, WILL EVENTUALLY BE REMOVED.
  * *-skipIncludedFrameworks*
   Skip Included Frameworks
+ * *-skipLibraryInstance*
+  Skip library instance declarations
  * *-structsInLibrary*
   Force structs to be JNAerated as inner classes of their declaring libraries (otherwise, each top-level structure is defined as a top-level class in its library's package)
  * *-studio*
