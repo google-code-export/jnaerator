@@ -38,6 +38,8 @@ void CopyBytes(char* dest, const char* source, size_t n, const int* intArray);
 java -jar jnaerator.jar -library Test Test.h -o . -v -noJar -noComp
 }}}
 
+(see [CommandLineOptionsAndEnvironmentVariables] for more options)
+
 = JNAerator output =
 
 File {{{ test/TestLibrary.java }}}
