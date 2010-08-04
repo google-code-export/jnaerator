@@ -83,6 +83,21 @@ You can create a file with the extension `.jnaerator` that will contain all your
 
 Please read [JNAeratorFiles] for more information.
 
+= My header includes other headers, what should I do ? =
+
+You just need to make sure that [http://www.anarres.org/projects/jcpp/ JNAerator's integrated preprocessor] can resolve these includes.
+
+JNAerator has a list of include paths that can be extended using the standard -I switch (which most if not all compilers accept) : adding "-Ipath" to the command line will add path to the include directories.
+
+For instance, if one of your headers includes `core/structs.h` and you know that this header is located in `/usr/myTestLib/include/core/structs.h`, you need to add the following argument to the command line (or to your `.jnaerator` file) :
+{{{
+  -I/usr/myTestLib/include
+}}}
+
+Note that JNAerator *should* have default include paths for the most common system headers.
+
+For more details on JNAerator's command line switches, see [CommandLineOptionsAndEnvironmentVariables].
+
 = I found a bug in JNAerator. Where shall I file it ? = 
 
 The [http://code.google.com/p/jnaerator/issues Issues] section is here for that.
