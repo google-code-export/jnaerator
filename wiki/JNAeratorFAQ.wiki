@@ -69,6 +69,14 @@ You can solve this by increasing the maximum memory allocated to the JVM :
 java -Xmx500m -jar jnaerator.jar your-arguments-here
 }}}
 
+= There's no .java output =
+
+Use the `-noComp -noJar` switches (see [CommandLineOptionsAndEnvironmentVariables] for more options)
+
+= There's no output at all, or with no useful symbols and functions =
+
+Please read [TroubleShootingJNAeration]
+
 = I found a bug in JNAerator. Where shall I file it ? = 
 
 The [http://code.google.com/p/jnaerator/issues Issues] section is here for that.
