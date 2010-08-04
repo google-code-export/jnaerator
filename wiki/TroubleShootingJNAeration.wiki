@@ -4,9 +4,18 @@ First, make sure you've read all of the [JNAeratorFAQ] and [SimpleMeaningfulExam
 
 Parsing complex headers (including system headers) rarely yields successful results on the first attempt, so you might need some tweaking.
 
+= Parsing Errors =
+
 If (when) things go wrong, you can :
   * look at your `TestLibrary.java` file (if it's generated at all) : search for "skipped" (case-insensitive) or "error" for symbols that failed to be converted
   * look at `_jnaerator.preprocessed.c` to see which macros failed to expand (and the include files as needed or define symbols in command line with `-DMY_SYMBOL=` or `-DMY_SYMBOL=SomeValue`)
   * look at `out.errors.txt`, that gives (too) highly verbose parsing errors with line number that corresponds to `_jnaerator.preprocessed.c` : these parsing errors typically occur when a macro wasn't expanded (see above) or when a C typedef is missing.
 
 Note that these files are generated automatically when you use the `-v` (verbose) switch (see [CommandLineOptionsAndEnvironmentVariables] for more options).
+
+= Compilation Errors =
+
+If _JNAerator_ fails to compile the code it generates (when you haven't specified the `-noJar -noComp` [CommandLineOptionsAndEnvironmentVariables command line switches]), this is a bug in JNAerator. [http://code.google.com/p/jnaerator/issues/list Please report it here] with as much detail as you can.
+
+If _you_ fail to compile JNAerated code, that's another matter :
+  * make sure you've added JNAeratorRuntime.jar to your classpath
