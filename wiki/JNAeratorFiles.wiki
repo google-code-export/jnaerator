@@ -9,10 +9,12 @@ JNAerator files support :
   * environment variables substitutions : 
   `$(SOME_VAR)`
   * line and block comments with the C syntax :
-  {{{ /// line comment
+  {{{ 
+/// line comment
 /*
   Block comment
-*/ }}}
+*/ 
+}}}
 
 Here's a fancy example of such a file :
 {{{
