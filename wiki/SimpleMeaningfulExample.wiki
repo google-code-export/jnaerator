@@ -176,3 +176,7 @@ Please read the page [Documentation].
 = Try it for yourself ! =
 
 Simply download [http://jna.dev.java.net jna.jar] and [http://ochafik.free.fr/Java/jnaerator.jar jnaerator.jar] and you'll be generating your JNA interfaces in a minute !
+
+= Nothing works as expected ? =
+
+Please read [JNAeratorFAQ] and [TroubleShootingJNAeration], or post your question to the [https://jna.dev.java.net/servlets/SummarizeList?listName=users JNA users mailing list].
