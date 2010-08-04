@@ -6,7 +6,7 @@ Additionally, `.jnaerator` files are associated to [http://jnaerator.sourceforge
 
 JNAerator files support :
   * nested file inclusions
-  * environment variables substitutions : 
+  * environment variables substitutions (with a special variable `DIR` set to the `.jnaerator` file's parent directory) : 
   `$(SOME_VAR)`
   * line and block comments with the C syntax :
   {{{ 
