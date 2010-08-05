@@ -83,6 +83,15 @@ You can create a file with the extension `.jnaerator` that will contain all your
 
 Please read [JNAeratorFiles] for more information.
 
+= Can I JNAerate multiple libraries at the same time ? =
+
+Sure thing, you can chain multiple `-library` switches :
+{{{
+-library Mine1 mine1.h libmine1.so -library Mine2 mine2.h libmine2.so -library Mine3 mine3.h libmine3.so
+}}}
+
+Here's a real-world example : [http://code.google.com/p/nativelibs4java/source/browse/trunk/libraries/OpenCV/config.jnaerator OpenCV4Java's config.jnaerator file].
+
 = My header includes other headers, what should I do ? =
 
 You just need to make sure that [http://www.anarres.org/projects/jcpp/ JNAerator's integrated preprocessor] can resolve these includes.
