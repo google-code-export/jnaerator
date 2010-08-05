@@ -1,6 +1,12 @@
 #summary JNAerator's command-line options & environment variables
 #sidebar sidebar
 
+= JNAerator Files =
+
+As the number of arguments needed for a project might quickly grow and produce insane command lines, you might consider putting some or all of your arguments in a `*.jnaerator` file (preferably, `config.jnaerator`).
+
+Please read [JNAeratorFiles] for more details.
+
 = Syntax =
 
 {{{ java -jar jnaerator.jar options headerFiles dynamicLibrariesFiles }}}
