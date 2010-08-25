@@ -8,6 +8,7 @@ Please feel free to list yourself in the comments or to drop a mail to [mailto:o
 = Projects =
 
   * [http://frascati.ow2.org/ FraSCAti] : an open-source implementation of the Service Component Architecture (SCA) standard.
+  * [http://cyberduck.ch/ Cyberduck] : a powerful Java FTP / SFTP / WebDAV client
   * [http://code.google.com/p/javacl/ JavaCL] : OpenCL bindings for Java with a powerful OO API
   * [http://code.google.com/p/nativelibs4java/wiki/Mono Mono4Java] : use Mono from Java
   * [http://code.google.com/p/rococoa/ Rococoa] : ObjectiveC and Cocoa bindings for Java
