@@ -1,9 +1,15 @@
 #summary List of projects and blog posts that use / refer to JNAerator
+#labels Featured
+
+= Projects =
 
   * [http://frascati.ow2.org/ FraSCAti] : an open-source implementation of the Service Component Architecture (SCA) standard.
+  * [http://code.google.com/p/javacl/ JavaCL] : OpenCL bindings for Java with a powerful OO API
+  * [http://code.google.com/p/nativelibs4java/wiki/Mono Mono4Java] : use Mono from Java
+  * [http://code.google.com/p/rococoa/ Rococoa] : ObjectiveC and Cocoa bindings for Java
+
+= Blog posts =
 
   * [http://adam.younglogic.com/?p=502 Using JNA with librpm]
-
   * [https://lists.berlios.de/pipermail/jjack-users/2009-June/000116.html JJack JNA Binding experiment]
-
   * [http://everflux.de/gnome-notify-mit-java-1171/ Gnome Notify mit Java…]
