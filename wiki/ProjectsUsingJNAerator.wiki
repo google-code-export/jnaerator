@@ -3,6 +3,8 @@
 
 JNAerator uses [CreditsAndLicense many libraries], but it's also used by others !
 
+Please feel free to list yourself in the comments or to drop a mail to [mailto:olivier.chafik@gmail.com Olivier Chafik] (JNAerator's author) to be listed here.
+
 = Projects =
 
   * [http://frascati.ow2.org/ FraSCAti] : an open-source implementation of the Service Component Architecture (SCA) standard.
