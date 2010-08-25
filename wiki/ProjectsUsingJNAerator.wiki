@@ -1,7 +1,8 @@
 #summary List of projects and blog posts that use / refer to JNAerator
 
-[http://adam.younglogic.com/?p=502 Using JNA with librpm]
+  * [http://frascati.ow2.org/ FraSCAti] : an open-source implementation of the Service Component Architecture (SCA) standard.
+  * [http://adam.younglogic.com/?p=502 Using JNA with librpm]
 
-[https://lists.berlios.de/pipermail/jjack-users/2009-June/000116.html JJack JNA Binding experiment]
+  * [https://lists.berlios.de/pipermail/jjack-users/2009-June/000116.html JJack JNA Binding experiment]
 
-[http://everflux.de/gnome-notify-mit-java-1171/ Gnome Notify mit Java…]
+  * [http://everflux.de/gnome-notify-mit-java-1171/ Gnome Notify mit Java…]
