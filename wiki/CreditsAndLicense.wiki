@@ -7,7 +7,7 @@
 JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2010 (everything that lies in the `com.ochafik.*`, `com.bridj.*` and `com.nativelibs4java.*` packages]).
 
 JNAerator ships with the following libraries :
- * [http://bridj.googlecode.com/ BridJ] (BSD license, Copyright (c) 2009, Olivier Chafik) : A new C/C++ interop library akin to JNA
+ * [http://bridj.googlecode.com/ BridJ] (BSD license, Copyright (c) 2009-2010, Olivier Chafik) : A new C/C++ interop library akin to JNA
  * [http://www.anarres.org/projects/jcpp/ Anarres JCPP] (Apache 2.0 license, Copyright (c) 2007-2008, Shevek) : [http://code.google.com/p/nativelibs4java/source/browse/trunk/libraries/jnaerator/anarres/ patched with a few fixes and enhancements (all contributed back)]
  * [http://jna.dev.java.net/ Java Native Access (JNA)] (LGPL license, Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner & others) : [http://code.google.com/p/nativelibs4java/source/browse/trunk/libraries/jnaerator/jna-jnaerator/src/main/java/com/sun/jna/Structure.java patched] with support for bit fields in structs
  * [https://rococoa.dev.java.net/ Rococoa] (LGPL license, Copyright Duncan McGregor and others, see below) : [http://ochafik.free.fr/nativelibs4java/rococoa-jnaerator.zip slightly modified to make NSObject an abstract class]
