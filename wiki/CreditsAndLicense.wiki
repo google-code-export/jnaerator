@@ -21,6 +21,8 @@ Please read the following sections for licensing details related to the aforemen
 
 Note that in accordance with the LGPL library, you should be able to use another version of JNA (possibly modified or upgraded) instead of that shipping with JNAerator. Simply make sure its JAR appears first in the classpath, or replace the com.sun.jna.`*` packages inside JNAerator.jar by the new ones.
 
+You might also be interested in seeing [ProjectsUsingJNAerator who uses JNAerator].
+
 = Anarres JCPP =
 
 Copyright (c) 2007-2008, Shevek
