@@ -15,6 +15,7 @@ Please feel free to list yourself in the comments or to drop a mail to [mailto:o
 
 = Blog posts =
 
-  * [http://adam.younglogic.com/?p=502 Using JNA with librpm]
+  * [http://www.lunatech-research.fr/node/163 Java native libraries using JNA @ Lunatech Research]
+  * [http://adam.younglogic.com/?p=502 Using JNA with librpm @ Adam Young's Weblog]
   * [https://lists.berlios.de/pipermail/jjack-users/2009-June/000116.html JJack JNA Binding experiment]
   * [http://everflux.de/gnome-notify-mit-java-1171/ Gnome Notify mit Java…]
