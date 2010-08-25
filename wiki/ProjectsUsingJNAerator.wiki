@@ -1,6 +1,8 @@
 #summary List of projects and blog posts that use / refer to JNAerator
 #labels Featured
 
+JNAerator uses [CreditsAndLicense many libraries], but it's also used by others !
+
 = Projects =
 
   * [http://frascati.ow2.org/ FraSCAti] : an open-source implementation of the Service Component Architecture (SCA) standard.
