@@ -41,9 +41,9 @@ public static class GXEntity extends TypedPointer {
 	public GXEntity(Pointer address) {
 		super(address);
 	}
-	GXEntity create(int someParam) { ... }
-	void setValue(int key, int value) { ... }
-	int getValue(int key) { ... }
+	public static GXEntity create(int someParam) { ... }
+	public void setValue(int key, int value) { ... }
+	public int getValue(int key) { ... }
 }
 }}}
 
