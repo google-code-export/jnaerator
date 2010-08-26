@@ -1,6 +1,7 @@
 #summary Credits, included libraries and licenses
 #labels Featured
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Overview =
 
