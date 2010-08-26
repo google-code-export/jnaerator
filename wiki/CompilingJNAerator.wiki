@@ -1,5 +1,6 @@
 #summary Instructions on how to compile and JNAerator from sources
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 Sources of JNAerator have recently moved over to the NativeLibs4Java SVN repository, due to sub-projects interdependencies with NL4J's experiments.
 
