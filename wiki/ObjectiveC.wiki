@@ -1,5 +1,6 @@
 #summary Details on JNAerator's support of Objective-C and MacOS X frameworks
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Introduction =
 
@@ -29,4 +30,3 @@ Create a JAR with all of the system frameworks :
 {{{
 java -Xmx1500m -jar jnaerator.jar `for F in /System/Library/Frameworks/*.framework ; do sed -E 's/^.*\/([^/]+)\.framework$/-framework \1/' ; done` -jar all-frameworks.jar
 }}}
-
