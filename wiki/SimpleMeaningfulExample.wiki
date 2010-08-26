@@ -1,5 +1,6 @@
 #summary Simple Meaningful Example : C header with its JNAerated interface.
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Input Header =
 
