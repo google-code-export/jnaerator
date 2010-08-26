@@ -57,7 +57,7 @@ Well, that's just what does a feature currently under development named "reifica
 
 = Performance = 
 
-In BridJ, performance is not taken lighly. All functions and methods are natively bound to avoid Java reflection, and in some cases (see [Design]) assembler optimizations make it possible to forward the native call roughly as quickly as with hand-written JNI.
+In BridJ, performance is not taken lighly. All functions and methods are natively bound to avoid Java reflection, and in some cases (see [http://code.google.com/p/bridj/wiki/Design]) assembler optimizations make it possible to forward the native call roughly as quickly as with hand-written JNI.
 
 The issue is that these optimizations are only available for functions and methods with primive arguments and return values, hence excluding pointers and typed pointers.
 
