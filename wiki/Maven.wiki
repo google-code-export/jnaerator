@@ -1,5 +1,6 @@
 #summary Maven repository and usage instructions
 #labels Featured
+#sidebar TOCWiki
 <wiki:toc max_depth="3" />
 
 = Introduction =
