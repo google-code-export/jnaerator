@@ -1,4 +1,6 @@
 #summary One-sentence summary of this page.
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 You can create a file with the extension `.jnaerator` that will contain all your command line arguments (see [CommandLineOptionsAndEnvironmentVariables available command line switches]).
 
