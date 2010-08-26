@@ -1,6 +1,7 @@
 #summary Description of the automatic tests performed on JNAerator
 #labels Phase-QA
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Overview =
 
