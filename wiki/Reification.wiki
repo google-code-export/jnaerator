@@ -96,3 +96,9 @@ public static class GXEntity extends TypedPointer {
 	}
 }
 }}}
+
+What gives ?
+  * Maximum speed
+  * Maximum usability !
+
+Yay !
