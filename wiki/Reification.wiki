@@ -15,6 +15,7 @@ int gxEntityGetValue(GXEntity* entity, int key);
 It is generated (for BridJ runtime) as :
 
 {{{
+public native static TestLibrary.GXEntity gxCreateEntity(int someParam);
 public native static void gxEntitySetValue(TestLibrary.GXEntity entity, int key, int value);
 public native static int gxEntityGetValue(TestLibrary.GXEntity entity, int key);
 /// Pointer to unknown (opaque) type
