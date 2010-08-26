@@ -1,4 +1,6 @@
 #summary Automatic Object-Oriented wrappings generation for C interfaces
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = A common use case =
 
