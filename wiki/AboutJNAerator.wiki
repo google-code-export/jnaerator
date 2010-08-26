@@ -1,7 +1,7 @@
 #summary General information about JNAerator
 #labels Manual
-
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Credits & License =
 
