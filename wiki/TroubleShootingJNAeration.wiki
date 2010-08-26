@@ -1,4 +1,6 @@
 #summary How to sort things out if (when) JNAeration fails
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 First, make sure you've read all of the [JNAeratorFAQ] and [SimpleMeaningfulExample].
 
