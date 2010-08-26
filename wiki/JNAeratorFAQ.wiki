@@ -3,7 +3,7 @@
 #sidebar TOCWiki
 <wiki:toc max_depth="3" />
 
-= What is JNAerator =
+= What is JNAerator ? =
 
 *JNAerator* (pronounce _‘generator’_) is a tool that *parses C / C++ & Objective-C* sources (headers) and *generates the corresponding [http://bridj.googlecode.com BridJ], [http://jna.dev.java.net/ JNA] and [https://rococoa.dev.java.net/ Rococoa]* Java interfaces.
 
