@@ -1,5 +1,6 @@
 #summary Summary of what JNAerator outputs for different kinds of C/ObjectiveC inputs
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 <wiki:toc max_depth="3" />
 
