@@ -1,5 +1,6 @@
 #summary JNAerator's command-line options & environment variables
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = JNAerator Files =
 
