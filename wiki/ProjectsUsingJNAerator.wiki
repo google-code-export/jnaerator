@@ -1,5 +1,7 @@
 #summary List of projects and blog posts that use / refer to JNAerator
 #labels Featured
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 JNAerator uses [CreditsAndLicense many libraries], but it's also used by others !
 
