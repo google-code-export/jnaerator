@@ -1,0 +1,49 @@
+#summary Automatic Object-Oriented wrappings generation for C interfaces
+
+= A common use case =
+
+Let's assume the following header from imaginary library LibGX (or OpenGX) :
+
+{{{
+typedef struct GXEntity_ GXEntity;
+
+GXEntity* gxCreateEntity(int someParam);
+void gxEntitySetValue(GXEntity* entity, int key, int value);
+int gxEntityGetValue(GXEntity* entity, int key);
+}}}
+
+It is generated (for BridJ runtime) as :
+
+{{{
+public native static void gxEntitySetValue(TestLibrary.GXEntity entity, int key, int value);
+public native static int gxEntityGetValue(TestLibrary.GXEntity entity, int key);
+/// Pointer to unknown (opaque) type
+public static class GXEntity extends TypedPointer {
+	public GXEntity(long address) {
+		super(address);
+	}
+	public GXEntity(Pointer address) {
+		super(address);
+	}
+};
+}}}
+
+Which is not very object-oriented (1-to-1 mapping to C API).
+
+What we'd like is :
+
+{{{
+public static class GXEntity extends TypedPointer {
+	public GXEntity(long address) {
+		super(address);
+	}
+	public GXEntity(Pointer address) {
+		super(address);
+	}
+	GXEntity create(int someParam) { ... }
+	void setValue(int key, int value) { ... }
+	int getValue(int key) { ... }
+}
+}}}
+
+Well, that's just what does a feature currently under development named "reification".
