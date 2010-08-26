@@ -1,6 +1,7 @@
 #summary Plans for JNAerator
 #labels Phase-Requirements,Featured
-#sidebar sidebar
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Scheduled for v1.0 = 
 
