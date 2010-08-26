@@ -1,4 +1,6 @@
 #summary How to use JNAerator as a customizable generation library
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = Introduction =
 
