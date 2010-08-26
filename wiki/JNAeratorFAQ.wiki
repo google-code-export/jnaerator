@@ -1,6 +1,7 @@
 #summary JNAerator's Frequently Asked Questions
 #labels Featured
-<wiki:toc max_depth="1" />
+#sidebar TOCWiki
+<wiki:toc max_depth="3" />
 
 = How to use `MyLib.dll` with `MyLibHeader.h` header from Java ? =
 
