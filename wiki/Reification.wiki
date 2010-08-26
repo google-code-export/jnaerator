@@ -5,7 +5,6 @@
 = A common use case =
 
 Let's assume the following header from imaginary library LibGX (or OpenGX) :
-
 {{{
 typedef struct GXEntity_ GXEntity;
 
@@ -14,7 +13,7 @@ void gxEntitySetValue(GXEntity* entity, int key, int value);
 int gxEntityGetValue(GXEntity* entity, int key);
 }}}
 
-It is generated (for BridJ runtime) as :
+With JNAerator up to version 0.9.4, it is generated (for BridJ runtime) as :
 
 {{{
 public native static TestLibrary.GXEntity gxCreateEntity(int someParam);
@@ -55,7 +54,7 @@ public static class GXEntity extends TypedPointer {
 
 Well, that's just what does a feature currently under development named "reification", scheduled for the 0.9.5 release !
 
-= Performance = 
+= Maximum Performance (w/ BridJ) = 
 
 In BridJ, performance is not taken lighly. All functions and methods are natively bound to avoid Java reflection, and in some cases (see [http://code.google.com/p/bridj/wiki/Design]) assembler optimizations make it possible to forward the native call roughly as quickly as with hand-written JNI.
 
@@ -98,7 +97,7 @@ public static class GXEntity extends TypedPointer {
 }}}
 
 What gives ?
-  * Maximum speed
+  * Maximum speed (if used with BridJ)
   * Maximum usability !
 
 Yay !
