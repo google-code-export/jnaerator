@@ -9,11 +9,10 @@ Parsing complex headers (including system headers) rarely yields successful resu
 = Parsing Errors =
 
 If (when) things go wrong, you can :
-  * look at your `TestLibrary.java` file (if it's generated at all) : search for "skipped" (case-insensitive) or "error" for symbols that failed to be converted
-  * look at `_jnaerator.preprocessed.c` to see which macros failed to expand (and the include files as needed or define symbols in command line with `-DMY_SYMBOL=` or `-DMY_SYMBOL=SomeValue`). This file should not contain `#define`s anymore.
-  * look at `out.errors.txt`, that gives (too) highly verbose parsing errors with line number that corresponds to `_jnaerator.preprocessed.c` : these parsing errors typically occur when a macro wasn't expanded (see above) or when a C typedef is missing.
-
-Note that these files are generated automatically when you use the `-v` (verbose) switch (see [CommandLineOptionsAndEnvironmentVariables] for more options).
+  * Use the `-v` (verbose) switch (see [CommandLineOptionsAndEnvironmentVariables] for more options)
+  * Look at your `TestLibrary.java` file (if it's generated at all) : search for "skipped" (case-insensitive) or "error" for symbols that failed to be converted
+  * Look at `_jnaerator.preprocessed.c` to see which macros failed to expand (and the include files as needed or define symbols in command line with `-DMY_SYMBOL=` or `-DMY_SYMBOL=SomeValue`). This file should not contain `#define`s anymore.
+  * Look at `out.errors.txt`, that gives (too) highly verbose parsing errors with line number that corresponds to `_jnaerator.preprocessed.c` : these parsing errors typically occur when a macro wasn't expanded (see above) or when a C typedef is missing.
 
 = Compilation Errors =
 
