@@ -50,9 +50,9 @@ public static class GXEntity extends TypedPointer {
 
 (idea of transformation [http://www.lunatech-research.fr/node/163 taken from manual example in this blog post])
 
-= Reification in upcoming 0.9.5 =
+= Reification in upcoming 0.9.6 =
 
-Well, that's just what does a feature currently under development named "reification", scheduled for the 0.9.5 release !
+Well, that's just what does a feature currently under development named "reification", scheduled for the 0.9.6 release !
 
 = Maximum Performance (w/ BridJ) = 
 
