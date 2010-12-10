@@ -54,6 +54,8 @@ public static class GXEntity extends TypedPointer {
 
 Well, that's just what does a feature currently under development named "reification", scheduled for the 0.9.6 release !
 
+The command line switch that activates reification is `-reification` (accessible from JNAerator Studio's GUI as well).
+
 = Maximum Performance (w/ BridJ) = 
 
 In BridJ, performance is not taken lighly. All functions and methods are natively bound to avoid Java reflection, and in some cases (see [http://code.google.com/p/bridj/wiki/Design]) assembler optimizations make it possible to forward the native call roughly as quickly as with hand-written JNI.
