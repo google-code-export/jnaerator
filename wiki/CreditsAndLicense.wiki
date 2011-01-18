@@ -5,6 +5,8 @@
 
 = Overview =
 
+<a href="http://sourceforge.net/donate/index.php?group_id=266856"><img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" /> </a>
+
 JNAerator's parser and transformation code is Copyright [http://ochafik.free.fr/ Olivier Chafik] (c) 2008-2010 (everything that lies in the `com.ochafik.*`, `com.bridj.*` and `com.nativelibs4java.*` packages]).
 
 JNAerator ships with the following libraries :
