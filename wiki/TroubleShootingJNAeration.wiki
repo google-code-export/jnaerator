@@ -14,6 +14,14 @@ If (when) things go wrong, you can :
   * Look at `_jnaerator.preprocessed.c` to see which macros failed to expand (and the include files as needed or define symbols in command line with `-DMY_SYMBOL=` or `-DMY_SYMBOL=SomeValue`). This file should not contain `#define`s anymore.
   * Look at `out.errors.txt`, that gives (too) highly verbose parsing errors with line number that corresponds to `_jnaerator.preprocessed.c` : these parsing errors typically occur when a macro wasn't expanded (see above) or when a C typedef is missing.
 
+= Order (does not) matters =
+
+The order of input header files can be significant, but the list of files is even more.
+
+The main issue is that JNAerator only generates code that relates to the files it's explicitely given as input. The reason for that is that you typically don't want to generate constants, functions and structs for just about every header that happen to be included directly or indirectly by headers explicitely listed as input (think of everything windows.h brings with itself !). 
+
+Then, some subtle issues can happen in the preprocessor and / or parser if files aren't included the right order... that's something you currently have to play a bit with to get it right.
+
 = Compilation Errors =
 
 If _JNAerator_ fails to compile the code it generates (when you haven't specified the `-noJar -noComp` [CommandLineOptionsAndEnvironmentVariables command line switches]), this is a bug in JNAerator. [http://code.google.com/p/jnaerator/issues/list Please report it here] with as much detail as you can.
