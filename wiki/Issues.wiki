@@ -1,0 +1,3 @@
+#summary Issues for JNAerator
+
+`JNAerator`'s Issue Tracker [https://github.com/ochafik/nativelibs4java/issues?sort=created&direction=desc&state=open migrated to NativeLibs4Java's GitHub Issues].
