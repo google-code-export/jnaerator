@@ -116,6 +116,13 @@ Note that JNAerator *should* have default include paths for the most common syst
 
 For more details on JNAerator's command line switches, see [CommandLineOptionsAndEnvironmentVariables].
 
+= JNAerator hangs forever ! =
+
+This can be an indication of JNAerator not having enough heap memory to 
+proceed. 
+
+You can try adding some `-Xmx2g` argument to your Java command line. If this does not help, please [Issues file a bug] with an execution trace you'll capture from `jconsole`.
+
 = I found a bug in JNAerator. Where shall I file it ? = 
 
 The [http://code.google.com/p/jnaerator/issues Issues] section is here for that.
