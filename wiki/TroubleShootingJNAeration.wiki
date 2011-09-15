@@ -2,7 +2,7 @@
 #sidebar TOCWiki
 <wiki:toc max_depth="3" />
 
-First, make sure you've read all of the [JNAeratorFAQ] and [SimpleMeaningfulExample].
+First, make sure you've read all of the [JNAeratorFAQ FAQ] and [SimpleMeaningfulExample].
 
 Parsing complex headers (including system headers) rarely yields successful results on the first attempt, so you might need some tweaking.
 
