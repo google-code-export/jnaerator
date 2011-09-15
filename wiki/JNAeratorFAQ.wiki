@@ -62,21 +62,23 @@ java -jar jnaerator.jar -framework Framework1 -framework Framework2 lib1.dylib l
 }}}
 
 = What command-line options and environment variables are available ? = 
-
+sta
 There are quite a few of them : [CommandLineOptionsAndEnvironmentVariables]
 
 = Is there a mailing list where I can ask for some help ? =
 
 For now, [https://jna.dev.java.net/servlets/SummarizeList?listName=users JNA's users mailing list] is THE place to be.
 
-= JNAerator stalls when fed with large headers = 
+= JNAerator stalls / hangs forever when fed with large headers = 
 
 This appears to be a bug coming from its ANTLR parser, which does not react well to low-memory conditions. The parsing takes ages and seems to never end.
 
 You can solve this by increasing the maximum memory allocated to the JVM :
 {{{
-java -Xmx500m -jar jnaerator.jar your-arguments-here
+java -Xmx1g -jar jnaerator.jar your-arguments-here
 }}}
+
+If this does not help, please [Issues file a bug] with an execution trace you'll capture from `jconsole`.
 
 = There's no .java output =
 
@@ -115,13 +117,6 @@ For instance, if one of your headers includes `core/structs.h` and you know that
 Note that JNAerator *should* have default include paths for the most common system headers.
 
 For more details on JNAerator's command line switches, see [CommandLineOptionsAndEnvironmentVariables].
-
-= JNAerator hangs forever ! =
-
-This can be an indication of JNAerator not having enough heap memory to 
-proceed. 
-
-You can try adding some `-Xmx2g` argument to your Java command line. If this does not help, please [Issues file a bug] with an execution trace you'll capture from `jconsole`.
 
 = I found a bug in JNAerator. Where shall I file it ? = 
 
