@@ -18,12 +18,19 @@ If (when) things go wrong, you can :
 
 If you consider the following code :
 {{{
-void MYLIB_EXPORT f(void*);
+void MYLIB_EXPORT MYLIB_STDCALL f(void*);
 }}}
 
-JNAerator won't probably be able to parse this, unless you provide it the definition of the MYLIB_EXPORT macro (which can be empty). Worse, JNAerator might be able to parse the program with silent errors (e.g. swallowing the function's pointer argument...).
+JNAerator won't probably be able to parse this, unless you provide it the definition of the MYLIB_EXPORT and MYLIB_STDCALL macros. 
+
+*Worse, JNAerator might be able to parse the program with silent errors* (e.g. swallowing the function's pointer argument...).
 
 It is always very important to look at the exact compiler command used to compile the native projects and reuse the macro definitions in JNAerator's command line so that the parsing has a chance to complete successfully.
+
+In the above example, you could add the following two arguments to JNAerator's command-line (or [JNAeratorFiles  config.jnaerator file]) :
+{{{
+-DMYLIB_EXPORT -DMYLIB_STDCALL=__stdcall
+}}}
 
 = Order (does not) matters =
 
