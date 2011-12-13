@@ -32,6 +32,11 @@ In the above example, you could add the following two arguments to JNAerator's c
 -DMYLIB_EXPORT -DMYLIB_STDCALL=__stdcall
 }}}
 
+Likewise, you might want to skip compiler-specific attributes, which sometimes break the grammar :
+{{{
+-D__attribute(x)= -D__declspec(x)=
+}}}
+
 = Order (does not) matters =
 
 The order of input header files can be significant, but the list of files is even more.
