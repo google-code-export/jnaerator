@@ -13,6 +13,7 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
 {{{ java -jar jnaerator.jar options headerFiles dynamicLibrariesFiles }}}
 
 = Options =
+
  * ** <file: OptionalFile>
   Any header (or directory containing headers at any level of hierarchy), shared library, `*`.bridgesupport file or `*`.jnaerator file
  * *(?i)-noComp*
@@ -57,6 +58,8 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   Name of output library for elements declared in files not covered by a ${CurrentLibrary} switch
  * *-direct*
   JNAerate libraries that use JNA's faster direct call convention
+ * *-emptyStructsAsForwardDecls*
+  Treat empty structs as forward declarations
  * *-entryClass* <entryClassName: String>
   Generate a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.
  * *-extractionOut* <outFile: OutputFile>
@@ -130,7 +133,7 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
  * *-root(?:Package)?* <package: String>
   Define the root package for all output classes
  * *-runtime* <enum: Enum>
-  Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: JNAerator (based on JNA)).
+  Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: BridJ (experimental dyncall-based runtime)).
  * *-scalaOut* <outDir: OutputDir>
   [Experimental] Output Scala wrappers (callbacks implicits...)
  * *-scalaStructSetters*
@@ -228,6 +231,9 @@ Credits:   JNAerator is Copyright (c) 2008-2009 Olivier Chafik
 
 	-direct
 		JNAerate libraries that use JNA's faster direct call convention
+
+	-emptyStructsAsForwardDecls
+		Treat empty structs as forward declarations
 
 	-entryClass <entryClassName: String>
 		Generate a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.
@@ -336,7 +342,7 @@ Note that a special hack is done for library "c" on Windows systems : the output
 		Define the root package for all output classes
 
 	-runtime <enum: Enum>
-		Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: JNAerator (based on JNA)).
+		Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: BridJ (experimental dyncall-based runtime)).
 
 	-scalaOut <outDir: OutputDir>
 		[Experimental] Output Scala wrappers (callbacks implicits...)
