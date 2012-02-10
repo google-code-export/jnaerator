@@ -36,7 +36,7 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   Remove this directory from the path of descendant source files in the generated documentation.
  * *-allowedFileExts* <extensions: String>
   Colon-separated list of file extensions used to restrict files used when recursing on directories, or "`*`" to parse all files (by default = h:hpp:hxx)
- * *-arch* <archName: String>
+ * *-arch* <archName: linux_x64 | linux_x86 | armeabi | sunos_x86 | sunos_sparc | darwin_universal | win32 | win64>
   Define the current architecture for libraries (state variable)
  * *-beanStructs*
   Generate getters and setters for struct fields
@@ -120,8 +120,8 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   Define a format for online documentation URLs (uses MessageFormat syntax, with arg 0 being the name of the function / structure).
  * *-package* <forcedPackageName: String>
   Set the Java package in which all the output will reside (by default, set to the library name).
- * *-parseInOneChunk*
-  Parses all the input files in one chunk, instead of splitting the input into multiple smaller parts (in theory everything should be parsed in one chunk, but in practice this means errors are not isolated from the rest of the parsing)
+ * *-parseChunks*
+  Splits the pre-processor output into multiple smaller parts and parse them separately (in theory everything should be parsed in one chunk, but in practice this means errors are not isolated from the rest of the parsing)
  * *-preferJavac*
   Use Sun's Javac compiler instead of Eclipse's ecj, if possible
  * *-preprocessingOut* <outFile: OutputFile>
@@ -132,7 +132,7 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   Automatically create OO shortcuts for functions that look like methods (typedPtr.someFunc() for someFunc(typedPtr))
  * *-root(?:Package)?* <package: String>
   Define the root package for all output classes
- * *-runtime* <enum: Enum>
+ * *-runtime* <enum: JNA | JNAerator (based on JNA) | BridJ (experimental dyncall-based runtime)>
   Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: BridJ (experimental dyncall-based runtime)).
  * *-scalaOut* <outDir: OutputDir>
   [Experimental] Output Scala wrappers (callbacks implicits...)
@@ -160,228 +160,6 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   Output a wiki-friendly help
  * *@(.+)?* <argumentsFile.jnaerator: ExistingFile>
   Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content, as well as variables substitutions : $(someEnvOrJavaVarName), with $(DIR) being the parent directory of the current arguments file.
-Credits:   JNAerator is Copyright (c) 2008-2009 Olivier Chafik
-           Includes Anarres JCPP (Apache 2.0 license), Copyright (c) 2007-2008, Shevek
-           Includes Java Native Access (JNA) (LGPL license), Copyright (c) 2006-2009 Todd Fast, Timothy Wall, Wayne Meissner and others
-           Includes Rococoa (LGPL license), Copyright (c) Copyright Duncan McGregor and others
-           Includes ANTLR's runtime (BSD license), Copyright (c) 2003-2008, Terence Parr
-           Licensing & Copyright details : http://code.google.com/p/jnaerator/wiki/CreditsAndLicense
-	 <file: OptionalFile>
-		Any header (or directory containing headers at any level of hierarchy), shared library, *.bridgesupport file or *.jnaerator file
-
-	(?i)-noComp
-		Do not compile JNAerated headers
-
-	(?i)-noJar
-		Do not create an output JAR
-
-	(?i)-noLibBundle
-		Do not bundle libraries in output JAR
-
-	-?-h(?:elp)?
-		Show command line arguments help
-
-	-D([^=]*)(?:=(.*))? <name: String> <value: String>
-		Define a macro symbol
-
-	-F(.+)? <dir: File>
-		Add a directory to the frameworks path. See doc of JNAERATOR_FRAMEWORKS_PATH
-
-	-I(.+)? <dir: File>
-		Add a directory to the include path or include a file. See doc of JNAERATOR_INCLUDE_PATH
-
-	-U(.+) <symbolName: String>
-		Undefine a preprocessor symbol after the autoconfiguration phase.
-
-	-addRootDir <dir: ExistingDir>
-		Remove this directory from the path of descendant source files in the generated documentation.
-
-	-allowedFileExts <extensions: String>
-		Colon-separated list of file extensions used to restrict files used when recursing on directories, or "*" to parse all files (by default = h:hpp:hxx)
-
-	-arch <archName: String>
-		Define the current architecture for libraries (state variable)
-
-	-beanStructs
-		Generate getters and setters for struct fields
-
-	-beautifyNames
-		Transform C names to Java-looking names : some_func() => someFunc()
-
-	-bridgeSupportOut <outFile: OutputFile>
-		Write the definitions extracted from bridgesupport files in a file (automatically set when ${Verbose} is used).
-
-	-callbacksInvokeMethodName <methodName: String>
-		Name of the invocation method of callbacks ('apply' by default)
-
-	-choices <choicesFile: ExistingFile>
-		Read the function alternative choices from a file in the format used by -choicesOut.
-
-	-choicesOut <outFile: OutputFile>
-		Write the function alternative choices made (automatically set when ${Verbose} is used).
-
-	-com
-		Generate Microsoft COM (C++) bindings.
-
-	-convertBodies
-		Experimental conversion of function bodies to equivalent Java code (BridJ only).
-
-	-defaultLibrary <libName: String>
-		Name of output library for elements declared in files not covered by a ${CurrentLibrary} switch
-
-	-direct
-		JNAerate libraries that use JNA's faster direct call convention
-
-	-emptyStructsAsForwardDecls
-		Treat empty structs as forward declarations
-
-	-entryClass <entryClassName: String>
-		Generate a class _entryclassName.EntryClassName_ that will contain all of the jnaerated libraries instances. User code will just need to static import or derive from this class to access to the instances.
-
-	-extractionOut <outFile: OutputFile>
-		Write the symbols extracted from libraries in a file (automatically set when ${Verbose} is used).
-
-	-fpreprocessed
-		Consider source files as being already preprocessed (preprocessor won't be run)
-
-	-framework <frameworkName: String>
-		JNAerate a framework using its headers and its *.bridgesupport files if available
-
-	-frameworksPath <path1:path2...: String>
-		See doc of JNAERATOR_FRAMEWORKS_PATH
-
-	-gccLong
-		Use GCC convention for size of 'long' (4 bytes on 32 bits platforms, 8 bytes on 64 bits platforms).
-
-	-genCPlusPlus
-		[Experimental, Not working at all] Generate C++ classes.
-
-	-genPrivateMembers
-		Generate wrappers for private fields and methods (will be protected and deprecated).
-
-	-gui
-		Show minimalist progression GUI
-
-	-ifRegexMatch <javaProperty: String> <regex: String> <thenArg: String> <elseArg: String>
-		Conditional evaluation of an argument if a java system property matches a regular expression
-
-	-jar <outFile: OutputFile>
-		Jar file where all generated sources and the compiled classes go
-
-	-libFile <resourceFile: ExistingFile>
-		Bundle the provided file with the JNAerated JAR so that it is extracted with the library when it is first used.
-
-	-library <libName: String>
-		Define the name of the output library. This is a state parameter, it will affect all files listed after it, until another -library switch is provided. It does not affect sources included from a project file (Visual Studio...).
-C functions exported in library "test" will end up in class "TestLibrary", for instance. 
-The name of the library is the one fed to JNA to find the shared library, so library "test" must be in "test.dll" on Windows, "libtest.dylib" on Mac OS X and  "libtest.so" on other Unices.
-Note that a special hack is done for library "c" on Windows systems : the output name is set to "msvcrt" instead of "c".
-
-
-	-libraryNamingPrefixes <commaSeparatedPrefixes: String>
-		Define prefixes commonly used in the library so that reification of functions is optimal (See -reification)
-
-	-limitComments
-		Avoid useless comments (source file + line, skipped items...)
-
-	-macrosOut <outFile: OutputFile>
-		Write the preprocessor macros in a file (automatically set when ${Verbose} is used).
-
-	-maxConstrFields <fieldCount: Int>
-		Maximum number of fields allowed for structure fields constructors. If a struct has more fields, it will only get a default constructor.
-
-	-noAuto
-		No auto-configuration of preprocessor symbols and paths
-
-	-noAutoImport
-		Don't add import statements automatically to output java source files
-
-	-noComments
-		Don't output any member comment.
-
-	-noMangling
-		Don't output any C++ name mangling information (may cause C++-decorated symbols not to be found at execution time).
-
-	-noPrimitiveArrays
-		Never output primitive arrays for function arguments (use NIO buffers instead)
-
-	-noRuntime
-		Don't copy runtime classes to JAR output
-
-	-noStringReturns
-		Prevent const char* and const wchar_t* return types from being converted to String and WString.
-
-	-nocpp
-		Do not define the __cplusplus symbol
-
-	-o <outDir: OutputDir>
-		Output directory for all artifacts
-
-	-onlineDoc <linkDisplayFormat: MessageFormat> <urlMessageFormat: MessageFormat>
-		Define a format for online documentation URLs (uses MessageFormat syntax, with arg 0 being the name of the function / structure).
-
-	-package <forcedPackageName: String>
-		Set the Java package in which all the output will reside (by default, set to the library name).
-
-	-parseInOneChunk
-		Parses all the input files in one chunk, instead of splitting the input into multiple smaller parts (in theory everything should be parsed in one chunk, but in practice this means errors are not isolated from the rest of the parsing)
-
-	-preferJavac
-		Use Sun's Javac compiler instead of Eclipse's ecj, if possible
-
-	-preprocessingOut <outFile: OutputFile>
-		Write the preprocessor output in a file (automatically set when ${Verbose} is used).
-
-	-project <solutionFile: ExistingFile> <"Config|Platform": String>
-		Read Visual Studio 2008 project or solution file and use the configuration specified (e.g. "Release|Win32").
-
-	-reification
-		Automatically create OO shortcuts for functions that look like methods (typedPtr.someFunc() for someFunc(typedPtr))
-
-	-root(?:Package)? <package: String>
-		Define the root package for all output classes
-
-	-runtime <enum: Enum>
-		Choose target runtime library between JNA, JNAerator (based on JNA), BridJ (experimental dyncall-based runtime) (default: BridJ (experimental dyncall-based runtime)).
-
-	-scalaOut <outDir: OutputDir>
-		[Experimental] Output Scala wrappers (callbacks implicits...)
-
-	-scalaStructSetters
-		Generate Scala-style setters for BridJ structs (with a name like fieldName_$eq)
-
-	-scanSymbols
-		Extract, unmangle and parse the symbols all listed shared libraries
-
-	-sizeAsLong
-		Treat size_t and ptrdiff_t values as 'long' values. ONLY HERE FOR COMPATIBILITY WITH PREVIOUS VERSIONS, WILL EVENTUALLY BE REMOVED.
-
-	-skipIncludedFrameworks
-		Skip Included Frameworks
-
-	-skipLibraryInstance
-		Skip library instance declarations
-
-	-structsInLibrary
-		Force structs to be JNAerated as inner classes of their declaring libraries (otherwise, each top-level structure is defined as a top-level class in its library's package)
-
-	-studio
-		Launch JNAeratorStudio
-
-	-synchronized
-		Generate synchronized native methods
-
-	-v(?:erbose)?
-		Verbose output (both console and files)
-
-	-wcharAsShort
-		Force treatment of wchar_t as short (char by default)
-
-	-wikiHelp
-		Output a wiki-friendly help
-
-	@(.+)? <argumentsFile.jnaerator: ExistingFile>
-		Read command-line arguments from a file. File may contain multiple lines (those beginning with "//" will be skipped), file wildcards will be resolved within the file content, as well as variables substitutions : $(someEnvOrJavaVarName), with $(DIR) being the parent directory of the current arguments file.
 
 = Environment Variables =
 
