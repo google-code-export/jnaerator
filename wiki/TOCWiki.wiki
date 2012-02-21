@@ -1,11 +1,11 @@
   * [JNAeratorFAQ FAQ]
+  * [https://github.com/ochafik/nativelibs4java/blob/master/libraries/jnaerator/CHANGELOG CHANGELOG]
   * Project
     * [AboutJNAerator]
     * [AboutJNAeratorStudio]
     * [CreditsAndLicense]
     * [ProjectsUsingJNAerator]
     * [Roadmap]
-    * [http://code.google.com/p/nativelibs4java/source/browse/trunk/libraries/jnaerator/CHANGELOG Changelog]
   * [Documentation]
     * [SimpleMeaningfulExample]
     * [JNAeratorFiles]
