@@ -21,16 +21,25 @@ TODO future developments might include Maven archetypes to bootstrap standard na
 	...
 	<repositories>
 		<repository>
-		  <id>nativelibs4java-repo</id>
-		  <name>NativeLibs4Java Maven Repository</name>
-		  <url>http://nativelibs4java.sourceforge.net/maven</url>
+			<id>sonatype</id>
+			<name>Sonatype OSS Snapshots Repository</name>
+			<url>http://oss.sonatype.org/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>nativelibs4java-repo</id>
+			<url>http://nativelibs4java.sourceforge.net/maven</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
-        	<pluginRepository>
-			  <id>nativelibs4java-pluginRepo</id>
-			  <url>http://nativelibs4java.sourceforge.net/maven</url>
-	        </pluginRepository>
+		<pluginRepository>
+			<id>sonatype</id>
+			<name>Sonatype OSS Snapshots Repository</name>
+			<url>http://oss.sonatype.org/content/groups/public</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>nativelibs4java-repo</id>
+			<url>http://nativelibs4java.sourceforge.net/maven</url>
+		</pluginRepository>
 	</pluginRepositories>
 	...
 </project>
@@ -46,9 +55,9 @@ Needed to support JNAerated sources :
 	...
 	<dependencies>
 	   <dependency>
-		<groupId>com.jnaerator</groupId>
+		<groupId>com.nativelibs4java</groupId>
 		 <artifactId>jnaerator-runtime</artifactId>
-		 <version>0.9.9</version>
+		 <version>0.9.10-SNAPSHOT</version>
 		<scope>compile</scope>
 	   </dependency>
 	</dependencies>
@@ -67,9 +76,9 @@ Needed to support JNAerated sources :
 		<plugins>
 			...
 			<plugin>
-				<groupId>com.jnaerator</groupId>
+				<groupId>com.nativelibs4java</groupId>
 				<artifactId>maven-jnaerator-plugin</artifactId>
-				<version>0.9.9</version>
+				<version>0.9.10-SNAPSHOT</version>
 			</plugin>
 			...
 		</plugins>
