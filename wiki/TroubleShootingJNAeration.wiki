@@ -51,3 +51,9 @@ If _JNAerator_ fails to compile the code it generates (when you haven't specifie
 
 If _you_ fail to compile JNAerated code, that's another matter :
   * make sure you've added JNAeratorRuntime.jar to your classpath
+
+= A work in progress =
+
+JNAerator strives to support native code initially written for GCC, Visual C++ and other compilers in C, C++ and Objective-C, which implies its parser is a hybrid piece of... err... delicate engineering.
+
+While attention is paid to avoiding regressions, it is very likely that you might have more luck with an older version of JNAerator than with the latest one : please try it, and please report the regressions.
