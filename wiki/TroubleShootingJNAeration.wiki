@@ -56,4 +56,4 @@ If _you_ fail to compile JNAerated code, that's another matter :
 
 JNAerator strives to support native code initially written for GCC, Visual C++ and other compilers in C, C++ and Objective-C, which implies its parser is a hybrid piece of... err... delicate engineering.
 
-While attention is paid to avoiding regressions, it is very likely that you might have more luck with an older version of JNAerator than with the latest one : please try it, and please report the regressions.
+While attention is paid to avoiding regressions, it is very likely that you might have more luck with an older version of JNAerator than with the latest one : please try it, and please [https://github.com/ochafik/nativelibs4java/issues/new report any regression you find].
