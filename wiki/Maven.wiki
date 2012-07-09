@@ -88,6 +88,6 @@ Needed to support JNAerated sources :
 }}}
   #  Run JNAerator through Maven with the following command :
   {{{ 
-mvn com.jnaerator:maven-jnaerator-plugin:jnaerate
+mvn com.jnaerator:maven-jnaerator-plugin:generate
 }}}
   This will create Java & Scala files in `target/generated-sources`
