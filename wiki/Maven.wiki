@@ -24,7 +24,7 @@ TODO future developments might include Maven archetypes to bootstrap standard na
 			<name>Sonatype OSS Snapshots Repository</name>
 			<url>http://oss.sonatype.org/content/groups/public</url>
 		</repository>
-                <!-- The following repo is for old snapshots -->
+                <!-- For old snapshots, please use groupId `com.jnaerator` and the following repo -->
 		<repository>
 			<id>nativelibs4java-repo</id>
 			<url>http://nativelibs4java.sourceforge.net/maven</url>
@@ -36,7 +36,7 @@ TODO future developments might include Maven archetypes to bootstrap standard na
 			<name>Sonatype OSS Snapshots Repository</name>
 			<url>http://oss.sonatype.org/content/groups/public</url>
 		</pluginRepository>
-                <!-- The following repo is for old snapshots -->
+                <!-- For old snapshots, please use groupId `com.jnaerator` and the following repo -->
 		<pluginRepository>
 			<id>nativelibs4java-repo</id>
 			<url>http://nativelibs4java.sourceforge.net/maven</url>
