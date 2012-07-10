@@ -92,3 +92,5 @@ Needed to support JNAerated sources :
 mvn com.nativelibs4java:maven-jnaerator-plugin:generate
 }}}
   This will create Java & Scala files in `target/generated-sources`
+  # For BridJ bindings, put your native libraries in `src/main/resources/lib/xyz` where `xyz` is `win32`, `win64`, `linux_x86`, `linux_x64`, etc...
+  (please see read [https://code.google.com/p/bridj/wiki/LibrariesLookup BridJ's wiki] for more information)
