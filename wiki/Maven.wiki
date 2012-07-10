@@ -68,8 +68,8 @@ Needed to support JNAerated sources :
 
 == Maven JNAerator Plugin ==
 
-  # Put command line arguments in file `src/main/jnaerator/config.jnaerator`
-  # Add the following lines to your `pom.xml` :
+  * Put command line arguments in file `src/main/jnaerator/config.jnaerator`
+  * Add the following lines to your `pom.xml` :
   {{{
 <project>
 	...
@@ -87,10 +87,10 @@ Needed to support JNAerated sources :
 	...
 </project>
 }}}
-  #  Run JNAerator through Maven with the following command :
+  *  Run JNAerator through Maven with the following command :
   {{{ 
 mvn com.nativelibs4java:maven-jnaerator-plugin:generate
 }}}
-That will create Java & Scala files in `target/generated-sources`
-  # For BridJ bindings, put your native libraries in `src/main/resources/lib/xyz` where `xyz` is `win32`, `win64`, `linux_x86`, `linux_x64`, etc...
+  That will create Java & Scala files in `target/generated-sources`
+  * For BridJ bindings, put your native libraries in `src/main/resources/lib/xyz` where `xyz` is `win32`, `win64`, `linux_x86`, `linux_x64`, etc...
   (please see read [https://code.google.com/p/bridj/wiki/LibrariesLookup BridJ's wiki] for more information)
