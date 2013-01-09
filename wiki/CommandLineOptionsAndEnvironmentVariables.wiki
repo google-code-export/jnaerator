@@ -30,6 +30,8 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   Add a directory to the frameworks path. See doc of JNAERATOR_FRAMEWORKS_PATH
  * *-I(.+)?* <dir: File>
   Add a directory to the include path or include a file. See doc of JNAERATOR_INCLUDE_PATH
+ * *-T([^=]*)(?:=(.*))?* <name: String> <value: String>
+  Define a type symbol
  * *-U(.+)* <symbolName: String>
   Undefine a preprocessor symbol after the autoconfiguration phase.
  * *-addRootDir* <dir: ExistingDir>
@@ -39,7 +41,7 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
  * *-arch* <archName: linux_x64 | linux_x86 | armeabi | sunos_x86 | sunos_sparc | darwin_universal | win32 | win64>
   Define the current architecture for libraries (state variable)
  * *-beanStructs*
-  Generate getters and setters for struct fields
+  Generate getters and setters for struct fields (JNA & JNAerator runtimes only)
  * *-beautifyNames*
   Transform C names to Java-looking names : some_func() => someFunc()
  * *-bridgeSupportOut* <outFile: OutputFile>
@@ -80,6 +82,8 @@ Please read [JNAeratorFiles] for more details about these files, and [JNAeratorF
   [Experimental, Not working at all] Generate C++ classes.
  * *-genPrivateMembers*
   Generate wrappers for private fields and methods (will be protected and deprecated).
+ * *-genRawBindings*
+  Generate raw bindings amenable for assembler optimizations.
  * *-gui*
   Show minimalist progression GUI
  * *-ifRegexMatch* <javaProperty: String> <regex: String> <thenArg: String> <elseArg: String>
