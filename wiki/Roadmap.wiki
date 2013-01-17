@@ -5,7 +5,6 @@
 
 = Scheduled for v1.0 = 
 
-  * context-sensitive C modifiers (right now cannot use "byval" as an identifier as it is an ObjectiveC function argument modifier !)
   * GUI to choose elements to JNAerate and customize mappings (with batchable actions, filter-as-you-type...)
     * -choose creates a .jnaeratorChoices file
     * -choices test.jnaeratorChoices uses it
@@ -13,13 +12,9 @@
 = Unscheduled =
 
   * fix file association of .jnaerator files on Mac OS X (register a listener to web start services so that the argument file is read... on Windows, it is passed with -open file as arguments, so it already works).
-  * *IN PROGRESS (fields = ok)* Support C++ virtual structs and classes + inheritage, at least for fields (add a vptr, extend classes, handle multiple inheritance, be careful of virtual inheritance). Second (harder) step might involve parsing the vtable (first support Visual C++ 2008), and matching the mangled names to route method calls... Thrilling !
   * Support URLs in arguments, with automatic local caching, support of wildcards (list files at arbitrary http URL), integration with preprocessor...
   * More elaborate variable replacements in .jnaerator files : default values (w/ or w/o prompt to user), implicit download, script expressions...)
   * allow predefined source content to be prepared for each output class - raw text or velocity macro, post trigger w/ script api ? 
-  * make jnaeration features selectable from the GUI & CLI
-  * [http://code.google.com/p/jnaerator/issues/detail?id=5 Translate macros and inline functions to Java]
+  * expose all CLI jnaeration options through the GUI
   * define -visibility switch to control choice of exported functions : __declspec(dllexport), not __attribute((visibility=hiddden)), always... + warnings when no symbol is exported : "are you sure you didn't miss a '-visibility all' switch ?"
   * enhance the error reporting of parsing (work on antlr grammar) and of compilation
-  * refactor entirely the convertTypeToJNA method to something much cleaner (scanner ?)
-  * select Objective-C classes needed to be exported (actually, resolve C structs needed by input headers as well)
