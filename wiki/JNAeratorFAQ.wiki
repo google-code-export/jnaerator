@@ -14,7 +14,7 @@ By default, JNAerator creates ready-to-use compiled JARs with self-extractible n
 = How to use `MyLib.dll` with `MyLibHeader.h` header from Java ? =
 
 {{{
-java -jar jnaerator.jar MyLib.dll MyLibHeader.h
+java -jar jnaerator.jar MyLib.dll MyLibHeader.h -mode StandaloneJar
 }}}
 will produce {{{ MyLib.jar }}}
 
@@ -22,7 +22,7 @@ will produce {{{ MyLib.jar }}}
 
 This is experimental and has big limitations, but simple cases should work :
 {{{
-java -jar jnaerator.jar MyLib.dll MyLibHeader.h -scanSymbols
+java -jar jnaerator.jar MyLib.dll MyLibHeader.h -scanSymbols -mode StandaloneJar
 }}}
 will produce {{{ MyLib.jar }}}
 
@@ -30,7 +30,7 @@ will produce {{{ MyLib.jar }}}
 
 First make sure you compiled your solution in Release for both Win32 and Win64 targets, if needed.
 {{{
-java -jar jnaerator.jar MyLibHeader.sln
+java -jar jnaerator.jar MyLibHeader.sln -mode StandaloneJar
 }}}
 will produce {{{ MySolution.jar }}}
 
@@ -58,7 +58,7 @@ For most commonly used public frameworks, you should simply download Rococoa and
 If you need frameworks not covered by Rococoa, wish to use private headers and / or frameworks or ObjectiveC libraries for which no headers are available, then you should use JNAerator :
 
 {{{
-java -jar jnaerator.jar -framework Framework1 -framework Framework2 lib1.dylib lib2.dylib...
+java -jar jnaerator.jar -mode StandaloneJar -framework Framework1 -framework Framework2 lib1.dylib lib2.dylib... 
 }}}
 
 = What command-line options and environment variables are available ? = 
