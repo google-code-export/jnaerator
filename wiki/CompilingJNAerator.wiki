@@ -2,8 +2,21 @@
 #sidebar TOCWiki
 <wiki:toc max_depth="3" />
 
-Sources of JNAerator have recently moved over to the NativeLibs4Java SVN repository, due to sub-projects interdependencies with NL4J's experiments.
+To build JNAerator, run the following commands:
+```
+git clone git://github.com/ochafik/nativelibs4java.git
+cd nativelibs4java
+cd libraries/jnaerator
+mvn clean install
+```
 
-Up-to-date build instructions can be found here :
+You'll find `jnaerator-x-shaded.jar` in `nativelibs4java/libraries/jnaerator/jnaerator/target`.
 
-[http://code.google.com/p/javacl/wiki/Build NativeLibs4Java's Build Instructions]
+If you also wish to build BridJ, run the following from the `nativelibs4java` folder:
+```
+cd libraries/BridJ
+mvn clean install
+../scripts/listRuntime
+cd ../jnaerator
+mvn clean install
+```
