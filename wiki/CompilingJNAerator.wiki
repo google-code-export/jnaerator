@@ -20,3 +20,5 @@ mvn clean install
 cd ../jnaerator
 mvn clean install
 }}}
+
+JNAerator is a moving target and some of its tests might be broken on some platforms. If that's the case, you can skip tests with `-DskipTests` in your Maven command line.
