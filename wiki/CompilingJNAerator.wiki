@@ -3,20 +3,20 @@
 <wiki:toc max_depth="3" />
 
 To build JNAerator, run the following commands:
-```
+{{{
 git clone git://github.com/ochafik/nativelibs4java.git
 cd nativelibs4java
 cd libraries/jnaerator
 mvn clean install
-```
+}}}
 
 You'll find `jnaerator-x-shaded.jar` in `nativelibs4java/libraries/jnaerator/jnaerator/target`.
 
 If you also wish to build BridJ, run the following from the `nativelibs4java` folder:
-```
+{{{
 cd libraries/BridJ
 mvn clean install
 ../scripts/listRuntime
 cd ../jnaerator
 mvn clean install
-```
+}}}
