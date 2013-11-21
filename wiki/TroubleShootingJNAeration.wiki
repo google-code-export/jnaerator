@@ -14,6 +14,12 @@ If (when) things go wrong, you can :
   * Look at `_jnaerator.preprocessed.c` to see which macros failed to expand (and the include files as needed or define symbols in command line with `-DMY_SYMBOL=` or `-DMY_SYMBOL=SomeValue`). This file should not contain `#define`s anymore.
   * Look at `out.errors.txt`, that gives (too) highly verbose parsing errors with line number that corresponds to `_jnaerator.preprocessed.c` : these parsing errors typically occur when a macro wasn't expanded (see above) or when a C typedef is missing.
 
+= Parsing chunks =
+
+In C, the macro preprocessor is responsible for resolving includes and assembling a large input for the C parser.
+The problem with that is usually drags in some core system headers with exotic syntaxes, which JNAerator sometimes chokes upon. And JNAerator is lazy: it just gives up at the first parsing error...
+A workaround is to use `-parseChunks`, which chunks the preprocessor output into smaller chunks (using the preprocessor `#line` directives), allowing it to resume parsing after errors.
+
 = When the parser gets loose =
 
 If you consider the following code :
