@@ -2,6 +2,7 @@
 #sidebar TOCWiki
 <wiki:toc max_depth="3" />
 
-  * Latest release: [http://search.maven.org/#artifactdetails%7Ccom.nativelibs4java%7Cbridj%7C0.6.2%7Cbundle 0.6.2]
-  * Latest snapshot: [https://oss.sonatype.org/content/groups/public/com/nativelibs4java/bridj/0.7-SNAPSHOT/ 0.7-SNAPSHOT]
+Please make sure to download the `-shaded.jar`-suffixed artifact:
+  * Latest release: [http://search.maven.org/#artifactdetails%7Ccom.nativelibs4java%7Cjnaerator%7C0.11%7Cjar 0.11]
+  * Latest snapshot: [https://oss.sonatype.org/content/groups/public/com/nativelibs4java/jnaerator/0.12-SNAPSHOT/ 0.12-SNAPSHOT]
   * [https://code.google.com/p/jnaerator/downloads/list Previous releases]
