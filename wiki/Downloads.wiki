@@ -3,7 +3,9 @@
 <wiki:toc max_depth="3" />
 
 Please make sure to download the artifact with a `-shaded.jar` suffix:
-  * [http://nativelibs4java.sourceforge.net/webstart/jnaerator/JNAeratorStudio.jnlp JNAeratorStudio] (Web Start Link to the latest snapshot)
   * Latest snapshot: [https://oss.sonatype.org/content/groups/public/com/nativelibs4java/jnaerator/0.12-SNAPSHOT/ 0.12-SNAPSHOT]
   * Latest release: [http://search.maven.org/#artifactdetails%7Ccom.nativelibs4java%7Cjnaerator%7C0.11%7Cjar 0.11]
   * [https://code.google.com/p/jnaerator/downloads/list Previous releases]
+
+Web Start of latest snapshot:
+  * [http://nativelibs4java.sourceforge.net/webstart/jnaerator/JNAeratorStudio.jnlp JNAeratorStudio] (JNAerator's limited GUI, great for quick tests)
