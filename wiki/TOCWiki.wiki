@@ -1,5 +1,6 @@
   * [JNAeratorFAQ FAQ]
   * [https://github.com/ochafik/nativelibs4java/blob/master/libraries/jnaerator/CHANGELOG CHANGELOG]
+  * [Downloads]
   * Project
     * [AboutJNAerator]
     * [AboutJNAeratorStudio]
@@ -15,7 +16,6 @@
     * [EmbeddingJNAerator]
     * [Reification]
   * Hands-on
-    * [http://code.google.com/p/jnaerator/downloads/list Download]
     * [TroubleShootingJNAeration]
     * [Maven]
     * [Sources]
